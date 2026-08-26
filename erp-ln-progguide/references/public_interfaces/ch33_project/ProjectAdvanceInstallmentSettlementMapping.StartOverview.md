@@ -1,0 +1,57 @@
+# ProjectAdvanceInstallmentSettlementMapping.StartOverview
+
+> Chapter: Chapter 33 Public Interfaces for Project
+>
+> Group: Public Interfaces for ProjectAdvanceInstallmentSettlementMapping
+>
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1738-1739
+
+```baan
+DLL:   tpextpinapi
+This function is available from     2024.08 (KB3501651  ).
+Syntax: long ProjectAdvanceInstallmentSettlementMapping.StartOverview(
+long             iStartMode,
+domain  tcmcs.st30       iStartFilter,
+long             iSessionIndex,
+const           string           iQueryExtend(),
+domain  tccono           iContract,
+domain  tpctm.cnln       iContractLine,
+ref     domain  tppdm.serc       oAdvancePayment,
+ref     domain  tppdm.nins       oInstallment,
+ref     domain  tcmcs.s999m      oExceptionMessage mb,
+ref             long             oExceptionID )
+Usage:        Expl:   This function starts the session
+"Advance                       - Installment Settlement Mapping"
+(tppin4112m000) in overview mode.
+Input:  iStartMode
+Specifies the start mode for the session.
+Possible values are:
+MODAL                               -         The parent session is blocked until the
+child session exits. The session will be
+started as a zoom session.
+MODELESS                               -      Parent and child are parallel
+sessions that can be manipulated
+simultaneously.
+iStartFilter            Not Used
+iSessionIndex           Not Used
+iQueryExtend            A specific query to be used when zooming to this
+session.
+iContract               Contract. Optional
+iContractLine           Contract Line. Optional
+Output: oAdvancePayment         Advance Payment of selected transaction
+oInstallment            Installment of selected transaction
+oExceptionMessage       The last message if any message is
+found. If more than one message is
+given, these are present in the
+oExceptionID.
+oExceptionID            An ID that refers to the exception
+information. Use the functions in
+Exception to get all relevant
+information.
+Return: 0                       Session started
+<> 0                    An error occurred
+```
+
+## Public Interfaces for ProjectHoldback
+
+The following functions are available: ProjectHoldback.StartOverview

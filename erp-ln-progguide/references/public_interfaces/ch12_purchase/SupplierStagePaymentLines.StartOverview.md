@@ -1,0 +1,130 @@
+# SupplierStagePaymentLines.StartOverview
+
+> Chapter: Chapter 12 Public Interfaces for Purchase
+>
+> Group: Public Interfaces for SupplierStagePaymentLine
+>
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 483-485
+
+```baan
+DLL:   tdextpurapi
+This function is available from     2023.10 (KB2308375  ).
+Syntax: long SupplierStagePaymentLines.StartOverview(
+long             iStartMode,
+domain  tcmcs.st30       iStartFilter,
+long             iSessionIndex,
+const           string           iQueryExtend(),
+domain  tdssp.boty       iBusinessObjectType,
+domain  tcqono           iRequestForQuote,
+domain  tcpono           iRequestForQuoteLine,
+domain  tcpono           iRequestForQuoteResponseSequence,
+domain  tccom.bpid       iRequestForQuoteBidder,
+domain  tcorno           iPurchaseOrder,
+domain  tcpono           iPurchaseOrderLine,
+ref     domain  tcqono           oRequestForQuote,
+ref     domain  tcpono           oRequestForQuoteLine,
+ref     domain  tcpono           oRequestForQuoteResponseSequence,
+ref     domain  tccom.bpid       oRequestForQuoteBidder,
+ref     domain  tcorno           oPurchaseOrder,
+ref     domain  tcpono           oPurchaseOrderLine,
+ref     domain  tcpono           oStagePaymentLine,
+ref     domain  tcmcs.s999m      oExceptionMessage mb,
+ref             long             oExceptionID )
+Usage:        Expl:   This function starts the session Supplier Stage Payments
+Overview (tdpur5120m000).
+This session can be started for three different contexts:
+-                       Request for Quote (RFQ) Response
+To use this context set iBusinessObjectType to value
+tdssp.boty.tdpur106 and specify the fields:
+iRequestForQuote
+iRequestForQuoteLine
+iRequestForQuoteResponseSequence
+iRequestForQuoteBidder
+-                       Purchase Order Line
+To use this context set iBusinessObjectType to value
+tdssp.boty.tdpur401 and specify the fields:
+iPurchaseOrder
+iPurchaseOrderLine
+-                       Purchase Order Line
+To use this context set iBusinessObjectType to value
+tdssp.boty.tdpur400 and specify the fields:
+iPurchaseOrder
+Input:  iStartMode              Specifies the start mode for the session
+(Mandatory).
+Possible values are:
+MODAL           The parent session is blocked until the
+child session exits. The session will be
+started as a zoom session.
+MODELESS        Parent and child are parallel
+sessions that can be manipulated
+simultaneously.
+iStartFilter            Start Filter, not used.
+iSessionIndex           Session Index, not used
+iQueryExtend            A specific query to be used when zooming
+to this session (Optional).
+iBusinessObjectType     Business Object Type (Mandatory).
+Possible values are:
+tdssp.boty.tdpur106
+Use when the context is RFQ Response.
+tdssp.boty.tdpur401
+Use when the context is Purchase Order
+Line.
+tdssp.boty.tdpur400
+Use when the context is Purchase Order.
+iRequestForQuote        Request for Quote (Mandatory when
+iBusinessObjectType is set to
+tdssp.boty.tdpur106).
+iRequestForQuoteLine    Request for Quote Line (Mandatory
+when iBusinessObjectType is set to
+tdssp.boty.tdpur106).
+iRequestForQuoteResponseSequence
+Request for Quote Response Sequence
+(Optional).
+iRequestForQuoteBidder  Request for Quote Bidder (Mandatory
+when iBusinessObjectType is set to
+tdssp.boty.tdpur106).
+iPurchaseOrder          Purchase Order (Mandatory when
+iBusinessObjectType is set to
+tdssp.boty.tdpur401 or
+tdssp.boty.tdpur400).
+iPurchaseOrderLine      Purchase Order Position (Mandatory when
+iBusinessObjectType is set to
+tdssp.boty.tdpur401).
+Output:
+Variables below contain the values of the selected record,
+they are only filled if iStartMode is MODAL and 1 record has
+been selected:
+When iBusinessObjectType is set to tdssp.boty.tdpur106:
+oRequestForQuote        Request for Quote
+oRequestForQuoteLine
+Request for Quote Line
+oRequestForQuoteResponseSequence
+Request for Quote Response Sequence
+oRequestForQuoteBidder
+Request for Quote Bidder
+oStagePaymentLine       Supplier Stage Payment Line
+When iBusinessObjectType is set to tdssp.boty.tdpur401:
+oPurchaseOrder          Purchase Order
+oPurchaseOrderLine      Purchase Order Position
+oStagePaymentLine       Supplier Stage Payment Line
+When iBusinessObjectType is set to tdssp.boty.tdpur400:
+oPurchaseOrder          Purchase Order
+oStagePaymentLine       Supplier Stage Payment Line
+Variables for API error handling:
+oExceptionMessage       The last message if any message is
+found. If more than one message is
+given, these are present in the
+oExceptionID.
+oExceptionID            An ID that refers to the exception
+information. Use the functions in
+Exception to get all relevant
+information.
+Return: 0                       Session started
+<> 0                    An error occurred
+```
+
+## Public Interfaces for
+
+## SubcontractingProcurementOrder
+
+The following functions are available: SubcontractingProcurementOrder.Approve SubcontractingProcurementOrder.StartAutomaticProcessing

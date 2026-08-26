@@ -1,0 +1,41 @@
+# Attendance.UseAttendanceTypeTravel
+
+> Chapter: Chapter 43 Public Interfaces for Extended Time Management
+>
+> Group: Public Interfaces for Attendance
+>
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1889-1891
+
+```baan
+DLL:   bpextxtmapi
+This function is available from     2022.11 (KB2268271  ).
+Syntax: long Attendance.UseAttendanceTypeTravel(
+ref             boolean          oUseAttendanceTypeTravel,
+ref     domain  tcmcs.s999m      oExceptionMessage mb,
+ref             long             oExceptionID )
+Usage:        Expl:   This function returns true when attendance type Travel
+is being used for the employee group which is under review.
+Pre:
+Post:
+Input:
+Output:
+oUseAttendanceTypeTravel                      - Use attendance type Travel
+(true/false)
+oExceptionMessage                             - The last message if any message is
+found. If more than one message is
+given, these are present in the
+oExceptionID.
+oExceptionID                                  - An ID that refers to the exception
+information. Use the functions in
+Exception to get all relevant
+information.
+Return: true/false
+```
+
+## Chapter 44 Public Interfaces for Object
+
+## Configuration Management
+
+## Public Interfaces for Workflow
+
+The following functions are available: Workflow.DisableSubmit Workflow.EnableSubmit Workflow.Recall Workflow.RecallByTypedObjectID Workflow.Submit

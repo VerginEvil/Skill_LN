@@ -1,0 +1,49 @@
+# WarehouseInspectionLine.StartDetail
+
+> Chapter: Chapter 25 Public Interfaces for Warehousing
+>
+> Group: Public Interfaces for WarehouseInspectionLine
+>
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1272-1273
+
+```baan
+DLL:   whextinhapi
+This function is available from     2022.05 (KB2240600  ).
+Syntax: long WarehouseInspectionLine.StartDetail(
+long             iStartMode,
+domain  tcorno           iInspection,
+domain  tcpono           iInspectionSequence,
+long             iInspectionLine,
+ref     domain  tcmcs.s999m      oExceptionMessage mb,
+ref             long             oExceptionID )
+Usage:        Expl:   This public interface starts session Warehouse Inspection Lines
+(whinh2131m000) in Detail mode.
+Input:  iStartMode
+Specifies the start mode for the session.
+Possible values are:
+MODAL                               -         The parent session is blocked until the
+child session exits, in case of a
+multi                                              -occurrence the session will be
+started as a zoom session.
+MODELESS                               -      Parent and child are parallel
+sessions that can be manipulated
+simultaneously.
+Following input variables form the primary key, these fields
+are mandatory, if the primary key cannot be found an API error
+will be set in the oExceptionMessage and the session will not
+be started.
+Primary Key Fields:
+iInspection                                   - The Inspection Number to be started
+iInspectionSequence                           - The Inspection Sequence to be started
+iInspectionLine                               - The Inspection Line to be started.
+Output: oExceptionMessage                     - The last message if any message is
+found. If more than one message is
+given, these are present in the
+oExceptionID.
+oExceptionID                                  - An ID that refers to the exception
+information. Use the functions in
+Exception to get all relevant
+information.
+Return: 0                                     - Session started
+<> 0                                          - Error
+```

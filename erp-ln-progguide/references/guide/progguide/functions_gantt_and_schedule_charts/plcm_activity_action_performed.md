@@ -1,0 +1,25 @@
+# plcm.activity.action.performed
+
+## Syntax:
+`function boolean plcm.activity.action.performed( const string activity.id )`
+
+## Description
+Callback-function for when the activity is double-click upon.
+
+## Arguments
+| | | |
+|---|---|---|
+| `const string` | `activity.id` |  ID of the activity.  |
+
+## Return values
+| | |
+|---|---|
+| 0 | Success |
+
+## Context
+This function is implemented in the 4GL Tools and can be used in all script types.
+This function is marked as 'untrusted' and can therefore not be used in custom objects in a cloud-ready environment. See section about [managed execution](../misc/managed_execution.md) for more information.
+
+## Related topics
+- [Synopsis](synopsis.md)
+- [Example](example.md)

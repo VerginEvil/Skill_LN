@@ -1,0 +1,225 @@
+# User interface objects: example
+```
+
+#define     COMMAND.ABORT      10
+#define     COMMAND.EXIT       11
+#define     COMMAND.FIRST      20
+#define     COMMAND.LAST       21
+#define     COMMAND.PREV       22
+#define     COMMAND.NEXT       23
+
+long     toplevel, gwin, image, combox, combox_id
+
+function main()
+{
+      image = 0
+      combox_id = 1
+      show.mwindow()
+      fill.work.area()
+      update.gwindow()
+      handle.event.loop()
+}
+
+function long create.pulldown.menu(long mwin)
+{
+      long barmenu, size
+      string menudata(1) based
+      alloc.mem(menudata, 3000)
+      size = 1
+      | write header info to buffer
+      store.long(1, menudata(size))      | version is 1
+      size = size + 4
+      store.long(8, menudata(size))      | menu contains 8 entries
+      size = size + 4
+      | create the File submenu
+      write.menu.entry(menudata, size, 1, 0, "&File", 0)
+      write.menu.entry(menudata, size, 2, COMMAND.ABORT, "Abort", 0)
+      write.menu.entry(menudata, size, 2, COMMAND.EXIT, "E&xit  Alt+F4", 0)
+      | create the View submenu
+      write.menu.entry(menudata, size, 1, 0, "&View", 0)
+      write.menu.entry(menudata, size, 2, COMMAND.FIRST, "First", 0)
+      write.menu.entry(menudata, size, 2, COMMAND.LAST, "Last", 0)
+      write.menu.entry(menudata, size, 2, -1, "-", 0)      | separator
+      write.menu.entry(menudata, size, 2, COMMAND.PREV, "Prev", 0)
+      write.menu.entry(menudata, size, 2, COMMAND.NEXT, "Next", 0)
+      barmenu = create.object(DsCbarMenu, mwin,
+                  DsNmenuData,   menudata, size-1,
+                  DsNsetState,   DSRAISE)
+       return(barmenu)
+}
+
+function write.menu.entry(ref string menudata(), ref long size,
+      long level, long id, const string name(), long flags)
+{
+      store.long(level, menudata(size))
+      size = size + 4
+      store.long(id, menudata(size))
+      size = size + 4
+      menudata(size) = name
+      size = size + len(name)
+      store.byte(0, menudata(size))   | terminate string with 0 char.
+      size = size + 1
+      store.long(flags, menudata(size))
+      size = size + 4
+}
+
+function show.mwindow()
+{
+      long barmenu
+      toplevel = create.object( DsCmwindow, 0,
+                  DsNtitle,         "MWindow",
+                  DsNprocessgroup,  get.pgrp(pid),
+                  DsNminWidth,      300,
+                  DsNmaxWidth,      600,
+                  DsNminHeight,     200,
+                  DsNmaxHeight,     400)
+      barmenu = create.pulldown.menu(toplevel)
+      change.object( toplevel, DsNbarMenu, barmenu )
+      update.object(toplevel)
+}
+
+function fill.work.area()
+{
+      long        rowcol
+      string      listitems(300)
+      rowcol = create.object(DsCrowColumn, toplevel,
+                  DsNvspace,        10,
+                  DsNhspace,        10,
+                  DsNnumColumns,     3,
+                  DsNfixedDimension, DSHORIZONTAL )
+      create.object(DsClabel,  rowcol,
+                    DsNstring, "Article:" )
+      |            12345678901234567890123456789012345678901234567890
+      listitems = "article -1-printers-2-graph   -3-books   -4-logo-5"
+      store.byte(0, listitems(9))
+      store.byte(0, listitems(11))
+      store.byte(0, listitems(20))
+      store.byte(0, listitems(22))
+      store.byte(0, listitems(31))
+      store.byte(0, listitems(33))
+      store.byte(0, listitems(42))
+      store.byte(0, listitems(44))
+      store.byte(0, listitems(49))
+      combox = create.object(DsCdDComBox, rowcol,
+                  DsNminWidth,      80,
+                  DsNmaxWindowSize, 25,
+                  DsNx,             80,
+                  DsNy,             40,
+                  DsNstringArray,   listitems, 54)
+      gwin = create.object(DsCgwindow, rowcol,
+                  DsNwidth,         100,
+                  DsNheight,        100,
+                  DsNpointerCursor, DSCHAND)
+      create.sub.object(gwin, DsCgpRectangle,
+                  DsNx,             0,
+                  DsNy,             0,
+                  DsNwidth,         100,
+                  DsNheight,        100 )
+      create.object(DsCpushButton,  rowcol,
+                  DsNstring,        "Abort",
+                  DsNreturnValue,   COMMAND.ABORT)
+      create.object(DsCpushButton,  rowcol,
+                  DsNstring,        "Exit",
+                  DsNreturnValue,   COMMAND.EXIT)
+      update.object(toplevel)
+      update.object(gwin)
+}
+
+function update.gwindow()
+{
+      string file(128)
+      string bufr(1)  based
+      long buflen, fp, idp
+      change.object(combox, DsNselectedId, combox_id)
+      on case combox_id
+      case 1:
+            file = "${BSE}/gif/desktop.gif/tools1"
+            break
+      case 2:
+            file = "${BSE}/gif/desktop.gif/printer1"
+            break
+      case 3:
+            file = "${BSE}/gif/desktop.gif/graph1"
+            break
+      case 4:
+            file = "${BSE}/gif/desktop.gif/display1"
+            break
+      case 5:
+            file = "${BSE}/gif/desktop.gif/baanlogo"
+            break
+      default:
+            return
+      endcase
+      fp = seq.open(file, "r")
+      buflen = seq.seek(0, 2, fp)
+      alloc.mem(bufr, buflen)
+      seq.rewind(fp)
+      seq.read(bufr, buflen, fp)
+      seq.close(fp)
+      idp = create.object(DsCpixmap, 0,
+                                            DsNdata, bufr, buflen,
+                                            DsNdataType, DSPIXGIF8 )
+      if image <> 0 then
+            destroy.sub.object(gwin, image)
+      endif
+      image = create.sub.object(gwin, DsCgpImage,
+                                   DsNpixmap, idp,
+                                   DsNx,      3,
+                                   DsNy,      3 )
+      update.object(gwin)
+      free.mem(bufr)
+}
+
+function handle.event.loop()
+{
+      long event(EVTMAXSIZE)
+      while TRUE
+            next.event(event)
+            on case evt.type(event)
+            case EVTMENUSELECT:
+                  on case evt.menu.return(event)
+                  case COMMAND.ABORT:
+                  case COMMAND.EXIT:
+                        return
+                  case COMMAND.FIRST:
+                        combox_id = 1
+                        update.gwindow()
+                        break
+                  case COMMAND.LAST:
+                        combox_id = 5
+                        update.gwindow()
+                        break
+                  case COMMAND.PREV:
+                        if combox_id > 1 then
+                                 combox_id = combox_id - 1
+                                 update.gwindow()
+                        endif
+                        break
+                  case COMMAND.NEXT:
+                        if combox_id < 5 then
+                                 combox_id = combox_id + 1
+                                 update.gwindow()
+                        endif
+                        break
+                  endcase
+                  break
+            case EVTPUSHBUTTON:
+                  if ( evt.button.return(event) = COMMAND.ABORT OR
+                       evt.button.return(event) = COMMAND.EXIT ) then
+                         return
+                  endif
+                  break
+            case EVTLISTBOXSELECT:
+                  combox_id = evt.listbox.item_id(event)
+                  update.gwindow()
+                  break
+            default:
+                  break
+            endcase
+      endwhile
+```
+
+## Related topics
+- [User interface objects overview](overview.md)
+- [User interface objects synopsis](synopsis.md)
+- [User interface objects: example](example.md)

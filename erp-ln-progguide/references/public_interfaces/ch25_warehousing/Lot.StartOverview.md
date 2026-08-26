@@ -1,0 +1,92 @@
+# Lot.StartOverview
+
+> Chapter: Chapter 25 Public Interfaces for Warehousing
+>
+> Group: Public Interfaces for Lot
+>
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1108-1109
+
+```baan
+DLL:   whextltcapi
+This function is available from     2021.04 (KB2179943  ).
+Syntax: long Lot.StartOverview(
+long             iStartMode,
+domain  tcmcs.st30       iStartFilter,
+long             iSessionIndex,
+const           string           iQueryExtend(),
+domain  tcitem           iItem,
+domain  tcclot           iLot,
+ref     domain  tcitem           oItem,
+ref     domain  tcclot           oLot,
+ref     domain  tcmcs.s999m      oExceptionMessage mb,
+ref             long             oExceptionID )
+Usage:        Expl:   This function starts the overview session Item - Lot
+(whltc1100m000).
+Input:  iStartMode
+Specifies the start mode for the session.
+Possible values are:
+MODAL                               -         The parent session is blocked until the
+child session exits, the session will be
+started as a zoom session.
+MODELESS                               -      Parent and child are parallel
+sessions that can be manipulated
+simultaneously.
+iStartFilter
+Specifies the start filter that is to be applied to the
+started session.
+Possible values are:
+"byItem":
+data is displayed by:
+Item
+session will be started on index 1
+view field:
+Item
+"byItemBuyFromBP":
+data is displayed by:
+Item
+BuyFromBusinessPartner
+session will be started on index 2
+view fields:
+Item
+"byItemBuyFromBPLot":
+data is displayed by:
+Item
+BuyFromBusinessPartner
+BuyFromBusinessPartnerLot
+session will be started on index 3
+view field:
+Item
+"byItemOriginalLot":
+data is displayed by:
+Item
+Original Lot
+session will be started on index 8
+view field:
+Item
+iSessionIndex
+Specifies the session index that is to be used. Please
+be aware that the iStartFilter will overrule the index
+passed in this argument. So when not using a startfilter
+the session index will match the value of this variable.
+iQueryExtend
+A specific query to be used when zooming to this session.
+iItem
+Mandatory when startfilter "byItem",
+"byItemBuyFromBP", "byItemBuyFromBPLot" or
+"byItemOriginalLot" is used and the session is started
+in overview mode with start mode MODELESS
+iLot
+Output: for iStartMode MODAL:
+oItem                                         - Selected Item.
+oLot                                          - Selected Lot.
+oExceptionMessage                             - The last message if any message is
+found. If more than one message is
+given, these are present in the
+oExceptionID.
+oExceptionID                                  - An ID that refers to the exception
+information. Use the functions in
+Exception to get all relevant
+information.
+Return: 0                                     - Session started
+<> 0                                          - Error
+```
