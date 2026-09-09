@@ -1,1 +1,4 @@
-/update
+.scratch/
+update/
+implementation/
+.gitignore
