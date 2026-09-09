@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the SQL syntax is not correct.  |
+| This error indicates that the SQL syntax is not correct. |
 | *Solution:* |
 | Correct the SQL statement. |

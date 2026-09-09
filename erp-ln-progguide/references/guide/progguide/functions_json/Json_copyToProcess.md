@@ -21,8 +21,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_value' is a JSON value.
+
 - Parameter 'process_id' is greater than 0.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

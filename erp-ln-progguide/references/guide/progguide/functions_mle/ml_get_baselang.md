@@ -14,5 +14,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Multi Language Data overview](overview.md)
+
 - [Multi Language Data synopsis](synopsis.md)
+
 - [Multi Language Data support code examples](examples.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RequestForQuoteLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 412-414
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 414-415
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2024.07 (KB3501645  ).
+This function is available from 2024.07 (KB3501645).
 Syntax: long RequestForQuoteLines.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -59,7 +59,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for RequestForQuoteResponse
-
-The following functions are available: RequestForQuoteResponse.Accept RequestForQuoteResponse.Reject

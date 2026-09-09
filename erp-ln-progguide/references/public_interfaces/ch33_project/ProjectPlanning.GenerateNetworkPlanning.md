@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1703-1704
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1722-1723
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2024.02 (KB2304907  ).
+This function is available from 2024.02 (KB2304907).
 Syntax: long ProjectPlanning.GenerateNetworkPlanning(
 domain  tccprj           iProject,
 domain  tcyesno          iUpdateProjectPlanningDates,
@@ -22,26 +22,22 @@ constraints on the activities. It calculates early start and
 finish dates and late start and finish dates. It can establish
 which activities have float. This function offers
 similar functionality as
-session (tppss2240m000                       - Generate Network Planning).
+session (tppss2240m000 - Generate Network Planning).
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iProject                              - Project. Mandatory
-iUpdateProjectPlanningDates                           -
+Input:  iProject                - Project. Mandatory
+iUpdateProjectPlanningDates     -
 Update Project Planning Dates (Yes/No).
 Mandatory.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectActivity
-
-The following functions are available: ProjectActivities.StartOverview ProjectActivity.SetInsertMode

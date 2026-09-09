@@ -25,6 +25,8 @@ None.
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
-- [dialog.add.field()](dialog.add.field.md) with a domain of type enum.
+- [dialog.add.field()](dialog.add.field.md)
+
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Programmable Dialogs Example](example.md)

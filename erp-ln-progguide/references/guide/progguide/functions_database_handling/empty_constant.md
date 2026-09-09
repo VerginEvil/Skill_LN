@@ -9,7 +9,7 @@ The EMPTY constant specifies an integer value 0.
 ```
 
 ## Semantics
-The EMPTY constant behaves exactly the same as the [Integer constant](integer_constant.md) 0.
+The EMPTY constant behaves exactly the same as the [integer constant](integer_constant.md) 0.
 
 ## Examples
 ```

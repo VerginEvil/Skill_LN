@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AllocationChangeOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1102-1103
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1112-1113
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.09 (KB3516844  ).
+This function is available from 2024.09 (KB3516844).
 Syntax: long AllocationChangeOrder.Process(
 domain  tcorno           iAllocationChangeOrder,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -31,7 +31,3 @@ functions in Exception to get all relevant information.
 Return: 0: OK
 <> 0: Error
 ```
-
-## Public Interfaces for Lot
-
-The following functions are available: Lot.Delete Lot.Generate Lot.StartDetail Lot.StartGlobalLotBlocking Lot.StartOverview Lot.StartPrintLotBlocking

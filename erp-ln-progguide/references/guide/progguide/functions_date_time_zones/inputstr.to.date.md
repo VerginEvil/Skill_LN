@@ -18,7 +18,7 @@ This function is implemented in the porting set and can be used in all script ty
 ## Return value
 | | |
 |---|---|
-|  | The number of days from 01-01-0001 to the date specified in the input string.  |
+|  | The number of days from 01-01-0001 to the date specified in the input string. |
 | -1 | Error. |
 
 ## Example
@@ -32,4 +32,5 @@ dat = inputstr.to.date( "06171991", "%D002,3" )
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

@@ -9,8 +9,8 @@ This retrieves the name of the specified user ( *user*) and stores it in the *na
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `user(12)` |  |
-| `ref string` | `name() mb` |  |
+| `string` | `user(12)` |    |
+| `ref string` | `name() mb` |    |
 
 ## Return values
 false error; user not found

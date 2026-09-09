@@ -1,7 +1,7 @@
 # str.join$()
 
 ## Syntax:
-`function string str.join$( const string separator$, void ... )`
+`function string str.join$( const string separator$, void... )`
 
 ## Description
 Joins the specified arguments to a single string. Non-string arguments are first converted to strings. The strings are separated with the specified separator.
@@ -36,4 +36,5 @@ result$ = str.join$(" OR ",
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

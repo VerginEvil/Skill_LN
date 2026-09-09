@@ -16,11 +16,12 @@ Take care when using this function on files that have been opened in append mode
 | | |
 |---|---|
 | >= 0 | Success. |
-| < 0 | Error; probably *fp* not connected.  |
+| < 0 | Error; probably *fp* not connected. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

@@ -4,9 +4,14 @@ As a layman's example of how SOAP procedures can be used, a SOAP message could b
 
 ## Scope and limitations
 3GL SOAP client implementations are available as of Infor Enterprise Server Server 8.3 (ES8.3). The implementation used in ES8.3 - ES8.6 has some limitations:
+
 - It uses a simple, limited HTTP client (full HTTP is not supported; e.g. redirection is not supported)
+
 - There is no HTTPS support;
-- There is no XML namespace support.  As of Infor Enterprise Server Server 8.7, the 3GL SOAP client supports full HTTP and HTTPS, as well as XML namespaces.
+
+- There is no XML namespace support.
+
+As of Infor Enterprise Server Server 8.7, the 3GL SOAP client supports full HTTP and HTTPS, as well as XML namespaces.
 
 ## Example (using ES8.7 with XML namespace support)
 The below code fragment shows how the SOAP client functions are typically used. Note that `#include <bic_soap>` must be done.

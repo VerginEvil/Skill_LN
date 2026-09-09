@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Service
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1337-1338
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1349-1350
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2020.04 (KB2117506  ).
+This function is available from 2020.04 (KB2117506).
 Syntax: long Service.GetResourceCalendarCode(
 domain  tcncmp           iLogisticCompany,
 domain  tsclm.crtc       iResponseType,
@@ -54,28 +54,28 @@ order:
 7. Company
 Pre     : None
 Post    : None
-Input   : iLogisticCompany                            - Logistic Company: Mandatory
-iResponseType                                         - Response Type: Not Mandatory
-iInstallationGroup                                    - Installation Group:
+Input   : iLogisticCompany              - Logistic Company: Mandatory
+iResponseType                 - Response Type: Not Mandatory
+iInstallationGroup            - Installation Group:
 Not Mandatory
-iItem                                                 - Item: Not Mandatory
-iSerialNumber                                         - Serial Number: Not Mandatory
-iAssignedServiceEngineer                              - Assigned Service Engineer:
+iItem                         - Item: Not Mandatory
+iSerialNumber                 - Serial Number: Not Mandatory
+iAssignedServiceEngineer      - Assigned Service Engineer:
 Not Mandatory
-iPreferredServiceEngineer                             - Preferred Service Engineer:
+iPreferredServiceEngineer     - Preferred Service Engineer:
 Not Mandatory
-iServiceDepartment                                    - Service Department:
+iServiceDepartment            - Service Department:
 Not Mandatory
-Output  : oCalendarCode                               - Calendar Code
-oTimeZone                                             - Time Zone
-oExceptionMessage                                     - The last message if any message is
+Output  : oCalendarCode                 - Calendar Code
+oTimeZone                     - Time Zone
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - Data read
-<> 0                                                  - An error occurred
+Return: 0                               - Data read
+<> 0                            - An error occurred
 ```

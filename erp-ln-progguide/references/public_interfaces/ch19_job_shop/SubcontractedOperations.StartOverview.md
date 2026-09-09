@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractedOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 815-816
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 814-815
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.04 (KB2323105  ).
+This function is available from 2024.04 (KB2323105).
 Syntax: long SubcontractedOperations.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,14 +27,14 @@ Usage:        Expl:   This function starts the session Subcontracted Operations
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used. Optional.
 Standard supported values:
 1: sort by Production Order, Operation
@@ -43,10 +43,10 @@ Standard supported values:
 Site, Production Order, Operation.
 iQueryExtend            A specific query to be used when zooming
 to this session. Optional.
-iProductionOrder        Production Order                       - Optional.
-iOperation              Operation                       - Optional.
-iSubcontractor          Subcontractor                       - Optional.
-iSubcontractorSite      Subcontractor Site                       - Optional.
+iProductionOrder        Production Order - Optional.
+iOperation              Operation - Optional.
+iSubcontractor          Subcontractor - Optional.
+iSubcontractorSite      Subcontractor Site - Optional.
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
 been selected.
@@ -63,7 +63,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ConfigurableItem
-
-The following functions are available: ConfigurableItem.ReadCPQSettings

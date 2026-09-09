@@ -14,9 +14,9 @@ This returns information about a specified column which is identified by the tab
 | `ref string` | `column_name` |  This returns the name of the column.  |
 | `ref string` | `domain_name(14)` |  This returns the name of the column's domain.  |
 | `ref long` | `offset` |  This returns the position of the column in the row.  |
-| `ref long` | `size` |  This returns the size of the column, in bytes. See this list of database types and related byte counts.  |
+| `ref long` | `size` |  This returns the size of the column, in bytes. See this [list of database types and related byte lengths](../functions_database_handling/overview.md#types).  |
 | `ref long` | `dept` |  This returns the depth of the column (array columns only).  |
-| `ref long` | `type` |  This returns the database type of the column. For example, DB.LONG, DB.FLOAT, and so on. See this list of database types.  |
+| `ref long` | `type` |  This returns the database type of the column. For example, DB.LONG, DB.FLOAT, and so on. See this [list of database types](../functions_database_handling/overview.md#types).  |
 | `ref long` | `flag` |  This returns a bit pattern that represents one or more of the following values: DB.ARRAY DB.CDF DB.CHILD DB.FILLED DB.MLF  |
 | `ref string` | `default_value` |  This returns the default value of the column.  |
 | `[ long` | `flag_filter ]` |  This optional argument can be used to get a filtered list of columns that have the specified flag set. For example, the 2nd CDF column from a table can be retrieved by calling this function with column_name = 2 and flag_filter = DB.CDF  |
@@ -30,4 +30,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Runtime dictionary information overview and synopsis](overview_and_synopsis.md)
-- Database types and related byte counts
+
+- [Database types and related byte lengths](../functions_database_handling/overview.md#types)

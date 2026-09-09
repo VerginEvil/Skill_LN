@@ -21,9 +21,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 ## Return codes
 | | |
 |---|---|
-| >= 0 | upon success, return value is the number of bytes in body  |
+| >= 0 | upon success, return value is the number of bytes in body |
 | -1 | JavaVM not supported on this platform |
-| -2 | unable to store the message into the supplied parameters  |
+| -2 | unable to store the message into the supplied parameters |
 | -4 | no message available on queue |
 
 ## Related topics

@@ -13,11 +13,11 @@ This retrieves information about a specified subobject, based on specified attri
 | `long` | `object_id` |  The ID of the object to which the subobject belongs.  |
 | `long` | `sub_object_id` |  The ID of the subobject within the specified object.  |
 | `long` | `attribute_in, value_in, size_in` |  You can use one or more sets of these arguments to specify the input attributes for the query. For each attribute you specify, you must include the attribute type and the attribute value. For attributes of type void data or long array, you must also include the size of the data or array.  |
-| `void` | `value_in` |  |
-| `long` | `size_in` |  |
+| `void` | `value_in` |    |
+| `long` | `size_in` |    |
 | `long` | `attribute_in` |  You can use one or more sets of these arguments to specify the output of the query. For each attribute you specify, you must include the attribute type. The function returns the current value of the attribute. For attributes of type void data or long array, it also returns the size of the data or array.  |
-| `ref void` | `value_out` |  |
-| `ref long` | `size_out` |  |
+| `ref void` | `value_out` |    |
+| `ref long` | `size_out` |    |
 
 ## Return values
 TRUE success
@@ -29,5 +29,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

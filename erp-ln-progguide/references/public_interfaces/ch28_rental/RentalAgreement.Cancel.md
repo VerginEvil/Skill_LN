@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalAgreement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1564-1567
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1579-1581
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalAgreement.Cancel(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.acln       iAgreementLine,
@@ -46,7 +46,7 @@ Cancelled.
 If warehouse procedures have been set to automatic, then these
 are executed.
 Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iRentalOrder               -
+Input:  iRentalOrder -
 Rental Order
 Mandatory.
 iAgreementLine
@@ -107,8 +107,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the service order activity
 was not changed to Cancelled.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order activity changed to Cancelled.
-<> 0                          -       The status of the service order activity could
+<> 0    -       The status of the service order activity could
 not be changed to Cancelled.
 ```

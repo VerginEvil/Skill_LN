@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 165-165
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 166-166
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2020.06 (KB2127795  ).
+This function is available from 2020.06 (KB2127795).
 Syntax: long Item.ConvertItemToPlanItem(
 domain  tcncmp           iLogisticCompany,
 domain  tcitem           iItem,

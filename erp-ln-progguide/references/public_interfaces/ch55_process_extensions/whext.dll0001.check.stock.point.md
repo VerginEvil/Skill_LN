@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for InventorySearchEngine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2048-2049
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2067-2068
 
 ```baan
 Syntax: long whext.dll0001.check.stock.point(
@@ -27,23 +27,23 @@ It is wise to start the message with a dedicated hard coded
 string, so it is clear to the end user that the message logged
 is set in the Extension.
 Following tables are current when this extension is triggered:
-tcibd001                       - Item
-tcmcs003                       - Warehouses
-whinh220                       - Outbound Order Line
-whinh200                       - Warehouse Order Header
-whinh480                       - Planned Loads/Shipments
+tcibd001 - Item
+tcmcs003 - Warehouses
+whinh220 - Outbound Order Line
+whinh200 - Warehouse Order Header
+whinh480 - Planned Loads/Shipments
 (when load planning part of the search engine)
-whinh430                       - Shipments
+whinh430 - Shipments
 (when projected shipments selection is enabled
 for the search engine)
-whinh431                       - Shipment Lines
+whinh431 - Shipment Lines
 (when projected shipments selection is enabled
 for the search engine)
-whinr150                       - Inventory Structure
-whinr140                       - Inventory
-whwmd300                       - Locations (for location controlled warehouses)
-whltc500                       - Serials by Warehouse (for serialized items)
-whltc105                       - Lots by Warehouse (for lot controlled items)
+whinr150 - Inventory Structure
+whinr140 - Inventory
+whwmd300 - Locations (for location controlled warehouses)
+whltc500 - Serials by Warehouse (for serialized items)
+whltc105 - Lots by Warehouse (for lot controlled items)
 Pre:    NA
 Post:   NA
 Input:  NA

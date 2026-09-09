@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This is a general error indicating delayed locking.  |
+| This is a general error indicating delayed locking. |
 | *Solution:* |
 | Contact Infor support. |

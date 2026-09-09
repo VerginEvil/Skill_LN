@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1639-1640
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1658-1659
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2023.05 (KB2292786  ).
+This function is available from 2023.05 (KB2292786).
 Syntax: long BOD.CreateIDNode(
 domain  tcncmp           iCompany,
 domain  tcbod.name       iNoun,
@@ -29,20 +29,20 @@ If iTagName is filled, the node is created with the value of
 iTagName. Otherwise, the tag name is <ID>.
 Pre:    NA
 Post:   NA
-Input:  iCompany                              - Company. Mandatory.
-iNoun                                         - Noun name e.g. "SalesOrderBOD" or
+Input:  iCompany                - Company. Mandatory.
+iNoun                   - Noun name e.g. "SalesOrderBOD" or
 "ItemMasterCommonBOD". Mandatory
-iNounId                                       - Noun ID value. Mandatory
-iTagName                                      - Tag Name
-Output: oXmlNode                              - Generated Node for the NounId
-oExceptionMessage                             - The last message if any message is
+iNounId                 - Noun ID value. Mandatory
+iTagName                - Tag Name
+Output: oXmlNode                - Generated Node for the NounId
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Error occurred.
+Return: 0                       - OK.
+<> 0                    - Error occurred.
 ```

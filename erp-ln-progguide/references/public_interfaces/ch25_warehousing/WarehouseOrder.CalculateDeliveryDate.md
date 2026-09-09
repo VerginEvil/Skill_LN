@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1011-1012
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1021-1022
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.08 (KB2292294  ).
+This function is available from 2023.08 (KB2292294).
 Syntax: long WarehouseOrder.CalculateDeliveryDate(
 domain  whinh.oorg       iOrderOrigin,
 domain  whinh.ittp       iTransactionType,
@@ -45,33 +45,33 @@ function does not do a routing calculation.
 3. A calendar correction is done on the ship from site.
 Pre:    N.a.
 Post:   N.a.
-Input:  iOrderOrigin               - Order Origin; Mandatory
-iTransactionType                       - Transaction Type; Mandatory
-iShipFromType                       - Ship From Type; Mandatory
-iShipFromCode                       - Ship From Code; Mandatory
-iShipFromAddress                       - Ship From Address; Mandatory
-iShipFromCompany                       - Ship From Company; Mandatory
-iShipToAddress                       - Ship To Address; Mandatory
-iItem                       - Item; Not Mandatory
-iCarrier                       - Carrier; Not Mandatory
-iRoute                       - Route; Not Mandatory
-iServiceLevel                       - Service Level; Not Mandatory
-iTransportCategory                       - Transport Category; Not Mandatory
-iTransportMeansGroup                       - Transport Means Group; Not Mandatory
-iTransportMeansCombination                       - Transport Mean Combination; Not
+Input:  iOrderOrigin - Order Origin; Mandatory
+iTransactionType - Transaction Type; Mandatory
+iShipFromType - Ship From Type; Mandatory
+iShipFromCode - Ship From Code; Mandatory
+iShipFromAddress - Ship From Address; Mandatory
+iShipFromCompany - Ship From Company; Mandatory
+iShipToAddress - Ship To Address; Mandatory
+iItem - Item; Not Mandatory
+iCarrier - Carrier; Not Mandatory
+iRoute - Route; Not Mandatory
+iServiceLevel - Service Level; Not Mandatory
+iTransportCategory - Transport Category; Not Mandatory
+iTransportMeansGroup - Transport Means Group; Not Mandatory
+iTransportMeansCombination - Transport Mean Combination; Not
 Mandatory
-iMeansOfTransport                       - Means of Transport; Not Mandatory
-iDeliveryTerms                       - Terms of Delivery; Not Mandatory
-iPointOfTitlePassage                       - Point of title Passage; Not Mandatory
-iPlannedReceiptDate                       - Planned Receipt Date; Not Mandatory
-Output: oPlannedReceiptDate               - Planned Receipt Date
-oPlannedDeliveryDate                       - Planned Delivery Date
-oExceptionMessage                       - The last message if any message is found. If
+iMeansOfTransport - Means of Transport; Not Mandatory
+iDeliveryTerms - Terms of Delivery; Not Mandatory
+iPointOfTitlePassage - Point of title Passage; Not Mandatory
+iPlannedReceiptDate - Planned Receipt Date; Not Mandatory
+Output: oPlannedReceiptDate - Planned Receipt Date
+oPlannedDeliveryDate - Planned Delivery Date
+oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0               - Planned Dates calculated successfully
-DALHOOKERROR                       - An error occurred when calculating Planned Dates
+Return: 0 - Planned Dates calculated successfully
+DALHOOKERROR - An error occurred when calculating Planned Dates
 ```

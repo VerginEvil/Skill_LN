@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1147-1149
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1157-1159
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.03 (KB2320617  ).
+This function is available from 2024.03 (KB2320617).
 Syntax: long Shipment.PrintPackingSlip(
 domain  whinh.shpm       iShipment,
 domain  tcmcs.str15      iDevice,
@@ -32,8 +32,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iShipment is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ShipmentArray
+- selection range fields (From/To)
+- ShipmentArray
 The Packing Slip will then be printed for the given iShipment.
 In case option ShipmentArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
@@ -99,13 +99,13 @@ Json.add(ShipmentArray, Shipment)
 ReportName only needs to filled for customized reports, otherwise
 the standard report is automatically used.
 ReportName must start with an "r", e.g. "rwhinh447501001"
-Output: oDataProcessed                        - true:  Packing Slip Printed.
+Output: oDataProcessed          - true:  Packing Slip Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

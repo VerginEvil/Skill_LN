@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1056-1057
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1066-1067
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.07 (KB3571649  ).
+This function is available from 2025.07 (KB3571649).
 Syntax: long HandlingUnit.StartPrintLabels(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -18,13 +18,13 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Print Labels (whwmd5430m100).
 Depending on the main table of the calling session,
-Non                      -Consecutive Record Selection (NCRS) is used.
+Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Handling Units (whwmd530) or
 Prepacking Advice (whwmd540) or
 Inventory Ownership Change Orders (whinh100) or
 Inventory Ownership Change Order Lines (whinh110) or
-Inventory Ownership Change Order                       - Inventory Movement (whinh115) or
+Inventory Ownership Change Order - Inventory Movement (whinh115) or
 Allocation Change Orders (whinh120) or
 Allocation Change Order Lines (whinh130) or
 Warehousing Orders (whinh200) or
@@ -61,14 +61,14 @@ iToHandlingUnit
 To HandlingUnit selection field is filled with this
 value. (when iIgnoreSelectionFields is false and NCRS
 is not applicable)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

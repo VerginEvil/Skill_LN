@@ -23,4 +23,5 @@ Note  This function should not be used in the after.save.object section.
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

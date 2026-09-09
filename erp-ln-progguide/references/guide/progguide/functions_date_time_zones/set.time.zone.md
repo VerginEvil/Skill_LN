@@ -9,7 +9,7 @@ This sets the local time zone at run time.
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `time_zone(50)` |  |
+| `string` | `time_zone(50)` |    |
 
 ## Return values
 | | |
@@ -22,4 +22,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

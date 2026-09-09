@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InventoryCommitment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 953-953
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 963-963
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2023.12 (KB2310180  ).
+This function is available from 2023.12 (KB2310180).
 Syntax: long InventoryCommitment.CalculateCommitmentDate(
 domain  whinp.corg       iOrderOrigin,
 domain  tccwar           iWarehouse,
@@ -27,19 +27,19 @@ For new implementations it is recommended to always use this
 new function. For existing implementations it is only required
 to switch to this new version when Rental Order functionality
 in combination with item type Rental Product is used.
-Input:  iOrderOrigin                          - Order Origin (Mandatory)
-iWarehouse                                    - Warehouse (Mandatory)
-iItem                                         - Item (Mandatory)
-iPlannedDeliveryDate                          - PlannedDeliveryDate (Mandatory)
-Output: oCommitmentDate                       - Commitment Date
-oExceptionMessage                             - The last message if any message is
+Input:  iOrderOrigin            - Order Origin (Mandatory)
+iWarehouse              - Warehouse (Mandatory)
+iItem                   - Item (Mandatory)
+iPlannedDeliveryDate    - PlannedDeliveryDate (Mandatory)
+Output: oCommitmentDate         - Commitment Date
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error has been detected.
-<> 0                                          - An Error is detected.
+Return: 0                       - No error has been detected.
+<> 0                    - An Error is detected.
 ```

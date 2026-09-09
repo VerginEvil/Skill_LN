@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1540-1542
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1555-1557
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalOrder.Cancel(
 domain  tcorno           iRentalOrder fixed,
 long             iProcessingOptionSet,
@@ -95,8 +95,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the Rental Order was not
 changed to Cancelled.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Rental Order changed to Cancelled.
-<> 0                          -       The status of the Rental Order could not be
+<> 0    -       The status of the Rental Order could not be
 changed to Cancelled.
 ```

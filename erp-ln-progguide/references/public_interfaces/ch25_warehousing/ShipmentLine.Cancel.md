@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1162-1162
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1172-1172
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.09 (KB2304375  ).
+This function is available from 2023.09 (KB2304375).
 Syntax: long ShipmentLine.Cancel(
 domain  whinh.shpm       iShipment,
 domain  tcpono           iShipmentLine,
@@ -22,18 +22,18 @@ Be aware that transaction management is handled within this
 function.
 Pre:    Not applicable
 Post:   Not applicable
-Input:  iShipment                             - Shipment (Mandatory)
-iShipmentLine                                 - Shipment Line (Mandatory)
-iFinalizeOrderLine                            - Finalize order line if tolerances are
+Input:  iShipment               - Shipment (Mandatory)
+iShipmentLine           - Shipment Line (Mandatory)
+iFinalizeOrderLine      - Finalize order line if tolerances are
 met and no unprocessed advice lines or
 shipment lines are present (Mandatory)
-iReturnToStock                                - Return not shipped goods to stock
+iReturnToStock          - Return not shipped goods to stock
 (Mandatory)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

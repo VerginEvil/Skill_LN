@@ -16,4 +16,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Key fields Object overview](overview.md)
+
 - [Key fields object synopsis](synopsis.md)

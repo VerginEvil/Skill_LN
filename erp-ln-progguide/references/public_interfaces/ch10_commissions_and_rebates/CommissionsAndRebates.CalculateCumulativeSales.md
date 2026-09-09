@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CommissionsAndRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 372-374
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 374-375
 
 ```baan
 DLL:   tdextcmsapi
-This function is available from     2020.10 (KB2134632  ).
+This function is available from 2020.10 (KB2134632).
 Syntax: long CommissionsAndRebates.CalculateCumulativeSales(
 domain  tdcms.type       iCommissionRebateType,
 domain  tdcms.prty       iAgreementSearchPriority,
@@ -38,40 +38,40 @@ for a cumulative sales order line, the field 'Cumulative
 Processed (Y/N)' is set to 'Yes'.
 Pre:    Retry point must be set
 Post:   Transaction must be committed or aborted.
-Input:  iCommissionRebateType                 - Type Commission or Rebate
+Input:  iCommissionRebateType   - Type Commission or Rebate
 iAgreementSearchPriority
--                                               Agreement search priority
+- Agreement search priority
 as defined in Commissions and Rebates
 parameters
 iAgreementSoldToBusinessPartner
--                                               Agreement Sold-to Business Partner
-iAgreementRelation                            - Agreement Relation
-iAgreementGroup                               - Agreement Group
-iAgreementProject                             - Agreement Project
-iAgreementItem                                - Agreement Item
+- Agreement Sold-to Business Partner
+iAgreementRelation      - Agreement Relation
+iAgreementGroup         - Agreement Group
+iAgreementProject       - Agreement Project
+iAgreementItem          - Agreement Item
 iAgreementCommissionRebateGroup
--                                               Agreement Commission/Rebate Group
+- Agreement Commission/Rebate Group
 iAgreementEffectiveDate
--                                               Agreement Effective Date
+- Agreement Effective Date
 iAgreementPeriodTable
--                                               Commission Period Table
-iAgreementYear                                - Agreement Year
-iAgreementPeriod                              - Agreement Period
-iSalesOrderFrom                               - Sales Order range From
-iSalesOrderTo                                 - Sales Order range To
-iSalesOrderLineFrom                           - Sales Order Line range From
-iSalesOrderLineTo                             - Sales Order Line range To
-iSalesOfficeFrom                              - Sales Office range From
-iSalesOfficeTo                                - Sales Office range To
-iFullUpdate                                   - Yes/No. Indicate if previous
+- Commission Period Table
+iAgreementYear          - Agreement Year
+iAgreementPeriod        - Agreement Period
+iSalesOrderFrom         - Sales Order range From
+iSalesOrderTo           - Sales Order range To
+iSalesOrderLineFrom     - Sales Order Line range From
+iSalesOrderLineTo       - Sales Order Line range To
+iSalesOfficeFrom        - Sales Office range From
+iSalesOfficeTo          - Sales Office range To
+iFullUpdate             - Yes/No. Indicate if previous
 calculated Cumulative Commissions and
 Rebates need to be removed and
 calculated again
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -37,7 +37,7 @@
 | `long` | [dbcm.get.user()](dbcm.get.user.md) | `( const string toid$, ref string user$ )` |
 | `long` | [dbcm.get.workflow.definition()](dbcm.get.workflow.definition.md) | `( const string toid$, ref string wf.def$ )` |
 | `long` | [dbcm.get.workflow.id()](dbcm.get.workflow.id.md) | `( const string toid$, ref string wf.def$ )` |
-| `long` | [dbcm.get.workflow.status.description()](dbcm.get.workflow.status.description.md) | `( const string tbl.name$, ref string wf.status.desc$, [string fld.name$, void fld.value, ...] )` |
+| `long` | [dbcm.get.workflow.status.description()](dbcm.get.workflow.status.description.md) | `( const string tbl.name$, ref string wf.status.desc$, [string fld.name$, void fld.value,...] )` |
 | `boolean` | [dbcm.object.check.out.is.being.undone()](dbcm.object.check.out.is.being.undone.md) | `( const string toid$ )` |
 | `boolean` | [dbcm.object.is.being.checked.in()](dbcm.object.is.being.checked.in.md) | `( const string toid$ )` |
 | `boolean` | [dbcm.object.is.checked.in()](dbcm.object.is.checked.in.md) | `( const string toid$ )` |
@@ -69,4 +69,5 @@
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

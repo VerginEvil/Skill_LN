@@ -17,7 +17,7 @@ This changes the owner and/or group of a file. You can use a single call to chan
 | | |
 |---|---|
 | >= 0 | Success. |
-| < 0 | Error. See [error codes](../errors/overview.md).  |
+| < 0 | Error. See [error codes](../errors/overview.md). |
 *Internal note:* For robust 3GL code, and to prevent mistakes when mixing different file-related functions, the return value should be interpreted as described above. The current implementation returns 0 on success and -1 on failure.
 
 ## Context
@@ -27,4 +27,5 @@ Note  Setting users and groups for files is a system-dependent feature. To enabl
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

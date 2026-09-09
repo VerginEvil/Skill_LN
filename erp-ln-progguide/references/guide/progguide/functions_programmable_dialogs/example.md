@@ -98,7 +98,6 @@ function main()
                 log.by = 1
         endif
 
-
         dialog.add.field(dlg, "my.utc", "This is a date/time control",
            DLG_FIELD_TYPE,      DLG_TYPE_UTC)
 

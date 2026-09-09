@@ -3,5 +3,7 @@ By default the driver generates a hint for each query it sends to the RDBMS (ass
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)
+
 - [Hints in a distributed environment](hints_in_a_distributed_environment.md)

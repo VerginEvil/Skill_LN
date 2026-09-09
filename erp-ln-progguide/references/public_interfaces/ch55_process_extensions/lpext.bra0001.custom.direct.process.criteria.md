@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BRA.BrazilianInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1969-1971
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1988-1990
 
 ```baan
 Syntax: long lpext.bra0001.custom.direct.process.criteria(
@@ -15,10 +15,10 @@ determine if Brazilian invoices can be directly printed and
 posted or the invoicess need to be sent the external system.
 All the Brazilian invoices should be sent to the external
 system, except in three scenarios:
-1                       - A fixed criteria - currently debit or credit invoices.
-2                       - The direct process matrix - defined by the user in the
+1 - A fixed criteria - currently debit or credit invoices.
+2 - The direct process matrix - defined by the user in the
 session lpbra0114m000.
-3                       - The custom direct process rules defined by this process
+3 - The custom direct process rules defined by this process
 extension.
 To create custom rules, it is possible to query the billable
 lines using the provided variables which are part of the
@@ -59,7 +59,7 @@ defined by this extension.
 Start of Example of Implementation
 Pseudocode:
 In de code below the direct process will be allowed if the
-Invoice                      -to Business Partner is "<something>".
+Invoice-to Business Partner is "<something>".
 Hook: Declarations
 table tcisli810         |* Billable Lines
 domain  tccom.bpid      invoice.to.bp
@@ -69,7 +69,7 @@ o.custom.direct.process.allowed,
 invoice.to.bp,
 ret.val)
 o.custom.direct.process.allowed = i.direct.process.allowed
-|* Get the Invoice                      -to Business Partner field from the
+|* Get the Invoice-to Business Partner field from the
 |* billable lines table. Use the index_1 fields of the table
 |* cisli810 which are available.
 select  cisli810.itbp:invoice.to.bp
@@ -102,18 +102,18 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    n.a.
 Post:   n.a.
-Input:  i.source.company                              - Source company
-i.direct.process.allowed                              - Return of the Direct Process
+Input:  i.source.company                - Source company
+i.direct.process.allowed        - Return of the Direct Process
 Matrix from the session
 lpbra0114m000. If TRUE an
 criteria exsits in the
 matrix. If FALSE no criteria
 exists.
-Output: o.custom.direct.process.allowed               - If TRUE the invoice will be
+Output: o.custom.direct.process.allowed - If TRUE the invoice will be
 applicable for direct process.
 If FALSE the invoice won't be
 applicable for direct process.
-Return: long                                          - If not zero, the results of
+Return: long                            - If not zero, the results of
 this process extension
 will not be used.
 ```

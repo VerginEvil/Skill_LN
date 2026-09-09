@@ -9,7 +9,7 @@ An identifier is a name that consists of a sequence of letters and digits.
       | <quoted identifier>
 
 <unquoted identifier>
-    ::= <letter>[<letter> | <digit>]...
+    ::= <letter>[{<letter>|<digit>}...]
 
 <quoted identifier>
     ::= "<non-double-quote character>..."
@@ -28,7 +28,6 @@ An identifier is a name that consists of a sequence of letters and digits.
 <digit>
     ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 ```
-**
 
 ## Examples
 ```

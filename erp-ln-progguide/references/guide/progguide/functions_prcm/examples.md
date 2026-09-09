@@ -4,7 +4,7 @@ The most common use of the Process Change Manager is to trigger other sessions t
 ## Subject sessions
 In this example a subject session is a session should notify other sessions after it performs updates on a database table.
 In case the subject session is a 4GL session and the session performs the choice UPDATE.DB (either via the Save in the UI or by calling `execute(UPDATE.DB)` in the UI script), other sessions will automatically be notified. But in case the maintable is updated directly in the UI script or via a DLL function, then this session itself is responsible for notifying any observer sessions. This can be achieved by calling [prcm.notify()](prcm.notify.md) after a commit.transaction() has been done.
-Note  Do not call [prcm.notify()](prcm.notify.md) for the maintable in the *after.update.db.commit* section or the [after.commit.transaction()](../functions_dal/after.commit.transaction.md) hook of the DAL of the maintable, as this interferes with the automatic notification of the 4GL engine.
+Note  Do not call [prcm.notify()](prcm.notify.md) for the maintable in the *after.update.db.commit* section or the [after.commit.transaction()](../functions_dal/after.commit.transaction.md) hook of the DAL of the maintable, as this interferes with the automatic notification of the [4GL engine](../glossary/glossary.md#fourgl_engine).
 3GL sessions have to take care of notifying other sessions themselves. In general this should be done after a commit.transaction() is done.
 
 ## Example
@@ -95,4 +95,5 @@ function main()
 
 ## Related topics
 - [Process Change Manager overview](overview.md)
+
 - [Process Change Manager synopsis](synopsis.md)

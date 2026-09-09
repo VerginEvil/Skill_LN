@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 348-349
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 350-351
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long SalesOrderLine.GetComponentAndSalesSequence(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -21,23 +21,23 @@ Usage:        Expl:   This function determines sales order line- sequence and co
 sequence based on the data in the given input fields.
 Pre:    Not applicable
 Post:   Not applicable
-Input:  iSalesOrder                                   - Sales Order (mandatory)
-iSalesOrderLine                                       - Sales Order Line (mandatory)
+Input:  iSalesOrder                     - Sales Order (mandatory)
+iSalesOrderLine                 - Sales Order Line (mandatory)
 iSalesOrderLineSequenceOrComponentSequence
--                                                       Sales Order Line- Sequence Number
+- Sales Order Line- Sequence Number
 or Component Sequence Number
-Output: oSalesOrderLineSequence                       - Sequence Number of the Sales
+Output: oSalesOrderLineSequence         - Sequence Number of the Sales
 Order Line
-oSalesOrderLineComponentSequence                      - Component Sequence Number of the
+oSalesOrderLineComponentSequence- Component Sequence Number of the
 Sales Order Line
-oExceptionMessage                                     - The last message if any message is
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - No error
-<> 0                                                  - Error occurred
+Return: 0                               - No error
+<> 0                            - Error occurred
 ```

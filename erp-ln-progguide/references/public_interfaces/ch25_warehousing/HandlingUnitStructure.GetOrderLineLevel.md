@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnitStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1064-1064
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1074-1074
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2021.10 (KB2210123  ).
+This function is available from 2021.10 (KB2210123).
 Syntax: long HandlingUnitStructure.GetOrderLineLevel(
 domain  whhuid           iHandlingUnit,
 ref     domain  tcmcs.long       oNumberOfHandlingUnits,
@@ -25,8 +25,8 @@ line (e.g. receipt header handling unit)
 First child HU_CHILD1 is linked to the order line ORDER1/10.
 Second child HU_CHILD2 is linked to the order line ORDER1/20.
 Function will return array with 2 handling units:
--                       HU_CHILD1
--                       HU_CHILD2
+- HU_CHILD1
+- HU_CHILD2
 Example 2:
 Top handling unit HU_TOP and both child handling units HU_CHILD1
 HU_CHILD2 are linked to the same order line ORDER2/10.
@@ -34,14 +34,14 @@ Function will return array with 1 handling unit HU_TOP.
 Pre:    oHandlingUnitArray must be declared as based variable.
 This function will allocate the memory.
 Post:   NA
-Input:  iHandlingUnit                         - Handling Unit (mandatory)
-Output: oNumberHandlingUnits                  - Number of handling units in array.
-oHandlingUnitArray                            - Array with handling units.
-oExceptionMessage                             - The last message if any message is
+Input:  iHandlingUnit           - Handling Unit (mandatory)
+Output: oNumberHandlingUnits    - Number of handling units in array.
+oHandlingUnitArray      - Array with handling units.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

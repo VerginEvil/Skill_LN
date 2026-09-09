@@ -4,7 +4,7 @@
 `function long utc.to.local( long utc, ref long local_days, ref long local_time, [ ref string local_dst ] )`
 
 ## Description
-This converts a UTC long format value to local date and time.
+This converts a [UTC](overview.md#utc) long format value to local date and time.
 
 ## Arguments
 | | | |
@@ -18,8 +18,7 @@ This converts a UTC long format value to local date and time.
 | | |
 |---|---|
 | 0 | Success. |
-| -1 |  Error. For example: Any intermediate result involves a date before the year 1 or past the year 9999.  |
--
+| -1 | Error. For example: Any intermediate result involves a date before the year 1 or past the year 9999. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -107,4 +106,5 @@ function main () {
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

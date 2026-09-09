@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2148-2149
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2171-2172
 
 ```baan
 Syntax: long tiext.pcf0002.add.to.cpq.configuration(
@@ -33,18 +33,18 @@ transaction management (db.retry.point, commmit or abort
 transaction).
 Pre:
 Post:
-Input:  i.service.node               - Service Node (XML Structure)
-i.request.node                       - Request Node (XML Structure)
-i.response.node                       - CPQ configuration (XML Structure)
-i.cpq.result.status                       - CPQ Configurator Status
-i.product.variant                       - Product Variant
-i.reused.product.variant                       - Reused Product Variant:
+Input:  i.service.node - Service Node (XML Structure)
+i.request.node - Request Node (XML Structure)
+i.response.node - CPQ configuration (XML Structure)
+i.cpq.result.status - CPQ Configurator Status
+i.product.variant - Product Variant
+i.reused.product.variant - Reused Product Variant:
 an existing product variant (<> i.product.variant)
 or zero when no product variant is reused
-i.config.qty                       - Configured quantity
-i.option.list.id                       - Option List ID
+i.config.qty - Configured quantity
+i.option.list.id - Option List ID
 Output:
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

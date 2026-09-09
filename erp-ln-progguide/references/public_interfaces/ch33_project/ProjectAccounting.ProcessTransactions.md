@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectAccounting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1712-1715
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1731-1733
 
 ```baan
 DLL:   tpextppcapi
-This function is available from     2024.03 (KB2280409  ).
+This function is available from 2024.03 (KB2280409).
 Syntax: long ProjectAccounting.ProcessTransactions(
 domain  tccprj           iProject,
 domain  tclogn           iFromUser,
@@ -51,96 +51,90 @@ Be aware that transaction management is handled within this function.
 Note: This function should be called for one project at a time.
 Pre:    None.
 Post:   None
-Input:  iProject                              - Project. Mandatory
-iFromUser                                     - From User. Optional
-iToUser                                       - To User. Mandatory
-iFromRegistrationDate                         - From Registration Date. Optional
-iToRegistrationDate                           - To Registration Date. Mandatory
-iPrimaryInterimResults                        -
+Input:  iProject                - Project. Mandatory
+iFromUser               - From User. Optional
+iToUser                 - To User. Mandatory
+iFromRegistrationDate   - From Registration Date. Optional
+iToRegistrationDate     - To Registration Date. Mandatory
+iPrimaryInterimResults  -
 PrimaryInterimResults (Yes/No).Mandatory.
 If it is Yes, then interim result for
 the primary scenario is posted to
 Financials
-iAlternateInterimResults                      -
+iAlternateInterimResults-
 AlternateInterimResults (Yes/No). Mandatory.
 If it is yes, then interim result for
 the alternate scenario is finalized.
 The result is not posted to Financials.
-iBalance                                      - Balance (Yes/No). Mandatory.
+iBalance                - Balance (Yes/No). Mandatory.
 If it is Yes, then the WIP balance of
 the project is processed
-iFinalResult                                  - Final Result (Yes/No). Mandatory.
+iFinalResult            - Final Result (Yes/No). Mandatory.
 If yes, the financial results are
 processed to Financials for the project
 with status Finished and with the
 financial result status set to
 Determine Result. The project status is
 set to Closed.
-iUpdateCostControl                            - Update Cost Control (Yes/No). Mandatory.
+iUpdateCostControl      - Update Cost Control (Yes/No). Mandatory.
 If yes, build actual cost control is
 performed for the project
-iRegistrationDate                             - Registration Date. Optional
+iRegistrationDate       - Registration Date. Optional
 The Registration Date for the
 transactions is only used when
 Final Result is yes.
-iMaterialCommitments                          -
+iMaterialCommitments    -
 Material Commitments (Yes/No). Mandatory.
-iMaterialProjectControl                       -
+iMaterialProjectControl -
 Material Project Control (Yes/No). Mandatory.
-iMaterialPurchaseInvoice                      -
+iMaterialPurchaseInvoice-
 Material Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iLaborSubcontractingHours                      -
+iLaborSubcontractingHours-
 Labor Subcontracting Hours (Yes/No). Mandatory.
-iLaborProjectControl                          -
+iLaborProjectControl    -
 Labor Project Control. (Yes/No). Mandatory.
-iLaborPurchaseInvoice                         -
+iLaborPurchaseInvoice   -
 Labor Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iEquipmentCommitments                         -
+iEquipmentCommitments   -
 Equipment Commitments (Yes/No). Mandatory.
-iEquipmentProjectControl                      -
+iEquipmentProjectControl-
 Equipment Project Control (Yes/No). Mandatory.
-iEquipmentPurchaseInvoice                      -
+iEquipmentPurchaseInvoice-
 Equipment Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iSubcontractingCommitments                       -
+iSubcontractingCommitments -
 Subcontracting Commitments (Yes/No). Mandatory.
-iSubcontractingProjectControl                       -
+iSubcontractingProjectControl -
 Subcontracting Project Control (Yes/No).
 Mandatory.
-iSubcontractingPurchaseInvoice                      -
+iSubcontractingPurchaseInvoice-
 Subcontracting Purchase Invoice(Finance)(Yes/No).
 Mandatory.
-iSundryCommitments                            -
+iSundryCommitments      -
 Sundry Cost Commitments (Yes/No). Mandatory.
-iSundryProjectControl                         -
+iSundryProjectControl   -
 Sundry Project Control (Yes/No). Mandatory.
-iSundryPurchaseInvoice                        -
+iSundryPurchaseInvoice  -
 Sundry Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iRevenueProjectControl                        -
+iRevenueProjectControl  -
 Revenue Project Control (Yes/No). Mandatory.
-iRevenueProjectInvoice                        -
+iRevenueProjectInvoice  -
 Revenue Project Invoice (Yes/No). Mandatory.
-iRevenueSalesInvoice                          -
+iRevenueSalesInvoice    -
 Revenue Sales Invoice (Finance) (Yes/No).
 Mandatory.
-Output: oExceptionMessage                     -
+Output: oExceptionMessage       -
 The last message if the return value is not
 equal to 0.
 If more than one  message is given,
 these are present in the oExceptionID
-oExceptionID                                  -
+oExceptionID            -
 An ID that refers to all error information.
 Use the functions in Exception to get all
 relevant information.
-Return: 0                             - Process Transaction completed successfully.
-<> 0                                  - Error.
+Return: 0               - Process Transaction completed successfully.
+<> 0            - Error.
 ```
-
-## Public Interfaces for
-
-## ProjectCostingBreaksServiceActivities
-
-The following functions are available: ProjectCostingBreaksServiceActivities.StartOverview

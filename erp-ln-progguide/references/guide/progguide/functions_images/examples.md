@@ -87,4 +87,5 @@ after.choice:
 
 ## Related topics
 - [Images on Forms Overview](overview.md)
+
 - [Images on Forms synopsis](synopsis.md)

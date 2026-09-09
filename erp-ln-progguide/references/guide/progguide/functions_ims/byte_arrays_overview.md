@@ -1,6 +1,8 @@
 # Byte arrays overview
 There are two types of byte arrays:
+
 - Fixed Byte Arrays (FBA)
+
 - Variable Byte Arrays (VBA)
 
 ## Fixed Byte Arrays

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ConversionFactor
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 232-233
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 233-234
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2024.01 (KB2307652  ).
+This function is available from 2024.01 (KB2307652).
 Syntax: long ConversionFactor.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Usage:        Expl:   This function starts the session Conversion Factor
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -50,18 +50,14 @@ provided)
 iUnit
 Unit (Mandatory if Base unit is provided and
 Session Index = 2. Not used when Session Index = 1)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Otherwise.
+Return: 0                       - Session started
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for SourcingStrategy
-
-The following functions are available: SourcingStrategy.StartDetail SourcingStrategy.StartOverview

@@ -24,5 +24,7 @@ Notes  The tree structure is displayed only after you have called [view.tree()](
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Structure ChartManager synopsis](synopsis.md)
+
 - [Tree structures: example](example.md)

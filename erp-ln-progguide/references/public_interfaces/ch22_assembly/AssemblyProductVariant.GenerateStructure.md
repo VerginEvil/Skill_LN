@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AssemblyProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 863-866
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 873-875
 
 ```baan
 DLL:   tiextascapi
-This function is available from     2026.06 (KB3652287  ).
+This function is available from 2026.06 (KB3652287).
 Syntax: long AssemblyProductVariant.GenerateStructure(
 domain  tccpva           iProductVariant,
 long             iProcessingOptionSet,
@@ -60,21 +60,21 @@ PrintReport                     domain tcyesno          tcyesno.no
 PrintingDevice                  domain tcmcs.str14      ""
 PrintingFileoutPathAndName      domain tcmcs.str100     ""
 Default values:
-ProductVariantFrom               - If the input variable field iProductVariantFrom is
+ProductVariantFrom - If the input variable field iProductVariantFrom is
 given, it will be used as the default value,
 otherwise it will be defaulted with 0.
-RollOffAssemblyLineFrom               - If the input variable field iRollOffLineFrom
+RollOffAssemblyLineFrom - If the input variable field iRollOffLineFrom
 is given, it will be used as the default
 value, otherwise it will be defaulted with
 blank.
-ConfigurableItemFrom               - If the input variable field iConfigurableItemFrom
+ConfigurableItemFrom - If the input variable field iConfigurableItemFrom
 is given, it will be used as the default value,
 otherwise it will be defaulted with blank
-ConfigurationDateFrom               - If the input variable field
+ConfigurationDateFrom - If the input variable field
 iConfigurationDateFrom is given, it will be used
 as the default value, otherwise it will be
 defaulted with 0.
-*To               -   If the "*From" field is provided then "*To"
+*To -   If the "*From" field is provided then "*To"
 field will be defaulted with "*From" field,
 otherwise the "*To" fields will be defaulted to
 their maximum domain value (ZZZZZZZZ or 9999999 or max. date)
@@ -83,21 +83,13 @@ in the report. If it is tcyesno.no, then error(s) will be logged in
 Message log.
 Output:
 oExceptionMessage
--                              The last error message found during the execution of
+- The last error message found during the execution of
 public interface. If multiple error messages are found,
 by using "oExceptionID", messages can be retrieved.
 oExceptionID
--                              An ID that refers to the exception information. Use
+- An ID that refers to the exception information. Use
 "Exception" related functions to retrieve related
 information.
 Return: 0, Function succesful, product variant structures are generated
 <>0, Error occurred during product variant structure generation.
 ```
-
-## Chapter 23 Public Interfaces for Manufacturing
-
-## Tools
-
-## Public Interfaces for Tool
-
-The following functions are available: Tool.Request Tool.Return Tool.ReturnToOrder Tools.GetSettings

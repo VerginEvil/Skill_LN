@@ -17,4 +17,5 @@ long
 | `long` | [stat.set.real.string()](stat.set.real.string.md) | `(string i.domain(14), const double i.string)` |
 | `long` | [stat.set.real.utc()](stat.set.real.utc.md) | `(const double i.utc)` |
 | `void` | [stat.set.selected()](stat.set.selected.md) | `(boolean i.selected)` |
+| `void` | [stat.set.value()](stat.set.value.md) | `(const string i.value)` |
 |  | [occ.independent.stat.fields](../functions_form_and_form_field_operations/occ.independent.stat.fields.md) | `...` |

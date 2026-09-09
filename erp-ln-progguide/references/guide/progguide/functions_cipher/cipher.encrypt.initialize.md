@@ -7,29 +7,6 @@
 Initializes the state of the Encryption Algorithm and selects the appropriate encryption algorithm.
 
 ## Arguments
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
 | | | |
 |---|---|---|
 | `long` | `crypt.type` |  The name of the cipher algorithm. This must be one of the following: CIPHER_AES_128_ECB CIPHER_AES_128_CBC CIPHER_AES_128_CFB1 CIPHER_AES_128_CFB8 CIPHER_AES_128_CFB128 CIPHER_AES_128_OFB CIPHER_AES_128_CTR CIPHER_AES_128_XTS CIPHER_AES_192_ECB CIPHER_AES_192_CBC CIPHER_AES_192_CFB1 CIPHER_AES_192_CFB8 CIPHER_AES_192_CFB128 CIPHER_AES_192_OFB CIPHER_AES_192_CTR CIPHER_AES_256_ECB CIPHER_AES_256_CBC CIPHER_AES_256_CFB1 CIPHER_AES_256_CFB8 CIPHER_AES_256_CFB128 CIPHER_AES_256_OFB CIPHER_AES_256_CTR CIPHER_AES_256_XTS  |
@@ -47,4 +24,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Cipher Functions overview](cipher_overview.md)
+
 - [Cipher Function synopsis](cipher_synopsis.md)

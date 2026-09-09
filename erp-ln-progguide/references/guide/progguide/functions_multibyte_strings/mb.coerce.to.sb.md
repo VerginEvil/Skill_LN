@@ -10,19 +10,21 @@ This function may be used when a string containing multibyte characters must be 
 ## Arguments
 | | | |
 |---|---|---|
-| `ref string` | `string$` |   |
+| `ref string` | `string$` |    |
 | `[ long` | `setid ]` |  If you do not want to base the conversion on the setting of the current user locale (single-byte or multibyte environment) or the installation locale (Unicode environment), use this optional argument to specify the ID of the TSS character set to be used during the converversion.  |
 
 ## Return values
 | | |
 |---|---|
 | >= 0 | The number of bytes in the result string. |
-| -1 | The conversion failed because some character could not be converted, or some converted character is not a *single* byte.  |
+| -1 | The conversion failed because some character could not be converted, or some converted character is not a *single* byte. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1641.
 
 ## Related topics
 - [mb.export$()](mb.export.md)
+
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

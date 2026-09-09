@@ -28,4 +28,5 @@ string
 
 ## Related topics
 - [Multi Language Data overview](overview.md)
+
 - [Multi Language Data support code examples](examples.md)

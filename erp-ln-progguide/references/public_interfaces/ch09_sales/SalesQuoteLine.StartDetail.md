@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesQuoteLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 297-298
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 299-300
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2020.10 (KB2151929  ).
+This function is available from 2020.10 (KB2151929).
 Syntax: long SalesQuoteLine.StartDetail(
 long             iStartMode,
 domain  tcqono           iSalesQuote,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the detail session Sales Quotation Li
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iSalesQuote             Sales Quote (Mandatory)
@@ -44,7 +44,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for SalesContract
-
-The following functions are available: SalesContract.GetTotalAmounts SalesContract.StartMultiMain SalesContract.StartWorkbench SalesContracts.StartOverview

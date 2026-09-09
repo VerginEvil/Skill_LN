@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractingProcurementOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 486-487
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 488-489
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2025.01 (KB3545450  ).
+This function is available from 2025.01 (KB3545450).
 Syntax: long SubcontractingProcurementOrder.StartAutomaticProcessing(
 domain  tcorno           iSubcontractingProcurementOrder,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -31,11 +31,7 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Automatic Processing finished or
+Return: 0                       - Automatic Processing finished or
 next activities are not automatic.
-<> 0                                          - An error occurred
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for EquipmentProcurementOrder
-
-The following functions are available: EquipmentProcurementOrder.Approve EquipmentProcurementOrder.StartAutomaticProcessing

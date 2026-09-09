@@ -18,4 +18,5 @@ Note  This function can be implemented with [Tools Interface Version (TIV)](../t
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [Example structure availability](example_background.md)

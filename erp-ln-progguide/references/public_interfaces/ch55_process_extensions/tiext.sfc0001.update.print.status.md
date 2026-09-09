@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2137-2139
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2160-2161
 
 ```baan
 Syntax: long tiext.sfc0001.update.print.status(
@@ -22,9 +22,9 @@ is available and contains the length of the array.
 The external array proc_ext_print_cust_rep_report_groups is
 available and contains the array of report groups.
 Implementation example:
-Create a custom tx                      -table (example txext001) with an index of the
+Create a custom tx-table (example txext001) with an index of the
 production order and the reportgroup. Add a field
-(ex. txext001.stat) in the created tx                      -table for the print status
+(ex. txext001.stat) in the created tx-table for the print status
 with domain tisfc.pdst.
 Write the function as follows:
 extern long proc_ext_print_cust_rep_num_of_cust_reports
@@ -74,13 +74,13 @@ return(0)
 }
 Pre:    Print the custom reports using
 tiext.sfc0001.print.custom.report().
-Post:                 -
-Input:  i.custom.report.printed               - The array indicating if the report has
+Post:   -
+Input:  i.custom.report.printed - The array indicating if the report has
 been printed. The same sequence is
 used as the array with the custom
 report groups.
-Output: o.message                             - message, multibyte - max 300 characters
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+Output: o.message               - message, multibyte - max 300 characters
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

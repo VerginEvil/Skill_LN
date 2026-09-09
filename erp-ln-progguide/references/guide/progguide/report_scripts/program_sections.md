@@ -20,7 +20,11 @@ When included, this section must be the last section in the report script.
 
 ## Related topics
 - [Report scripts overview](overview.md)
+
 - [Report script sections](sections.md)
+
 - [Predefined variables](predefined_variables.md)
+
 - [Report script functions](functions_in_report_scripts.md)
+
 - [Expanding text variables](expanding_text_variables.md)

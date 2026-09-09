@@ -78,4 +78,5 @@ function void add.legend.info(long mid)
 
 ## Related topics
 - [Maps Workbench overview](overview.md)
+
 - [Maps Workbench synopsis](synopsis.md)

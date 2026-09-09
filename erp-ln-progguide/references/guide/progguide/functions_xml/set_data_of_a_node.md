@@ -15,7 +15,7 @@ Set the data of an XML_DATA or XML_PI node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; Value of parameter *node* when successful.  |
+| <> 0 | Success; Value of parameter *node* when successful. |
 | 0 | Error. |
 
 ## Context
@@ -23,4 +23,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

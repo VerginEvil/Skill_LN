@@ -8,10 +8,19 @@ This formats an expression according to a specified format.
 Typical usage of this function is (but is not restricted to) the computation of a formatted decimal representation of an integer or floating point input value.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `void` | `expression` |  The expression that must be formatted. Implicit conversion of the input value from its original type to type string is performed. The resulting string value is formatted according to the format argument.  |
-| `string` | `format` |  A string that defines the required format. The following formatting characters are available:  |
+| | |
+|---|---|
+| 9 | Use to reserve a position for a digit. Inserts a 0 if there is no significant digit in that position. |
+| Z | Use to reserve a position for a digit. Inserts a space if there is no significant digit in that position. You can use this both before and after the decimal sign. |
+| V | Use to indicate the position of the decimal sign. No decimal sign is displayed. To display a decimal sign, you must enter ‘D’, a period [.], or a comma [,] immediately after this character, depending on which decimal sign you wish to use. |
+| D | Use to display the decimal sign as defined in the data dictionary. |
+| T | Displays a thousand sign. The representation of the thousand sign is defined in the data dictionary. |
+| - | If this is the first or last character in a format string, a negative value is prefixed or suffixed by a minus sign [-] and a positive value is prefixed or suffixed by a space. Minus signs in other positions have the same meaning as ‘Z’. |
+| + | If this is the first or last character in a format string, a negative value is prefixed or suffixed by a minus sign [-] and a positive value is prefixed or suffixed by a plus sign [+]. Plus signs in other positions have the same meaning as ‘Z’. |
+| * | If this is the first character in a format string, all spaces to the left of the most significant digit are filled with asterisks [*]. |
+All characters other than those described above are copied directly to the output string. Periods [.] and commas [,] are exceptions. These are reserved for use as decimal signs and thousand signs.
+If the format expression is enclosed by parentheses, these are displayed only if the result is negative.
+Starting with TIV level 1640 the thousend separator and decimal sign can be overruled with the function set.numformat.symbols( string decimal(1), string grouping(1) ). The function reset.numformat.symbols() reverts to the normal behavior.
 
 ## Return values
 The function returns the formatted expression. If the specified expression does not fit in the format string, the result is filled with the overflow characters defined in the data dictionary.

@@ -5,7 +5,7 @@
 
 ## Description
 Create a new namespace with the specified prefix and URI. The specified node becomes the *carrier* of the namespace, but the node itself is not yet *in* the namespace.
-Various restrictions apply to the specified prefix and the URI. For example, when the prefix equals "xml", then the URI *must* equal "http://www.w3.org/XML/1998/namespace". For this and other restrictions, see Namespaces in XML 1.0 (Third Edition), chapter 3 Declaring Namespaces.
+Various restrictions apply to the specified prefix and the URI. For example, when the prefix equals "xml", then the URI *must* equal "http://www.w3.org/XML/1998/namespace". For this and other restrictions, see [Namespaces in XML 1.0 (Third Edition)](https://www.w3.org/TR/REC-xml-names), chapter 3 Declaring Namespaces.
 
 ## Arguments
 | | | |
@@ -17,7 +17,7 @@ Various restrictions apply to the specified prefix and the URI. For example, whe
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the new namespace when successful. This value can be used in many functions with a *namespace* argument, such as [xmlNewNodeNs()](xmlNewNodeNs.md).  |
+| <> 0 | Success; A reference to the new namespace when successful. This value can be used in many functions with a *namespace* argument, such as [xmlNewNodeNs()](xmlNewNodeNs.md). |
 | 0 | Error. |
 
 ## Context
@@ -39,5 +39,7 @@ The *xml_envelope* node would serialize to the following XML. Note that the *Env
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

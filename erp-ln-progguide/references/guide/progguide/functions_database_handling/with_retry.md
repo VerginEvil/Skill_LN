@@ -5,7 +5,7 @@ The WITH RETRY clause offers a facility to retry only a part of the table that i
 ```
 
 <with retry clause>
-    ::= WITH RETRY [ REPEAT LAST ROW ]
+    ::= WITH RETRY [REPEAT LAST ROW]
 ```
 
 ## Examples
@@ -60,7 +60,7 @@ Rows 1, 2, 3 and 4 are fetched. Then a commit.transaction() (line 4) is performe
 Next, rows 5, 6, 7, 8, 9 and 10 are fetched. The commit.transaction() (line 4) fails, because flushing the buffered insert fails. This results in a jump to the db.retry.point() (line 1).
 The SELECT statement is executed from the saved retry values ( 14, "THEODORE" ). The rows 5, 6, 7, 8, 9 and 10 are fetched again. The commit.transaction() now succeeds and the current values ( 16, "SYBIL" ) are saved. An insert that will fail is buffered (line 5).
 All remaining rows are fetched. The commit.transaction() in the SELECTEOS section (line 6) fails because flushing the buffered insert fails. This results in a jump to the db.retry.point() (line 1).
-The SELECT statement is executed from the saved retry values ( 16, "SYBIL" ). The row 11, 12, ... are fetched again. The commit.transaction() at line 6 now succeeds.
+The SELECT statement is executed from the saved retry values ( 16, "SYBIL" ). The row 11, 12,... are fetched again. The commit.transaction() at line 6 now succeeds.
 
 ## Semantics
 If a SELECT statement contains a WITH RETRY clause, then a commit.transaction() call will save the retry values. The retry values are the values of the columns in the ORDER BY clause at the time of the commit.transaction(). If a jump to the db.retry.point() occurs then the statement is retried from the saved retry values. To achieve this a "retry clause" is added to the WHERE clause of the SELECT statement and the saved retry values are bound to the parameters of the retry clause.
@@ -77,7 +77,7 @@ Then the following retry clause is generated
 If the ORDER BY clause is as follows.
 ```
 
-ORDER BY c1, c2, c3 WITH RETRY REPEAT LAST ROWS
+ORDER BY c1, c2, c3 WITH RETRY REPEAT LAST ROW
 ```
 Then the following retry clause is generated
 ```
@@ -97,7 +97,11 @@ c1 > :v1 OR ( c1 = :v1 AND c2 < :v2 )
 
 ## Related topics
 - [WHERE clause](where.md)
+
 - [ORDER BY clause](order_by.md)
+
 - [Retry points](retry_points.md)
+
 - [Hints for using db.retry.point](hints_for_using_db.retry.point.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

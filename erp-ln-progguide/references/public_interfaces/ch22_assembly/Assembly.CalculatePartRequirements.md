@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Assembly
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 843-844
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 853-854
 
 ```baan
 DLL:   tiextascapi
-This function is available from     2021.08 (KB2198443  ).
+This function is available from 2021.08 (KB2198443).
 Syntax: long Assembly.CalculatePartRequirements(
 domain  tcncmp           iCompany,
 domain  cpitem           iPlanItem,
@@ -28,22 +28,22 @@ this function.
 Post:   No need to commit or abort the process; that is handled within
 the function.
 Input:
-iCompany                                      - Company: Mandatory.
-iPlanItem                                     - Plan Item: Mandatory.
-iDateFrom                                     - Date From.
-iDateTo                                       - Date To.
-iUpdateSegmentSchedules                       - Update Segment Schedules: Mandatory.
-iUpdatePlanItems                              - Update Plan Items: Mandatory.
-iReferenceDateType                            - Reference Date Type: Mandatory.
+iCompany                - Company: Mandatory.
+iPlanItem               - Plan Item: Mandatory.
+iDateFrom               - Date From.
+iDateTo                 - Date To.
+iUpdateSegmentSchedules - Update Segment Schedules: Mandatory.
+iUpdatePlanItems        - Update Plan Items: Mandatory.
+iReferenceDateType      - Reference Date Type: Mandatory.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Assembly Part Requirement Calculated.
-<> 0                                          - Otherwise.
+Return: 0                       - Assembly Part Requirement Calculated.
+<> 0                    - Otherwise.
 ```

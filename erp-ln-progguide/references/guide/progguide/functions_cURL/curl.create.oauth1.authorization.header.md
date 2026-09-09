@@ -20,7 +20,7 @@ Creates an OAuth 1.0 authorization header. Note that this function returns the h
 | | |
 |---|---|
 | 0 | Ok |
-| > 0 | A cURL code; use ` [curl.strerror$()](curl.strerror$.md)` to get a descriptive message  |
+| > 0 | A cURL code; use [curl.strerror$()](curl.strerror$.md) to get a descriptive message |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2100.

@@ -10,7 +10,7 @@ A string containing the resource value will be returned. If the resource can't b
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `resource_name` |  |
+| `string` | `resource_name` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -43,4 +43,5 @@ pack_comb = get.resource$("pacc")
 
 ## Related topics
 - [System and user information overview and synopsis](overview_and_synopsis.md)
+
 - [Bshell resources](../misc/bshell_resources.md)

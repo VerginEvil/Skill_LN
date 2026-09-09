@@ -11,16 +11,16 @@ The function converts the following function keys to ASCII characters:
 | | | | |
 |---|---|---|---|
 | Key | Ascii |  |  |
-| LEFT ARROW | BS | 8 | ^H |
-| RIGHT ARROW | FF | 12 | ^L |
-| UP ARROW | VT | 11 | ^K |
-| DOWN ARROW | LF | 10 | ^J |
-| INSERT | EM | 25 | ^Y |
+| <Arrow Left> | BS | 8 | ^H |
+| <Arrow Right> | FF | 12 | ^L |
+| <Arrow Up> | VT | 11 | ^K |
+| <Arrow Down> | LF | 10 | ^J |
+| <Insert> | EM | 25 | ^Y |
 
 ## Arguments
 | | | |
 |---|---|---|
-| `[ long` | `flag ]` |  |
+| `[ long` | `flag ]` |    |
 
 ## Return values
 The character read from the event queue. If the returned string contains multiple bytes, the character is a multibyte character. If the character is a function that cannot be converted, the function returns an empty string.
@@ -40,5 +40,7 @@ Note that the above example is very time consuming.
 
 ## Related topics
 - [Character-based windows - overview and synopsis](overview_and_synopsis.md)
+
 - [data.input()](data.input.md)
+
 - [Events overview](../events/overview.md)

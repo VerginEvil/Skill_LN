@@ -16,8 +16,8 @@ This changes the current file position.
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success. Returns new position in bytes from the beginning of the file.  |
-| < 0 | Error; probably *fp* not connected. Current file position is not changed.  |
+| >= 0 | Success. Returns new position in bytes from the beginning of the file. |
+| < 0 | Error; probably *fp* not connected. Current file position is not changed. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -25,4 +25,5 @@ Notes  It is undefined whether or not seq.seek() past end-of-file succeeds or fa
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

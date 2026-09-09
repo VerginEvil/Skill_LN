@@ -25,4 +25,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [Example](example.md)

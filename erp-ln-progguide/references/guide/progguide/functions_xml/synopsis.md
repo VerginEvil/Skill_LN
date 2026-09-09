@@ -1,4 +1,5 @@
 # XML object synopsis
+XML object synopsis
 | | |
 |---|---|
 |  | 3GL/4GL function |
@@ -8,9 +9,9 @@
 | [Serialize XML Object Formatted](serialize_xml_object_pretty.md) | `long xmlWritePretty( long fp, long fromNode, [ long toNode ]` |
 | [Serialize XML Object to String](serialize_xml_object_string.md) | `long xmlWriteToString( ref string buffer$, long fromNode, [ long toNode ] )` |
 | [Serialize XML Object to Formatted String](serialize_xml_object_string_pretty.md) | `long xmlWritePrettyToString( ref string buffer$, long fromNode, [ long toNode ]` |
-| [Serialize XML Object to Returned String](serialize_xml_object_return.md) |  `string xmlString$( long fromNode, [ long toNode ] )` `string xmlStringUtf8$( long fromNode, [ long toNode ] )`  |
+| [Serialize XML Object to Returned String](serialize_xml_object_return.md) | `string xmlString$( long fromNode, [ long toNode ] )` `string xmlStringUtf8$( long fromNode, [ long toNode ] )` |
 | [Serialize XML Object to Returned Formatted String](serialize_xml_object_return_pretty.md) | `string xmlPrettyString$( long fromNode, [ long toNode ] )` |
-| [Serialize XML Object to Returned Tss String](serialize_xml_object_return_tss.md) |  `string xmlStringTss$( long fromNode, [ long toNode ] )`  |
+| [Serialize XML Object to Returned Tss String](serialize_xml_object_return_tss.md) | `string xmlStringTss$( long fromNode, [ long toNode ] )` |
 | [Serialize XML Object to Based String](serialize_xml_object_alloc.md) | `long xmlAllocString( ref string basedString$, long fromNode, [ long toNode ] )` |
 | [Serialize XML Object to Formatted Based String](serialize_xml_object_alloc_pretty.md) | `long xmlAllocPrettyString( ref string basedString$, long fromNode, [ long toNode ] )` |
 | [Get length of a serialized XML Object](get_serialize_length.md) | `long xmlGetStringLength( long fromNode, [ long toNode ] )` |
@@ -79,6 +80,9 @@
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object constraints](constraints.md)
+
 - [XML object glossary](glossary.md)
+
 - [XML object API](api.md)

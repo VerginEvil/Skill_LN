@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1291-1293
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1301-1302
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2025.11 (KB3628779  ).
+This function is available from 2025.11 (KB3628779).
 Syntax: long PurchaseOrderAdvice.Confirm(
 domain  tcmcs.str15      iDevice,
 long             iProcessingOptionSet,
@@ -64,6 +64,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - Purchase order advice have been confirmed successfully.
-<> 0                       - Error. Purchase order advice could not be confirmed.
+Return: 0 - Purchase order advice have been confirmed successfully.
+<> 0 - Error. Purchase order advice could not be confirmed.
 ```

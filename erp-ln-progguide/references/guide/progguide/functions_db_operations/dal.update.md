@@ -24,4 +24,5 @@ Note  It is advised to use [dal.change.object()](dal.change.object.md) and [dal.
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

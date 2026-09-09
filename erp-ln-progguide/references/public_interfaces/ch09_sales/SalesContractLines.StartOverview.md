@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesContractLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 303-305
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 305-307
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SalesContractLines.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -32,29 +32,29 @@ mode (tdsls3501m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the table                              -index that is to be used. Optional.
+Specifies the table-index that is to be used. Optional.
 Supported values:
 1: sort by Contract, Contract Line, Sales Office (default)
 2: sort by Price Group, Item, Contract, Contract Line,
 Sales Office
-4: sort by Sold                              -to BP, Ship-to BP, Price Group, Item,
+4: sort by Sold-to BP, Ship-to BP, Price Group, Item,
 Contract, Contract Line, Sales Office
-5: sort by Sold                              -to BP, Ship-to BP, Customer Item
+5: sort by Sold-to BP, Ship-to BP, Customer Item
 iQueryExtend
 A specific query to be used when zooming to this session.
 (Optional)
 iSalesContract
 Sales Contract
-Mandatory if iStartMode is MODELESS and session                              -index is 1
+Mandatory if iStartMode is MODELESS and session-index is 1
 iSalesContractLine
 Sales Contract Line (Optional)
 iSalesOffice
@@ -62,11 +62,11 @@ Sales Office (Optional)
 iSalesPriceGroup
 Sales Price Group (Optional)
 iItem   Item
-Mandatory if iStartMode is MODELESS and session                              -index is 2
+Mandatory if iStartMode is MODELESS and session-index is 2
 iSoldToBusinessPartner
-Sold                              -to Business Partner (Optional)
+Sold-to Business Partner (Optional)
 iShipToBusinessPartner
-Ship                              -to Business Partner (Optional)
+Ship-to Business Partner (Optional)
 iCustomerItem
 Customer Item (Optional)
 Output: for iStartMode MODAL:
@@ -85,7 +85,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for SalesSchedule
-
-The following functions are available: SalesSchedule.GetForecastQuantity SalesSchedule.StartMultiMain

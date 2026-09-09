@@ -16,7 +16,11 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [add.sync.fields()](add.sync.fields.md)
+
 - [add.sync.fields.nokey()](add.sync.fields.nokey.md)
+
 - [add.sync.fields.once()](add.sync.fields.once.md)
+
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

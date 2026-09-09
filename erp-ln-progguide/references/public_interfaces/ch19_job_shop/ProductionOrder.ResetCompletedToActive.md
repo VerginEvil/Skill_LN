@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 768-769
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 767-768
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2020.11 (KB2158213  ).
+This function is available from 2020.11 (KB2158213).
 Syntax: long ProductionOrder.ResetCompletedToActive(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

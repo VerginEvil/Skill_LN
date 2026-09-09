@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemsByManufacturerPartNumber
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 206-207
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 207-208
 
 ```baan
 DLL:   tdextipuapi
-This function is available from     2025.02 (KB3556200  ).
+This function is available from 2025.02 (KB3556200).
 Syntax: long ItemsByManufacturerPartNumber.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,16 +26,16 @@ Usage:        Expl:   This function starts session Items by MPN (tdipu0149m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the session                              -index that is to be used.
+Specifies the session-index that is to be used.
 Supported values:
 1: sort by Manufacturer Part Number, Manufacturer, Item (default)
 2: sort by Item, Manufacturer Part Number, Manufacturer
@@ -43,13 +43,13 @@ iQueryExtend
 A specific query to be used when zooming to this session.
 iManufacturerPartNumber
 Manufacturer Part Number
-Mandatory if iStartMode = MODELESS and session                              -index 1 is used.
+Mandatory if iStartMode = MODELESS and session-index 1 is used.
 iManufacturer
 Manufacturer
-Mandatory if iStartMode = MODELESS and session                              -index 1 is used.
+Mandatory if iStartMode = MODELESS and session-index 1 is used.
 iItem
 Item
-Mandatory if iStartMode = MODELESS and session                              -index 2 is used.
+Mandatory if iStartMode = MODELESS and session-index 2 is used.
 Output: for iStartMode MODAL:
 oManufacturerPartNumber
 The selected Manufacturer Part Number
@@ -66,7 +66,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ItemSalesBusinessPartner
-
-The following functions are available: ItemSalesBusinessPartner.StartDetail ItemSalesBusinessPartner.StartOverview

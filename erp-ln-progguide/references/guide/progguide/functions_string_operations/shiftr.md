@@ -10,7 +10,7 @@ See also [shiftl$()](shiftl.md) and [shiftc$()](shiftc.md).
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str` |  |
+| `string` | `str` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -25,4 +25,5 @@ shiftr$("    ABC    ")     | result  "        ABC"
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

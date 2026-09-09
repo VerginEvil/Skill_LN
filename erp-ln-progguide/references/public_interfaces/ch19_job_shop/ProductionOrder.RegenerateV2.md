@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 752-753
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 751-752
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.12 (KB3544459  ).
+This function is available from 2024.12 (KB3544459).
 Syntax: long ProductionOrder.RegenerateV2(
 domain  tcsite           iSite,
 domain  tcorno           iProductionOrder,
@@ -38,25 +38,25 @@ is active.
 iProductionOrder        Production Order. Mandatory, must be
 in iSite.
 iLogHistory             Log History of the Production Order.
-iRevisionSelection ›¼                        ›¼   Specify the method for selection of
+iRevisionSelection ›¼•  ›¼•   Specify the method for selection of
 Job Shop Bom and Job Shop
 Routing revisions.
-Keep Revisions                                                 - No changes
-Automatic                                                 --  Select based on
+Keep Revisions - No changes
+Automatic --  Select based on
 current date
-Manual                                                 ---    Select based on
+Manual ---    Select based on
 Effective Date
 Mandatory when Job Shop by Site is
-active. ›¼                                              
+active. ›¼•
 iEffectiveDate          Effective Date for selection of Job Shop
 Bom and Job Shop Routing.
 Mandatory when Job Shop by Site is
 active and iRevisionSelection is Manual.
-iUpdateWhenNetChange ›¼                        ›¼ Update only when a net change in product
-structure of the produced item exists. ›¼                                                ›¼
+iUpdateWhenNetChange ›¼•  ›¼• Update only when a net change in product
+structure of the produced item exists. ›¼•  ›¼•
 Only used when Job Shop by Site is not
 active.
-iUpdateReferenceDate ›¼                        ›¼ Update Reference Date of
+iUpdateReferenceDate ›¼•  ›¼• Update Reference Date of
 Production Order.
 Only used when Job Shop by Site is not
 active.

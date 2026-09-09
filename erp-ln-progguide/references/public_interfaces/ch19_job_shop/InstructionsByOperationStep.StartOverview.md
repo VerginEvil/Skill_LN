@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InstructionsByOperationStep
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 828-830
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 831-832
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.09 (KB3673207  ).
+This function is available from 2026.09 (KB3673207).
 Syntax: long InstructionsByOperationStep.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iSessionFilter,
@@ -32,11 +32,11 @@ Input :
 iStartMode              Specifies the start mode for the
 session.
 Possible values are:
-MODAL                          -              The parent session is blocked until
+MODAL    -              The parent session is blocked until
 the child session exits.
 The session will be started as a
 zoom session.
-MODELESS                       -              Parent and child are parallel sessions
+MODELESS -              Parent and child are parallel sessions
 that can be manipulated simultaneously.
 iSessionFilter          Not used.
 iSessionIndex           The index that will be used.
@@ -59,19 +59,13 @@ oInstruction             Instruction
 oExceptionMessage        The last error message found during the
 execution of public interface.
 If multiple error messages are found,
-by using .oExceptionID., messages can
+by using ›¼ÀœoExceptionID›¼À•, messages can
 be retrieved.
 oExceptionID             An ID that refers to the exception
-information. Use .Exception. related
+information. Use ›¼ÀœException›¼À• related
 functions to retrieve related
 information.
 Return:
 0       Session started
 <> 0    Otherwise
 ```
-
-## Chapter 20 Public Interfaces for Subcontracting
-
-## Public Interfaces for SubcontractingModel
-
-The following functions are available: SubcontractingModel.ApproveRevision SubcontractingModel.CreateNewRevision SubcontractingModel.Explode SubcontractingModel.SetUseForCosting SubcontractingModel.SetUseForPlanning SubcontractingModel.StartMultiMain SubcontractingModel.ValidateRevision

@@ -1,7 +1,7 @@
 # unlink.from.maintable()
 
 ## Syntax:
-`function void unlink.from.maintable( string field, ... )`
+`function void unlink.from.maintable( string field,... )`
 
 ## Description
 By default, when a session has a maintable, all form fields are treated as if they have a link to the maintable. When such fields are modified by the user, the maintable's *update.status* is set and the current record is marked as changed.
@@ -12,7 +12,7 @@ This will also prevent that when the session ends, the user is asked if data sho
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `field, ...` |  One or more fields to unlink from the maintable. Use the format "field" or "field(element)".  |
+| `string` | `field,...` |  One or more fields to unlink from the maintable. Use the format "field" or "field(element)".  |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -30,4 +30,5 @@ after.form.read:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

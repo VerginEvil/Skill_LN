@@ -8,9 +8,15 @@ A read-only transaction is a transaction in which you are permitted only to read
 
 ## Related topics
 - [Database handling overview](overview.md)
+
 - [Locking](locking.md)
+
 - [Retry points](retry_points.md)
+
 - [Error handling](error_handling.md)
+
 - [Hints for using SQL](hints_for_using_sql.md)
+
 - [Hints for using db.retry.point](hints_for_using_db.retry.point.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

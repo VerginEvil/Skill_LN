@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 623-624
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 626-627
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2024.07 (KB2318528  ).
+This function is available from 2024.07 (KB2318528).
 Syntax: long ProductionBillOfMaterial.CreateNewRevision(
 domain  tcitem           iItem,
 domain  tibmrv           iOldRevision,
@@ -26,17 +26,17 @@ Input:  iItem                   Item (Mandatory).
 iOldRevision            Old Production Bill of Material Revision
 (Mandatory).
 iLinkRevision           Link new revision to old revision.
-Output: oNewRevision                          - Created Revision.
-oExceptionMessage                             - The last message if any message is
+Output: oNewRevision            - Created Revision.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - PBOM Revision has succesfully
+Return: 0                       - PBOM Revision has succesfully
 been created.
-<> 0                                          - PBOM Revision has not been
+<> 0                    - PBOM Revision has not been
 created.
 ```

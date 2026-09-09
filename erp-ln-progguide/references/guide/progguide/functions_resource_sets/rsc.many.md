@@ -13,7 +13,7 @@ These convert a specified program variable to the corresponding resource value f
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `variable` |  |
+| `string` | `variable` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -24,4 +24,5 @@ See [rsc.put()](rsc.put.md).
 
 ## Related topics
 - [Resource sets overview](overview.md)
+
 - [Resource sets synopsis](synopsis.md)

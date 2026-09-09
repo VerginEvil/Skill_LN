@@ -8,6 +8,9 @@ For further information on user interface controls and process groups, see [User
 
 ## Related topics
 - [Events synopsis](synopsis.md)
+
 - [Event types](event_types.md)
+
 - [Event array parameters](event_array_parameters.md)
+
 - [Events sample program](sample_program.md)

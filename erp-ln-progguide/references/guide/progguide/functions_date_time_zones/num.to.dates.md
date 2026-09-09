@@ -5,6 +5,8 @@
 
 ## Description
 This converts a specified number of days since 01-01-0001 to the corresponding date, formatted as a date string. The sequence of day, month, and year in the string depends on the user data settings defined in the data dictionary (default is "YYMMDD"). The separator character used is also defined in the data dictionary (default is '/').
+The actual formatting used is dependend on the resource 'dateformat' in the user file. When for example the resource dataformat has the value of 'DDMMYY', all the modes follow this pattern. The date separator is determined by the resource 'datesign'.
+For example when the dateformat is 'DDMMYY' (mode 0) and the datesign is '-', mode 1 will become DD-MM-YY, mode 2 DDMMYYYY, mode 3 DD-MM-YYYY
 
 ## Arguments
 | | | |
@@ -23,4 +25,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 558-559
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 562-562
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.05 (KB2313534  ).
+This function is available from 2024.05 (KB2313534).
 Syntax: long PlannedOrder.Replan(
 domain  cpcom.plnc       iScenario,
 domain  tckoor           iOrderType,

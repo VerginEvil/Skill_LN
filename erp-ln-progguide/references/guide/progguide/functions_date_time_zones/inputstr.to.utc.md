@@ -10,7 +10,7 @@ This converts the specified local date *and* time input strings to UTC long form
 | | | |
 |---|---|---|
 | `const string` | `date.inputstr()` |  A date string (in local time).  |
-| `string` | `date.format(7)` |  Indicates the format of the date string, by using the substitution symbols %D *xxx* [, *lang*] .  |
+| `string` | `date.format(7)` |  Indicates the format of the date string, by using the substitution symbols %D *xxx* [, *lang*].  |
 | `const string` | `time.inputstr()` |  A time string (in local time).  |
 | `string` | `time.format(7)` |  Indicates the format of the time string, by using the substitution symbols %U *xxx* [, *lang*].  |
 
@@ -25,4 +25,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

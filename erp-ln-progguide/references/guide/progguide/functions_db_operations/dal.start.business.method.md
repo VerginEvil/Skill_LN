@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_dam>`
-`function void dal.start.business.method( string set_id, string name, ref long retval, [ ... ] )`
+`function void dal.start.business.method( string set_id, string name, ref long retval, [... ] )`
 
 ## Description
 This starts a specified business method.
@@ -23,4 +23,5 @@ Note  Executing standard hooks is not allowed via this function. Extension hooks
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

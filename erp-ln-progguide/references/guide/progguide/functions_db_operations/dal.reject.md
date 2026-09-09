@@ -18,7 +18,7 @@ This is possible for *Pending* objects, which become Rejected, and for objects f
 | | |
 |---|---|
 | 0 | The request for reject was successfully made. |
-| <> 0 |  An error occurred.  |
+| <> 0 | An error occurred. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1800.
@@ -29,5 +29,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database Change Management (DBCM) overview](../functions_dbcm/overview.md)
+
 - [Database operations synopsis](synopsis.md)

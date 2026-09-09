@@ -1,7 +1,7 @@
 # on.main.table()
 
 ## Syntax:
-`function void on.main.table( string function_name, [ string ... ] )`
+`function void on.main.table( <function_name>, [ string... ] )`
 
 ## Description
 This copies the contents current record of the main table to the record buffer of that table, saves the record, and executes the specified function. After that the saved record buffer is restored. This enables you to perform actions on the record contents without affecting the values in the table.
@@ -9,7 +9,7 @@ This copies the contents current record of the main table to the record buffer o
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `function_name` |  The name of the function that must be executed. The function must be of type void.  |
+| `<function_name>` |  | The name of the function that must be executed. The function must be of type void. |
 | `[ string` | `... ]` |  Use these optional arguments to pass one or more arguments to the function.  |
 
 ## Context
@@ -50,4 +50,5 @@ function void check_number( long number )
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

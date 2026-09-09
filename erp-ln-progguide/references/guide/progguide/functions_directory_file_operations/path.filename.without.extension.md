@@ -14,7 +14,7 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 | `[ long` | `os.type ]` |  when specified, the path is interpreted according to the given OS type; specify one of the following values: `OS_WINDOWS_NT`, `OS_UNIX`  |
 
 ## Return values
-The string returned by ` [path.filename()](path.filename.md)`, minus the last period (.) and all characters following it.
+The string returned by [path.filename()](path.filename.md), minus the last period (.) and all characters following it.
 This method does not verify that the path or file name exists.
 
 ## Context
@@ -51,4 +51,5 @@ path = path.filename.without.extension("", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

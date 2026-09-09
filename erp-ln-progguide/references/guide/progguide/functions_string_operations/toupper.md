@@ -10,7 +10,7 @@ To convert all upper case characters to lower case, use [tolower$()](tolower.md)
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str` |  |
+| `string` | `str` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -18,4 +18,5 @@ Note  This function can handle multibyte characters.
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

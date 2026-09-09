@@ -4,4 +4,5 @@ It is possible to use recursive function calls. This means that in a function bl
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

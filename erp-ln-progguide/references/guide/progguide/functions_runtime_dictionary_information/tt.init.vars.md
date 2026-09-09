@@ -1,7 +1,7 @@
 # tt.init.vars()
 
 ## Syntax:
-`function void tt.init.vars( ref void variable, [ ... ] )`
+`function void tt.init.vars( ref void variable, [... ] )`
 
 ## Description
 This sets 1 or more variables to the 0 or empty value. This works for arrays as well.

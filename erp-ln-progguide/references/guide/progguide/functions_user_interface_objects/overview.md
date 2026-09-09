@@ -7,11 +7,12 @@ Notes  You must always use the [rgb()](../functions_color/rgb.md) function to co
 In the lists of attributes for each object type, the following flags are used:
 | | |
 |---|---|
-| C | You can define the attribute when creating the object with the functions *create.object()*, *create.sub.object()*, or *create.sub.object.by.id()*.  |
-| S | You can define the attribute when changing the object with the functions *change.object()* or *change.sub.object()*.  |
-| G | You can read the attribute with the functions *get.object()* or *get.sub.object()*.  |
-| Q | You can query the attribute with the functions *query.object()* or *query.sub.object()*.  |
+| C | You can define the attribute when creating the object with the functions *create.object()*, *create.sub.object()*, or *create.sub.object.by.id()*. |
+| S | You can define the attribute when changing the object with the functions *change.object()* or *change.sub.object()*. |
+| G | You can read the attribute with the functions *get.object()* or *get.sub.object()*. |
+| Q | You can query the attribute with the functions *query.object()* or *query.sub.object()*. |
 
 ## Related topics
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

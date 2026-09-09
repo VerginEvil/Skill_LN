@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1473-1475
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1488-1489
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2022.11 (KB2261704  ).
+This function is available from 2022.11 (KB2261704).
 Syntax: long MaintenanceSalesOrder.GenerateSerializedItem(
 domain  tcorno           iMaintenanceSalesOrder,
 domain  tcpono           iLine,
@@ -23,7 +23,7 @@ the given Maintenance Sales Order (Line).
 A new serial will be generated for the item defined on the
 Maintenance Sales Order or, when iLine is filled, on the
 Maintenance Sales Order Item Line.
-The sold                      -to business partner defined on the Maintenance Sales
+The sold-to business partner defined on the Maintenance Sales
 Order will be set as owner of the serialized item.
 Optionally the generated serialized item can be linked to the
 installation group defined on the Maintenance Sales Order (Line).
@@ -66,9 +66,9 @@ iUpdateSerialOnMaintenanceSalesOrder
 Controls if the serial number must be set on the
 Maintenance Sales Order (Line) based on which the
 serialized item is generated.
--                               yes: The serial number on the order/line is updated
+- yes: The serial number on the order/line is updated
 with the generated serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -79,9 +79,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated succesfull and (optionally)
+Return: 0       - Serialized Item generated succesfull and (optionally)
 updated on the Maintenance Sales Order (Line).
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the Maintenance Sales Order (Line)

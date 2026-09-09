@@ -17,7 +17,7 @@ This function checks whether a record that has been delayed locked and changed b
 | 0 | Record has not been changed by another process. |
 | <> 0 | Error. |
 | EROWCHANGED | Record has been changed by another process. |
-| ENOCURR | No current record set. The db-call interface (e.g. db.eq( ..., db.delayed)) must be used to set a current record, before calling the db.check.row.changed() function.  |
+| ENOCURR | No current record set. The db-call interface (e.g. db.eq(..., db.delayed)) must be used to set a current record, before calling the db.check.row.changed() function. |
 | ENOTLOCKED | Record has not been (delayed) locked. |
 
 ## Context
@@ -25,4 +25,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

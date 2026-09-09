@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1513-1516
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1528-1530
 
 ```baan
 DLL:   tsextspcapi
-This function is available from     2022.03 (KB2231979  ).
+This function is available from 2022.03 (KB2231979).
 Syntax: long PlannedActivity.SwitchStatus(
 const   domain  tcorno           iPlannedActivity fixed,
 const   domain  tcpono           iActivityLine,
@@ -52,13 +52,13 @@ Pre     : A db.retry.point() must have been specified.
 Post    : An abort.transaction() or commit.transaction() must be
 executed.
 Input   :
-iPlannedActivity                                                            -
+iPlannedActivity                                        -
 The planned activity order number.
 Mandatory input.
-iActivityLine                                                            -
+iActivityLine                                           -
 The planned activity line number.
 Manatory input.
-iSwitchStatusTo                                                            -
+iSwitchStatusTo                                         -
 The status to which the planned activity has to be
 switched.
 Mandatory input.
@@ -69,28 +69,28 @@ is switched to 'Released' and this input argument
 is set to 'yes', then the system will perform the ATP
 (Available To Promise) check.
 Mandatory input.
-iPerformPlannedAvailableCheck                                                 -
+iPerformPlannedAvailableCheck                           -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', then when this input argument
 is set to 'yes', the system will perform the Planned
 Available check.
 Mandatory input.
-iPerformOnHandAvailableCheck                                                  -
+iPerformOnHandAvailableCheck                            -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', then when this input argument
 is set to 'yes', the system will perform the On Hand
 check.
 Mandatory input.
-iSkipBlockedInventory                                                         -
+iSkipBlockedInventory                                   -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', then when this input argument
 is set to 'yes', the system will skip blocked inventory
 during the different Material Availability checks.
 Mandatory input.
-iInventoryScope                                                            -
+iInventoryScope                                         -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', then with this input argument
@@ -98,7 +98,7 @@ it can be controlled whether the Material Availability
 checks should be executed for the current Warehouse
 only or for the whole warehouse cluster.
 Mandatory input.
-iBlockRelease                                                            -
+iBlockRelease                                           -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', then if the material
@@ -106,7 +106,7 @@ availability checks result in a shortage, or if the
 supply is too late, a DALHOOKERROR is returned otherwise
 only an information message is put on the message stack.
 Mandatory input.
-iUpdateTimeWithLatestPlannedMaterialLine                                      -
+iUpdateTimeWithLatestPlannedMaterialLine                -
 If the functionality of Material Availability is
 switched on in the planning parameters and if the status
 is switched to 'Released', and this input parameters is
@@ -134,6 +134,6 @@ executed successfully, then it can contain information
 that there is a material shortage, but that that is not
 blocking because of the setting of the input argument
 iBlockRelease.
-Return  : 0                           - No error
-<> 0                                  - An error occurred
+Return  : 0             - No error
+<> 0          - An error occurred
 ```

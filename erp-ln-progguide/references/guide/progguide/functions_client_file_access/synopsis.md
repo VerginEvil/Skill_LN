@@ -185,5 +185,7 @@ long
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)
+
 - [Implementing LN UI support](../webtop/htmlui_adoption.md)

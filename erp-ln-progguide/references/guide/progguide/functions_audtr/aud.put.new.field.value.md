@@ -8,9 +8,9 @@ Use aud.put.new.field.value to retrieve the value of a field from the new value 
 If the action is a table operation the new value has no meaning and therefore this function cannot be used in that case. Depending on the status of a field the old value and/or new value can be retrieved.
 | | |
 |---|---|
-| Insert row | The value part of the action row contains all the field values of the inserted row. This part is copied to the new.value string.  |
-| Delete row | The value part of the action row contains all the field values of the deleted row. This part is copied to the new.value string.  |
-| Update row |  The value part of the action row contains both old and new values but not for all fields. Only those fields that have been changed or are part of the key or specified in the audit_set file are stored in the action row. Unchanged field entries in the action row consist of only two parts: the status that is 'N', meaning unchanged, and the old value. Changed field entries in the action row consist of three parts: the status which is 'Y', meaning that the field has changed, and both old value and new value. The function reads each field entry in the action row and, depending on the status, copies the values to the old.value or the new.value string. If the field is unchanged, the status string will have an 'N' for this field entry otherwise an 'Y'.  |
+| Insert row | The value part of the action row contains all the field values of the inserted row. This part is copied to the new.value string. |
+| Delete row | The value part of the action row contains all the field values of the deleted row. This part is copied to the new.value string. |
+| Update row | The value part of the action row contains both old and new values but not for all fields. Only those fields that have been changed or are part of the key or specified in the audit_set file are stored in the action row. Unchanged field entries in the action row consist of only two parts: the status that is 'N', meaning unchanged, and the old value. Changed field entries in the action row consist of three parts: the status which is 'Y', meaning that the field has changed, and both old value and new value. The function reads each field entry in the action row and, depending on the status, copies the values to the old.value or the new.value string. If the field is unchanged, the status string will have an 'N' for this field entry otherwise an 'Y'. |
 The following table shows whether the functions can be used, depending on action type and status:
 | | | | |
 |---|---|---|---|
@@ -33,7 +33,7 @@ The following table shows whether the functions can be used, depending on action
 | `long` | `table.id` |  Id of the table on which the action occurred, which is used to retrieve the detailed action data using function aud.get.field.status, aud.put.old.field.value and aud.put.new.field.value. This id is also used to get the meta data information, in case it has been changed.company: the company that holds the updated table.  |
 | `long` | `field.id` |  Identification of the field as retrieved using function aud.get.field.ids. Precondition: *field.id* must not be 0: for not existing fields no field information can be retrieved. ( *action.type* = 'I' and FieldStatus = 'A') or ( *action.type* = 'U' and FieldStatus = ('Y' or 'N')).  |
 | `long` | `element` |  Identification of the array element within a field.  |
-| `[ bool` | `endian ]` |  Defines how the data in *element* must be interpreted. It is assumed that data is stored in big endian order (highest byte first) . If little endian order is required set this optional argument to 1.  |
+| `[ bool` | `endian ]` |  Defines how the data in *element* must be interpreted. It is assumed that data is stored in big endian order (highest byte first). If little endian order is required set this optional argument to 1.  |
 
 ## Return values
 None
@@ -51,5 +51,7 @@ In all other cases the value of a field has no meaning and therefore this functi
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

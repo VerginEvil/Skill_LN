@@ -11,18 +11,20 @@ The XML document is formatted by adding new-lines and tabs in order to show its 
 | | | |
 |---|---|---|
 | `long` | `fp` |  *fp* must be a file pointer opened for write obtained from a call to seq.open(), pipe.open(), ims.openfba() or ims.openvba().  |
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success; Number of bytes written to output when successful  |
-| < 0 |  Error. As many bytes as possible are written to *fp*. The place where the output of bytes stops, corresponds to the place in the XML tree where the first serialization error occurred. Some specific values:  |
+| -1 | Incorrect argument. For example, file pointer *fp* is closed, or *fromNode* or *toNode* is not a valid xml node. |
+| -3 | Cannot write to *fp* (e.g. it is open for reading instead of writing), or a TSS conversion error occurred. If TSS conversion of a certain text element (e.g. an attribute name or value) fails, then the output of bytes stops before that text element. |
+| -4 | An invalid character was encountered. The output of bytes stops just before that character. See the [xmlContainsValidCharactersOnly()](contains_valid_characters_only.md) function. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

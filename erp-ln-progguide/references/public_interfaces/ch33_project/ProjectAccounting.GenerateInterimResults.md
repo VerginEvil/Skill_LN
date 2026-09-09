@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectAccounting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1707-1710
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1726-1729
 
 ```baan
 DLL:   tpextppcapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long ProjectAccounting.GenerateInterimResults(
 domain  tpctm.rrby       iCalculateResultsFor,
 domain  tccono           iFromContract,
@@ -38,31 +38,31 @@ Be aware that transaction management is handled within this
 function.
 Pre:    N.A
 Post:   N.A
-Input:  iCalculateResultsFor                      - Contract/Project. Optional
+Input:  iCalculateResultsFor        - Contract/Project. Optional
 Default Value: Contract
-iFromContract                                     - From Contract. Optional
-iToContract                                       - To Contract. Optional
-iFromContractLine                                 - From Contract Line. Optional
-iToContractLine                                   - To Contract Line. Optional
-iFromProject                                      - From Project. Optional
-iToProject                                        - To Project. Optional
-iGenerateResultTypeRevenues                       -
+iFromContract               - From Contract. Optional
+iToContract                 - To Contract. Optional
+iFromContractLine           - From Contract Line. Optional
+iToContractLine             - To Contract Line. Optional
+iFromProject                - From Project. Optional
+iToProject                  - To Project. Optional
+iGenerateResultTypeRevenues -
 Generate Result Type Revenues (Yes/No). Mandatory
-iFinancialResultRevenue                           -
+iFinancialResultRevenue     -
 Financial Result Revenue.
 Mandatory if iGenerateResultTypeRevenues is Yes.
 Otherwise Optional.
-iGenerateResultTypeCosts                          -
+iGenerateResultTypeCosts    -
 Generate Result Type Costs (Yes/No). Mandatory
-iFinancialResultCost                              -
+iFinancialResultCost        -
 Financial Result Cost.
 Mandatory if iFinancialResultCost is Yes.
 Otherwise Optional.
-iGenerateResultTypeBalances                       -
+iGenerateResultTypeBalances -
 Generate Result Type Balances (Yes/No). Mandatory
-iPrimaryInterimResults                            -
+iPrimaryInterimResults      -
 Primary Interim Results (Yes/No). Mandatory
-iAlternateInterimResult                           -
+iAlternateInterimResult     -
 Alternate Interim Results (Yes/No). Mandatory
 Note :  1) When iCalculateResultsFor is 'By Contract' then
 iFromContract,iToContract,iFromContractLine and
@@ -73,7 +73,7 @@ iFromProject and iToProject will be considered.
 iGenerateResultTypeRevenues is Yes.
 2) iFinancialResultCost is mandatory when
 iGenerateResultTypeCosts is Yes.
-iProcessingOptionSet                       -
+iProcessingOptionSet -
 Optional, if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -139,15 +139,15 @@ SettlePreviousFinancialResult   domain tppdm.yeno       tppdm.yeno.yes
 AggregateByProjectExtension     domain tppdm.yeno       tppdm.yeno.yes
 SkipLinesWithEmptyAmounts       domain tppdm.yeno       tppdm.yeno.yes
 IncludeAdvancePaymentsInRevenue domain tppdm.yeno       tppdm.yeno.no
-Output: oExceptionMessage                     -
+Output: oExceptionMessage       -
 The last message if the return value is not
 equal to 0.
 If more than one  message is given,
 these are present in the oExceptionID.
-oExceptionID                                  -
+oExceptionID            -
 An ID that refers to all error information.
 Use the functions in Exception to get all
 relevant information.
-Return: 0                             - Process Transaction completed successfully.
-<> 0                                  - Error.
+Return: 0               - Process Transaction completed successfully.
+<> 0            - Error.
 ```

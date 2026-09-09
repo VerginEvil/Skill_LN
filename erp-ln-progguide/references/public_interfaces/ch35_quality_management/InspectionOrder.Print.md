@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InspectionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1759-1761
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1778-1780
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2021.12 (KB2217770  ).
+This function is available from 2021.12 (KB2217770).
 Syntax: long InspectionOrder.Print(
 domain  qmptc.orgn       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -33,48 +33,48 @@ this function will have its own transaction handling.
 Pre:    NA
 Post:   NA
 Input:
-iOrderOrigin                                  - Order Origin: Mandatory when Inspection
+iOrderOrigin            - Order Origin: Mandatory when Inspection
 Order is not given
-iOrderNumber                                  - Order Number: Mandatory for all origins
+iOrderNumber            - Order Number: Mandatory for all origins
 other than Inventory Inspection and
 when Inspection Order is not given
-iOrderPosition                                - Order Position: Mandatory for all Origins
+iOrderPosition          - Order Position: Mandatory for all Origins
 other than Routing, Production,
 Production Repetitive & Inventory Inspection
 and when Inspection Order is not given
-iOperation                                    - Operation: Mandatory for Origin Routing
+iOperation              - Operation: Mandatory for Origin Routing
 when Inspection Order is not given
-iWorkStation                                  - Work Station: Mandatory for Origin
+iWorkStation            - Work Station: Mandatory for Origin
 Repetitive Routing and when
 Inspection Order is not given
-iOrderSequence                                - Order Sequence: Mandatory for all Origins
+iOrderSequence          - Order Sequence: Mandatory for all Origins
 other than Inventory Inspection and
 when Inspection Order is not given
-iInspection                                   - Inspection: Mandatory for all Origins
+iInspection             - Inspection: Mandatory for all Origins
 other than Routing & Repetitive Routing
 and when Inspection Order is not given
-iInspectionLine                               - Inspection Line: Mandatory for Origins
+iInspectionLine         - Inspection Line: Mandatory for Origins
 other than Routing & Repetitive Routing
 and when Inspection Order is not given
-iInspectionOrder                              - QM Inspection Order: Mandatory when
+iInspectionOrder        - QM Inspection Order: Mandatory when
 Order details are not given
-iItem                                         - Item: Mandatory when Origin is
+iItem                   - Item: Mandatory when Origin is
 Storage Inspection and Inspection Order
 is not given
-iPrintPrintedLines                            - Print Already Printed Lines Indicator: Mandatory
-iPrintStorageInspInv                          - Print Storage Inspection Inventory Lines:
+iPrintPrintedLines      - Print Already Printed Lines Indicator: Mandatory
+iPrintStorageInspInv    - Print Storage Inspection Inventory Lines:
 Mandatory
-iPrintDevice                                  - Printing Device: Not Mandatory If not
+iPrintDevice            - Printing Device: Not Mandatory If not
 Provided asked for device when report
 is opened.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Order has been printed succesfully
-<> 0                                          - Error
+Return: 0                       - Order has been printed succesfully
+<> 0                    - Error
 ```

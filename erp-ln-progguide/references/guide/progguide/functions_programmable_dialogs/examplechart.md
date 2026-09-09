@@ -38,7 +38,6 @@ function void addData(long chart)
         chart.add.data.point(series, tewhr004.descr, tewhr004.stoh)
     endselect
 
-
     series = chart.add.series(chart, "Without packing")
 
     select tewhr004.descr, tewhr004.packing, tewhr004.stoh

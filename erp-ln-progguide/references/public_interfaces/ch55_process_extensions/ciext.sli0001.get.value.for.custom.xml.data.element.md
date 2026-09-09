@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2057-2059
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2076-2078
 
 ```baan
 Syntax: long ciext.sli0001.get.value.for.custom.xml.data.element(
@@ -84,18 +84,18 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    N.A.
 Post:   N.A.
-Input:  i.xml.layout                  - The xml invoice layout code
-i.xml.tag.type                        - type of the xml.tag
-i.xml.tag.id                          - xml tag id
-i.xml.tag                             - xml tag name
-i.xml.section                         - section where the tag is used for:
-cixils.header                                         -       invoice header
-cixils.line                                         -         invoice line
+Input:  i.xml.layout    - The xml invoice layout code
+i.xml.tag.type  - type of the xml.tag
+i.xml.tag.id    - xml tag id
+i.xml.tag       - xml tag name
+i.xml.section   - section where the tag is used for:
+cixils.header -       invoice header
+cixils.line -         invoice line
 cixils.tax.summary    invoice tax summary
--                                       The above xml fields are indicating in which (part of)
+- The above xml fields are indicating in which (part of)
 XML layout  "i.custom.element.field.name" is used.
 i.section.key.object
--                                       This field contains the current value of the key fields
+- This field contains the current value of the key fields
 Those key fields can be used when the value of
 the i.custom.element.field.name is stored in
 one of the tables mentioned below.
@@ -109,43 +109,43 @@ In case i.xml.section reads: cixils.tax.summary the
 keyvalues of cisli315 are restored
 If other then the keyfields are needed a query
 must be done.
-i.custom.element.field.name                       - Custom XML data element for which
+i.custom.element.field.name - Custom XML data element for which
 a value must be retrieved.
-Output: o.custom.element.value                - The value of the custom element field
-o.custom.element.type                         - The element type of the custom element field,
+Output: o.custom.element.value  - The value of the custom element field
+o.custom.element.type   - The element type of the custom element field,
 the "o.custom.element.value" will be formatted
 or converted according the element type value.
--                                       The next element types are supported:
+- The next element types are supported:
 #define AMOUNT_FIELD          10
--                                               o.custom.element.value is assumed to be
+- o.custom.element.value is assumed to be
 in Invoice header currency, and formatted
 according (manual) amount format of the XML
 layout.
 #define UTC_DATE_FIELD        20
--                                               o.custom.element.value will be formatted
+- o.custom.element.value will be formatted
 according format settings of the XML layout
 #define BOOLEAN_FIELD         70
--                                               o.custom.element.value contains a long
+- o.custom.element.value contains a long
 and will be converted as follows
 0 = "false", >0 = "true"
 #define QUANTITY_FIELD        80
--                                               o.custom.element.value will be reformatted
+- o.custom.element.value will be reformatted
 according decimal and group signs defined
 on the XML layout and domain "tcqsl1"
 definition.
-(Example 10000.00                                                  --> 10.000,00)
+(Example 10000.00 --> 10.000,00)
 #define PRICE_PERCENTAGE_FIELD 90
--                                               o.custom.element.value will be reformatted
+- o.custom.element.value will be reformatted
 according decimal and group signs defined
 on the XML layout and domain "tcpric"
 definition.
-(Example 10.00                                                --> 10,00)
+(Example 10.00 --> 10,00)
 #define NO_FIELD_TYPE 0
--                                               o.custom.element.value will be used without
+- o.custom.element.value will be used without
 formatting or conversion.
 Use this type for strings or when you want
 to deviate from the element types above.
-Return: 0                                     - Success
-<> 0                                          - When an error occurs in getting
+Return: 0                       - Success
+<> 0                    - When an error occurs in getting
 a value for custom xml data element.
 ```

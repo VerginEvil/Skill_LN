@@ -14,7 +14,7 @@ Detects if an error has occurred while reading from or writing to the byte array
 ## Return values
 | | |
 |---|---|
-| -1 | Error, most probably *bytearray* is not a valid stream.  |
+| -1 | Error, most probably *bytearray* is not a valid stream. |
 | 0 | No errors. |
 | > 0 | An error occurred. |
 
@@ -23,4 +23,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Byte arrays overview](byte_arrays_overview.md)
+
 - [Byte arrays synopsis](byte_arrays_synopsis.md)

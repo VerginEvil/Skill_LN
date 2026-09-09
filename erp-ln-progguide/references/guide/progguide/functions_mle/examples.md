@@ -59,4 +59,5 @@ function domain ttiso.dlan get.bus.partner.datalang(
 
 ## Related topics
 - [Multi Language Data overview](overview.md)
+
 - [Multi Language Data synopsis](synopsis.md)

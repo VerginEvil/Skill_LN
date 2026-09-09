@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1232-1234
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1242-1243
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.08 (KB3606158  ).
+This function is available from 2025.08 (KB3606158).
 Syntax: long OutboundOrderLine.StatusOverviewStartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,10 +31,10 @@ Status Overview (whinh2129m000).
 Input:  iStartMode
 Specifies the start mode for the session. (Mandatory)
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -88,18 +88,18 @@ Output:
 Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
 been selected:
-oOrderOrigin                                  - Order Origin of selected record
-oOrderNumber                                  - Order Number of selected record
-oOrderLine                                    - Order Line of selected record
-oOrderSequence                                - Order Sequence of selected record
-oExceptionMessage                             - The last message if any message is
+oOrderOrigin    - Order Origin of selected record
+oOrderNumber    - Order Number of selected record
+oOrderLine      - Order Line of selected record
+oOrderSequence  - Order Sequence of selected record
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

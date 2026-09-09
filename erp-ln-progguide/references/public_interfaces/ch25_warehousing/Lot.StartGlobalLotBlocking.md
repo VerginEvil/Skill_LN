@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Lot
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1107-1108
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1117-1117
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2023.02 (KB2280149  ).
+This function is available from 2023.02 (KB2280149).
 Syntax: long Lot.StartGlobalLotBlocking(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -20,7 +20,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Global Lot Blocking
 (whwmd6220m000). Depending on the main table of the calling
-session, Non                      -Consecutive Record Selection (NCRS) is used.
+session, Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Lots            (whltc100) or
 Lot Blocking    (whwmd620) then
@@ -49,14 +49,14 @@ iToItem
 To Item selection field is filled with this
 value. (when iIgnoreSelectionFields is false and NCRS
 is not applicable)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

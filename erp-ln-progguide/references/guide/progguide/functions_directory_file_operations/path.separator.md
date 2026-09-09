@@ -5,7 +5,7 @@
 
 ## Description
 Returns a platform-specific separator character (":" or ";") used to separate path strings in environment variables.
-Do not confuse this function with ` [path.dir.separator()](path.dir.separator.md)`.
+Do not confuse this function with [path.dir.separator()](path.dir.separator.md).
 If Infor Enterprise Server is running on UNIX, the returned separator is the colon (:); if Infor Enterprise Server is running on Windows, the returned separator is the semi-colon (;). By supplying the OS type this function will return the separator for the given OS type.
 
 ## Arguments
@@ -35,4 +35,5 @@ separator = path.separator(OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

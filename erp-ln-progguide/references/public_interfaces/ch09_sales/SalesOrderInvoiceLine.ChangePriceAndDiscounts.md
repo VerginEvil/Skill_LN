@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderInvoiceLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 364-365
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 366-367
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2024.09 (KB3518728  ).
+This function is available from 2024.09 (KB3518728).
 Syntax: long SalesOrderInvoiceLine.ChangePriceAndDiscounts(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -39,27 +39,27 @@ If ION Workflow Document Approval is used and the Order is
 waiting for Approval in ION, updating is not allowed.
 Invoice lines are only updated if they have not yet been processed
 too far in Invoicing. Price changes must be possible (meaning that
-e.g. price is not read                      -only (yet)).
-Pre:    Caller must set retry              -point
+e.g. price is not read-only (yet)).
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                                           - Sales Order (mandatory)
-iSalesOrderLine                                               - Sales Order Line (mandatory)
-iSalesOrderLineSequence                                       - Sales Order Line Sequence Number
-iActualDeliveryLineSequence                                   - Actual Delivery Line Sequence
+Input:  iSalesOrder                             - Sales Order (mandatory)
+iSalesOrderLine                         - Sales Order Line (mandatory)
+iSalesOrderLineSequence                 - Sales Order Line Sequence Number
+iActualDeliveryLineSequence             - Actual Delivery Line Sequence
 Number (mandatory)
-iInvoiceLine                                                  - Invoice Line
-iApplyPriceAndDiscountsToOtherInvoiceLines                            -
+iInvoiceLine                            - Invoice Line
+iApplyPriceAndDiscountsToOtherInvoiceLines      -
 Yes: Other Invoice Lines of the same Sales Order Line
 will be updated with Price and Discounts.
 No: Other Invoice Lines of the same Sales Order Line
 will not be updated.
-iApplyPriceStageToOtherInvoiceLinesForInstallments                            -
+iApplyPriceStageToOtherInvoiceLinesForInstallments      -
 Yes: Other Invoice Lines of the same Sales Order will be
 updated with Price Stage if 'Invoicing by
 Installments' applies to the Sales Order.
 No: No Invoice Lines of the Sales Order will be updated
 with the Price Stage.
-iUnlinkContractIfAlwaysUseContractPriceAndDiscount                       -
+iUnlinkContractIfAlwaysUseContractPriceAndDiscount -
 Yes: When a Contract is linked and Price and/or Discounts
 are changed the Contract will be unlinked if
 'Always Use Contract Price and Discount' applies
@@ -68,39 +68,39 @@ No: Contract for Invoice Line is not unlinked if 'Always
 Use Contract Price and Discount' applies to the
 Sales Order Invoice Line. The Price and Discounts
 will not be changed.
-iUpdatePriceInItemSales                       -
+iUpdatePriceInItemSales -
 Yes: Price in Item Sales will be updated.
 No: Price is not updated
-iUpdatePriceInItemSalesByOffice                       -
+iUpdatePriceInItemSalesByOffice -
 Yes: Price in Item Sales by Office will be updated.
 No: Price is not updated
-iApproveAndProcessChangeRequestAutomatically                          -
+iApproveAndProcessChangeRequestAutomatically    -
 Yes: If Change Requests are applicable the created change
 request will be approved and processed automatically.
 No: Approval and processing of the change request
 (if any) is not done automatically.
-iPrice                                                - Price
+iPrice                          - Price
 (In order currency)
-iPriceStage                                           - Price Stage
-iDiscountPercentage                                   - Discount Percentage;
+iPriceStage                     - Price Stage
+iDiscountPercentage             - Discount Percentage;
 Array of 11 elements
-iDiscountAmount                                       - Discount Amount;
+iDiscountAmount                 - Discount Amount;
 Array of 11 elements
 (In order currency)
-iDiscountMethod                                       - Discount Method;
+iDiscountMethod                 - Discount Method;
 Array of 11 elements
-iDiscountCode                                         - Discount Code;
+iDiscountCode                   - Discount Code;
 Array of 11 elements
-iInvoiceAmount                                        - Invoice Amount
+iInvoiceAmount                  - Invoice Amount
 (In order currency)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Price and Discounts are updated.
-<> 0                                          - An error occurred
+Return: 0                       - Price and Discounts are updated.
+<> 0                    - An error occurred
 ```

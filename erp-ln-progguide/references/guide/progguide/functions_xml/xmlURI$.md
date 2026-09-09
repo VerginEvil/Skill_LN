@@ -15,7 +15,7 @@ Get the URI of the namespace of the specified node.
 ## Return values
 | | |
 |---|---|
-| string | If the *node* is valid and is in a namespace, then a temporary string containing the URI of the namespace is returned. Otherwise, the *default.value*, or when this is omitted, the empty string is returned.  |
+| string | If the *node* is valid and is in a namespace, then a temporary string containing the URI of the namespace is returned. Otherwise, the *default.value*, or when this is omitted, the empty string is returned. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -57,5 +57,7 @@ A slightly more involved example:
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

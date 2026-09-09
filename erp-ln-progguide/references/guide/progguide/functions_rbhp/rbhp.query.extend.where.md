@@ -18,4 +18,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Role Based Home Pages overview](overview.md)
+
 - [Role Based Home Pages synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractConfigurationLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1396-1398
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1408-1410
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.06 (KB3566270  ).
+This function is available from 2025.06 (KB3566270).
 Syntax: long ServiceContractConfigurationLine.Create(
 domain  tcorno           iServiceContract fixed,
 domain  tsctm.cchn       iContractChange,
@@ -130,6 +130,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No error; however, error messages can have been set.
-<> 0                          - An error occurred
+Return: 0       - No error; however, error messages can have been set.
+<> 0    - An error occurred
 ```

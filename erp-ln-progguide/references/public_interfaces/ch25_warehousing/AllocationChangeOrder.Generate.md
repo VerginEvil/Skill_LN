@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AllocationChangeOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1099-1102
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1109-1112
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.03 (KB2278026  ).
+This function is available from 2023.03 (KB2278026).
 Syntax: long AllocationChangeOrder.Generate(
 domain  tccwar           iWarehouse,
 domain  tccdis           iReason,
@@ -112,66 +112,66 @@ Order Unit
 If iHandlingUnit is filled, this field is derived from
 the handling unit.
 iSetSoldToBusinessPartnerFrom
-Set allocated Sold                              -to Business partner - from (true/false)
+Set allocated Sold-to Business partner - from (true/false)
 iSoldToBusinessPartnerFrom
-The sold                              -to business partner to which the inventory is
+The sold-to business partner to which the inventory is
 allocated before the allocation change order is processed
 iSetShipToBusinessPartnerFrom
-Set allocated Ship                              -to Business partner - from (true/false)
+Set allocated Ship-to Business partner - from (true/false)
 iShipToBusinessPartnerFrom
-The ship                              -to business partner to which the inventory is
+The ship-to business partner to which the inventory is
 allocated before the allocation change order is processed
 iSetBusinessObjectTypeFrom
-Set allocated Business Object Type                               - from (true/false)
+Set allocated Business Object Type - from (true/false)
 iBusinessObjectTypeFrom
 The business object type (Order type) to which the
 inventory is allocated before the allocation change
 order is processed
 iSetBusinessObjectFrom
-Set allocated Business Object                               - from (true/false)
+Set allocated Business Object - from (true/false)
 iBusinessObjectFrom
 The business object (Order) to which the inventory is
 allocated before the allocation change order is processed
 iSetBusinessObjectReferenceFrom
-Set allocated business object reference                               - from (true/false)
+Set allocated business object reference - from (true/false)
 iBusinessObjectReferenceFrom
 The business object reference (Order line) to which
 the inventory is allocated before the allocation change
 order is processed
 iSetReferenceFrom
-Set Reference                               - from (true/false)
+Set Reference - from (true/false)
 iReferenceFrom
 A reference code to which the inventory was allocated
 before the allocation change order is processed
 iSetSoldToBusinessPartnerTo
-Set allocated Sold                              -to Business partner - to (true/false)
+Set allocated Sold-to Business partner - to (true/false)
 iSoldToBusinessPartnerTo
-The sold                              -to business partner to which the inventory is
+The sold-to business partner to which the inventory is
 allocated after the allocation change order is processed
 iSetShipToBusinessPartnerTo
-Set allocated Ship                              -to Business partner - to (true/false)
+Set allocated Ship-to Business partner - to (true/false)
 iShipToBusinessPartnerTo
-The ship                              -to business partner to which the inventory is
+The ship-to business partner to which the inventory is
 allocated after the allocation change order is processed
 iSetBusinessObjectTypeTo
-Set allocated Business Object Type                               - to (true/false)
+Set allocated Business Object Type - to (true/false)
 iBusinessObjectTypeTo
 The business object type (Order type) to which the
 inventory is allocated after the allocation change
 order is processed
 iSetBusinessObjectTo
-Set allocated Business Object                               - to (true/false)
+Set allocated Business Object - to (true/false)
 iBusinessObjectTo
 The business object (Order) to which the inventory is
 allocated after the allocation change order is processed
 iSetBusinessObjectReferenceTo
-Set allocated business object reference                               - to (true/false)
+Set allocated business object reference - to (true/false)
 iBusinessObjectReferenceTo
 The business object reference (Order line) to which
 the inventory is allocated after the allocation change
 order is processed
 iSetReferenceTo
-Set Reference                               - to (true/false)
+Set Reference - to (true/false)
 iReferenceTo
 A reference code to which the inventory was allocated
 after the allocation change order is processed

@@ -8,15 +8,18 @@
 Set the format to use for the signature.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `i.request` |  The handle to the signing request as returned by a previous call to [sig.init.sign.request](sig.init.sign.request.md)  |
-| `string` | `i.format` |  The format to be used for the signature. The applicable formats depend on the file type and use case. Must be one of the following values (defined in `bic_sig`):  |
+| | |
+|---|---|
+| `CAdES` | Based on Cryptographic Message Syntax, can be used to sign any data. |
+| `PAdES` | Specific for PDF documents. |
+| `XAdES` | Specific for XML documents. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
 
 ## Related topics
 - [Digital Signatures overview](overview.md)
+
 - [Digital Signatures synopsis](synopsis.md)
+
 - [Digital Signatures examples](examples.md)

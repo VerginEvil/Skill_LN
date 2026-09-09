@@ -22,4 +22,5 @@ Notes  This function is not supported in LN UI. See the [Implementing LN UI supp
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

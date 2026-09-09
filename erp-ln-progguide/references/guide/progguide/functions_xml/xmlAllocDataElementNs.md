@@ -20,8 +20,8 @@ Get the data of all child nodes of type XML_DATA of those child nodes of type XM
 ## Return values
 | | |
 |---|---|
-| 0 | Success; The *basedString* contains the data if the *node* is valid, the *namespaceOrURI* is valid, and there is a child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child. It contains the *default.value*, or when this is omitted, the empty string otherwise.  |
-| -1 | The *basedString* is not declared *based*.  |
+| 0 | Success; The *basedString* contains the data if the *node* is valid, the *namespaceOrURI* is valid, and there is a child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child. It contains the *default.value*, or when this is omitted, the empty string otherwise. |
+| -1 | The *basedString* is not declared *based*. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -53,5 +53,7 @@ ret = xmlAllocDataElementNs( data, xml_stockprice, "http://www.example.org/stock
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

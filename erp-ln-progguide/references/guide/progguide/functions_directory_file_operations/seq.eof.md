@@ -10,14 +10,14 @@ An end-of-file indication lasts until it is cleared by [seq.clearerr()](seq.clea
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `fp` |  fp is the file pointer returned by seq.open() when the file was opened. .  |
+| `long` | `fp` |  fp is the file pointer returned by seq.open() when the file was opened..  |
 
 ## Return values
 | | |
 |---|---|
 | 0 | End-of-file indicator not set. |
 | > 0 | End-of-file indicator set |
-| -1 | Error; probably *fp* not connected  |
+| -1 | Error; probably *fp* not connected |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -25,4 +25,5 @@ Notes  The end-of-file indication is only set when really trying to *read* past 
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

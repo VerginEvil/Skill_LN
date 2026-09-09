@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1236-1237
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1246-1247
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.08 (KB2196655  ).
+This function is available from 2021.08 (KB2196655).
 Syntax: long ReceiptLine.Confirm(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -26,16 +26,16 @@ Be aware that transaction management is handled within this
 function.
 Pre:    N.a.
 Post:   N.a.
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Optional
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Optional
 0 means that all receipt lines will be confirmed.
-Output: oReceiptLinesConfirmed                - One ore more Receipt Lines are
+Output: oReceiptLinesConfirmed  - One ore more Receipt Lines are
 confirmed
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

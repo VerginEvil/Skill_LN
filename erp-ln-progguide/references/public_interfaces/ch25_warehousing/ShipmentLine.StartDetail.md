@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1170-1171
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1180-1180
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.02 (KB2280147  ).
+This function is available from 2023.02 (KB2280147).
 Syntax: long ShipmentLine.StartDetail(
 long             iStartMode,
 domain  whinh.shpm       iShipment,
@@ -20,11 +20,11 @@ Usage:        Expl:   This function starts the detail session Shipment Lines
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Following input variable is the primary key, this field
@@ -32,18 +32,18 @@ is mandatory, if the primary key cannot be found an API error
 will be set in the oExceptionMessage and the session will not
 be started.
 Primary Key Fields:
-iShipment                                     - The iShipment must refer to an
+iShipment       - The iShipment must refer to an
 existing Shipment
-iShipmentLine                                 - The iShipmentLine must refer to an
+iShipmentLine   - The iShipmentLine must refer to an
 existing Shipment Line
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

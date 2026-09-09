@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ExtendedTimeManagement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2010-2011
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2029-2029
 
 ```baan
 Syntax: long bpext.xtm0001.execute.processing.instruction(
@@ -41,13 +41,9 @@ End of Example of Implementation
 Pre:    N.A.
 Post:   N.A.
 Input:  i.processing.instruction
--                                               Instruction name
+- Instruction name
 Output: N.A.
-Return: 0                                     - Success
-<> 0                                          - When an error occurs in executing
+Return: 0                       - Success
+<> 0                    - When an error occurs in executing
 a processing instruction.
 ```
-
-## Process Extensions for FactoryTrackQuery
-
-The following process extension(s) is/are available: FactoryTrackQuery.QueryExtend

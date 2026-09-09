@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OrderInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1755-1756
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1774-1775
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2021.01 (KB2150475  ).
+This function is available from 2021.01 (KB2150475).
 Syntax: long OrderInspection.Close(
 domain  qmptc.orgn       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -27,31 +27,31 @@ Not Applicable.
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
 Input:
-iOrderOrigin                                  - Order Origin: Mandatory
-iOrderNumber                                  - Order Number: Mandatory for all origins
+iOrderOrigin            - Order Origin: Mandatory
+iOrderNumber            - Order Number: Mandatory for all origins
 other than Inventory Inspection
-iOrderPosition                                - Order Position: Mandatory for all Origins
+iOrderPosition          - Order Position: Mandatory for all Origins
 other than Routing, Production, Purchase
 Schedule,
 Production Repetitive & Inventory Inspection
-iOperation                                    - Operation: Mandatory for Origin Routing
-iWorkStation                                  - Work Station: Mandatory for Origin
+iOperation              - Operation: Mandatory for Origin Routing
+iWorkStation            - Work Station: Mandatory for Origin
 Repetitive Routing
-iOrderSequence                                - Order Sequence: Mandatory for all Origins
+iOrderSequence          - Order Sequence: Mandatory for all Origins
 other than Purchase Schedule & Inventory
 Inspection
-iInspection                                   - Inspection: Mandatory for all Origins
+iInspection             - Inspection: Mandatory for all Origins
 other than Routing & Repetitive Routing
-iInspectionLine                               - Inspection Line: Mandatory for Origins
+iInspectionLine         - Inspection Line: Mandatory for Origins
 other than Routing & Repetitive Routing
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Order has been closed succesfully
-<> 0                                          - Error
+Return: 0                       - Order has been closed succesfully
+<> 0                    - Error
 ```

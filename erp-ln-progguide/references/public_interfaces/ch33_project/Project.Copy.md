@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Project
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1671-1673
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1690-1692
 
 ```baan
 DLL:   tpextpdmapi
-This function is available from     2024.03 (KB2307181  ).
+This function is available from 2024.03 (KB2307181).
 Syntax: long Project.Copy(
 domain  tccprj           iSourceProject,
 domain  tcseri           iTargetProjectSeries,
@@ -22,10 +22,10 @@ new project (in case iTargetProject is empty) or to iTargetProject.
 The iSourceProject, along with the relevant fields and options
 required for the new project, can be passed. This function can
 also be used to create a Project from a Template Project.
-Pre:                  - db.retry.point()
-Post:                 - abort.transaction() or commit.transaction()
-Input:  iSourceProject                 - The Project to be copied, Mandatory
-iTargetProjectSeries                       -
+Pre:    - db.retry.point()
+Post:   - abort.transaction() or commit.transaction()
+Input:  iSourceProject   - The Project to be copied, Mandatory
+iTargetProjectSeries -
 A string used to generate a new Project code
 that contains the Project Series, Optional.
 Note : The project series being passed should
@@ -33,7 +33,7 @@ belong to the project number group defined in
 the Project User Profiles of the user
 (if a profile exists), or it should belong to
 the number group defined in the project parameters.
-iTargetProject                        -
+iTargetProject  -
 The code for new Project, Optional.
 Note:
 1) Either iTargetProjectSeries or iTargetProject should
@@ -42,7 +42,7 @@ be passed.
 are empty, the project series will be derived from
 Project User Profiles (if they exist); otherwise,
 it will be derived from Project Parameters.
-iProcessingOptionSet                       -
+iProcessingOptionSet -
 Optional, if 0, the default copy options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -84,15 +84,15 @@ conversionFactors                       domain tcynna      tcynna.not.app
 Notes                                   domain tcyesno     tcyesno.no
 projectText                             domain tcyesno     tcyesno.yes
 Output:
-oTargetProject                                - The created Project.
-oExceptionMessage                             - The last message if any message is
+oTargetProject          - The created Project.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The Project was copied.
-<> 0                                          - Otherwise.
+Return: 0                       - The Project was copied.
+<> 0                    - Otherwise.
 ```

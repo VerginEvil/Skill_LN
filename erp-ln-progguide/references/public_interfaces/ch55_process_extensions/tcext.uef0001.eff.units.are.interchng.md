@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for EffectivityUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2006-2008
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2025-2026
 
 ```baan
 Syntax: long tcext.uef0001.eff.units.are.interchng(
@@ -75,7 +75,3 @@ to set a clear error message.
 The return code of the calling function (= standard check)
 will indicate 'data not valid'.
 ```
-
-## Process Extensions for ExceptionMessagesByItem
-
-The following process extension(s) is/are available: ExceptionMessagesByItem.SkipPrint

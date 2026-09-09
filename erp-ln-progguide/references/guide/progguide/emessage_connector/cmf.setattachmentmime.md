@@ -10,7 +10,7 @@ Sets the mime type of the attachment identified by *attachment* to the value *mi
 | | | |
 |---|---|---|
 | `long` | `attachment` |  The attachment identification.  |
-| `string` | `mimetype` |  |
+| `string` | `mimetype` |    |
 
 ## Return values
 | | |
@@ -24,5 +24,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

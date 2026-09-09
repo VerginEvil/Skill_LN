@@ -4,23 +4,25 @@
 >
 > Group: Process Extensions for Sales
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2206-2209
-
-Skips lines when calculating total amounts and quantities during Additional Costs Line determination. This process extension is available from 2026.09 ( KB3688067 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2229-2232
 
 ```baan
+Skips lines when calculating total amounts and quantities during Additional Costs Line
+determination.
+This process extension is available from 2026.09 (KB3688067).
+To implement this process extension, you can use the information below:
 Usage:        Process extension Sales.AdditionalCostAmountCalculationSkipLine can be
 used to exclude specific lines from total amount and total quantity
 calculations. After these totals have been calculated, they determine
 which Additional Cost Set Lines, if any, are applied.
 Processes where this Process Extension can be implemented:
--                       Approve Sales Order
--                       Save Price Calculation
--                       (Re)calculate Additional Costs
--                       Simulation (e.g. from REST-api)
+- Approve Sales Order
+- Save Price Calculation
+- (Re)calculate Additional Costs
+- Simulation (e.g. from REST-api)
 External variables that are available to be used in this Process
 Extension:
--                       td_proc_ext_option_set_for_sales_add_cost_amount_skip_line [ type: long
+- td_proc_ext_option_set_for_sales_add_cost_amount_skip_line [ type: long
 ]
 This external variable is filled by LN whenever this
 process extension is called. It contains a reference
@@ -70,17 +72,17 @@ OrderLineAmount                 domain  tcamnt
 HazardousMaterial                       boolean
 Explanation for some of the supported Processing Options:
 SalesOrder
--                                               The Sales Order. If filled, then this
+- The Sales Order. If filled, then this
 refers to a Sales Order context.
 Note that most of the other attributes
 will be empty in that case.
 PriceCalculation
--                                               The Price Calculation If filled, then this
+- The Price Calculation If filled, then this
 refers to a Price Calculation context.
 Note that most of the other attributes
 will be empty in that case.
 Line
--                                               The meaning depends on the context
+- The meaning depends on the context
 in which the additional cost set is
 retrieved:
 * Sales Order context:
@@ -90,11 +92,11 @@ Line refers to the price calculation
 line.
 See also Sequence.
 Sequence
--                                               Belongs to the same context as Line.
+- Belongs to the same context as Line.
 Note that if both the SalesOrder and the
 PriceCalculation are empty, then this refers to
 a simulation context. Most of the other
-attributes will have a non                                      -empty value in that
+attributes will have a non-empty value in that
 case.
 Note: External variables must also be declared in the Process Extension.
 Pseudocode:
@@ -110,7 +112,7 @@ ret = ProcessingOptionSet.Read(
 td_proc_ext_option_set_for_sales_add_cost_amount_skip_line,
 exception.message1,
 exception.id1,
-|* option name                  option                      -variable                 option
+|* option name                  option-variable                 option
 default
 "SalesOrder",                   sales.order,                    "",
 "PriceCalculation",             price.calculation,              "",

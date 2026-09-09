@@ -13,7 +13,7 @@ This function returns the size (in bytes) of the header of a specified sequence 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `seqid` |  |
+| `long` | `seqid` |    |
 
 ## Return values
 | | |
@@ -28,5 +28,7 @@ Note  You can also use [aud_get_info_seq_hdr_size()](aud_get_info_seq_hdr_size.m
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

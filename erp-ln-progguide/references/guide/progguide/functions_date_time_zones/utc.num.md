@@ -17,4 +17,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

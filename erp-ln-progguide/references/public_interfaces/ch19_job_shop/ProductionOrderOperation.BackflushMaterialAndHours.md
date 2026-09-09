@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 786-787
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 785-786
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2022.07 (KB2249872  ).
+This function is available from 2022.07 (KB2249872).
 Syntax: long ProductionOrderOperation.BackflushMaterialAndHours(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -21,8 +21,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to perform the backflushing for one or
 more Production Order Operations of a given Production Order.
 Transaction management is handled by this Public Interface.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iSite                   Site (mandatory when the Site concept
 is active).
 iProductionOrder        Production Order (mandatory, must be

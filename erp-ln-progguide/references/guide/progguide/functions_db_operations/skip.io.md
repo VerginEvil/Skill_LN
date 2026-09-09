@@ -1,7 +1,7 @@
 # skip.io()
 
 ## Syntax:
-`function void skip.io( string mesg, [ string ... ] )`
+`function void skip.io( string mesg, [ string... ] )`
 
 ## Description
 *This function is deprecated!*
@@ -10,7 +10,7 @@ Use this to skip the current database action on the current record. The predefin
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `mesg` |  This specifies a message that is defined in the data dictionary. This message is displayed on screen when you call *skip.io()*. If you specify an empty string, the 4GL engine displays a default message.  |
+| `string` | `mesg` |  This specifies a message that is defined in the data dictionary. This message is displayed on screen when you call *skip.io()*. If you specify an empty string, the [4GL engine](../glossary/glossary.md#fourgl_engine) displays a default message.  |
 | `[ string` | `... ]` |  The message can contain substitution symbols such as %d or face= %s (see [sprintf$()](../functions_formatting_io/sprintf.md). The values that must be substituted are specified in the second, third, etc. arguments of the function. The number of arguments is variable.  |
 
 ## Context
@@ -32,4 +32,5 @@ be deleted
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

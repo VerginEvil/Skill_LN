@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for QualityUserProfile
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1784-1785
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1803-1803
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2025.04 (KB3541341  ).
+This function is available from 2025.04 (KB3541341).
 Syntax: long QualityUserProfile.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Profiles"(qmptc0130m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -39,21 +39,15 @@ A specific query to be used when zooming to this session.
 iLoginCode
 Login code (Not Mandatory)
 Output: For iStartMode MODAL:
-oLoginCode                                    - Login code selected by user
-oExceptionMessage                             - The last message if any message is
+oLoginCode      - Login code selected by user
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Chapter 36 Public Interfaces for FinancialIntegration
-
-## Public Interfaces for FinancialIntegration
-
-The following functions are available: FinancialIntegration.GetDefaultLedgerAccountAndDimensions FinancialIntegration.RetrieveContributionToPcsWip

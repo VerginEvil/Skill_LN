@@ -11,18 +11,20 @@ Use [xmlWritePrettyToString](serialize_xml_object_string_pretty.md) instead to s
 | | | |
 |---|---|---|
 | `ref string` | `buffer$` |  Ref string argument that receives the UTF-8 encoded unformatted XML document. As its contents will not be encoded in TSS, it is desirable that this argument is of type string, rather than type multibyte string. The function [xmlGetStringLength()](get_serialize_length.md) may be used to determine the required size of the buffer.  |
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success; Number of bytes written to output when successful  |
-| < 0 |  Error. As many bytes as possible are written to the ref string *buffer$* argument. If the cause of the error is not that the *buffer$* is too small, then the exact place where the output of bytes stops, corresponds to the place in the XML tree where the first serialization error occurred. Some specific values:  |
+| -1 | Incorrect argument. For example, *fromNode* or *toNode* is not a valid xml node. |
+| -3 | The ref string *buffer$* argument is too small, or a TSS conversion error occurred. If TSS conversion of a certain text element (e.g. an attribute name or value) fails, then the output of bytes stops before that text element. |
+| -4 | An invalid character was encountered. The output of bytes stops just before that character. See the [xmlContainsValidCharactersOnly()](contains_valid_characters_only.md) function. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 888-889
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 898-899
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2024.12 (KB3519655  ).
+This function is available from 2024.12 (KB3519655).
 Syntax: long ProjectPCS.PrintEstimatedCost(
 domain  tipcs.ccgr       iCalculationGroup,
 domain  tccprj           iProject,
@@ -19,12 +19,12 @@ ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface can be used to print Estimated Cost
 Calculation by PCS Project. This Public Interface is similar to
 session tipcs3471m000.
-Pre:                  -
-Post:                 -
-Input:  iCalculationGroup                     - Calculation Group. Optional.
-iProject                                      - Project for which the report must be
+Pre:    -
+Post:   -
+Input:  iCalculationGroup       - Calculation Group. Optional.
+iProject                - Project for which the report must be
 printed. Optional.
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default printing options
 are applied.
 A Processing Option Set can be created
@@ -42,9 +42,9 @@ Processing Options which are set while a required Implemented
 Software Component is not available are ignored.
 For the Processing Option "CurrencyForDetails" following values are
 allowed :
-tiusec.home.ref                       - Reference
-tiusec.calc.office                    - Calculation Office
-tiusec.any                            - Currency Total
+tiusec.home.ref         - Reference
+tiusec.calc.office      - Calculation Office
+tiusec.any              - Currency Total
 NAME                                    TYPE                    DEFAULT
 CalculationGroupFrom            domain  tipcs.ccgr      iCalculationGroup
 CalculationGroupTo              domain  tipcs.ccgr      CalculationGroupFrom
@@ -64,16 +64,16 @@ Project Valuation".
 Details                         domain  tcyesno         tcyesno.no.
 PrintingDevice                  domain  tcmcs.str14     ""
 PrintingFileoutPathAndName      domain  tcmcs.str100    ""
-Output: oDataProcessed                        - true:  Data Printed.
+Output: oDataProcessed          - true:  Data Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Otherwise.
+Return: 0                       - OK.
+<> 0                    - Otherwise.
 ```

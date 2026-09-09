@@ -6,9 +6,14 @@
 
 ## Description
 Can be passed to [sjv.string()](sjv.string.md): indicates the JSON string contains an email address. An email address is considered valid if:
+
 - it has the format local-part@domain-part;
+
 - the local-part (the part before the @) is not empty;
-- the domain-part (the part after the @) is not empty, contains at least one dot, does not start with a dot and does not end with a dot.   Example:
+
+- the domain-part (the part after the @) is not empty, contains at least one dot, does not start with a dot and does not end with a dot.
+
+Example:
 ```
 
 string  email.def(1) based
@@ -43,6 +48,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

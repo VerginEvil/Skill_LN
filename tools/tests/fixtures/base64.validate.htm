@@ -1,0 +1,109 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+      <title>base64.validate()</title>
+      <link rel="stylesheet" type="text/css" href="../../skin/General.css">
+      <link rel="stylesheet" type="text/css" href="../../skin/MSHtmlHelp.css">
+      <meta name="keywords" content="base64.validate base64.validate functions base64.validate ">
+      <meta name="author" content="Infor">
+      <meta name="ROBOTS" content="ALL">
+   </head>
+   <body id="body">
+      <div class="TopicTitle">base64.validate()</div>
+      <div class="body">
+         <div class="GeneralSection">
+            <div class="subSectionTitle">Syntax:</div>
+            <p class="Paragraph"><code>function&nbsp;boolean&nbsp;base64.validate(
+			string&nbsp;data.in, ref&nbsp;long&nbsp;error.index
+			)</code></p>
+         </div>
+         <div class="GeneralSection">
+            <div class="subSectionTitle">Description</div>
+            <p class="Paragraph">
+               <p class="Paragraph">Validates the input string whether it contains valid base64.</p>
+            </p>
+         </div>
+         <div class="GeneralSection">
+            <div class="subSectionTitle">Arguments</div>
+            <table border="0" class="none">
+               <tbody noTR="2" class="none">
+                  <tr no="1" isLast="false" class="none">
+                     <td class="none"><code>string</code></td>
+                     <td class="none"><code>data.in</code></td>
+                     <td class="none">
+                        <p class="Paragraph_firstAndNoTextBefore">String with binary input.
+                           All bytes of the input are used,
+                           as determined by the <a href="../../progguide/3gl_features/data_types.htm#byte capacity" class="sectionLink">byte capacity</a>.
+                        </p>
+                     </td>
+                  </tr>
+                  <tr no="2" isLast="true" class="none">
+                     <td class="none"><code>ref&nbsp;long</code></td>
+                     <td class="none"><code>error.index</code></td>
+                     <td class="none">
+                        <p class="Paragraph_firstAndNoTextBefore">See the description of the return value.</p>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+            <p class="postspacer">&nbsp;</p>
+         </div>
+         <div class="GeneralSection">
+            <div class="subSectionTitle">Return values</div>
+            <p class="Paragraph">True is returned when the string contains valid base64. Value of error.index is not changed</p>
+            <p class="Paragraph">False is returned when size of data.in is not a multiple of 4. Optional error.index is set to 0.</p>
+            <p class="Paragraph">False is returned when a non-based64 character is found in data.in.
+               Optional argument error.index is set to index in the data.in where the non-based64 input is found.
+            </p>
+         </div>
+         <div class="GeneralSection">
+            <div class="subSectionTitle">Context</div>
+            <p class="Paragraph">This function is implemented in the 
+               			porting set
+               			and can be used in 
+               			all
+               			script types.
+            </p>
+         </div>
+         <div class="Note">
+            <div class="NoteSectionTitle"><strong class="GUIRef">Note</strong></div>
+            <div class="NoteContent">
+               <p class="Paragraph">If the input string is not completely filled,
+                  			pass the input string as:
+                  			your.string(1;number.of.filled.bytes).
+                  			This avoids that any following unspecified bytes are validated.
+               </p><pre class="CodeBlock">
+bytesread = seq.read( filebuffer, 60, filepointer )
+while bytesread &gt; 0
+    | The last bytestring is usually not completely filled.
+    | Avoid undesired bytes in the encoding by passing the number
+    | of read bytes.
+    base64.error = base64.validate( filebuffer(1;bytesread), error.index )
+    if base64.error then
+    | handle error, use error.index
+         break | error found
+    endif
+    | do something useful with the base64encodebuffer here
+    bytesread = seq.read( filebuffer, 60, filepointer )
+endwhile
+</pre></div>
+         </div>
+         <div class="RelatedTopics">
+            <p class="RelatedTopicsSectionTitle">Related topics</p>
+            <ul>
+               <li class="RelTopic"><a href="../../progguide/functions_base64/base64_overview.htm" class="manualLink">Base64 overview</a></li>
+               <li class="RelTopic"><a href="../../progguide/functions_base64/base64_synopsis.htm" class="manualLink">Base64 synopsis</a></li>
+            </ul>
+         </div>
+         <p>&nbsp;</p>
+         <table class="noborder" border="0" cellpadding="0" cellspacing="5">
+            <tr>
+               <td class="noborder"><img src="../../skin/mail.gif" alt="Send Us Your Feedback About this Help Page"></td>
+               <td class="noborder"><a class="FeedbackLink" href="mailto:documentation@infor.com?Subject=Feedback on /progguide/functions_base64/base64.validate, 2610, en">Send Us Your Feedback About this Help Page</a></td>
+            </tr>
+         </table>
+      </div>
+   </body>
+</html>

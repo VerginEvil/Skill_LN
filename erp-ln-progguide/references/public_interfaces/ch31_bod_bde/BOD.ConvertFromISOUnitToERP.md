@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1637-1638
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1656-1657
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2023.08 (KB2302511  ).
+This function is available from 2023.08 (KB2302511).
 Syntax: long BOD.ConvertFromISOUnitToERP(
 domain  tcitem           iItem,
 domain  tcictc           iUnit,
@@ -30,34 +30,34 @@ this unit overrules other units and is returned;
 when no unit is found, unit is searched for that has empty
 ISO code and with unit equal to the ISO code.
 Example 1:
--                         units with correct ISO code and in unit set with valid
+- units with correct ISO code and in unit set with valid
 conversion factor: A, B and C
--                         inventory unit of item = B
--                         B is always returned
+- inventory unit of item = B
+- B is always returned
 Example 2:
--                         units with correct ISO code and in unit set with valid
+- units with correct ISO code and in unit set with valid
 conversion factor: A, B and C
--                         inventory unit of item = D
--                         C is returned
+- inventory unit of item = D
+- C is returned
 Example 3:
--                         no units with correct ISO code
--                         there is a unit X that equals the ISO code X
--                         X is returned
+- no units with correct ISO code
+- there is a unit X that equals the ISO code X
+- X is returned
 Pre:    NA
 Post:   NA
-Input:  iItem                                 - ERP Item
-iUnit                                         - ISO unit code. Mandatory
-iCheckUnitSet                                 - unit set must be checked, true/false
-iCheckConversionFactor                        - conv factor must be checked, true/false
-Output: oERPUnit                              - ERP Unit code
-oExceptionMessage                             - The last message if any message is
+Input:  iItem                   - ERP Item
+iUnit                   - ISO unit code. Mandatory
+iCheckUnitSet           - unit set must be checked, true/false
+iCheckConversionFactor  - conv factor must be checked, true/false
+Output: oERPUnit                - ERP Unit code
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Error occurred.
+Return: 0                       - OK.
+<> 0                    - Error occurred.
 ```

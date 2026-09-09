@@ -11,7 +11,7 @@ Gets the mime type of the attachment identified by *attachment* and returns it i
 | | | |
 |---|---|---|
 | `long` | `attachment` |  The attachment identification.  |
-| `ref string` | `mime` |  |
+| `ref string` | `mime` |    |
 
 ## Return values
 | | |
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

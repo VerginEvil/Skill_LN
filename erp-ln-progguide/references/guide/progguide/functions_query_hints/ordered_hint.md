@@ -29,4 +29,5 @@ Now the join can be performed in the hinted order. Replacing the 'refers to' exp
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)

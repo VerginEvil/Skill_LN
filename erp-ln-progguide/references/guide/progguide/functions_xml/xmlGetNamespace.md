@@ -14,8 +14,8 @@ Get the namespace of an XML node. This function returns a reference to the names
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the namespace when successful.  |
-| 0 | Error. The *node* may be invalid or it may not be in a namespace.  |
+| <> 0 | Success; A reference to the namespace when successful. |
+| 0 | Error. The *node* may be invalid or it may not be in a namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -35,5 +35,7 @@ xmlns_soap = xmlGetNamespace( xml_envelope )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

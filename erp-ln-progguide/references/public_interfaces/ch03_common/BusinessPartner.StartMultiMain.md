@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 131-132
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 132-133
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2021.03 (KB2172165  ).
+This function is available from 2021.03 (KB2172165).
 Syntax: long BusinessPartner.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the details session Business Partners
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -35,15 +35,15 @@ Possible values are:
 iQueryExtend
 Optional
 A specific query to be used when zooming to this session.
-iBusinessPartner                              - Business Partner
-oExceptionMessage                             - The last message if any message is
+iBusinessPartner        - Business Partner
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Otherwise.
+Return: 0                       - Session started
+<> 0                    - Otherwise.
 ```

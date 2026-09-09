@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for StandardCost
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2255-2256
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2278-2279
 
 ```baan
 Syntax: long tiext.cpr0003.use.alternative.scheme(
@@ -14,7 +14,7 @@ Usage:        Expl:   This method is called in the process of Standard Cost
 Calculation, in order to decide if the calculation must be
 executed with an alternative Cost Calculation Scheme.
 When this method is called all fields of table:
--                       Cost Calculation Code (ticpr100) for the given Calculation
+- Cost Calculation Code (ticpr100) for the given Calculation
 Code are read and current.
 Implementation Example:
 Intention:
@@ -37,13 +37,9 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.calculation.code                     - calculation code
-Output: o.use.alternative.scheme               - to indicate whether or not
+Input:  i.calculation.code       - calculation code
+Output: o.use.alternative.scheme - to indicate whether or not
 an alternative scheme may
 be used.
-Return: 0                                      -  success
+Return: 0                        -  success
 ```
-
-## Process Extensions for Statement
-
-The following process extension(s) is/are available: Statement.SkipPrintStatements

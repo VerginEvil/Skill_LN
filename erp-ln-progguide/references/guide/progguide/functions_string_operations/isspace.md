@@ -9,7 +9,7 @@ This tests whether the result of *string_expr* contains only spaces or is empty.
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str_expr` |  |
+| `string` | `str_expr` |    |
 
 ## Return values
 TRUE string is empty or contains only spaces
@@ -30,4 +30,5 @@ endif
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

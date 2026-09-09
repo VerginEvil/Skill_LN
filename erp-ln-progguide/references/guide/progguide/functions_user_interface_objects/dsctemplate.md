@@ -10,9 +10,11 @@ A DsCtemplate object does not generate events.
 ## Attributes
 | | | |
 |---|---|---|
-| . . . | [CS] | A DsCtemplate object can include any of the attributes available for other objects.  |
+| ... | [CS] | A DsCtemplate object can include any of the attributes available for other objects. |
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

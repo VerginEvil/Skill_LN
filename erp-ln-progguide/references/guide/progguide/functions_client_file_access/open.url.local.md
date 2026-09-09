@@ -81,4 +81,5 @@ function closeApp() {
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

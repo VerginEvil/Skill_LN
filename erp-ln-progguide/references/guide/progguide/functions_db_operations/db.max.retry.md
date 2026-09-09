@@ -15,5 +15,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Retry points](../functions_database_handling/retry_points.md)
+
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

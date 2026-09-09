@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 178-178
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 179-179
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2023.10 (KB2295055  ).
+This function is available from 2023.10 (KB2295055).
 Syntax: long Item.GetRevision(
 domain  tcncmp           iLogisticCompany,
 domain  tcitem           iItem,
@@ -20,18 +20,18 @@ Usage:        Expl:   This function retrieves the Item Revision on the given dat
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iItem                                         - Item: Mandatory
-iDate                                         - Date: Mandatory
-Output: oRevision                             - Item Revison
-oExceptionMessage                             - The last message if any message is
+iLogisticCompany        - Logistic Company: Mandatory
+iItem                   - Item: Mandatory
+iDate                   - Date: Mandatory
+Output: oRevision               - Item Revison
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read.
-<> 0                                          - Otherwise.
+Return: 0                       - Data read.
+<> 0                    - Otherwise.
 ```

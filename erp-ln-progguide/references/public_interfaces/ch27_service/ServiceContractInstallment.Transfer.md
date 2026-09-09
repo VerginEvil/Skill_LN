@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractInstallment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1402-1404
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1414-1415
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.06 (KB3597592  ).
+This function is available from 2025.06 (KB3597592).
 Syntax: long ServiceContractInstallment.Transfer(
 domain  tcorno           iServiceContract,
 domain  tsctm.inst       iInstallmentNumber,
@@ -51,7 +51,3 @@ to 'Accepted'.
 <> 0 :  Error occurred during the change of the status of the
 contract installment line.
 ```
-
-## Public Interfaces for ServiceOrder
-
-The following functions are available: ServiceOrder.Cancel ServiceOrder.CheckAllMaterialLinesHaveBeenReceivedAndIssued ServiceOrder.Close ServiceOrder.Complete ServiceOrder.Cost ServiceOrder.GenerateActivitiesFromMasterRouting ServiceOrder.GenerateSerializedItem ServiceOrder.GetTotalSalesAndCostAmounts ServiceOrder.IssueInventory ServiceOrder.Plan ServiceOrder.PrintServiceOrder ServiceOrder.ReadShippingAddressForCostLine ServiceOrder.Release ServiceOrder.StartMultiMain ServiceOrder.StartOverview ServiceOrder.UnpackObjectReference

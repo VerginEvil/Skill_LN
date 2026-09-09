@@ -4,7 +4,7 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 105-106
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 106-106
 
 ```baan
 DLL:   tcextmcsapi
@@ -25,28 +25,28 @@ the oFirstFreeNumber will be "SLS9999".
 Pre:    Transaction handling must be done when no cashing is used.
 Post:   Transaction handling must be done when no cashing is used.
 Input:
-iSeries                                       - The series for which the first free
+iSeries                 - The series for which the first free
 number must be generated.
-iNumberGroup                                  - The number group (parameters)
+iNumberGroup            - The number group (parameters)
 for which the first free number must
 be generated.(mandatory)
-iMaximumLength                                - This is the total length of the output,
+iMaximumLength          - This is the total length of the output,
 Inclusive used series.
 iMaximumLength > 0 and
 iMaximumLength =< domain length of
 domain tcorno (standard = 9).
 (mandatory)
-Output: oFirstFreeNumber                      - The first free number based on the
+Output: oFirstFreeNumber        - The first free number based on the
 series, numbergroup and Maximum length
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return values:
-0                                             - First Free Number is generated
-<> 0                                          - on errors
+0                       - First Free Number is generated
+<> 0                    - on errors
 ```

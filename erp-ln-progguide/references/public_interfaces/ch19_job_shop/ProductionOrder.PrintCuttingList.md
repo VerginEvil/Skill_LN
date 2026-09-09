@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.05 (KB2308452  ).
+This function is available from 2024.05 (KB2308452).
 Syntax: long ProductionOrder.PrintCuttingList(
 domain  tcsite           iSite,
 domain  tcorno           iProductionOrder,

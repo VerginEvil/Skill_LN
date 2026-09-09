@@ -5,8 +5,8 @@ Variables declared outside any function block are global variables. You can use 
 |---|---|
 | Point of declaration | Outside the functions. |
 | Syntax of declaration | <type> name |
-| Initialization |  At program start: numeric set to 0 strings ""  |
-| Scope (validity and time) | Valid anywhere in the source, throughout the execution. If any arguments or variables within a function are declared with the same name as a global variable, the global variable cannot then be accessed within that function.  |
+| Initialization | At program start: numeric set to 0 strings "" |
+| Scope (validity and time) | Valid anywhere in the source, throughout the execution. If any arguments or variables within a function are declared with the same name as a global variable, the global variable cannot then be accessed within that function. |
 
 ## Example 1
 ```
@@ -38,4 +38,5 @@ function void test()
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

@@ -18,5 +18,7 @@ This function can be used in extensions; it must not overule the query of the St
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Query extensions sample program](example.md)

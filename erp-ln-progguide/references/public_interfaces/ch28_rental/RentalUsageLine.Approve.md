@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalUsageLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1586-1587
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1601-1602
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3534561  ).
+This function is available from 2024.11 (KB3534561).
 Syntax: long RentalUsageLine.Approve(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.cotp       iCostType,
@@ -72,12 +72,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the service order activity
 was not changed to Cancelled.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order activity changed to Cancelled.
-<> 0                          -       The status of the service order activity could
+<> 0    -       The status of the service order activity could
 not be changed to Cancelled.
 ```
-
-## Public Interfaces for RentalOrderMaterialCosts
-
-The following functions are available: RentalOrderMaterialCosts.ConfirmScrap

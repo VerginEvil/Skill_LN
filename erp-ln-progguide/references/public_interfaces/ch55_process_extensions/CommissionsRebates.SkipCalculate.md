@@ -4,29 +4,30 @@
 >
 > Group: Process Extensions for CommissionsRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1985-1987
-
-Skips Commissions/Rebates when Calculating. This process extension is available from 2025.11 ( KB3620998 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2004-2005
 
 ```baan
+Skips Commissions/Rebates when Calculating.
+This process extension is available from 2025.11 (KB3620998).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension CommissionsRebates.SkipCalculate can be used
 to skip Commissions/Rebates when calculating the Commissions/Rebates.
 Session where this Process Extension can be implemented:
--               Calculate Commissions and Rebates (tdcms0240m000)
+- Calculate Commissions and Rebates (tdcms0240m000)
 Fields that are available to be used in this Process Extension:
--               All fields of table "Commissions/Rebates" (tdcms050) when removing non
+- All fields of table "Commissions/Rebates" (tdcms050) when removing non
 paid commissions and rebates.
--               Primary key fields of table "Sales Order Line History" (tdsls451) when
+- Primary key fields of table "Sales Order Line History" (tdsls451) when
 calculation method 'Sales Order' is used.
--               Primary key fields of table "Sales Order Actual Delivery Line History"
+- Primary key fields of table "Sales Order Actual Delivery Line History"
 (tdsls456) when calculation method 'Sales Invoice' or 'Paid Sales Invoice'
 is used.
 External variable that is available to be used in this Process Extension:
--               proc_ext_skip_commissions_rebates_based_on [ type: string(40) ].
+- proc_ext_skip_commissions_rebates_based_on [ type: string(40) ].
 Supported values are:
--                       remove_non_paid_commissions_rebates (for table tdcms050)
--                       calculate_by_sales_order (for table tdsls451)
--                       calculate_by_sales_invoice (for table tdsls456)
+- remove_non_paid_commissions_rebates (for table tdcms050)
+- calculate_by_sales_order (for table tdsls451)
+- calculate_by_sales_invoice (for table tdsls456)
 Note: tables and external variable must also be declared in the
 Process Extension.
 The process extension must be applied to these three tables.
@@ -73,7 +74,3 @@ endcase
 return (false)
 }
 ```
-
-## Process Extensions for Common
-
-The following process extension(s) is/are available: Common.DeterminePurchaseType Common.GetItemSignalInfo

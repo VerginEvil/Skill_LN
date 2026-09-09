@@ -4,14 +4,16 @@ Pragma codes represent compiler options. The following pragma codes are availabl
 |---|---|
 | `#pragma nodebug` | Do not show the source while debugging. |
 | `#pragma debug` | Show the source while debugging. |
-| `#pragma nowarnings` | Do not give warnings about the source. As of [porting set TIV](../tiv/tiv_overview.md) [level 2030](../tiv/tiv_2030.md), this pragma code does not suppress warnings triggered by [bic compiler option -W32](compiler.md).  |
+| `#pragma nowarnings` | Do not give warnings about the source. As of [porting set TIV](../tiv/tiv_overview.md) [level 2030](../tiv/tiv_2030.md), this pragma code does not suppress warnings triggered by [bic compiler option -W32](compiler.md). |
 | `#pragma warnings` | Give warnings about the source. |
-| `#pragma notransactions` | The source contains only read actions; there are no transactions. So, it is sufficient to start one database server.  |
-| `#pragma warning <text>` | The programmer generates his own warning. (Warning level 15). See example.  |
-| `#pragma strict_boolean` | Give errors instead of warnings in case of improper usage of booleans.  |
+| `#pragma notransactions` | The source contains only read actions; there are no transactions. So, it is sufficient to start one database server. |
+| `#pragma warning <text>` | The programmer generates his own warning. (Warning level 15). See example. |
+| `#pragma strict_boolean` | Give errors instead of warnings in case of improper usage of booleans. |
 | `#pragma fatal <text>` | The programmer generates his own error. |
-| `#pragma sticky` | Do not remove the object out of memory when the process ends.  |
+| `#pragma sticky` | Do not remove the object out of memory when the process ends. |
 | `#pragma used <component> <code>` | See below. |
+| `#pragma language sql start ansi` | Start of use ANSI patterns instead of regular expressions. sql.parse() will use mode PARSE.ANSI as default. |
+| `#pragma language sql end ansi` | End of use ANSI patterns instead of regular expressions. |
 
 ## Example
 ```
@@ -73,6 +75,23 @@ you can enter the following pragma after a number of lines:
 #pragma warnings
 ```
 
+## Use of ANSI sql patterns
+The default syntax of the patterns can be set to ANSI sql.Use the following pragma at the start of the source. For example
+```
+
+#pragma language sql start ansi
+```
+set the query variable.
+sql.parse(...)
+...
+sql.close(...)
+You can enter the end of using ANSI with the following pragma:
+```
+
+#pragma language sql end ansi
+```
+
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Preprocessor](preprocessor.md)

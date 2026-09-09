@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 453-454
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 455-456
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2021.11 (KB2213129  ).
+This function is available from 2021.11 (KB2213129).
 Syntax: long PurchaseOrderLine.CalculatePlannedReceiptDate(
 domain  tcorno           iOrderNumber,
 domain  tcdate           iOrderDate,

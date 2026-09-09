@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedInventoryTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 926-929
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 936-938
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long PlannedInventoryTransaction.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -46,10 +46,10 @@ Transactions (whinp1500m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -140,31 +140,27 @@ Optional.
 iCostComponent
 Optional.
 Output: for iStartMode MODAL:
-oOriginatingTypeOfOrder                       - Originating Order Type of
+oOriginatingTypeOfOrder - Originating Order Type of
 selected transaction
-oOrder                                        - Order of selected transaction
-oTransactionType                              - Transaction type of selected
+oOrder                  - Order of selected transaction
+oTransactionType        - Transaction type of selected
 transaction
-oOrderLine                                    - Order Line of selected transaction
-oOrderLineSequence                            - Order Line Sequence of selected
+oOrderLine              - Order Line of selected transaction
+oOrderLineSequence      - Order Line Sequence of selected
 transaction
-oBillOfMaterialLine                           - BOM Line of selected transaction
-oDistributionLine                             - Distribution Line of selected
+oBillOfMaterialLine     - BOM Line of selected transaction
+oDistributionLine       - Distribution Line of selected
 transaction
-oEffectivityUnit                              - Effectivity unit of selected
+oEffectivityUnit        - Effectivity unit of selected
 transaction
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for Inventory
-
-The following functions are available: Inventory.CalculateTimePhasedAvailability Inventory.ChangeMAUC Inventory.ChangeMAUCCostDetails Inventory.CheckAndRepair Inventory.DetermineCompanyOwnedValueDependingOnValuationBasis Inventory.DetermineQuantity Inventory.DetermineQuantityAndValue Inventory.DetermineQuantityAndValueV2 Inventory.GetAnonymousInventoryQuantities Inventory.GetTimePhasedAvailability Inventory.GetTimePhasedAvailabilityV2 Inventory.ProcessVariances Inventory.Start360

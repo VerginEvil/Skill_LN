@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1489-1491
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1504-1505
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long WorkOrder.DetermineStartOrFinishTime(
 domain  tsmdm.cstp       iServiceType,
 domain  tcemno           iAssignedEngineer,
@@ -25,9 +25,9 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function determines a finish time for a given start time
 or a start time for a given finish time:
--                         When plan method is 'plan forward' the start time must be
+- When plan method is 'plan forward' the start time must be
 given and the finish time is calculated.
--                         When plan method is 'plan backward' the finish time must be
+- When plan method is 'plan backward' the finish time must be
 given and the start time is calculated.
 If passed empty, the calendar code used for planning is
 retrieved in the following way.
@@ -88,6 +88,6 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     -               No Error.
-<> 0                          -               Error.
+Return: 0       -               No Error.
+<> 0    -               Error.
 ```

@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that an illegal key description has been specified.  |
+| This error indicates that an illegal key description has been specified. |
 | *Solution:* |
 | Contact Infor support. |

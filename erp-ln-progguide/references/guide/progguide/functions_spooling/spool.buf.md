@@ -10,8 +10,8 @@ No new line characters or other separators are sent to the spooler. To include t
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `buffer` |  |
-| `long` | `length` |  |
+| `const string` | `buffer` |    |
+| `long` | `length` |    |
 
 ## Return values
 0: success

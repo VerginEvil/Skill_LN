@@ -42,10 +42,12 @@ asc(mb.cast$("♔"))
         | the exact result would be displayed as 0x000000009bbcccd4,
         | whereas the resulting wrapped value would be displayed as 0xffffffff9bbcccd4.
 ```
-**
 
 ## Related topics
-- Inverse functionality: [chr$()](chr.md)
+- [chr$()](chr.md)
+
 - [ASCII Conversion - Overview and Synopsis](ascii_conversion_overview_and_synopsis.md)
+
 - [ASCII Table](../misc/ascii_table.md)
+
 - [TSS Encoding](../misc/tss.md)

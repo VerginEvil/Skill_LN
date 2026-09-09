@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Dataset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2001-2001
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2020-2020
 
 ```baan
 Syntax: long dataset.get.output(
@@ -17,9 +17,9 @@ dataset.get.output.string() or dataset.get.output.file() must be used to retriev
 the
 datast output.
 Input:
--               i.dataset.format      - The dataset format name.
+- i.dataset.format      - The dataset format name.
 Output:
 Return:
--               0                     - Not OK.
--               <> 0                  - Dataset Output pointer.
+- 0                     - Not OK.
+- <> 0                  - Dataset Output pointer.
 ```

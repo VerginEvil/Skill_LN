@@ -6,37 +6,38 @@ When it is not necessary to retrieve all languages and a statement is very criti
 ```
 
 <ml_one_lang function>
-    ::= ml_one_lang ( <column> [, <data language> | <parameter>] )
+    ::= ml_one_lang ( <column> [ , <data language> | <parameter> ] )
 
 <column>
-    ::= Column reference
+    ::= <column reference>
 
 <data language>
-    ::= String constant
+    ::= <string constant>
 
 <parameter>
-    ::= Parameter
+    ::= <parameter>
 ```
 
 ## Syntactical restrictions
-The *<data language>* (either as a constant or as a parameter) shall be a Data Language code in ISO 639-2 format, like "en_GB" for English, or "nl_NL" for Dutch.
+The *<**data language**>* (either as a constant or as a parameter) shall be a Data Language code in ISO 639-2 format, like "en_GB" for English, or "nl_NL" for Dutch.
 
 ## Semantics
 If the column reference is not a Multi Language Field (MLF) then the function ml_one_lang returns the column value.
-If *<string constant>* is omitted then the implicit string constant is the current data language of the user.
+If *<**string constant**>* is omitted then the implicit string constant is the current data language of the user.
 
 ## Examples
 The following ml_one_lang function returns the current language value of the column `dscr`.
 ```
 
-select ml_one_lang(a.dscr) from dbtst100 a where a.id = 10
+select ml_one_lang( a.dscr ) from dbtst100 a where a.id = 10
 ```
 The following ml_one_lang function returns the french language value of the column `dscr`.
 ```
 
-select ml_one_lang(a.dscr, 'fre') from dbtst100 a where a.id = 10
+select ml_one_lang( a.dscr, 'fre' ) from dbtst100 a where a.id = 10
 ```
 
 ## Related topics
 - [Infor Enterprise Server SQL](baan_sql.md)
+
 - [Multi Language Data](multi_language_data.md)

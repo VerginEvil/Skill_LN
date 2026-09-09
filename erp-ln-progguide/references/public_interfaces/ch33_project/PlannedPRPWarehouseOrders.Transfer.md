@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPRPWarehouseOrders
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1729-1730
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1748-1749
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2024.08 (KB3518771  ).
+This function is available from 2024.08 (KB3518771).
 Syntax: long PlannedPRPWarehouseOrders.Transfer(
 domain  tccprj           iFromProject,
 domain  tccprj           iToProject,
@@ -21,16 +21,16 @@ Usage:        Expl:   This public interface can be used to  transfer approved pl
 PRP(Project Requirements Planning) warehouse orders to
 Warehousing as transfer orders for a range of projects.
 This function offers similar functionality as
-session (tppss6235m000                       - Transfer Planned PRP Warehouse Orders).
+session (tppss6235m000 - Transfer Planned PRP Warehouse Orders).
 Note: Be aware that transaction management is handled within
 this function.
 Pre:    N.A
 Post:   N.A
-Input:  iFromProject                                  - From Project. Optional
-iToProject                                            - To Project. Optional
-iFromPlannedOrder                                     - From Planned Order. Optional
-iToPlannedOrder                                       - To Planned Order. Optional
-iProcessingOptionSet                       -
+Input:  iFromProject                    - From Project. Optional
+iToProject                      - To Project. Optional
+iFromPlannedOrder               - From Planned Order. Optional
+iToPlannedOrder                 - To Planned Order. Optional
+iProcessingOptionSet -
 Optional, if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -70,18 +70,14 @@ CostControlActivityTo           domain tppdm.cact       Maximum Value
 CostControlExtensionFrom        domain tpptc.cstl       Minimum Value
 CostControlExtensionto          domain tpptc.cstl       Maximum Value
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectInvoicing
-
-The following functions are available: ProjectInvoicing.StartProcessProFormaInvoices ProjectInvoicing.StartTransferTransactionsToInvoicing ProjectInvoicing.TransferTransactionsToInvoicing

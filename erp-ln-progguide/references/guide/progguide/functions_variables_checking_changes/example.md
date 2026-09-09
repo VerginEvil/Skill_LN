@@ -20,4 +20,5 @@ off.change.check(city)
 
 ## Related topics
 - [Variables (checking changes) overview](overview.md)
+
 - [Variables (checking changes) synopsis](synopsis.md)

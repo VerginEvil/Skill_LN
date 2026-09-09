@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BankTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1793-1795
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1812-1814
 
 ```baan
 DLL:   tfextcmgapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long BankTransaction.CreateBankReconciliation(
 domain  tcncmp           iFinancialCompany,
 const   domain  tfcmg.bank       iBank,
@@ -44,39 +44,39 @@ are created with Payment or Receipt Reconciliation.
 Note: via this function, it is not possible to add Sundry Costs
 to the Bank Reconciliation Transaction.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit or abort
+Post:   This function sets a retry-point and will commit or abort
 the transaction.
 Note that always a batch and document is created and committed.
 Input:
-iFinancialCompany                             - Financial Company in which the batch
+iFinancialCompany       - Financial Company in which the batch
 and bank transaction will be created.
 Mandatory.
-iBank                                         - Bank Relation for which the
+iBank                   - Bank Relation for which the
 Reconciliation must be done.
 Mandatory.
-iTransactionEntryDate                         - Transaction Entry Date of the batch.
+iTransactionEntryDate   - Transaction Entry Date of the batch.
 Mandatory.
-iUser                                         - The user to be used on the batch. If
+iUser                   - The user to be used on the batch. If
 not filled, the current logged on
 user will be used.
 Optional.
-iBatchReference                               - Reference of the Financial Batch.
+iBatchReference         - Reference of the Financial Batch.
 Optional.
-iDocumentDate                                 - Document Date of the Bank Transaction.
+iDocumentDate           - Document Date of the Bank Transaction.
 Mandatory.
-iNumberOfTransactions                         - Number of Reconciliation Transactions
+iNumberOfTransactions   - Number of Reconciliation Transactions
 to be handled.
 Mandatory
-iTypeOfTransactionArray                       - Array with Type of Bank Transaction.
+iTypeOfTransactionArray - Array with Type of Bank Transaction.
 Only Payment Reconciliation or Receipt
 Reconciliation are possible.
 Mandatory.
-iBankCurrencyArray                            - Array with Currency of the Bank
+iBankCurrencyArray      - Array with Currency of the Bank
 Transaction. If not filled, the Bank
 Currency will be determined based on
 the Bank Transaction Type or the Bank.
 Optional.
-iBankRateArray                                - Array with Currency Rate of the Bank
+iBankRateArray          - Array with Currency Rate of the Bank
 Transaction. Only if the Bank Currency
 is different from the Local Currency
 of the Financial Company, the given
@@ -86,23 +86,23 @@ be determined based on the Document
 Date.
 Optional.
 iAnticipatedTransactionTypeArray
--                                               Array with Transaction Type of the
+- Array with Transaction Type of the
 Anticipated Payment/Receipt.
 Mandatory.
 iAnticipatedDocumentArray
--                                               Array with Document of the Anticipated
+- Array with Document of the Anticipated
 Payment/Receipt.
 Mandatory.
 iAnticipatedScheduleLineNumberArray
--                                               Array with Schedule Line Number of the
+- Array with Schedule Line Number of the
 Anticipated Payment/Receipt.
 Optional.
 iSerialNumberComposedAnticipatedDocumentArray
--                                               Array with Serial Number of Composed
+- Array with Serial Number of Composed
 Anticipated Payment/Receipt.
 Optional.
 iPaymentDocumentStatusArray
--                                               Array with Payment Document Status to
+- Array with Payment Document Status to
 which the Anticipated Payment/Receipt
 must be set.
 Only Open, Complete or Rejected are
@@ -111,25 +111,21 @@ Partial Reconciliation is not
 supported.
 Mandatory.
 Output:
-oBankTransactionType                          - Bank Transaction Type of the given
+oBankTransactionType    - Bank Transaction Type of the given
 Bank.
-oBankDocument                                 - Bank Document created in which the
+oBankDocument           - Bank Document created in which the
 Bank Reconciliation transactions are
 posted.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Bank Reconciliation postings are
+Return: 0                       - Bank Reconciliation postings are
 created successfully.
-<> 0                                          - Error occurred during Bank
+<> 0                    - Error occurred during Bank
 Reconciliation.
 ```
-
-## Public Interfaces for BankStatement
-
-The following functions are available: BankStatement.Validate

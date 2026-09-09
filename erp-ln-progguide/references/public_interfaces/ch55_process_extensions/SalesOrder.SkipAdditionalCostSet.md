@@ -4,38 +4,39 @@
 >
 > Group: Process Extensions for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2222-2225
-
-Skips Addtional Cost Sets when retrieving Additional Cost Set. This process extension is available from 2025.10 ( KB3629872 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2245-2247
 
 ```baan
+Skips Additional Cost Sets when retrieving Additional Cost Set.
+This process extension is available from 2025.10 (KB3629872).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension SalesOrder.SkipAdditionalCostSet can
 be used to skip (exclude) particular Additional Cost Sets
 when retrieving (determining) an Additional Cost Set for a Sales
 Order, Shipment or Price Calculation. Both on header and line level.
 Processes where this Process Extension can be implemented:
--                       Approve Sales Order
--                       Confirm Shipment
--                       Save Price Calculation
--                       (Re)calculate Additional Costs
+- Approve Sales Order
+- Confirm Shipment
+- Save Price Calculation
+- (Re)calculate Additional Costs
 Fields that are available to be used in this Process Extension
 are the underneath fields of table Sales Additional Cost Set
 Scenarios (tdsls027):
--                       Sold-to Business Partner (tdsls027.ofbp)
--                       Ship-to Business Partner (tdsls027.stbp)
--                       Item                     (tdsls027.item)
--                       Cost Set                 (tdsls027.ccos)
--                       Interactive Adding of Additional Costs (tdsls027.inta)
+- Sold-to Business Partner (tdsls027.ofbp)
+- Ship-to Business Partner (tdsls027.stbp)
+- Item                     (tdsls027.item)
+- Cost Set                 (tdsls027.ccos)
+- Interactive Adding of Additional Costs (tdsls027.inta)
 External variables that are available to be used in this Process
 Extension:
--                       proc_ext_skip_add_cost_set [ type: string(20) ]
+- proc_ext_skip_add_cost_set [ type: string(20) ]
 Supported values are:
--                                       tdsls400
--                                       tdsls401
--                                       whinh430
--                                       whinh431
--                                       tdpcg200
--                                       tdpcg201
+- tdsls400
+- tdsls401
+- whinh430
+- whinh431
+- tdpcg200
+- tdpcg201
 This external variable indicates the context from which the function
 is being called.
 Additionally, the primary key fields of the relevant object and its

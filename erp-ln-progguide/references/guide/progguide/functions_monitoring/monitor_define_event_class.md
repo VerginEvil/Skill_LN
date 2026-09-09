@@ -16,9 +16,7 @@ In addition, the monitoring system may afterwards add some tags to each event, s
 | | |
 |---|---|
 | On success | Returns a number > 0, which identifies the monitor event class which has been created. |
-| On failure | No monitor event class is created, and the function returns a number < 0, possible values are: monitor_not_enabled monitor_error_invalid_class_name  |
--
--
+| On failure | No monitor event class is created, and the function returns a number < 0, possible values are: monitor_not_enabled monitor_error_invalid_class_name |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -26,4 +24,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Monitoring overview and synopsis](overview_and_synopsis.md)
+
 - [Monitoring errors.](errors.md)

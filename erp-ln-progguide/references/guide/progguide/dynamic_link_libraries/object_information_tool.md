@@ -58,18 +58,18 @@ bic_info6.2 [-aidshwcV] [-eu] [-f[flags]] object
 ```
 | | |
 |---|---|
-|  | Show all available object information (default).  |
-|  | Show instructions in object (Disassembler). This is only possible when the object is compiled with the debug option.  |
-|  | Show used DLLs and where the external functions used are defined.  |
-|  | Show list of used variables, (global) functions, string constants, and double constants.  |
+|  | Show all available object information (default). |
+|  | Show instructions in object (Disassembler). This is only possible when the object is compiled with the debug option. |
+|  | Show used DLLs and where the external functions used are defined. |
+|  | Show list of used variables, (global) functions, string constants, and double constants. |
 |  | Show Object header. |
 |  | Show #ident <strings>. |
-|  |  Check checksum. exit(0) ok exit(1) corrupted  |
-|  | Show version/release and portings information of bic_info6.2.  |
-|  | Show prototypes of all external functions defined in the object.  |
-|  | Show the general usage of the library (see below).  |
+|  | Check checksum. exit(0) ok exit(1) corrupted |
+|  | Show version/release and portings information of bic_info6.2. |
+|  | Show prototypes of all external functions defined in the object. |
+|  | Show the general usage of the library (see below). |
 |  | Show flags. |
-|  |  Check flags. When this options is used, all other options are ignored. <flag> can be a combination of the following: 1 NOTRANSACTION 2 DEBUG 4 PROFILE 8 DLL exit(0) flag(combination) is in object exit(1) flag(combination) is not in object  |
+|  | Check flags. When this options is used, all other options are ignored. <flag> can be a combination of the following: 1 NOTRANSACTION 2 DEBUG 4 PROFILE 8 DLL exit(0) flag(combination) is in object exit(1) flag(combination) is not in object |
 Combining -e and -u displays the description of the object and the descriptions and prototypes of all external functions within the object (see below).
 
 ## Object and function descriptions

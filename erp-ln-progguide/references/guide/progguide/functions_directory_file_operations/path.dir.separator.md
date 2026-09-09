@@ -34,4 +34,5 @@ dir.separator = path.dir.separator(OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

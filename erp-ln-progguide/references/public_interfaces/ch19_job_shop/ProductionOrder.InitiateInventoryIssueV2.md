@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 716-718
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 716-717
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2022.06 (KB2222932  ).
+This function is available from 2022.06 (KB2222932).
 Syntax: long ProductionOrder.InitiateInventoryIssueV2(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -23,8 +23,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function executes the Initiate Inventory Issue functionality,
 as in session tisfc0207m000, for 1 production order.
 NB.
--                       retrypoint and commit / rollback is done in the function
--                       no reports are printed
+- retrypoint and commit / rollback is done in the function
+- no reports are printed
 Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within

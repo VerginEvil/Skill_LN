@@ -189,7 +189,7 @@ boolean
 |  | [plcm.delete.activity](plcm_delete_activity.md) | `(string activity.id)` |
 |  | [plcm.delete.resource](plcm_delete_resource.md) | `(string resource.id)` |
 |  | [plcm.delete.constraint](plcm_delete_constraint.md) | `(string activity.id.from, string activity.id.to, long constraint.type)` |
-|  | [plcm.delete.reservation](plcm_delete_reservation.md) | `(string activity.id , string resource.id)` |
+|  | [plcm.delete.reservation](plcm_delete_reservation.md) | `(string activity.id, string resource.id)` |
 |  | [plcm.move.activity](plcm_move_activity.md) | `(string activity.id, long start.date, long end.date)` |
 |  | [plcm.create.legend.entry](plcm_create_legend_entry.md) | `(string legend.id, long color, string description)` |
 |  | [plcm.set.legend.for.activity](plcm_set_legend_for_activity.md) | `(string activity.id, string legend.id)` |

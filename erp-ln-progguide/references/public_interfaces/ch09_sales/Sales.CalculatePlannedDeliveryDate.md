@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Sales
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 271-273
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 273-275
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.11 (KB2310725  ).
+This function is available from 2023.11 (KB2310725).
 Syntax: long Sales.CalculatePlannedDeliveryDate(
 domain  tcdate           iPlannedReceiptDate,
 domain  tcdate           iOrderDate,
@@ -39,7 +39,7 @@ Usage:        Expl:   This function calculates the sales planned delivery date b
 on the planned receipt date (date at customer's site).
 For the calculation, the planned receipt date is reduced with the
 transportation time between the address of the sales office or
-supplier warehouse and the ship                      -to address.
+supplier warehouse and the ship-to address.
 If the item is filled, applicable if a calculation for a sales
 order line is done, a check is done if a pattern can be found in
 Terms and conditions. If so the planned delivery date is updated
@@ -49,44 +49,44 @@ availability of the warehouse address calendar (calculated planned
 delivery date must be a workable date in the warehouse calendar).
 Pre:    Not applicable
 Post:   Not applicable
-Input:  iPlannedReceiptDate                           - Planned Receipt Date (mandatory)
-iOrderDate                                            - Order Date
-iItem                                                 - Item
-iSite                                                 - Site
-iSalesOffice                                          - Sales Office
-iSoldToBusinessPartner                                - Sold-to Business Partner
-iShipToBusinessPartner                                - Ship-to Business Partner
-iWarehouse                                            - Warehouse
-iWorkcenter                                           - Workcenter
-iShipToWarehouse                                      - Ship-to Warehouse
-iShipToAddress                                        - Ship-to Address
-iSalesOrder                                           - Sales Order
+Input:  iPlannedReceiptDate             - Planned Receipt Date (mandatory)
+iOrderDate                      - Order Date
+iItem                           - Item
+iSite                           - Site
+iSalesOffice                    - Sales Office
+iSoldToBusinessPartner          - Sold-to Business Partner
+iShipToBusinessPartner          - Ship-to Business Partner
+iWarehouse                      - Warehouse
+iWorkcenter                     - Workcenter
+iShipToWarehouse                - Ship-to Warehouse
+iShipToAddress                  - Ship-to Address
+iSalesOrder                     - Sales Order
 Needed for direct delivery
-iSalesOrderLine                                       - Sales Order Line
+iSalesOrderLine                 - Sales Order Line
 Mandatory if Sales Order is filled.
 Needed for direct delivery.
-iSalesOrderLineSequence                               - Sales Order Line Sequence
-iOrderQuantity                                        - Order Quantity
+iSalesOrderLineSequence         - Sales Order Line Sequence
+iOrderQuantity                  - Order Quantity
 iOrderQuantityConvFactorToInvUnit
--                                                       Order Quantity Conversion Factor
+- Order Quantity Conversion Factor
 to Inventory Unit (mandatory).
 This field must be filled with
 1.0 if no quantity is given.
-iRoute                                                - Route
-iServiceLevel                                         - Service Level
-iTermsOfDelivery                                      - Terms of Delivery
-iPointOfTitlePassage                                  - Point of Title Passage
-iPreferredCarrier                                     - Preferred Carrier
-iCarrier                                              - Carrier
-Output: oPlannedDeliveryDate                          - The calculated Planned Delivery Date.
-oExceptionMessage                                     - The last message if any message is
+iRoute                          - Route
+iServiceLevel                   - Service Level
+iTermsOfDelivery                - Terms of Delivery
+iPointOfTitlePassage            - Point of Title Passage
+iPreferredCarrier               - Preferred Carrier
+iCarrier                        - Carrier
+Output: oPlannedDeliveryDate            - The calculated Planned Delivery Date.
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     -> No error
-<> 0                          -> Error occurred
+Return: 0       -> No error
+<> 0    -> Error occurred
 ```

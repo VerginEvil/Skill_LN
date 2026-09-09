@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 875-876
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 885-886
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2026.07 (KB3677707  ).
+This function is available from 2026.07 (KB3677707).
 Syntax: long ProjectPCS.CalculateCostV2(
 domain  tccprj           iProject,
 boolean          iCalculateEstimatedCost,

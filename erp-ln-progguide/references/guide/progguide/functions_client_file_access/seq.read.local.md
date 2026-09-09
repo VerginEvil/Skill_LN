@@ -19,7 +19,7 @@ This reads a specified number of bytes from a specified file into *buf*.
 | | |
 |---|---|
 | >= 0 | Success. |
-| < 0 | Error. Probably *lfn* not connected.  |
+| < 0 | Error. Probably *lfn* not connected. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -28,4 +28,5 @@ Note  You cannot use [Client file access overview](overview.md) functions in com
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

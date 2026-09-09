@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EquipmentProcurementOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 487-488
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 489-490
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2025.01 (KB3545450  ).
+This function is available from 2025.01 (KB3545450).
 Syntax: long EquipmentProcurementOrder.Approve(
 domain  tcorno           iEquipmentProcurementOrder,
 ref             boolean          oOrderIsBlocked,
@@ -17,14 +17,14 @@ ref             long             oExceptionID )
 Usage:        Expl.:  This function can be used to approve the given Equipment
 Procurement Order.
 Notes:
--                       This function has its own transaction management
--                       If ION Workflow Document Approval is used, then the following
+- This function has its own transaction management
+- If ION Workflow Document Approval is used, then the following
 applies:
 * if the order is waiting for Approval in ION, then updating
 the status is not allowed
 * After executing this function, the status update must be
 approved in ION Workflow Document Approval
--                       This function does not start the execution of automatic
+- This function does not start the execution of automatic
 order steps. A separate Public Interface can be used to
 start automatic order steps if necessary:
 'EquipmentProcurementOrder.StartAutomaticProcessing'
@@ -53,8 +53,8 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Approval successful or the order is
+Return: 0                       - Approval successful or the order is
 set to Blocked because of invalid
 Documents (check argument oOrderIsBlocked)
-<> 0                                          - An error occurred
+<> 0                    - An error occurred
 ```

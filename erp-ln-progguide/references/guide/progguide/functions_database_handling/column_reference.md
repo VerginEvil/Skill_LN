@@ -16,20 +16,19 @@ The column reference references a column.
     ::= !! a valid column name
 
 <correlation name>
-    ::= Identifier
+    ::= <identifier>
 ```
-****
 
 ## Semantics
 The data type of the column reference is the data type of the column that it references. The following table shows the correspondence between database types and SQL types.
 | | |
 |---|---|
 | Database type | SQL type |
-|  char int long enum bitset mail text  | integer |
-|  float double  | real |
+| char int long enum bitset mail text | integer |
+| float double | real |
 | date | date |
 | time (UTC) | timestamp |
-|  string multibyte string  | string |
+| string multibyte string | string |
 | raw | raw |
 
 ## Examples

@@ -10,11 +10,11 @@ Infinite recursion is possible when using this command. For example, if you incl
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `command` |   |
+| `long` | `command` |    |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
-Note  For a list of all standard commands and the program types in which you can use them, see Standard commands.
+Note  For a list of all standard commands and the program types in which you can use them, see [Standard commands](../4gl_features/4gl_choice_sections.md#standard_commands).
 
 ## Example
 ```
@@ -26,4 +26,5 @@ init.form:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

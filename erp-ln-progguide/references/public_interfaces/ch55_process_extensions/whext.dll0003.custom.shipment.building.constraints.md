@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ShipmentBuilding
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2246-2248
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2269-2270
 
 ```baan
 Syntax: long whext.dll0003.custom.shipment.building.constraints(
@@ -18,15 +18,15 @@ Usage:        Expl:   This process extension allows for customer specific shipme
 building constraints. This process extension is called from the
 Infor LN standard, when one of the following events are
 triggered:
--                       Create Projected Shipment
--                       Confirm Pick (when Outbound Inspections are not in use)
--                       Approve (when Outbound Inspections are in use)
--                       Cross Docking (when Confirmation of Receipt or Putaway of
+- Create Projected Shipment
+- Confirm Pick (when Outbound Inspections are not in use)
+- Approve (when Outbound Inspections are in use)
+- Cross Docking (when Confirmation of Receipt or Putaway of
 Inbound Advice is done and the goods are to be
-Cross                                       -Docked or when Approve is done for the
-Inbound Inspection where Cross                                       -Docking should
+Cross-Docked or when Approve is done for the
+Inbound Inspection where Cross-Docking should
 be done in non location controlled warehouses.)
--                       Create Outbound Order Line for Cost/Service items which are
+- Create Outbound Order Line for Cost/Service items which are
 released to warehousing.
 Note: This process extension is not called when composing a
 shipment structure. The constraints that are applicable for the
@@ -61,14 +61,14 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.found.shipment                      - Shipment that is found during shipment
+Input:  i.found.shipment        - Shipment that is found during shipment
 building
 Outbound Order Line Key
 i.order.origin
 i.order.number
 i.order.line
 i.order.sequence
-Output: o.use.found.shipment                  - Indicator if the found shipment should
+Output: o.use.found.shipment    - Indicator if the found shipment should
 be used (true/false)
 Please also set an error message
 regarding this shipment building
@@ -76,7 +76,3 @@ constraint, so the users will get
 feedback when required.
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for ShipmentLine
-
-The following process extension(s) is/are available: ShipmentLine.SkipFreezeConfirm

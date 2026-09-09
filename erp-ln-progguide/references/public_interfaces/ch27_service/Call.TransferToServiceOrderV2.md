@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1376-1378
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1388-1390
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2023.05 (KB2286782  ).
+This function is available from 2023.05 (KB2286782).
 Syntax: long Call.TransferToServiceOrderV2(
 domain  tcorno           iCall,
 domain  tcorno           iServiceOrder,
@@ -33,8 +33,8 @@ be controlled. It can be indicated to continue the transfer
 process or to stop. These are situations for which in LN UI a
 question is asked whether the transfer process should continue
 or stop.
-When one open service order exists for the same sold                      -to business
-partner, invoice                      -to business partner and service office, and
+When one open service order exists for the same sold-to business
+partner, invoice-to business partner and service office, and
 iCreateActivityLineUnderPresentServiceOrder is set to Yes, a
 new service order activity line will be created for this service
 order. In this case iServiceOrder is ignored.
@@ -59,7 +59,7 @@ call must be blocked. When the call is set to blocked, the call
 cannot be transferred and output argument oCallIsBlocked will be
 set to Yes.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit and/or abort
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iCall
 Call Number: Mandatory
@@ -101,7 +101,7 @@ time will exceed the agreed finish time of the call?
 (mandatory Yes/No)
 iCreateActivityLineUnderPresentServiceOrder
 When there is one open service order present for the
-same sold                              -to business partner, invoice-to business
+same sold-to business partner, invoice-to business
 partner and service office, and
 iCreateActivityLineUnderPresentServiceOrder is set to
 Yes, a new service order activity line will be
@@ -114,13 +114,13 @@ iCreateNewOrderWhenMultipleOpenOrdersPresent
 When multiple open service orders are present, the next
 situations are distinguished:
 Value   | iServiceOrder | Call transferred to
---------                              |---------------|--------------------
+--------|---------------|--------------------
 Yes     | ""            | new service order
 Yes     | valid         | iServiceOrder
 Yes     | invalid       | new service order
-No      | ""            | not tranferred                               --> error
+No      | ""            | not tranferred --> error
 No      | valid         | iServiceOrder
-No      | invalid       | not tranferred                               --> error
+No      | invalid       | not tranferred --> error
 (mandatory Yes/No)
 iSetStatusToPlanned
 Indicates if the new service order/activity line must be

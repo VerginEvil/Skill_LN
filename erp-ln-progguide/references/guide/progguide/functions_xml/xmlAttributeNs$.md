@@ -17,7 +17,7 @@ Get the value of an attribute of the specified node. If an attribute with the sp
 ## Return values
 | | |
 |---|---|
-| string | If the *node* is valid, and the node has an attribute with the specified *attributeName* and with a namespace whose URI matches the URI specified by *namespaceOrURI* then a temporary string containing the value of the attribute is returned. Otherwise, the *default.value*, or when this is omitted, the empty string is returned.  |
+| string | If the *node* is valid, and the node has an attribute with the specified *attributeName* and with a namespace whose URI matches the URI specified by *namespaceOrURI* then a temporary string containing the value of the attribute is returned. Otherwise, the *default.value*, or when this is omitted, the empty string is returned. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -40,5 +40,7 @@ value = xmlAttributeNs$( xml_envelope, "http://www.w3.org/2001/12/soap-envelope"
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

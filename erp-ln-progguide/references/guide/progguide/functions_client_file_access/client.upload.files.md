@@ -5,7 +5,7 @@
 `function long client.upload.files( string destination )`
 
 ## Description
-Upload one or more files from the client and save these files in a server directory. Conversion of CRLF characters is only done for text files (file extension .txt or mime.type "text/plain"). All other file types are copied in binary mode. This function returns an id that can be used in the function [client.get.upload.file](client.get.upload.file.md) to obtain information of an uploaded file. This function is only supported for LN UI.
+Upload one or more files from the client and save these files in a server directory. Conversion of CRLF characters is only done for text files (file extension.txt or mime.type "text/plain"). All other file types are copied in binary mode. This function returns an id that can be used in the function [client.get.upload.file](client.get.upload.file.md) to obtain information of an uploaded file. This function is only supported for LN UI.
 
 ## Arguments
 | | | |
@@ -23,4 +23,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

@@ -11,7 +11,7 @@ Further note that this doesn't hold for multi language values. In this case stri
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str` |  |
+| `string` | `str` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -44,4 +44,5 @@ function void f(const string x)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

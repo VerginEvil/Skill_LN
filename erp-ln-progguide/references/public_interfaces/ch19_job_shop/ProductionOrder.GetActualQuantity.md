@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 714-715
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 713-714
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.04 (KB2300947  ).
+This function is available from 2024.04 (KB2300947).
 Syntax: long ProductionOrder.GetActualQuantity(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -20,8 +20,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to read the actual quantity
 for the Production Order's material or product, issue
 or receipt lines.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iSite                   Site (mandatory when the Site concept
 is active).
 iProductionOrder        Production Order (mandatory, must be

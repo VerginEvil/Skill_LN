@@ -14,7 +14,7 @@ Get the right sibling node of a node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; Reference to the found sibling *node* when successful.  |
+| <> 0 | Success; Reference to the found sibling *node* when successful. |
 | 0 | Error. |
 
 ## Context
@@ -22,4 +22,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

@@ -7,7 +7,9 @@
 Tests two strings on equality. By default the test is done in a case sensitive way, e.g. "A" is not equal to "a". Optionally the test can be done case insensitive.
 This function is a shorthand for `(str.compare(a$, b$) = 0)`.
 Note that contrary to function [cmp.mem()](../functions_memory_operations/cmp.mem.md), this function compares the two strings using the length the of the *largest* string.
+
 - According to [cmp.mem()](../functions_memory_operations/cmp.mem.md), "ab" and "abc" are equal, as [cmp.mem()](../functions_memory_operations/cmp.mem.md) tests the two strings using the shortest length.
+
 - According to [str.equals()](str.equals.md), "ab" and "abc" are not equal.
 
 ## Arguments
@@ -46,4 +48,5 @@ ret = str.equals("ab", "abcd")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

@@ -9,7 +9,7 @@ This returns whether a specified field is a multi currency field.
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `field_name(18)` |   |
+| `string` | `field_name(18)` |    |
 
 ## Return values
 | | |
@@ -22,4 +22,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

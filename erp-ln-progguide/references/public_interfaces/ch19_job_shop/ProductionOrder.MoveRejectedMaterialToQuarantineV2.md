@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 719-721
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 719-720
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.09 (KB3546226  ).
+This function is available from 2025.09 (KB3546226).
 Syntax: long ProductionOrder.MoveRejectedMaterialToQuarantineV2(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

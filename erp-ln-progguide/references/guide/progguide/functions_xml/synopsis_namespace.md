@@ -15,7 +15,7 @@
 | `string` | [xmlAttributePrefix$](xmlAttributePrefix$.md) | `( long node, long attributeNr, [ const string default.value ] )` |
 | `string` | [xmlAttributeQualifiedName$](xmlAttributeQualifiedName$.md) | `( long node, long attributeNr, [ const string default.value ] )` |
 | `string` | [xmlAttributeURI$](xmlAttributeURI$.md) | `( long node, long attributeNr, [ const string default.value ] )` |
-| `string` | [xmlBuildNamespaceList$](xmlBuildNamespaceList$.md) | `( const string prefix, const string URI, ... )` |
+| `string` | [xmlBuildNamespaceList$](xmlBuildNamespaceList$.md) | `( const string prefix, const string URI,... )` |
 | `string` | [xmlDataElementNs$](xmlDataElementNs$.md) | `(long node, void namespaceOrURI, const string name, [ const string default.value, const string data.separator, const string element.separator ] )` |
 | `long` | [xmlDeleteAttributeNs](xmlDeleteAttributeNs.md) | `(long node, void namespaceOrURI, const string name )` |
 | `long` | [xmlFindFirstMatchNs](xmlFindFirstMatchNs.md) | `(const string pattern, const string namespaceList, long fromNode, [ long toNode ])` |
@@ -59,6 +59,9 @@
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object constraints](constraints.md)
+
 - [XML object glossary](glossary.md)
+
 - [XML object API](api.md)

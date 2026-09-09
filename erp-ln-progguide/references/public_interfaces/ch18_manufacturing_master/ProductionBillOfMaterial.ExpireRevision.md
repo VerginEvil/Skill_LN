@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 624-624
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 627-627
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2021.08 (KB2202931  ).
+This function is available from 2021.08 (KB2202931).
 Syntax: long ProductionBillOfMaterial.ExpireRevision(
 domain  tcitem           iProduct,
 domain  tibmrv           iRevision,
@@ -21,18 +21,18 @@ Active.
 Retry point has been set.
 Specified Production Bill of Material is not yet expired.
 Post:   Transaction is aborted or committed.
-Input:  iProduct                              - Product (Mandatory).
-iRevision                                     - Revision (Mandatory).
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iProduct                - Product (Mandatory).
+iRevision               - Revision (Mandatory).
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Specified PBOM Revision has succesfully
+Return: 0                       - Specified PBOM Revision has succesfully
 been expired.
-<> 0                                          - Specified PBOM Revision has not been
+<> 0                    - Specified PBOM Revision has not been
 expired.
 ```

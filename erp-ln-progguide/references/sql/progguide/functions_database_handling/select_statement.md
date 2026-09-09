@@ -5,29 +5,24 @@ A SELECT statement retrieves a row set (or derived table) from the database. The
 ```
 
 <select statement>
-    ::= Query expression
-                 [ ORDER BY clause
-          ]
-        [ SET specification ]
+    ::= <query expression>
+        [ <order by clause> ]
+        [ <set specification> ]
 ```
 
 ## Informal syntax
 ```
 
-         SELECT clause <select list>
-FROM clause <from list>
-[ WHERE clause Search condition ]
-[ GROUP BY clause <group list>
-  [ HAVING clause Search condition ] ]
-[ UNION operator 
-SELECT clause <select list>
-FROM clause <from list>
-  [ WHERE clause Search condition ]
-  [ GROUP BY clause <group list>
-    [ HAVING clause Search condition ] ]
-] ...
-[ ORDER BY clause <order by list>]
-[ SET specification ]
+<select clause> <from clause>
+[ <where clause> ]
+[ <group by clause> [ <having clause> ] ]
+[ { UNION [ALL] <select clause> <from clause>
+                [ <where clause> ]
+                [ <group by clause> [ <having clause> ] ]
+  }...
+]
+[ <order by clause> ]
+[ <set specification> ]
 ```
 For full details of any of the above clauses of the SELECT statement, simply click on the relevant clause.
 
@@ -61,10 +56,10 @@ The following SELECT statement selects for each education level the salary and f
 SELECT max_salary_by_edlevel.edlevel, salary, firstnme
 FROM ( SELECT edlevel, MAX( salary ) AS max_salary
        FROM dbtst120
-       GROUP BY edlevel ) max_salary_by_edlevel
-     INNER JOIN
-       dbtst120 AS employees
-     ON max_salary_by_edlevel.max_salary = employees.salary
+       GROUP BY edlevel
+     ) max_salary_by_edlevel
+INNER JOIN dbtst120 AS employees
+ON max_salary_by_edlevel.max_salary = employees.salary
 ```
 
 ## Related topics

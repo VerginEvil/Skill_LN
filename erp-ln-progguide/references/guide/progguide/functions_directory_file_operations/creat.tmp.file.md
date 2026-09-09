@@ -11,7 +11,7 @@ In UNIX environments, a unique temporary file is created with UNIX-privilege mod
 ## Arguments
 | | | |
 |---|---|---|
-| `[ string` | `pathname ]` |  |
+| `[ string` | `pathname ]` |    |
 
 ## Return values
 The name of the temporary file.
@@ -23,4 +23,5 @@ Notes  It is recommended that you use this function in conjunction with the BSE_
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

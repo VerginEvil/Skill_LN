@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Address
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 85-87
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 86-88
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2024.01 (KB2314506  ).
+This function is available from 2024.01 (KB2314506).
 Syntax: long Address.Create(
 domain  tccadr.nama      iAddressName mb,
 domain  tcccty           iCountry,
@@ -54,57 +54,57 @@ Usage:        Expl:   This function creates a new address. If an existing addres
 is found based on the given input information then the existing
 address code is returned. Otherwise a new address code is
 created and returned.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iAddressName                          - Name of the Address
+Input:  iAddressName            - Name of the Address
 (This is a Mandatory field.)
-iCountry                                      - Country
+iCountry                - Country
 (This is a Mandatory field.)
-iCityName                                     - City Name
+iCityName               - City Name
 (This is a Mandatory field.)
-iSetStateProvince                              - Set State/Province
-iStateProvince                                - State/Province
-iSetName2                                     - Set Name 2 (True/False)
-iName2                                        - Name 2
-iSetCity2                                     - Set City 2 (True/False)
-iCity2                                        - City 2
-iSetPostalCode                                - Set ZIP Code/Postal Code (True/False)
-iPostalCode                                   - ZIP Code/Postal Code
-iSetStreet                                    - Set Street (True/False)
-iStreet                                       - Street
-iSetStreet2                                   - Set Street 2 (True/False)
-iStreet2                                      - Street 2
-iSetHouseNumber                               - Set House Number (True/False)
-iHouseNumber                                  - House Number
-iSetPOBoxNumber                               - Set P.O. Box Number (True/False)
-iPOBoxNumber                                  - P.O. Box Number
-iSetBuilding                                  - Set Building (True/False)
-iBuilding                                     - Building
-iSetBuildingFloor                             - Set Building Floor (True/False)
-iBuildingFloor                                - Building Floor
-iSetBuildingUnit                              - Set Building Unit (True/False)
-iBuildingUnit                                 - Building Unit
-iSetAddressLine1                              - Set Address Line 1 (True/False)
-iAddressLine1                                 - Address Line 1
-iSetAddressLine2                              - Set Address Line 2 (True/False)
-iAddressLine2                                 - Address Line 2
-iSetAddressLine3                              - Set Address Line 3 (True/False)
-iAddressLine3                                 - Address Line 3
-iSetAddressLine4                              - Set Address Line 4 (True/False)
-iAddressLine4                                 - Address Line 4
-iSetAddressLine5                              - Set Address Line 5 (True/False)
-iAddressLine5                                 - Address Line 5
-iSetAddressLine6                              - Set Address Line 6 (True/False)
-iAddressLine6                                 - Address Line 6
-Output: oAddressCode                          - Address Code
-oExceptionMessage                             - The last message if any message is
+iSetStateProvince        - Set State/Province
+iStateProvince          - State/Province
+iSetName2               - Set Name 2 (True/False)
+iName2                  - Name 2
+iSetCity2               - Set City 2 (True/False)
+iCity2                  - City 2
+iSetPostalCode          - Set ZIP Code/Postal Code (True/False)
+iPostalCode             - ZIP Code/Postal Code
+iSetStreet              - Set Street (True/False)
+iStreet                 - Street
+iSetStreet2             - Set Street 2 (True/False)
+iStreet2                - Street 2
+iSetHouseNumber         - Set House Number (True/False)
+iHouseNumber            - House Number
+iSetPOBoxNumber         - Set P.O. Box Number (True/False)
+iPOBoxNumber            - P.O. Box Number
+iSetBuilding            - Set Building (True/False)
+iBuilding               - Building
+iSetBuildingFloor       - Set Building Floor (True/False)
+iBuildingFloor          - Building Floor
+iSetBuildingUnit        - Set Building Unit (True/False)
+iBuildingUnit           - Building Unit
+iSetAddressLine1        - Set Address Line 1 (True/False)
+iAddressLine1           - Address Line 1
+iSetAddressLine2        - Set Address Line 2 (True/False)
+iAddressLine2           - Address Line 2
+iSetAddressLine3        - Set Address Line 3 (True/False)
+iAddressLine3           - Address Line 3
+iSetAddressLine4        - Set Address Line 4 (True/False)
+iAddressLine4           - Address Line 4
+iSetAddressLine5        - Set Address Line 5 (True/False)
+iAddressLine5           - Address Line 5
+iSetAddressLine6        - Set Address Line 6 (True/False)
+iAddressLine6           - Address Line 6
+Output: oAddressCode            - Address Code
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Address Found/Create
-<> 0                                          - Error
+Return: 0                       - Address Found/Create
+<> 0                    - Error
 ```

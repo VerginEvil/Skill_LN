@@ -11,5 +11,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Functions with variable number of arguments: overview](overview.md)
+
 - [Functions with variable number of arguments: synopsis](synopsis.md)
+
 - [Functions with variable number of arguments: sample program](example.md)

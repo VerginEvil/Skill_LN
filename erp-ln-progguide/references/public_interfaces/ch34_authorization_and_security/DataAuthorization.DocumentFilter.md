@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for DataAuthorization
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1750-1755
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1769-1773
 
 ```baan
 DLL:   tcextsecapi
-This function is available from     2020.11 (KB2158660  ).
+This function is available from 2020.11 (KB2158660).
 Syntax: long DataAuthorization.DocumentFilter(
 domain  tcsec.auth.doc   iDocumentType,
 const           string           iMainTableDocumentField(),
@@ -179,13 +179,13 @@ purchase office (see authorization and security parameters)
 is not supported by this function.
 Pre:    None
 Post:   None
-Input:  iDocumentType                         - Document Type: Mandatory
-iMainTableDocumentField                       - The name of the main table field
+Input:  iDocumentType           - Document Type: Mandatory
+iMainTableDocumentField - The name of the main table field
 containing the Document: Mandatory
 Note: this argument must be filled
 with a quoted string of the table
 field name: e.g. "tipcs020.cprj".
-iMainTableCompanyField                        - The name of the main table field
+iMainTableCompanyField  - The name of the main table field
 containing a Company: Optional, with
 one exception: Mandatory for Document
 Type "Manual Sales Invoice".
@@ -197,25 +197,17 @@ If supported this argument must be
 filled with a quoted string of the
 table field name: e.g. "whwmd241.ncmp"
 else with an empty string: "".
-Output: oDocumentFilter                       - A string containing a SQL filter
+Output: oDocumentFilter         - A string containing a SQL filter
 to filter records based on
 authorization settings for the user.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful.
-<> 0                                          - An error occurred.
+Return: 0                       - Successful.
+<> 0                    - An error occurred.
 ```
-
-## Chapter 35 Public Interfaces for Quality
-
-## Management
-
-## Public Interfaces for OrderInspection
-
-The following functions are available: OrderInspection.Close OrderInspection.Complete OrderInspection.Process

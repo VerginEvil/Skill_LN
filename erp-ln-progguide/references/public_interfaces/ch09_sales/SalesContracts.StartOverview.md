@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 301-302
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 303-304
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SalesContracts.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,29 +27,29 @@ Usage:        Expl:   This function starts the session Sales Contracts in overvi
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the table                              -index that is to be used. Optional.
+Specifies the table-index that is to be used. Optional.
 Supported values:
 1: sort by Sales Contract (default)
-2: sort by Sold                              -to Business Partner, Customer Order
+2: sort by Sold-to Business Partner, Customer Order
 3: sort by Description, Contract
-4: sort by Sales Office, Sold                              -to Business Partner, Contract
-6: sort by Internal Sales Rep, Sold                              -to Business Partner
+4: sort by Sales Office, Sold-to Business Partner, Contract
+6: sort by Internal Sales Rep, Sold-to Business Partner
 iQueryExtend
 A specific query to be used when zooming to this session.
 (Optional)
 iSalesContract
 Sales Contract (Optional)
 iSoldToBusinessPartner
-Sold                              -to Business Partner (Optional)
+Sold-to Business Partner (Optional)
 iCustomerOrder
 Customer Order (Optional)
 iSalesOffice
@@ -69,7 +69,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for SalesContractLine
-
-The following functions are available: SalesContractLine.Activate SalesContractLine.Deactivate SalesContractLines.StartOverview

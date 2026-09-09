@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2286-2332
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2314-2314
 
 ```baan
 Syntax: long whext.dll0012.create.new.warehouse.order(
@@ -34,12 +34,12 @@ line can be read and used to determine if this warehouse order
 header can be used.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.found.order.origin                  - Order Origin
-i.found.order                                 - Order Number
-i.found.order.set                             - Order Set
-i.order.line                                  - Order Line
-i.order.sequence                              - Order Sequence
-Output: o.line.can.be.added.to.found.order               - Can the line be added to
+Input:  i.found.order.origin    - Order Origin
+i.found.order           - Order Number
+i.found.order.set       - Order Set
+i.order.line            - Order Line
+i.order.sequence        - Order Sequence
+Output: o.line.can.be.added.to.found.order - Can the line be added to
 the order header that is found.
 Return: 0: Success / <> 0: Error
 ```

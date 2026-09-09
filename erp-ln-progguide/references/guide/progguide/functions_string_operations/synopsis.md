@@ -2,7 +2,7 @@
 | | | |
 |---|---|---|
 | string | [bytes2hex](bytes2hex.md) | `( const string bytes, long length )` |
-| string | [concat$](concat.md) | `( string separator, expr, ... )` |
+| string | [concat$](concat.md) | `( string separator, expr,... )` |
 | string | [filter.infrastructural.details](filter.infrastructural.details.md) | `( const string bytes )` |
 | long | [hex2bytes](hex2bytes.md) | `( const string hex, ref string bytes )` |
 | boolean | [isdigit](isdigit.md) | `( string_expr )` |
@@ -47,7 +47,7 @@
 | boolean | [str.isnumeric](str.isnumeric.md) | `( const string string$ )` |
 | boolean | [str.isurl](str.isurl.md) | `( const string string$ )` |
 | boolean | [str.isuuid](str.isuuid.md) | `( const string string$ )` |
-| string | [str.join$](str.join.md) | `( const string separator$, ... )` |
+| string | [str.join$](str.join.md) | `( const string separator$,... )` |
 | long | [str_pos](str_pos.md) | `( string source, string part, [ long offset ] )` |
 | string | [str.remove$](str.remove.md) | `( const string string$, long offset, long nchars )` |
 | void | [str.replace](str.replace.md) | `( const string string$, const string oldstr$, const string newstr$, ref string result$ )` |
@@ -65,7 +65,6 @@
 | string | [toupper$](toupper.md) | `( string_expr )` |
 | string | [trim$](trim.md) | `( string_expr )` |
 | string | [quoted.string](quoted.string.md) | `( string_expr )` |
-|  |  |  |
 | long | [tt.align.according.domain](tt.align.according.domain.md) | `( string string_in(.), ref string string_out(), string domain_name )` |
 | double | [val](val.md) | `( string_expr )` |
 

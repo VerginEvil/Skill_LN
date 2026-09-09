@@ -1,12 +1,12 @@
 # GROUP BY clause
-The GROUP BY clause specifies a grouped table. It operates on the table that is specified by the FROM clause and possibly the WHERE clause of the SELECT statement.
+The GROUP BY clause specifies a [grouped table](sql_glossary.md#GroupedTable). It operates on the table that is specified by the FROM clause and possibly the WHERE clause of the SELECT statement.
 GROUP BY takes the result-set and arranges its rows into groups using one or more columns that have duplicate values. Typically used in conjunction with aggregate functions (MIN, MAX, AVG, etc).
 
 ## Syntax
 ```
 
 <group by clause>
-    ::= GROUP BY Column reference { , Column reference }...
+    ::= GROUP BY <column reference> [ { , <column reference> }... ]
 ```
 
 ## Semantics
@@ -47,7 +47,7 @@ edlevel    salary            firstnme            ...
 20         38250.00000000000 SALLY
 -------------------------------------------------------------
 ```
-The following example does not actually contain a GROUP BY clause, but because the SELECT clause contains a [Set function specification](set_function_specification.md) the statement may be viewed as one that contains an implicit GROUP BY clause, containing no *<column reference>s*.
+The following example does not actually contain a GROUP BY clause, but because the SELECT clause contains a [Set function specification](set_function_specification.md) the statement may be viewed as one that contains an implicit GROUP BY clause, containing no *<**column reference**>**s*.
 ```
 
 SELECT AVG( salary )
@@ -68,6 +68,9 @@ edlevel    salary            firstnme            ...
 
 ## Related topics
 - [FROM clause](from.md)
+
 - [HAVING clause](having.md)
+
 - [SELECT clause](select.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

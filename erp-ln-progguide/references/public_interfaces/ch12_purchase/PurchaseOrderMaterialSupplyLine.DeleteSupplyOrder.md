@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderMaterialSupplyLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 474-475
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 476-477
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long PurchaseOrderMaterialSupplyLine.DeleteSupplyOrder(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -18,7 +18,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.:  This function can be used to delete a supply order for the given
 purchase order material supply line.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Mandatory)

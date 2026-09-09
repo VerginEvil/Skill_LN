@@ -19,7 +19,7 @@ Returns the name of the service that supports the addresstype specified by the v
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | No matching service found. The value of *service* is undefined in this case.  |
+| -1 | No matching service found. The value of *service* is undefined in this case. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -27,5 +27,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

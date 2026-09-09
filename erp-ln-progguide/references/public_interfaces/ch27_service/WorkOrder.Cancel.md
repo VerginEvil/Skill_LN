@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1484-1485
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1498-1500
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2022.04 (KB2235599  ).
+This function is available from 2022.04 (KB2235599).
 Syntax: long WorkOrder.Cancel(
 domain  tcorno           iWorkOrder,
 domain  tsmdm.acln       iWorkOrderActivityLine,
@@ -25,22 +25,22 @@ single activity.
 If iWorkOrderActivityLine is zero the whole work order
 will be cancelled. If iWorkOrderActivityLine is not zero
 the specific work order activity line will be cancelled.
-If the work order or activity has follow                      -up work orders,
+If the work order or activity has follow-up work orders,
 these will be cancelled as well.
 This function has the same options as session
 'Cancel Work Order' (tswcs2260m000) when cancelling a
 work order or work order activity. These are options available
 as input field and conditional options asked by questions.
--                       iNewPlannedActivityStatus
+- iNewPlannedActivityStatus
 In case the order or activity is originating from
 a planned activity this input argument can be used to
 set the status of the originating planned activity
 after cancelling.
--                       iSetLinkedCallToSolved
+- iSetLinkedCallToSolved
 In case the order or activity is originating from
 a call and this argument has value 'Yes' the call
 status is set to 'Solved'.
--                       iCancelPurchaseMaterialLines
+- iCancelPurchaseMaterialLines
 If purchase orders are created for work order material lines,
 this option can be used to cancel or delete these.
 When the purchase order status is Planned, the purchase order
@@ -59,9 +59,9 @@ a planned activity this input argument can be used to
 set the status of the originating planned activity
 after cancelling.
 Allowed values are:
--                                       Free
--                                       Released
--                                       Cancelled
+- Free
+- Released
+- Cancelled
 iSetLinkedCallToSolved  (mandatory, Yes/No)
 In case the order or activity is originating from
 a call and this argument has value 'Yes' the call
@@ -88,7 +88,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Work order or activity set to cancelled succesfull
-<> 0                          - Error during cancelling the work order or activity
+Return: 0       - Work order or activity set to cancelled succesfull
+<> 0    - Error during cancelling the work order or activity
 occurred
 ```

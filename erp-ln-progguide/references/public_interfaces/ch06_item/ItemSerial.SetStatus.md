@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemSerial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 223-224
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 225-225
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2024.11 (KB2331329  ).
+This function is available from 2024.11 (KB2331329).
 Syntax: long ItemSerial.SetStatus(
 domain  tcitem           iItem,
 domain  tcibd.sern       iSerialNumber,
@@ -19,22 +19,18 @@ Usage:        Expl:   This Public Interface updates the status of Item Serial nu
 Pre:    retry.point must be set
 Post:   transaction must be committed or aborted
 Input:
-iItem                                         - Item (Mandatory).
-iSerialNumber                                 - Serial Number (Mandatory).
-iStatus                                       - Status (Mandatory).
+iItem                   - Item (Mandatory).
+iSerialNumber           - Serial Number (Mandatory).
+iStatus                 - Status (Mandatory).
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successfully updated.
-<> 0                                          - Otherwise.
+Return: 0                       - Successfully updated.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for SupplyingRelationship
-
-The following functions are available: SupplyingRelationships.StartDetail SupplyingRelationships.StartOverview

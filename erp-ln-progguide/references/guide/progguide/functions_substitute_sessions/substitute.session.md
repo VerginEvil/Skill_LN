@@ -1,7 +1,7 @@
 # substitute.session()
 
 ## Syntax:
-`function long substitute.session( long old.pid, string new.session, long new.pid, [ void ... ] )`
+`function long substitute.session( long old.pid, string new.session, long new.pid, [ void... ] )`
 
 ## Description
 This function overlays (substitutes) one session with another. The old session will be no longer visible and the new session will be placed on the same position with exactly the same dimensions.
@@ -23,5 +23,7 @@ The process id of the new started process.
 
 ## Related topics
 - [Substitute session overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)
+
 - [Substitute session sample program](example.md)

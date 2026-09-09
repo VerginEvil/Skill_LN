@@ -20,4 +20,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Byte arrays overview](byte_arrays_overview.md)
+
 - [Byte arrays synopsis](byte_arrays_synopsis.md)

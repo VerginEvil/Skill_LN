@@ -44,4 +44,5 @@ long
 
 ## Related topics
 - [Key fields Object overview](overview.md)
+
 - [Composite Sessions Code Examples](../functions_composite_sessions/examples.md)

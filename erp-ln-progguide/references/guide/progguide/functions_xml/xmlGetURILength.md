@@ -15,7 +15,7 @@ Get the length of the URI of the namespace of the specified node.
 | | |
 |---|---|
 | >= 0 | Success; The length of the URI. |
-| -1 | The *node* is invalid or the node *node* is not in a namespace.  |
+| -1 | The *node* is invalid or the node *node* is not in a namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -34,5 +34,7 @@ length = xmlGetURILength( xml_envelope )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

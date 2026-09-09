@@ -11,10 +11,16 @@ In case of Baan Windows this is the client machine on which BW is running.
 In case of WebUI, this is the client machine on which the Internet Browser is running when running on a Windows system.
 When the WebUI runs on a non-Windows operating system, an empty string is returned.
 The following time-zones are not supported by Microsoft:
-1. Pacific\Chatham
-1. Pacific\Kiritimati
-1. Pacific\Marquesas
-1. Pacific\Norfolk  These time-zones are matched with a near known time-zone. The conversion can be found in timezone table (session ttaad0160m000).
+
+- Pacific\Chatham
+
+- Pacific\Kiritimati
+
+- Pacific\Marquesas
+
+- Pacific\Norfolk
+
+These time-zones are matched with a near known time-zone. The conversion can be found in timezone table (session ttaad0160m000).
 
 ## Return values
 | |
@@ -26,4 +32,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

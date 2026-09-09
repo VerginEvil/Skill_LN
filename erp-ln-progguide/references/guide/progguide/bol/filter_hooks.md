@@ -5,8 +5,11 @@ This is called BO filtering.
 Since BO filters are application specific, the filters are part of the specific hooks in the Protected Layer of the BOL. The hooks for object filters must be specified per BO component.
 Each filter hook has to be created manually in the development part of the script.
 The name of the hook is built as follows:
+
 - <dll name>.<component name>.object.filter()
+
 - example: gaadv.bl090sf00.Header.object.filter()
+
 - example without component: gaadv.bl091sf00.object.filter()
 
 ## Typical example
@@ -23,5 +26,7 @@ tdsls.bl040sf00.Header.object.filter(
 
 ## Related topics
 - [Specific Methods](specific_methods.md)
+
 - [Before and After Method Hooks](before_hooks.md)
+
 - [Protected Layer](st_layer.md)

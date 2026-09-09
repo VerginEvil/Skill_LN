@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Load
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1130-1131
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1140-1141
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.11 (KB2210929  ).
+This function is available from 2021.11 (KB2210929).
 Syntax: long Load.Freeze(
 domain  whinh.load       iLoad,
 domain  tcyesno          iCalculateAdditionalCosts,
@@ -22,9 +22,9 @@ Be aware that transaction management is handled within this
 function.
 Pre:    N.a.
 Post:   N.a.
-Input:  iLoad                         - Mandatory
+Input:  iLoad           - Mandatory
 iCalculateAdditionalCosts
--                                               Mandatory
+- Mandatory
 When this is set to Yes, the existing
 additional cost lines will first be
 removed, and a new calculation of the
@@ -32,13 +32,13 @@ additional cost lines will be
 performed.
 This excludes the manually created
 additional cost lines.
-Output: oShipmentLinesFrozen                  - One or more Shipment Lines are
+Output: oShipmentLinesFrozen    - One or more Shipment Lines are
 frozen
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

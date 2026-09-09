@@ -11,13 +11,13 @@ Window preferences, fonts, charts, chart types, and option sets are defined by B
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `chart_manager(80)` |  |
+| `long` | `chart_manager(80)` |    |
 | `string` | `title(80)` |  This specifies the window title.  |
 | `string` | `user(14)` |  This specifies the name of the relevant user.  |
 | `string` | `owner(14)` |  This specifies the name of the relevant owner.  |
 | `[ string` | `version(4) ]` |  It is possible to assign a VRC code to a chart. These optional arguments specify the relevant VRC codes.  |
-| `[ string` | `release(2) ]` |  |
-| `[ string` | `cust(4) ]` |  |
+| `[ string` | `release(2) ]` |    |
+| `[ string` | `cust(4) ]` |    |
 
 ## Return values
 | | |
@@ -31,6 +31,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

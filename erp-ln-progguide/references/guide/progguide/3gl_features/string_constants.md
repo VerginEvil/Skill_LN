@@ -34,4 +34,5 @@ There is no escape mechanism to specify characters in string literals by means o
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Constants](constants.md)

@@ -9,8 +9,8 @@ This retrieves the description (in the user's current language) of a specified t
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `table(8)` |  |
-| `ref string` | `desc() mb` |  |
+| `string` | `table(8)` |    |
+| `ref string` | `desc() mb` |    |
 
 ## Return values
 The description is returned.

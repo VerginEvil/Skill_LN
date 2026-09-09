@@ -1,5 +1,13 @@
-# Assignment Operator
-The assignment operator [=] stores a value (the right hand side operand) in a variable (the left hand side operand).
+# Assignment
+The syntax to be used for an assignment is as follows.
+```
+
+<left hand side> = <right hand side>
+```
+The <left hand side> specifies a storage location. The <right hand side> is an expression.
+The <left hand side> must be a variable or an indexed array variable. The variable must not be declared as CONST.
+The <right hand side> is evaluated and the result is stored in the storage location specified by the <left hand side>.
+An assignment does not yield a result. An assignment cannot be used as an operand in an expression.
 
 ## Examples (general)
 ```
@@ -18,10 +26,9 @@ The assignment operator [=] stores a value (the right hand side operand) in a va
                            | positions of B
   K         = L            | The entire content of array L is copied to K
 ```
-The left hand side operand of the assignment operator must be a variable or an indexed array variable. The variable must not be declared as CONST.
-In general, both operands of the assignment operator must have the same type.
-Apart from the general rule above, assignment of a double value to a variable of type long is allowed. In such a case, implicit double to long type conversion is performed.
-Apart from the general rule above, assignment of a long value to a variable of type double is allowed. In such a case, implicit long to double type conversion is performed.
+As a general rule, both sides of an assignment must have the same type.
+Apart from the general rule above, assignment of a double value to a variable of type long is allowed. In such a case, [implicit](type_conversions.md#implicit_type_conversion) [double to long type conversion](type_conversions.md#double_to_long_type_conversion) is performed.
+Apart from the general rule above, assignment of a long value to a variable of type double is allowed. In such a case, [implicit](type_conversions.md#implicit_type_conversion) [long to double type conversion](type_conversions.md#long_to_double_type_conversion) is performed.
 
 ## Examples (longs and doubles)
 ```
@@ -36,4 +43,5 @@ Apart from the general rule above, assignment of a long value to a variable of t
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Expressions and operators](expressions_and_operators.md)

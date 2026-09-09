@@ -15,4 +15,5 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [Role Based Home Pages overview](overview.md)
+
 - [Role Based Home Pages synopsis](synopsis.md)

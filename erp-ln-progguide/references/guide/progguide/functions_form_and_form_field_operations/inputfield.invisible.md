@@ -13,7 +13,7 @@ However, when the field is made invisible in the before program, it may not be m
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `field_name(18),...` |   |
+| `string` | `field_name(18),...` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -28,4 +28,5 @@ before.program:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

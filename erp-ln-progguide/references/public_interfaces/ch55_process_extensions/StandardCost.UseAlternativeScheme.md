@@ -4,11 +4,12 @@
 >
 > Group: Process Extensions for StandardCost
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2254-2254
-
-Standard Cost Calculation using Alternative Cost Component Scheme. This process extension is available from 2026.09 ( KB3641489 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2277-2277
 
 ```baan
+Standard Cost Calculation using Alternative Cost Component Scheme.
+This process extension is available from 2026.09 (KB3641489).
+Technical information for this process extension:
 Usage:        With this process extension, the Standard Cost Calculation can be
 controlled to use an alternative Cost Component Scheme.
 This behavior can only be applied for a Cost Calculation Code
@@ -26,6 +27,5 @@ If the outcome indicates that the alternative scheme must be considered
 then during the calculations, for each item/enterprise unit combination,
 the second extension point method (tiext.cpr0003.get.alternative.scheme)
 is called to obtain the alternative Cost Component Scheme.
-```
-
 To implement this process extension, you need to implement the following method(s):
+```

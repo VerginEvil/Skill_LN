@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 505-508
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 507-510
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2019.04 (KB2042557  ).
+This function is available from 2019.04 (KB2042557).
 Syntax: long Pricing.SimulatePurchasePrice(
 domain  tcncmp           iLogisticCompany,
 domain  tcncmp           iFinancialCompany,
@@ -83,111 +83,111 @@ Input:
 |***************************************************************
 |* Mandatory input arguments.
 |***************************************************************
-iLogisticCompany                                      - Logictic Company
-iFinancialCompany                                     - Financial Company
-iBuyFromBusinessPartner                               - Buy-from Business Partner
-iCurrency                                             - Currency
-iItem                                                 - Item
+iLogisticCompany                - Logictic Company
+iFinancialCompany               - Financial Company
+iBuyFromBusinessPartner         - Buy-from Business Partner
+iCurrency                       - Currency
+iItem                           - Item
 |***************************************************************
 |* Optional input arguments; if not filled, defaults are
 |* retrieved.
 |***************************************************************
-iShipFromBusinessPartner                              - Ship-from Business Partner
-iInvoiceFromBusinessPartner                           - Invoice-from Business Partner
-iPricingBusinessPartner                               - Pricing Business Partner
-iPurchaseOffice                                       - Purchase Office
-iRateType                                             - Exchange Rate Type
-iRateDate                                             - Rate Date; if zero, then Price
+iShipFromBusinessPartner        - Ship-from Business Partner
+iInvoiceFromBusinessPartner     - Invoice-from Business Partner
+iPricingBusinessPartner         - Pricing Business Partner
+iPurchaseOffice                 - Purchase Office
+iRateType                       - Exchange Rate Type
+iRateDate                       - Rate Date; if zero, then Price
 Date is used.
-iRate                                                 - Rate; if first element zero,
+iRate                           - Rate; if first element zero,
 rate and rate factor are
 defaulted.
-iRateFactor                                           - Rate Factor; if first element
+iRateFactor                     - Rate Factor; if first element
 is zero, rate and rate factor
 are defaulted.
-iPriceList                                            - Price List
-iOrderType                                            - Order Type
-iArea                                                 - Area
-iDeliveryTerms                                        - Delivery Terms
-iPaymentMethod                                        - Payment Method
-iOptionListID                                         - Option List ID
-iProductVariant                                       - Product Variant
-iEffectivityUnit                                      - Effectivity Unit
-iSpecification                                        - Specification
-iManufacturerPartNumber                               - ManufacturerPartNumber
-iManufacturer                                         - Manufacturer
-iSubcontracted                                        - Subcontracted; if empty, 'no'
+iPriceList                      - Price List
+iOrderType                      - Order Type
+iArea                           - Area
+iDeliveryTerms                  - Delivery Terms
+iPaymentMethod                  - Payment Method
+iOptionListID                   - Option List ID
+iProductVariant                 - Product Variant
+iEffectivityUnit                - Effectivity Unit
+iSpecification                  - Specification
+iManufacturerPartNumber         - ManufacturerPartNumber
+iManufacturer                   - Manufacturer
+iSubcontracted                  - Subcontracted; if empty, 'no'
 is used
-iSite                                                 - Site
-iPriceDate                                            - Price Date; of zero, then
+iSite                           - Site
+iPriceDate                      - Price Date; of zero, then
 current date and time is used.
-iPriceType                                            - Price Type; if empty, 'buying'
+iPriceType                      - Price Type; if empty, 'buying'
 is used
-iOrderQuantity                                        - Order Quantity
-iOrderQuantityUnit                                    - Order Quantity Unit
+iOrderQuantity                  - Order Quantity
+iOrderQuantityUnit              - Order Quantity Unit
 iOrderQuantityUnitConversionFactor
--                                                       Order Quantity Unit Conversion
+- Order Quantity Unit Conversion
 Factor
-iContract                                             - Contract; if not filled,
+iContract                       - Contract; if not filled,
 Contract, Contract Line and
 Contract Office are defaulted
 (if applicable) without user
 interaction.
-iContractLine                                         - Contract Line; see Contract
-iContractOffice                                       - Contract Office; see Contract
-iContractSequence                                     - Contract Sequence
+iContractLine                   - Contract Line; see Contract
+iContractOffice                 - Contract Office; see Contract
+iContractSequence               - Contract Sequence
 Output:
 |***************************************************************
 |* Price Output.
 |***************************************************************
-oPrice                                                - Price
-oPriceUnit                                            - Price Unit
-oPriceUnitConversionFactor                            - Price Unit Conversion Factor
-oDerivedItemUsed                                      - Derived Item Used
-oPriceBook                                            - Price Book
-oPriceStage                                           - Price Stage
-oPriceOrigin                                          - Price Origin
-oPriceMatrixDefinition                                - Price Matrix Definition
-oPriceMatrixSequence                                  - Price Matrix Sequence
+oPrice                          - Price
+oPriceUnit                      - Price Unit
+oPriceUnitConversionFactor      - Price Unit Conversion Factor
+oDerivedItemUsed                - Derived Item Used
+oPriceBook                      - Price Book
+oPriceStage                     - Price Stage
+oPriceOrigin                    - Price Origin
+oPriceMatrixDefinition          - Price Matrix Definition
+oPriceMatrixSequence            - Price Matrix Sequence
 |***************************************************************
 |* Discount Output; memory allocation (11 levels) for arrays
 |* needed.
 |***************************************************************
-oDiscountMatrixType                                   - Discount Matrix Type (array)
-oDiscountOrigin                                       - Discount Origin (array)
-oDiscountMatrixDefinition                             - Discount Matrix Definition
+oDiscountMatrixType             - Discount Matrix Type (array)
+oDiscountOrigin                 - Discount Origin (array)
+oDiscountMatrixDefinition       - Discount Matrix Definition
 (array)
-oDiscountMatrixSequence                               - Discount Matrix Sequence
+oDiscountMatrixSequence         - Discount Matrix Sequence
 (array)
-oDiscountPercentage                                   - Discount Percentage (array)
-oDiscountAmount                                       - Discount Amount (array)
-oDiscountCode                                         - Discount Code (array)
-oDiscountMethod                                       - Discount Method (array)
-oDiscountSchedule                                     - Discount Schedule (array)
+oDiscountPercentage             - Discount Percentage (array)
+oDiscountAmount                 - Discount Amount (array)
+oDiscountCode                   - Discount Code (array)
+oDiscountMethod                 - Discount Method (array)
+oDiscountSchedule               - Discount Schedule (array)
 |***************************************************************
 |* Contract Output.
 |***************************************************************
-oContract                                             - Contract; filled if price /
+oContract                       - Contract; filled if price /
 discount origin is 'contract'
-oContractLine                                         - Contract Line; see Contract
-oContractOffice                                       - Contract Office; see Contract
+oContractLine                   - Contract Line; see Contract
+oContractOffice                 - Contract Office; see Contract
 |***************************************************************
 |* Material Price Output.
 |***************************************************************
-oMaterialPriceAgreement                               - Material Price Agreement
-oTotalMaterialPriceSurcharges                         - Material Price Surcharges
-oTotalMaterialPrice                                   - Total Material Price
+oMaterialPriceAgreement         - Material Price Agreement
+oTotalMaterialPriceSurcharges   - Material Price Surcharges
+oTotalMaterialPrice             - Total Material Price
 |***************************************************************
 |* Technical Output.
 |***************************************************************
-oExceptionMessage                                     - The last message if any message is
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - Price could be determined.
-<> 0                                                  - Error occurred.
+Return: 0                               - Price could be determined.
+<> 0                            - Error occurred.
 ```

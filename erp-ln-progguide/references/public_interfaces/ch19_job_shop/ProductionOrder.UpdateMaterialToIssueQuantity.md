@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 781-782
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 780-781
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2023.02 (KB2244728  ).
+This function is available from 2023.02 (KB2244728).
 Syntax: long ProductionOrder.UpdateMaterialToIssueQuantity(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -21,9 +21,6 @@ Production Order Material Position. The update can also affect
 the value of the Subsequent Delivery field, following the logic
 of session Material to Issue for Production Orders
 (ticst0101m100).
-Note that even when the return value is 0 and the To Issue
-field has been updated, still warning messages may be
-generated and stored in the Exception messages.
 Pre:    Retry point must be set.
 Post:   Commit or abort the transaction.
 Input:  iSite                   Site (mandatory when the Site concept

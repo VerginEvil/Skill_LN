@@ -1,5 +1,5 @@
 # Flow of 4GL engine
-This section presents the general flow of the 4GL engine. It is not complete, but the most important actions are included. The flow is similar for programs of types 1, 2, 3, and 4. Any differences are indicated by comments.
+This section presents the general flow of the [4GL engine](../glossary/glossary.md#fourgl_engine). It is not complete, but the most important actions are included. The flow is similar for programs of types 1, 2, 3, and 4. Any differences are indicated by comments.
 
 ## Main routine
 The main routine displays the first form on the screen and waits for a command.
@@ -62,25 +62,42 @@ The choice sections above are given as before. *choice.option* and after. *choic
 
 ## Field sections
 There are two groups of field sections:
-- sections for which the field.all section is executed first:
+
 - init.field
+
 - before.field
+
 - before.input
+
 - before.display
+
 - before.checks
+
 - selection.filter
+
 - before.zoom
+
 - check.input | if not in DAL
+
 - on.input
-- sections for which field.all is executed after field.<field name> or field.other:
+
 - after.input
+
 - after.display
+
 - after.zoom
+
 - ref.input
+
 - ref.display
+
 - domain.error
+
 - when.field.changes
-- after.field    The general flow of input fields is as follows:
+
+- after.field
+
+The general flow of input fields is as follows:
 ```
 
 Field.input:
@@ -234,4 +251,5 @@ The read.view section is executed immediately after any view action on the main 
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)

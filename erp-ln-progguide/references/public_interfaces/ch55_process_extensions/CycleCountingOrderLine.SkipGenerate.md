@@ -4,17 +4,18 @@
 >
 > Group: Process Extensions for CycleCountingOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1997-1998
-
-Skips generating cycle counting lines. This process extension is available from 2025.11 ( KB3624525 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2016-2017
 
 ```baan
+Skips generating cycle counting lines.
+This process extension is available from 2025.11 (KB3624525).
+Technical information for this process extension:
 Usage:        Process Extension CycleCountingOrderLine.SkipGenerate can be
 used to skip generating cycle counting order lines.
 Sessions where this Process Extension can be implemented:
--               Generate Cycle Counting Orders (whinh5200m000)
+- Generate Cycle Counting Orders (whinh5200m000)
 Fields that are available to be used in this Process Extension:
--               All fields of tables
+- All fields of tables
 Cycle Counting Order Lines (whinh501)
 Note: tables must also be declared in the Process Extension.
 Pseudocode:
@@ -31,7 +32,3 @@ endif
 return (false)
 }
 ```
-
-## Process Extensions for Dataset
-
-The following process extension(s) is/are available: Dataset.CustomOutputFormat

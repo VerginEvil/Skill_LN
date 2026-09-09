@@ -8,23 +8,23 @@ The SUBSTRING function returns a portion of a string argument.
     ::= SUBSTRING ( <substring source> FROM <start position> [ FOR <string length> ] )
 
 <substring source>
-    ::= Value expression
+    ::= <value expression>
 
 <start position>
-    ::= Value expression
+    ::= <value expression>
 
 <string length>
-    ::= Value expression
+    ::= <value expression>
 ```
 
 ## Syntactical restrictions
-The type of *<substring source>* shall be *string*. The type of *<start position>* and *<string length>* shall be *integer*.
+The type of *<**substring source**>* shall be *string*. The type of *<**start position**>* and *<**string length**>* shall be *integer*.
 
 ## Semantics
-If the value of the *<substring source>* is NULL, then the result of the SUBSTRING function is also NULL.
+If the value of the *<**substring source**>* is NULL, then the result of the SUBSTRING function is also NULL.
 The data type of the result of the SUBSTRING function is *string*.
-The value of the SUBSTRING function is the string that starts at position *<start position>* and is *<string length>* characters long. A *<start position>* with value 1 will return a string starting at the first character of *<substring source>*.
-If *<string length>* is omitted then the value of the SUBSTRING function is the entire string from position *<start position>* onwards.
+The value of the SUBSTRING function is the string that starts at position *<**start position**>* and is *<**string length**>* characters long. A *<**start position**>* with value 1 will return a string starting at the first character of *<**substring source**>*.
+If *<**string length**>* is omitted then the value of the SUBSTRING function is the entire string from position *<**start position**>* onwards.
 
 ## Examples
 The following SUBSTRING function returns the string `'cd'`.
@@ -45,4 +45,5 @@ SUBSTRING( 'abcdef' FROM 1 )
 
 ## Related topics
 - [Value expression](value_expression.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

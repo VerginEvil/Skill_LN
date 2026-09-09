@@ -10,15 +10,18 @@ Use this hook to (re) determine the value of the field based on the current reco
 | | | |
 |---|---|---|
 | `[ long` | `mode ]` |  optional mode flag, one of { 0, DAL_NEW, DAL_UPDATE }  |
-| `[ long` | `element ]` |  |
+| `[ long` | `element ]` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in DAL script types.
 
 ## When called
-- This hook is called in case a field on which this field depends (by means of a HOOK_UPDATE or HOOK_IS_APPLICABLE dependency) has changed. Just before the 4GL engine calls the the *when.field.changes* section, it will call this hook for each field that depends on the field that was changed. The 4GL engine will take care that the hooks are called in the right order.
-- In case of *Subdals* you have to use [dal.save.object()](../functions_db_operations/dal.save.object.md) in order to let dependent fields update themselves. This function triggers dependent fields to update themselves. It will take care that the update hooks are called in the right order.     Note  Normally this hook should have a `void` return type. Only if it is possible that this hook finds a data setup error (as opposed to a programming error), and if that error could not have been detected earlier or elsewhere, then return type `long` is allowed. In that case an error is indicated by `return(DALHOOKERROR)` or something equivalent.
-When there is also a [fieldname.make.valid()](fieldname.make.valid.md) hook for the same field, the return of field.make.valid will overwrite the return of the field.update. To prevent the overwrite of the return value, to always give an error when the field.update fails, the function [field.update.error.cannot.be.made.valid()](field.update.error.cannot.be.made.valid.md) can be used.
+- This hook is called in case a field on which this field depends (by means of a HOOK_UPDATE or HOOK_IS_APPLICABLE dependency) has changed. Just before the [4GL engine](../glossary/glossary.md#fourgl_engine) calls the the *when.field.changes* section, it will call this hook for each field that depends on the field that was changed. The 4GL engine will take care that the hooks are called in the right order.
+
+- In case of *Subdals* you have to use [dal.save.object()](../functions_db_operations/dal.save.object.md) in order to let dependent fields update themselves. This function triggers dependent fields to update themselves. It will take care that the update hooks are called in the right order.
+
+Note  Normally this hook should have a `void` return type. Only if it is possible that this hook finds a data setup error (as opposed to a programming error), and if that error could not have been detected earlier or elsewhere, then return type `long` is allowed. In that case an error is indicated by `return(DALHOOKERROR)` or something equivalent.
+When there is also a [fieldname.make.valid()](fieldname.make.valid.md) hook for the same field, the return of field.make.valid will overwrite the return of the field.update. To prevent the overwrite of the return value, to always give an error when the field.update fails, the function [dal.field.update.error.cannot.be.made.valid()](dal.field.update.error.cannot.be.made.valid.md) can be used.
 Note  This hook will only be called in case a HOOK_UPDATE or HOOK_IS_APPLICABLE dependency relationship has been defined in the [before.open.object.set()](before.open.object.set.md) hook. See also [DAL2 Field dependencies](dal2_field_dependencies.md).
 Note  In this hook you can use [dal.is.copy.active()](../functions_db_operations/dal.is.copy.active.md) to determine the record is being copied.
 
@@ -88,6 +91,9 @@ function extern void whinh200.sfty.update()
 
 ## Related topics
 - [Extended DAL (DAL2)](dal2_overview.md)
+
 - [DAL2 Field dependencies](dal2_field_dependencies.md)
+
 - [DAL2 and the 4GL Engine](dal2_4gle.md)
+
 - [DAL2 Flow of field hooks](dal2_flow.md)

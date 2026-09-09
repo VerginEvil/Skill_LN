@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for GenerateHandlingUnits
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2027-2028
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2046-2046
 
 ```baan
 Syntax: long whext.dll0009.check.generate.handling.unit.for.order.line(
@@ -18,7 +18,7 @@ Usage:        Expl:   This function checks whether generating of handling unit
 must be skipped for specific order line.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.inbound               -     Inbound or Outbound process
+Input:  i.inbound -     Inbound or Outbound process
 Inbound includes:       Inbound order line
 ASN Line
 Receipt Line
@@ -32,7 +32,3 @@ Shipment Line
 Output: o.generate.hu
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for GeneratePlan
-
-The following process extension(s) is/are available: GeneratePlan.SkipOrderLine

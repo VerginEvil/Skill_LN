@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Load
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1135-1136
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1145-1146
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.07 (KB2243668  ).
+This function is available from 2022.07 (KB2243668).
 Syntax: long Load.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,10 +29,10 @@ Usage:        Expl    This function starts the overview session Loads
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -48,7 +48,7 @@ data is displayed by Carrier
 session will be started on index 2
 view field: Carrier
 "byShipTo":
-data is displayed by Ship                                      -To
+data is displayed by Ship-To
 session will be started on index 3
 view field: None
 iSessionIndex
@@ -75,19 +75,15 @@ Optional
 iShipToCode
 Optional
 Output: for iStartMode MODAL:
-oLoad                                         - selected load
-oExceptionMessage                             - The last message if any message is
+oLoad           - selected load
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for DeliveryNote
-
-The following functions are available: DeliveryNote.Print DeliveryNote.StartMultiMain

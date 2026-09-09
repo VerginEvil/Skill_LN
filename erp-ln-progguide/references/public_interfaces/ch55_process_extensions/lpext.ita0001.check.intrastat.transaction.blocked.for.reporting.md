@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for IntrastatTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2041-2042
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2060-2061
 
 ```baan
 Syntax: long lpext.ita0001.check.intrastat.transaction.blocked.for.reporting(
@@ -64,14 +64,10 @@ End of Example of Implementation
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.blocked.for.reporting               - Indicates whether the Intrastat
+Output: o.blocked.for.reporting - Indicates whether the Intrastat
 Transaction record status must be set
 to "Blocked for Reporting".
-Return: 0                                     - Success
-<> 0                                          - Returning a value <> 0 will abort the
+Return: 0                       - Success
+<> 0                    - Returning a value <> 0 will abort the
 creation of Intrastat Transactions.
 ```
-
-## Process Extensions for InventoryAgingAnalysis
-
-The following process extension(s) is/are available: InventoryAgingAnalysis.Custom InventoryAgingAnalysis.Skip

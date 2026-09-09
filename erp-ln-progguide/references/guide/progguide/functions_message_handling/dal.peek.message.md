@@ -17,8 +17,9 @@ Returns the code and text of the message of the specified type that is located a
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in DAL script types.
-Notes
+
 - The message is *not* removed from the buffer.
+
 - In case an invalid index is passed, empty strings will be returned in the code and text arguments and `MSG.ALL` is returned in the 5th argument.
 
 ## Example

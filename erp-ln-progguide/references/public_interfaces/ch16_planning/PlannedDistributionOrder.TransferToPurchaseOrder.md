@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedDistributionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 581-581
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 584-585
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.06 (KB2328640  ).
+This function is available from 2024.06 (KB2328640).
 Syntax: long PlannedDistributionOrder.TransferToPurchaseOrder(
 domain  cpcom.plnc       iScenario,
 domain  cporno           iDistributionOrder,

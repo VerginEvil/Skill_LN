@@ -1,7 +1,7 @@
 # do.occ()
 
 ## Syntax:
-`function void do.occ( long occurrence, function_name function_name, function_name ... )`
+`function void do.occ( long occurrence, <function_name>, [ <type>... ] )`
 
 ## Description
 This locks the specified occurrence (delayed lock) and executes the specified function for that occurrence. After the function has been executed all fields of the specified occurrence are redisplayed.
@@ -10,8 +10,8 @@ This locks the specified occurrence (delayed lock) and executes the specified fu
 | | | |
 |---|---|---|
 | `long` | `occurrence` |  The occurrence number.  |
-| `function_name` | `function_name` |  The name of the function that must be executed. The function must be of type void.  |
-| `function_name` | `...` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
+| `<function_name>` |  | The name of the function that must be executed. The function must be of type void. |
+| `[ <type>` | `... ]` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -21,4 +21,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

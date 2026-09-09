@@ -17,4 +17,5 @@ Notes  This function is *deprecated*. Use *set.ask.enum.values* instead.
 
 ## Related topics
 - [Enumerates overview and synopsis](overview_and_synopsis.md)
+
 - [Enumerate and set constants](../3gl_features/enumerate_and_set_constants.md)

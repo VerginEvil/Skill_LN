@@ -15,9 +15,11 @@ Any filter, query extend etc. is taken into account. So e.g. a filter set by the
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in 4GL script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1020.
-Notes
+
 - This function takes any filter, query extend etc. into account. So depending on e.g. the filter set by the user, a different set of records can be fetched.
+
 - The callback function must be declared in the UI script as 'extern long'.
+
 - This function is performance critical, especially if there are a lot of records in the view.
 
 ## Example
@@ -79,4 +81,5 @@ transaction amount
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

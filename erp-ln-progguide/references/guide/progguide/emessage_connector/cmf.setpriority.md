@@ -11,7 +11,7 @@ Sets the priority of the message identified by *mid* to the value *priority.*
 | | | |
 |---|---|---|
 | `long` | `mid` |  Message object identification.  |
-| `enum` | `priority` |  Message priority. “LOW” | “NORMAL” | “HIGH” .  |
+| `enum` | `priority` |  Message priority. “LOW” | “NORMAL” | “HIGH”.  |
 
 ## Return values
 | | |
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

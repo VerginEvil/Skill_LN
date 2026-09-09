@@ -15,8 +15,8 @@ Get the prefix of the namespace of the specified node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The value of *node*.  |
-| 0 | The *node* is invalid or the namespace of the *node* is invalid or the *default* namespace.  |
+| <> 0 | Success; The value of *node*. |
+| 0 | The *node* is invalid or the namespace of the *node* is invalid or the *default* namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -37,5 +37,7 @@ ret = xmlGetPrefix( xml_envelope, prefix )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanningBillOfCriticalCapacities
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 241-242
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 243-244
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2025.04 (KB3534322  ).
+This function is available from 2025.04 (KB3534322).
 Syntax: long PlanningBillOfCriticalCapacities.Generate(
 domain  cpitem           iPlanItem,
 long             iProcessingOptionSet,
@@ -44,18 +44,14 @@ ProcessAndErrorReport           domain tcyesno          If ErrorReport is
 Yes then
 ProcessAndErrorReport
 is set No.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successfully Generated.
-<> 0                                          - Otherwise.
+Return: 0                       - Successfully Generated.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for EffectivityUnit
-
-The following functions are available: EffectivityUnit.CreateObjectKey

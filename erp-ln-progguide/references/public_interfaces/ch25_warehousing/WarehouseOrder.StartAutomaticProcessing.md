@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1023-1024
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1033-1033
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.04 (KB3657658  ).
+This function is available from 2026.04 (KB3657658).
 Syntax: long WarehouseOrder.StartAutomaticProcessing(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -33,25 +33,25 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iOrderOrigin                          - Mandatory
-iOrderNumber                                  - Mandatory
-iOrderSet                                     - Optional
+Input:  iOrderOrigin            - Mandatory
+iOrderNumber            - Mandatory
+iOrderSet               - Optional
 If iOrderSet is 0 (Zero), the automatic
 process will be started for all sets
 of the order.
 Output: oInboundStarted:
-True                                          - An automatic inbound process was
+True            - An automatic inbound process was
 started successfully.
-False                                         - No automatic inbound process was started.
+False           - No automatic inbound process was started.
 oOutboundStarted:
-True                                          - An automatic outbound process was
+True            - An automatic outbound process was
 started successfully.
-False                                         - No automatic outbound process was started.
-oExceptionMessage                             - The last message if any message is
+False           - No automatic outbound process was started.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

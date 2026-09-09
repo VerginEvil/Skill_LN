@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Lot
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1108-1109
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1118-1119
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2021.04 (KB2179943  ).
+This function is available from 2021.04 (KB2179943).
 Syntax: long Lot.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Usage:        Expl:   This function starts the overview session Item - Lot
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -77,16 +77,16 @@ Mandatory when startfilter "byItem",
 in overview mode with start mode MODELESS
 iLot
 Output: for iStartMode MODAL:
-oItem                                         - Selected Item.
-oLot                                          - Selected Lot.
-oExceptionMessage                             - The last message if any message is
+oItem                   - Selected Item.
+oLot                    - Selected Lot.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

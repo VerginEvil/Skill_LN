@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 648-649
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 651-652
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2021.05 (KB2156270  ).
+This function is available from 2021.05 (KB2156270).
 Syntax: long JobShopBillOfMaterial.SetUseForPlanning(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -19,17 +19,17 @@ Usage:        Expl:   This function sets the Use For Planning flag to true for a
 Shop Bill of Material.
 Pre:    Retry point must be set.
 Post:   Commit or abort the transaction.
-Input:  iSite                                 - Site (Mandatory).
-iProduct                                      - Product (Mandatory).
-iBillOfMaterialCode                           - Bill Of Material Model (Mandatory).
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iSite                   - Site (Mandatory).
+iProduct                - Product (Mandatory).
+iBillOfMaterialCode     - Bill Of Material Model (Mandatory).
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Use for Planning set to true.
-<> 0                                          - Otherwise.
+Return: 0                       - Use for Planning set to true.
+<> 0                    - Otherwise.
 ```

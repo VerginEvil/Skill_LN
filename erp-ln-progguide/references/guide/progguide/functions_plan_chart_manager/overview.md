@@ -4,8 +4,11 @@ The Plan Chart Manager is a graphical planning environment. You can use the Plan
 
 ## Planning board
 The Plan Chart Manager provides a planning board, on which you can build and maintain plan charts on line. Users can open sessions in order to define and modify activities, relations between activities, and so on. The planning board consists of:
+
 - A time scale.
+
 - Horizontal lines (the planning board lines), on which users can place activities.
+
 - Columns that describe the activities.
 
 ## Activities and relations
@@ -19,19 +22,20 @@ The Plan Chart Manager communicates with a client application by means of events
 The Plan Chart manager generates the following event types:
 | | |
 |---|---|
-| PCM_EVTMENUSELECT | Occurs when the user selects a menu item of the planning board.  |
-| PCM_EVTPUSHBUTTON | Occurs when the user clicks on a button of the planning board.  |
-| PCM_EVTOBJECTPRESS | Occurs when the user clicks on an activity, relation, or marker on the planning board.  |
-| PCM_EVTOBJECTDPRESS | Occurs when the user double-clicks on an activity, relation, or marker.  |
-| PCM_EVTOBJECTMOVE | Occurs when the user moves an activity, relation, or marker.  |
+| PCM_EVTMENUSELECT | Occurs when the user selects a menu item of the planning board. |
+| PCM_EVTPUSHBUTTON | Occurs when the user clicks on a button of the planning board. |
+| PCM_EVTOBJECTPRESS | Occurs when the user clicks on an activity, relation, or marker on the planning board. |
+| PCM_EVTOBJECTDPRESS | Occurs when the user double-clicks on an activity, relation, or marker. |
+| PCM_EVTOBJECTMOVE | Occurs when the user moves an activity, relation, or marker. |
 | PCM_EVTCLOSED | Occurs when the Plan Chart Manager is closed. |
 
 ## Colors
 All colors must be composed by using the [rgb()](../functions_color/rgb.md) function. Or you can use one of the following predefined colors:
 | | | |
 |---|---|---|
-|  RGB.BLACK RGB.BLUE RGB.YELLOW  |  RGB.MAGENTA RGB.GREEN RGB.GRAY  |  RGB.RED RGB.WHITE RGB.CYAN  |
+| RGB.BLACK RGB.BLUE RGB.YELLOW | RGB.MAGENTA RGB.GREEN RGB.GRAY | RGB.RED RGB.WHITE RGB.CYAN |
 
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)

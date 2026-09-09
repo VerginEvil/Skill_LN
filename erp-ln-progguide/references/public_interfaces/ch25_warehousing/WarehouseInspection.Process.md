@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1266-1267
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1276-1276
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.09 (KB2202105  ).
+This function is available from 2021.09 (KB2202105).
 Syntax: long WarehouseInspection.Process(
 domain  tcorno           iInspection,
 domain  tcpono           iInspectionSequence,
@@ -24,15 +24,15 @@ If handling units are present, the inspection lines related to
 the handling unit structure are processed.
 Pre:    db.retry.point() is set.
 Post:   commit.transaction() / abort.transaction()
-Input:  iInspection                           - Inspection Number (mandatory)
-iInspectionSequence                           - Inspection Sequence (mandatory)
-Output: oNewInspectionSequence                - New sequence for remainder after
+Input:  iInspection             - Inspection Number (mandatory)
+iInspectionSequence     - Inspection Sequence (mandatory)
+Output: oNewInspectionSequence  - New sequence for remainder after
 processing a partial inspection
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

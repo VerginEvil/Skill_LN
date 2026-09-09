@@ -13,11 +13,13 @@ Returns the stream id of the response body. It is not necessary to rewind the st
 | `long` | `response` |  an http.response object  |
 
 ## Return values
-a stream id
+`> 0`: a stream id;
+`< 0`: a stream could not be opened (e.g. -11 means that the bshell has (temporarily) reached its limit of open streams)
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2120.
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

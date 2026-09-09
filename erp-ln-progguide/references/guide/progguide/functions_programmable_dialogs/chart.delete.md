@@ -25,5 +25,7 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [chart.new()](chart.new.md)
+
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Example chart](examplechart.md)

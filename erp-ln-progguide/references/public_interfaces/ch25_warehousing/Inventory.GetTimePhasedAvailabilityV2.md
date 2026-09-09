@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 947-949
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 957-958
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2021.08 (KB2196679  ).
+This function is available from 2021.08 (KB2196679).
 Syntax: long Inventory.GetTimePhasedAvailabilityV2(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -30,43 +30,43 @@ With the introduction of the input variables
 iIncludeOnOrderTransactions, iIncludeIssueTransactions and
 iAllowNegativeAvailableQuantity the user is now much more in
 control on how the available inventory must be calculated.
-Input:  iItem                                 - Item          (Mandatory)
-iWarehouse                                    - Warehouse     (Mandatory)
-iDate                                         - Date          (Mandatory)
+Input:  iItem                   - Item          (Mandatory)
+iWarehouse              - Warehouse     (Mandatory)
+iDate                   - Date          (Mandatory)
 iIncludeOnOrderTransactions
--                                               Include On Order Transactions
+- Include On Order Transactions
 (Mandatory)
-True                                                 - Planned receipt transactions
+True - Planned receipt transactions
 are taken into account.
-False                                                 - Planned receipt transactions
+False - Planned receipt transactions
 are not taken into account.
 iIncludeIssueTransactions
--                                               Include Issue Transactions
+- Include Issue Transactions
 (Mandatory)
-True                                                 - Planned issue transactions
+True - Planned issue transactions
 are taken into account.
-False                                                 - Planned issue transactions
+False - Planned issue transactions
 are not taken into account.
 iAllowNegativeAvailableQuantity
--                                               Allow Negative Available Quantity
+- Allow Negative Available Quantity
 (Mandatory)
-True                                                 - If available quantity is
+True - If available quantity is
 negative then this value
 will be returned.
-False                                                 - If available quantity is
+False - If available quantity is
 negative then the value
 zero will be returned.
-Output: oAvailableQuantity                    - Available Quantity on the given date
+Output: oAvailableQuantity      - Available Quantity on the given date
 expressed in the inventory unit.
-oInventoryUnit                                - Inventory unit.
-oExceptionMessage                             - The last message if any message is
+oInventoryUnit          - Inventory unit.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Available Inventory retrieved
-<> 0                                          - Error
+Return: 0                       - Available Inventory retrieved
+<> 0                    - Error
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 774-775
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 774-774
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2022.01 (KB2220877  ).
+This function is available from 2022.01 (KB2220877).
 Syntax: long ProductionOrder.StartInventoryOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Usage:        Expl:   This function starts the session Inventory by Production O
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used.
@@ -34,11 +34,11 @@ iSessionIndex           Not used.
 iQueryExtend            Not used.
 iSite                   Site (Mandatory if active).
 iProductionOrder        Production Order.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

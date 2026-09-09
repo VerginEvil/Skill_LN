@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 316-317
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 318-319
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2024.04 (KB2328014  ).
+This function is available from 2024.04 (KB2328014).
 Syntax: long SalesOrder.CopyBOM(
 domain  tcorno           iSalesOrder,
 domain  tcitem           iMainItem,
@@ -24,30 +24,30 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function copies the Bill of Material (BOM) to the given
 sales order. Note that the transaction management must be
-performed by the caller. If the function returns a non                      -zero
+performed by the caller. If the function returns a non-zero
 value, then the entire transaction must be aborted by the
 caller.
 Pre:    The Sales Order must exist
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort the transaction
-Input:  iSalesOrder                           - Sales Order (Mandatory)
-iMainItem                                     - Main Item (Mandatory)
-The item                                                -code of which the BOM
+Input:  iSalesOrder             - Sales Order (Mandatory)
+iMainItem               - Main Item (Mandatory)
+The item-code of which the BOM
 components are copied to the sales
 order lines.
-iEffectivityUnit                              - Effectivity Unit (Optional)
+iEffectivityUnit        - Effectivity Unit (Optional)
 iOrderQuantityInInventoryUnit
--                                               Order Quantity in inventory unit
+- Order Quantity in inventory unit
 (Mandatory).
 iMaximumNumberOfPhantomLevelsToSkip
--                                               The number of BOM-levels that are
+- The number of BOM-levels that are
 summarized when you use phantoms.
 Must be greater or equal to 1.
-iProject                                      - Project (Optional)
-iElement                                      - Element (Optional)
-iActivity                                     - Activity (Optional)
+iProject                - Project (Optional)
+iElement                - Element (Optional)
+iActivity               - Activity (Optional)
 iIgnoreWarehouseFromBOM
--                                               Ignore the warehouse from the BOM.
+- Ignore the warehouse from the BOM.
 Yes: LN uses the standard warehouse
 defaulting logic
 No:  LN uses the warehouse from the
@@ -56,7 +56,7 @@ Note that if Job Shop by Site is
 active, LN will always ignore the
 warehouse from the BOM.
 iCombineIdenticalComponents
--                                               Combine Identical components.
+- Combine Identical components.
 Yes: If a particular component occurs
 in the BOM multiple times, then
 these are aggregated into a

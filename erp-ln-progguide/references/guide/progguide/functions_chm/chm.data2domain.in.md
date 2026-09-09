@@ -10,7 +10,7 @@ Data domain II defines the start value, end value, and step size for the data II
 ## Arguments
 | | | |
 |---|---|---|
-| `double` | `series_value` |  |
+| `double` | `series_value` |    |
 
 ## Return values
 | | |
@@ -24,6 +24,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

@@ -22,10 +22,7 @@ When you open a sequence file, the associated info file is automatically opened 
 | | |
 |---|---|
 | > 0 | Sequence id for file |
-| -1 |  Error; Possible reasons are: Table or sequence file does not exist Error occurred while opening sequence file Open file limit reached  |
--
--
--
+| -1 | Error; Possible reasons are: Table or sequence file does not exist Error occurred while opening sequence file Open file limit reached |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -33,5 +30,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

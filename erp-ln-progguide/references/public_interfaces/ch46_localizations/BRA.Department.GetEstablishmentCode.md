@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BRA.Department
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1918-1919
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1938-1938
 
 ```baan
 DLL:   lpextbraapi
-This function is available from     2026.05 (KB3655446  ).
+This function is available from 2026.05 (KB3655446).
 Syntax: long BRA.Department.GetEstablishmentCode(
 domain  btncmp           iLogisticCompany,
 domain  tccwoc           iDepartment,
@@ -20,16 +20,12 @@ Usage:        Expl:   This function will get the establishment code for a given
 department.
 Pre:    n.a.
 Post:   n.a.
-Input:  iLogisticCompany                      - Logistic company. This is a mandatory
+Input:  iLogisticCompany        - Logistic company. This is a mandatory
 argument.
-iDepartment                                   - Department. This is a mandatory
+iDepartment             - Department. This is a mandatory
 argument.
-iAddress                                      - Address code. If empty the department
+iAddress                - Address code. If empty the department
 address will be used.
-Output: oEstablishmentCode                    - Establishment code
+Output: oEstablishmentCode      - Establishment code
 Return: 0/DALHOOKERROR
 ```
-
-## Public Interfaces for POL.BusinessPartner
-
-The following functions are available: POL.BusinessPartner.StartVerifyOnline

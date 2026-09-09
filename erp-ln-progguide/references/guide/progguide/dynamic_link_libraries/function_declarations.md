@@ -22,4 +22,5 @@ The '@trusted' keyword can only be used in combination with the 'extern' keyword
 
 ## Related topics
 - [Dynamic-link libraries](overview.md)
+
 - [Managed Execution](../misc/managed_execution.md)

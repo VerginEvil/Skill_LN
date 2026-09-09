@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2023.05 (KB2274114  ).
+This function is available from 2023.05 (KB2274114).
 Syntax: long ProductionOrder.StartClose(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,

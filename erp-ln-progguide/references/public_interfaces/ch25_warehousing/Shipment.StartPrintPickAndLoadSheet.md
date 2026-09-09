@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1159-1162
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1169-1171
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.01 (KB2272718  ).
+This function is available from 2023.01 (KB2272718).
 Syntax: long Shipment.StartPrintPickAndLoadSheet(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -28,7 +28,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Print Pick and Load Sheet
 (whinh4430m200). Depending on the main table of the calling
-session, Non                      -Consecutive Record Selection (NCRS) is used.
+session, Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Shipments       (whinh430) or
 Loads           (whinh440) then
@@ -88,18 +88,14 @@ iToOrderLine
 To Order Line selection field is filled with this value.
 (when iIgnoreSelectionFields is false and NCRS
 is not applicable)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for ShipmentLine
-
-The following functions are available: ShipmentLine.Cancel ShipmentLine.Confirm ShipmentLine.ConfirmIsAllowed ShipmentLine.MoveToLoad ShipmentLine.MoveToShipment ShipmentLine.PrintLabelsByPackageLabelBOD ShipmentLine.Reopen ShipmentLine.ReturnNotShippedGoods ShipmentLine.Split ShipmentLine.StartDetail ShipmentLine.StartOverview

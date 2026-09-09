@@ -17,18 +17,29 @@ The developer can use the function gbf.update.object() to change the icon or des
 
 ## Refresh
 There are three possible ways to refresh the displayed objects:
-1. The developer can use the function [gbf.set.refresh.strategy()](gbf.set.refresh.strategy.md) of the framework to get a time based refresh
-1. A refresh can be performed as the result of a return value of a user function, see for example [gbf.menu.selected()](gbf.menu.selected.md)/P>
-1. A refresh can be done via a menu item and/or keystroke, see also gbf.init()   The refresh will execute gbf.get.top.level() and then gbf.get.children() of all open parents. Now not-existing objects will be removed from the browser and new objects will be displayed. This will keep the browser up to date with the database. Note that objects are matched ONLY by their object.key (see gbf.add.object()), as all other attributes of the object, such as object.description, object.value and obj.type, may have changed since this attribute change may have been what caused this refresh in the first place. The functions gbf.get.first.child() andgbf.get.next() should be avoided during a refresh, since that would lead to unpredictable results.
+
+- The developer can use the function [gbf.set.refresh.strategy()](gbf.set.refresh.strategy.md) of the framework to get a time based refresh
+
+- A refresh can be performed as the result of a return value of a user function, see for example [gbf.menu.selected()](gbf.menu.selected.md)/P>
+
+- A refresh can be done via a menu item and/or keystroke, see also gbf.init()
+
+The refresh will execute gbf.get.top.level() and then gbf.get.children() of all open parents. Now not-existing objects will be removed from the browser and new objects will be displayed. This will keep the browser up to date with the database. Note that objects are matched ONLY by their object.key (see gbf.add.object()), as all other attributes of the object, such as object.description, object.value and obj.type, may have changed since this attribute change may have been what caused this refresh in the first place. The functions gbf.get.first.child() andgbf.get.next() should be avoided during a refresh, since that would lead to unpredictable results.
 
 ## User actions
 When a menu option is chosen the framework calls the function gbf.menu.selected() in the application. The frameworks gives the code of the option and the object(s) that was/were marked so the application can execute the required function. The return value of gbf.menu.selected() is an indication for the framework which action should be performed (for example a refresh or a gbf.get.children() on the object).
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

@@ -15,4 +15,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [UUID overview](uuid_overview.md)
+
 - [UUID synopsis](uuid_synopsis.md)

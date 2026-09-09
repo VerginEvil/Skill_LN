@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPurchaseBusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 204-206
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 205-206
 
 ```baan
 DLL:   tdextipuapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemPurchaseBusinessPartner.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,28 +31,28 @@ in overview mode (tdipu0110m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used
 iSessionIndex           The index that will be used.
 Supported values:
 1: sort by Item Group/Item
-2: sort by Buy                                                -from Business Partner/
-Ship                                                           -from Business Partner
+2: sort by Buy-from Business Partner/
+Ship-from Business Partner
 3: sort by Approved Supplier List
 iQueryExtend            A specific query to be used when zooming
 to this session.
 iItemGroup              Item Group
 iItem                   Item
 iBuyFromBusinessPartner
-Buy                                              -from Business Partner (Mandatory if
+Buy-from Business Partner (Mandatory if
 iStartMode = MODELESS and iSessionIndex = 2)
 iShipFromBusinessPartner
-Ship                                              -from Business Partner
+Ship-from Business Partner
 iEffectiveDate          Effective Date
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
@@ -60,9 +60,9 @@ been selected.
 oItemGroup      Item Group
 oItem           Item
 oBuyFromBusinessPartner
-Buy                                              -from Business Partner
+Buy-from Business Partner
 oShipFromBusinessPartner
-Ship                                              -from Business Partner
+Ship-from Business Partner
 oEffectiveDate  Effective Date
 oExceptionMessage       The last message if any message is
 found. If more than one message is.
@@ -75,9 +75,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for
-
-## ItemsByManufacturerPartNumber
-
-The following functions are available: ItemsByManufacturerPartNumber.StartOverview

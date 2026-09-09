@@ -7,14 +7,14 @@
 Add an additional button to a message or a question. This button will execute the specified function from the specified Library.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `string` | `msgCode` |  The message code where for which the button is added  |
-| `string` | `buttonLabel` |  The label of the button  |
-| `string` | `library` |  The library from where the function is executed  |
-| `string` | `fnc` |  The function to be executed  |
-| `long` | `autg` |  Authorization group of the button User should have at least this authorizations for the session specified with the argument session Possible Values:  |
-| `string` | `Session` |  Session that is the most related to the functionality in the executed function  |
+| |
+|---|
+| SESSION_NO_PERMISSION |
+| SESSION_DELETE_PERMISSION |
+| SESSION_INSERT_PERMISSION |
+| SESSION_MODIFY_PERMISSION |
+| SESSION_DISPLAY_PERMISSION |
+| SESSION_PRINT_PERMISSION |
 
 ## Return values
 | | |

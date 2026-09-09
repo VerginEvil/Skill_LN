@@ -4,7 +4,7 @@
 `function long local.to.utc( long local_days, long local_time, ref long utc, [ string local_dst ] )`
 
 ## Description
-This converts a local date and time to UTC long format. Input values for local date and time must be in the signed 32-bit value range.
+This converts a local date and time to [UTC](overview.md#utc) long format. Input values for local date and time must be in the signed 32-bit value range.
 
 ## Arguments
 | | | |
@@ -17,11 +17,8 @@ This converts a local date and time to UTC long format. Input values for local d
 ## Return values
 | | |
 |---|---|
-| 0 | Success. The supplied reference argument *utc* now contains the UTC value of the supplied local date and time.  |
-| -1 | Error. The supplied reference argument *utc* is unchanged. The cause of the error may be one of the following. The exact result is negative. The exact result is greater than the maximum value 2^( BitCountOfLong-1) - 1 of the signed BitCountOfLong-bit range. The optional argument *local_dst* is not supplied and the ( *local_days*, *local_time*) combination is in the skipped range at the begin of a DST period. See the Daylight Saving Time handling section and the examples below.  |
--
--
--
+| 0 | Success. The supplied reference argument *utc* now contains the UTC value of the supplied local date and time. |
+| -1 | Error. The supplied reference argument *utc* is unchanged. The cause of the error may be one of the following. The exact result is negative. The exact result is greater than the maximum value 2^( [BitCountOfLong](../3gl_features/data_types.md#BitCountOfLong)-1) - 1 of the signed [BitCountOfLong](../3gl_features/data_types.md#BitCountOfLong)-bit range. The optional argument *local_dst* is not supplied and the ( *local_days*, *local_time*) combination is in the skipped range at the begin of a DST period. See the Daylight Saving Time handling section and the examples below. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -169,4 +166,5 @@ function main () {
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

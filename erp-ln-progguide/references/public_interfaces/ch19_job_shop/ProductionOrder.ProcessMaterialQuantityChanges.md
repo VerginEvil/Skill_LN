@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 748-749
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 747-748
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.03 (KB3536492  ).
+This function is available from 2025.03 (KB3536492).
 Syntax: long ProductionOrder.ProcessMaterialQuantityChanges(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

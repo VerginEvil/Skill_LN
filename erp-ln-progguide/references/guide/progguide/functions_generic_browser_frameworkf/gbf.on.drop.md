@@ -26,6 +26,9 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Composite Sessions overview](../functions_composite_sessions/overview.md)
+
 - [Key fields Object overview](../functions_keyfields/overview.md)

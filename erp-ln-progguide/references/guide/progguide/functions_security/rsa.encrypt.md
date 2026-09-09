@@ -4,7 +4,7 @@
 `function long rsa.encrypt( const string pub_key_file, const string data_in, long data_in_len, long padding_scheme, ref string output )`
 
 ## Description
-The function encrypts the input string ( data_in) using the padding specified with padding_scheme parameter with the public_key_file and rsa algorithm . It returns the encrypted output as a (base64)Encoded string.
+The function encrypts the input string ( data_in) using the padding specified with padding_scheme parameter with the public_key_file and rsa algorithm. It returns the encrypted output as a (base64)Encoded string.
 
 ## Arguments
 | | | |
@@ -41,5 +41,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 	        ret=rsa.encrypt(pub_key_file,data_in, data_in_len, PKCS1.PADDING.RSA,output)
 	}
 ```
-Notes
+
 - This function is available in all TIV conditionally with the USE_RSA_ENCRYPT_FUNCTION compiler flag. The compiler flag can be defined as -D USE_RSA_ENCRYPT_FUNCTION.

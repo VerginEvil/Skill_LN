@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1595-1596
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1613-1614
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2026.06 (KB3674849  ).
+This function is available from 2026.06 (KB3674849).
 Syntax: long Invoice.StartInvoicing360(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,42 +27,42 @@ Usage:        Expl:   This Public Interface starts session 'Invoicing 360'
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
-iStartFilter                                  - iStartFilter is not used (yet)
-iSessionIndex                                 - iSessionIndex is not used (yet)
+iStartFilter            - iStartFilter is not used (yet)
+iSessionIndex           - iSessionIndex is not used (yet)
 because session has only 1 index
-iQueryExtend                                  - iQueryExtend is not used (yet)
+iQueryExtend            - iQueryExtend is not used (yet)
 iInvoiceToBusinessPartner
--                                               In the satellites the data for this
+- In the satellites the data for this
 Invoice to Business Partner will be
 shown.
-iSourceCompany                                - In the satellites the data for this
+iSourceCompany          - In the satellites the data for this
 Source Company will be shown.
-iSourceType                                   - In the satellites the data for this
+iSourceType             - In the satellites the data for this
 Source Type will be shown.
-iOrder                                        - In the satellites the data for this
+iOrder                  - In the satellites the data for this
 Order number will be shown.
-iSourceDocumentLine                           - In the satellites the data for this
+iSourceDocumentLine     - In the satellites the data for this
 Source Document Line will be shown.
-iInvoiceLineType                              - In the satellites the data for this
+iInvoiceLineType        - In the satellites the data for this
 Invoice Line Type will be shown.
 The value of the 'source type'
 determines which Invoice Line types
 are possible.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

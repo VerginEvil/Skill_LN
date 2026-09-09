@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1521-1522
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1536-1536
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2023.01 (KB2267965  ).
+This function is available from 2023.01 (KB2267965).
 Syntax: long CustomerClaim.Close(
 const   domain  tcorno           iCustomerClaim fixed,
 const   domain  tcyesno          iMoveClaimToHistory,
@@ -57,8 +57,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Customer Claim status is set to 'Closed' or the
+Return: 0       - Customer Claim status is set to 'Closed' or the
 status was already 'Closed', but the claim is moved
 to history and/or is deleted without errors.
-<> 0                          - Error during closing the claim.
+<> 0    - Error during closing the claim.
 ```

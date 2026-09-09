@@ -12,4 +12,5 @@ The string hint is only applicable to the Oracle level-2 driver. For any other d
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)

@@ -15,7 +15,7 @@ Skips forward a number of bytes in the byte array.
 ## Return values
 | | |
 |---|---|
-| -1 | Error, most probably *bytearray* is not a valid stream.  |
+| -1 | Error, most probably *bytearray* is not a valid stream. |
 | 0 | Success. |
 
 ## Context
@@ -26,4 +26,5 @@ Can only be used in read mode.
 
 ## Related topics
 - [Byte arrays overview](byte_arrays_overview.md)
+
 - [Byte arrays synopsis](byte_arrays_synopsis.md)

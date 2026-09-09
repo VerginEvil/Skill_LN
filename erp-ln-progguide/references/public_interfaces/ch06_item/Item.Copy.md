@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 166-167
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 167-168
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2023.11 (KB2302509  ).
+This function is available from 2023.11 (KB2302509).
 Syntax: long Item.Copy(
 domain  tcitem           iSourceItem,
 domain  tcitem           iTargetItem,
@@ -22,8 +22,8 @@ function, so no pending transactions should be present before
 calling this function.
 Processing Option 'transactionManagementByCaller' is available
 to have the transaction management under control of the caller.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iSourceItem             Mandatory
 iTargetItem             Mandatory
 iProcessingOptionSet    Optional, if 0, the default copy options
@@ -69,14 +69,14 @@ is not included in the set and therefore this action is not
 supported. StandardCosts.CalculateForNewItem() should be used
 instead.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The item was copied.
-<> 0                                          - Otherwise.
+Return: 0                       - The item was copied.
+<> 0                    - Otherwise.
 ```

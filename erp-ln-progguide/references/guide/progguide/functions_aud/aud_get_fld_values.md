@@ -20,9 +20,9 @@ This retrieves the values of a specified field from an audit record. You can use
 ## Return values
 | | |
 |---|---|
-| 0 | Record of type insert or delete. In these cases, there is no new value. Only *values* (1,1) is relevant.  |
-| 1 | Record of type update. Both old and new values are relevant.  |
-| -1 | Error. Possibly invalid column number or record not of type insert, delete, or update.  |
+| 0 | Record of type insert or delete. In these cases, there is no new value. Only *values* (1,1) is relevant. |
+| 1 | Record of type update. Both old and new values are relevant. |
+| -1 | Error. Possibly invalid column number or record not of type insert, delete, or update. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -46,5 +46,7 @@ endif
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

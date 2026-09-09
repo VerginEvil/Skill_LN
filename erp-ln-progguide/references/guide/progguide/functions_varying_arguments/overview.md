@@ -15,4 +15,5 @@ The arguments cannot be arrays.
 
 ## Related topics
 - [Functions with variable number of arguments: synopsis](synopsis.md)
+
 - [Functions with variable number of arguments: sample program](example.md)

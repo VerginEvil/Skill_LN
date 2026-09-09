@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 824-824
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 826-827
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.09 (KB3664966  ).
+This function is available from 2026.09 (KB3664966).
 Syntax: long ProductionPlanning.StartDetail(
 long             iStartMode,
 domain  tcpdno           iProductionOrder,
@@ -21,10 +21,10 @@ planning for a specific production order.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iProductionOrder        Production Order (Mandatory).

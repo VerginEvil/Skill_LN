@@ -7,8 +7,6 @@
 Returns a copy of a string having a specified part inserted at a specified character position.
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `const string` | `string$` |  a string  |
@@ -49,4 +47,5 @@ target = str.insert$(source, 9999, "!")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

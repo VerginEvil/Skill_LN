@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 943-946
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 953-956
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2021.08 (KB2192478  ).
+This function is available from 2021.08 (KB2192478).
 Syntax: long Inventory.DetermineQuantityAndValueV2(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -64,7 +64,7 @@ to be determined.
 This is mandatory to fill when iOwnership is Consigned
 or Customer Owned
 iBuyFromBusinessPartner
-The buy                              -from business partner for which inventory
+The buy-from business partner for which inventory
 quantity and value needs to be determined.
 This is mandatory to fill when iOwnership is Consigned.
 iSpecificProject
@@ -87,10 +87,10 @@ iSpecificLot
 Indicator (True/False) if inventory quantity and value
 needs to be determined for a specific lot.
 This indicator can only be set when:
--                                iOwnership is Company Owned and
--                                actual inventory valuation method for item/warehouse
+- iOwnership is Company Owned and
+- actual inventory valuation method for item/warehouse
 combination is Lot Price and
--                                iSpecificProject = False
+- iSpecificProject = False
 This is mandatory to fill.
 iLot
 The lot for which inventory quantity and value needs to
@@ -101,10 +101,10 @@ iSpecificSerial
 Indicator (True/False) if inventory quantity and value
 needs to be determined for a specific serial.
 This indicator can only be set when:
--                                iOwnership is Company Owned and
--                                actual inventory valuation method for item/warehouse
+- iOwnership is Company Owned and
+- actual inventory valuation method for item/warehouse
 combination is Serial Price and
--                                iSpecificProject = False
+- iSpecificProject = False
 This is mandatory to fill.
 iSerial
 The serial for which inventory quantity and value needs
@@ -156,8 +156,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The inventory and inventory value have been found
+Return: 0 - The inventory and inventory value have been found
 successfully.
-<> 0                       - Error. The inventory and inventory value could not be
+<> 0 - Error. The inventory and inventory value could not be
 determined.
 ```

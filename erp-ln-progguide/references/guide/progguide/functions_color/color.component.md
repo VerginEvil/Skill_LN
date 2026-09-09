@@ -11,7 +11,7 @@ These return the values of the blue, green, and red components respectively of a
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `color` |  |
+| `long` | `color` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -29,4 +29,5 @@ blue_int  = blue.component(  new_color )  |  87
 
 ## Related topics
 - [Colors overview](overview.md)
+
 - [Colors synopsis](synopsis.md)

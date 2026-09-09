@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for IntercompanyTradeOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 157-158
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 158-159
 
 ```baan
 DLL:   tcextitrapi
-This function is available from     2026.07 (KB3675783  ).
+This function is available from 2026.07 (KB3675783).
 Syntax: long IntercompanyTradeOrder.CalculateCommercialPrice(
 domain  tcncmp           iTradeOrderCompany,
 domain  tcorno           iTradeOrder,
@@ -24,11 +24,11 @@ Ranges can be specified via iProcessingOptionSet to process
 multiple trade orders at once.
 Pre:    db.retry.point() is set.
 Post:   commit.transaction() / abort.transaction().
-Input:  iTradeOrderCompany                    - Trade Order Company (Optional)
-iTradeOrder                                   - Trade Order (Optional)
-iTradeOrderLine                               - Trade Order Line (Optional)
-iDevice                                       - Device for printing reports (Mandatory)
-iProcessingOptionSet                          - Optional, if 0, the default options
+Input:  iTradeOrderCompany      - Trade Order Company (Optional)
+iTradeOrder             - Trade Order (Optional)
+iTradeOrderLine         - Trade Order Line (Optional)
+iDevice                 - Device for printing reports (Mandatory)
+iProcessingOptionSet    - Optional, if 0, the default options
 are applied.
 Processing Options have a direct relationship with the
 processing session Calculate Commercial Price
@@ -64,13 +64,13 @@ trade orders is used.
 When iTradeOrderLine is 0 and no TradeOrderLineFrom/To
 is specified in the ProcessingOptionSet, the full range
 of trade order lines is used.
-Output: oRecordUpdated                        - Indicates if at least one record
+Output: oRecordUpdated          - Indicates if at least one record
 has been updated.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

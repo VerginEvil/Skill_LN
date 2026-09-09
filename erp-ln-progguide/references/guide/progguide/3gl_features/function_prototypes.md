@@ -1,10 +1,19 @@
 # Function prototypes
 A function consists of three parts:
+
 - Function prototype
+
 - Function definition (function block)
-- Function call  The function prototype must be exactly the same as the function header in the function definition. The prototype of a function is not always necessary. For example, it is not necessary in the following situations:
+
+- Function call
+
+The function prototype must be exactly the same as the function header in the function definition. The prototype of a function is not always necessary. For example, it is not necessary in the following situations:
+
 - if the function is of type void and has no arguments
-- if the definition of the function occurs before any call of that function   In all other situations the prototype of the function must occur before the function call. For example:
+
+- if the definition of the function occurs before any call of that function
+
+In all other situations the prototype of the function must occur before the function call. For example:
 ```
 
 prototype
@@ -39,4 +48,5 @@ From compiler version bic6.1 onwards, it is not necessary to use function protot
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

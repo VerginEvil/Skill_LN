@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for QuarantineInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1202-1203
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1212-1213
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.05 (KB2117931  ).
+This function is available from 2020.05 (KB2117931).
 Syntax: long QuarantineInventory.StartAutomaticInboundProcessing(
 domain  tcorno           iQuarantineInventory,
 domain  whinh.shpm       iReceipt,
@@ -72,15 +72,15 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iQuarantineInventory                  - Mandatory
-iReceipt                                      - Mandatory
-iReceiptLine                                  - Mandatory
-iHandlingUnit                                 - Optional
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iQuarantineInventory    - Mandatory
+iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+iHandlingUnit           - Optional
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -3,8 +3,11 @@ Whether or not an application (which is designed for Parallel Processing), will 
 
 ## Environment Variables
 The following environment variables can be set in the client Bshell which influence the Parallel Bshell functionality
+
 - DS_AS – see section [Parallel Application Processing Debugging](debugging.md)
+
 - TRACEPARBSHELL – see section [Parallel Application Processing Tracing](tracing.md)
+
 - PAR_STARTUP_TIMEOUT – Specifies the time the client waits for the first response from the server after startup (in seconds). The default value is 120 (2 minutes). In the old API this was variable COMDLL0200_STARTUP_TIMEOUT
 
 ## Server Start Options
@@ -15,4 +18,5 @@ Here, the environ variable ENVVAR_X will be set while starting a server. Normall
 
 ## Related topics
 - [Parallel Application Processing Overview](overview.md)
+
 - [Parallel Application Processing synopsis](synopsis.md)

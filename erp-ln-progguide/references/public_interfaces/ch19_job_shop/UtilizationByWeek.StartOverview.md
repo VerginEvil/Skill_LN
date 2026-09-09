@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for UtilizationByWeek
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 812-814
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 812-813
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.01 (KB2300431  ).
+This function is available from 2024.01 (KB2300431).
 Syntax: long UtilizationByWeek.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,10 +28,10 @@ Usage:        Expl:   This function starts the session Utilization by Week
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used.
@@ -46,13 +46,13 @@ Week, Setup Start Date, Machine,
 Production Order and Operation.
 iQueryExtend            A specific query to be used when zooming
 to this session. Optional.
-iWorkCenter             Work Center                       - Optional
-iProductionYear         Production Year                       - Optional
-iProductionWeek         Production Week                       - Optional
-iSetupStartDate         Setup Start Date                       - Optional
-iMachine                Machine                       - Optional
-iProductionOrder        Production Order                       - Optional
-iOperation              Operation                       - Optional
+iWorkCenter             Work Center - Optional
+iProductionYear         Production Year - Optional
+iProductionWeek         Production Week - Optional
+iSetupStartDate         Setup Start Date - Optional
+iMachine                Machine - Optional
+iProductionOrder        Production Order - Optional
+iOperation              Operation - Optional
 Output: oExceptionMessage       The last message if any message is
 found. If more than one message is
 given, these are present in the
@@ -64,7 +64,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for SubcontractedOperation
-
-The following functions are available: SubcontractedOperations.StartDetail SubcontractedOperations.StartOverview

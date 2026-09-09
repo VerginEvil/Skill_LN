@@ -7,16 +7,11 @@
 Returns a copy of a string having a number of characters deleted, beginning at a specified character position.
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `const string` | `string$` |  a string  |
 | `long` | `offset` |  the character position to begin deleting characters; note that: if `offset < 1`, then nothing is removed if `offset > len(string$)`, then nothing is removed  |
 | `long` | `nchars` |  the number of characters to remove; note that: if `nchars < 0`, then all characters starting at `offset` are removed if `nchars = 0`, then nothing is removed if `offset + nchars > len(string$)`, then all characters starting at `offset` are removed  |
--
--
--
 
 ## Return values
 A string equivalent to the specified string less the specified number of characters
@@ -61,4 +56,5 @@ target = str.remove$(source, 26, 100)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1284-1284
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1294-1294
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.05 (KB2237106  ).
+This function is available from 2022.05 (KB2237106).
 Syntax: long WarehouseOrderLine.Activate(
 domain  whinh.oorg       iWarehouseOrderOrigin,
 domain  tcorno           iWarehouseOrder,
@@ -39,15 +39,15 @@ iTransactionType
 Indicator for what type of order line has to be
 activated. This is mandatory to fill.
 Possible values are:
-Receipt (1)                               -   An inbound order line will be activated.
-Issue (2)                               -     An outbound order line will be activated.
-Transfer (3)                               -  An outbound order line will be activated.
-Output: oExceptionMessage               - The last message if any message is found. If
+Receipt (1) -   An inbound order line will be activated.
+Issue (2) -     An outbound order line will be activated.
+Transfer (3) -  An outbound order line will be activated.
+Output: oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0               - Warehouse Order Line has been activated successfully
-<> 0                       - Error.
+Return: 0 - Warehouse Order Line has been activated successfully
+<> 0 - Error.
 ```

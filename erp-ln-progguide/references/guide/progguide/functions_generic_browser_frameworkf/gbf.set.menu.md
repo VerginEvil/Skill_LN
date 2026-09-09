@@ -11,15 +11,15 @@ The following functions are in fact defines and they are defined as:
 | gbf.set.menu.disabled(item.id) | gbf.set.menu.state(0, item.id, true, false) |
 | gbf.set.menu.enabled(item.id) | gbf.set.menu.state(0, item.id, false, false) |
 | gbf.set.menu.not.checked(item.id) | gbf.set.menu.state(0, item.id, false, false) |
-| gbf.set.menu.not.radio(item.id) | gbf.set.menu.state(0, item.id, false, false, false)  |
-| gbf.set.menu.radio(item.id) | gbf.set.menu.state(0, item.id, false, false, true)  |
+| gbf.set.menu.not.radio(item.id) | gbf.set.menu.state(0, item.id, false, false, false) |
+| gbf.set.menu.radio(item.id) | gbf.set.menu.state(0, item.id, false, false, true) |
 This function can disable a menu head or menu item and place or remove a ticmark on a menu item, which has been created using the [gbf.set.menu.head()](gbf.set.menu.head.md) and/or [gbf.set.menu.item()](gbf.set.menu.item.md) functions. Also a radio button (small circle) can be put in front of a menu items which has been created with the [gbf.set.menu.item()](gbf.set.menu.item.md) function. For changing of the standard GBF menu items see function: gbf.set.std.menu(). To change only a item give 0 for the menu.id and to only change an menu give 0 for the item.id. When both values are 0 nothing will change.
 The menu.id is the return value of the function [gbf.set.menu.head()](gbf.set.menu.head.md) when that function was successfully completed.
 
 ## Arguments:gbf.set.menu.[enabled,disabled,radio,not radio, checked and not checked]
 | | |
 |---|---|
-| item.id | The return value of the function [gbf.set.menu.item()](gbf.set.menu.item.md) when that function was successful completed.  |
+| item.id | The return value of the function [gbf.set.menu.item()](gbf.set.menu.item.md) when that function was successful completed. |
 
 ## Arguments
 | | | |
@@ -35,7 +35,7 @@ The menu.id is the return value of the function [gbf.set.menu.head()](gbf.set.me
 |---|---|
 | 0 | Successful completion |
 | GBF.ILL.MENU.ID | Unknown menu.id or item.id specified |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -44,10 +44,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

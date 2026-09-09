@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectAccounting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1710-1712
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1729-1731
 
 ```baan
 DLL:   tpextppcapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long ProjectAccounting.GlobalApprove(
 domain  tccprj           iProject,
 domain  tppdm.date       iFromRegistrationDate,
@@ -58,88 +58,88 @@ function.
 Note: This interface will be executed for a single project.
 Pre:    None.
 Post:   None
-Input:  iProject                              - Project. Mandatory
-iFromRegistrationDate                         - From Registration Date. Optional
-iToRegistrationDate                           - To Registration Date. Mandatory
-iFromUser                                     - From User. Optional
-iToUser                                       - To User. Mandatory
-iApprovalProcess                              - Mandatory
+Input:  iProject                - Project. Mandatory
+iFromRegistrationDate   - From Registration Date. Optional
+iToRegistrationDate     - To Registration Date. Mandatory
+iFromUser               - From User. Optional
+iToUser                 - To User. Mandatory
+iApprovalProcess        - Mandatory
 Allowed Values: Approve/ Unapprove
 This option indicates if the selected
 transactions must be approved or unapproved
-iPrimaryInterimResults                        -
+iPrimaryInterimResults  -
 PrimaryInterimResults (Yes/No).Mandatory.
-iAlternateInterimResults                      -
+iAlternateInterimResults-
 AlternateInterimResults (Yes/No).Mandatory.
-iFinalResult                                  - Final Result (Yes/No). Mandatory.
-iMaterialCommitments                          -
+iFinalResult            - Final Result (Yes/No). Mandatory.
+iMaterialCommitments    -
 Material Commitments (Yes/No). Mandatory.
-iMaterialProjectControl                       -
+iMaterialProjectControl -
 Material Project Control (Yes/No). Mandatory.
-iMaterialPurchaseInvoice                      -
+iMaterialPurchaseInvoice-
 Material Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iMaterialCostForecast                         -
+iMaterialCostForecast   -
 Material Cost Forecast (Yes/No). Mandatory.
-iLaborSubcontractingHours                      -
+iLaborSubcontractingHours-
 Labor Subcontracting Hours (Yes/No). Mandatory.
-iLaborProjectControl                          -
+iLaborProjectControl    -
 Labor Project Control. (Yes/No). Mandatory.
-iLaborPurchaseInvoice                         -
+iLaborPurchaseInvoice   -
 Labor Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iLaborCostForecast                            -
+iLaborCostForecast      -
 Labor Cost Forecast (Yes/No). Mandatory.
-iEquipmentCommitments                         -
+iEquipmentCommitments   -
 Equipment Commitments (Yes/No). Mandatory.
-iEquipmentProjectControl                      -
+iEquipmentProjectControl-
 Equipment Project Control (Yes/No). Mandatory.
-iEquipmentPurchaseInvoice                      -
+iEquipmentPurchaseInvoice-
 Equipment Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iEquipmentCostForecast                        -
+iEquipmentCostForecast  -
 Equipment Cost Forecast (Yes/No). Mandatory.
-iSubcontractingCommitments                       -
+iSubcontractingCommitments -
 Subcontracting Commitments (Yes/No). Mandatory.
-iSubcontractingProjectControl                       -
+iSubcontractingProjectControl -
 Subcontracting Project Control (Yes/No).
 Mandatory.
-iSubcontractingPurchaseInvoice                      -
+iSubcontractingPurchaseInvoice-
 Subcontracting Purchase Invoice(Finance)(Yes/No).
 Mandatory.
-iSubcontractingCostForecast                       -
+iSubcontractingCostForecast -
 Subcontracting Cost Forecast (Yes/No).Mandatory.
-iSundryCommitments                            -
+iSundryCommitments      -
 Sundry Cost Commitments (Yes/No). Mandatory.
-iSundryProjectControl                         -
+iSundryProjectControl   -
 Sundry Project Control (Yes/No). Mandatory.
-iSundryPurchaseInvoice                        -
+iSundryPurchaseInvoice  -
 Sundry Purchase Invoice (Finance) (Yes/No).
 Mandatory.
-iSundryCostForecast                           -
+iSundryCostForecast     -
 Sundry Cost Forecast (Yes/No). Mandatory.
-iOverheadCostForecast                         -
+iOverheadCostForecast   -
 Overhead Cost Forecast (Yes/No). Mandatory.
-iRevenueProjectControl                        -
+iRevenueProjectControl  -
 Revenue Project Control (Yes/No). Mandatory.
-iRevenueProjectInvoice                        -
+iRevenueProjectInvoice  -
 Revenue Project Invoice (Yes/No). Mandatory.
-iRevenueSalesInvoice                          -
+iRevenueSalesInvoice    -
 Revenue Sales Invoice (Finance) (Yes/No).
 Mandatory.
-iPhysicalProgressElements                      -
+iPhysicalProgressElements-
 Physical Progress Elements (Yes/No). Mandatory.
-iPhysicalProgressActivities                      -
+iPhysicalProgressActivities-
 Physical Progress Activities (Yes/No). Mandatory.
-Output: oExceptionMessage                     -
+Output: oExceptionMessage       -
 The last message if the return value is not
 equal to 0.
 If more than one  message is given,
 these are present in the oExceptionID
-oExceptionID                                  -
+oExceptionID            -
 An ID that refers to all error information.
 Use the functions in Exception to get all
 relevant information.
-Return: 0                             - Global Approve done successfully.
-<> 0                                  - Error.
+Return: 0               - Global Approve done successfully.
+<> 0            - Error.
 ```

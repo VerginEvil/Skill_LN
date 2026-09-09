@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1367-1369
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1379-1381
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long Call.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,23 +28,23 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used. (Optional)
+Specifies the table-index that is to be used. (Optional)
 Supported values:
 1: sort by Call
 2: sort by Call Status
 4: sort by Actual Time Left
 5: sort by Reaction Time
 8: sort by Support Department and Actual Time Left
-9: sort by Sold                               -to Business Partner and Project
+9: sort by Sold-to Business Partner and Project
 10: sort by Support Engineer
 11: sort by (Serialized) Item
 iQueryExtend

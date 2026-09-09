@@ -1,16 +1,16 @@
 # map.add.info()
 
 ## Syntax:
-`function long map.add.info( long rpid, string title )`
+`function long map.add.info( long i.onmapobjectid, string i.title )`
 
 ## Description
-Add an info object to a route point. An info object will be shown as a tooltip when the user hovers the mouse pointer over a route point icon.
+Add an info object to a route point or an arrow object. An info object will be shown as a tooltip when the user hovers the mouse pointer over a route point icon or an arrow object.
 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `rpid` |  A route point object id returned by function [map.add.point()](map.add.point.md).  |
-| `string` | `title` |  The title of the tooltip. This title can be empty.  |
+| `long` | `i.onmapobjectid` |  A route point object id returned by function [map.add.point()](map.add.point.md) or an Arrow object id returned by function [map.add.arrow()](map.add.arrow.md).  |
+| `string` | `i.title` |  The title of the tooltip. This title can be empty.  |
 
 ## Return values
 | | |
@@ -23,4 +23,5 @@ This function is implemented in the 4GL Engine and can be used in 3GL script typ
 
 ## Related topics
 - [Maps Workbench overview](overview.md)
+
 - [Maps Workbench synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 463-464
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 465-465
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2021.12 (KB2218711  ).
+This function is available from 2021.12 (KB2218711).
 Syntax: long PurchaseOrderLine.ReleaseToWarehousing(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -22,9 +22,9 @@ If applicable, this function will execute the Price Stage
 blocking functionality. As a result, the order line can be
 blocked and no release is done. This is not an error situation
 so the function returns with 0. Moreover, the caller must still
-commit the transaction, otherwise the Price                      -Stage Blocking
+commit the transaction, otherwise the Price-Stage Blocking
 changes are not committed to the database.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder  Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Mandatory)

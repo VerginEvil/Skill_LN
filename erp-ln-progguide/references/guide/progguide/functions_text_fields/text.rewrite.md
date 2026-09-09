@@ -12,9 +12,9 @@ This writes text from a specified file to a specified text field. The new text a
 | `string` | `text_field` |  The name of the text field to which the file must be copied. See [Text fields overview](overview.md). If the specified text does not exist, nothing happens and the function returns 0.  |
 | `string` | `lang` |  The language for which the text is to be rewritten.  |
 | `string` | `kw1` |  Use these arguments to specify key words for the text.  |
-| `string` | `kw2` |  |
-| `string` | `kw3` |  |
-| `string` | `kw4` |  |
+| `string` | `kw2` |    |
+| `string` | `kw3` |    |
+| `string` | `kw4` |    |
 | `string` | `tgroup` |  This specifies the name of the text group to which the text must be assigned. If you specify an empty string here, the text is assigned to the user's default group.  |
 | `string` | `edit_opt` |  This specifies the type of window in which the text must be displayed.  |
 | `string` | `tmp_file` |  The name of the file where the new text is stored. The contents of this file is changed before the text is stored, Long lines are wrapped to meet the line width of the text group to which the text is assigned.  |
@@ -32,4 +32,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

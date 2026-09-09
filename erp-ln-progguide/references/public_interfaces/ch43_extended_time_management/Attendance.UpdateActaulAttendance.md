@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1883-1884
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1903-1904
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.UpdateActaulAttendance(
 domain  bpxtm.atty       iAttendanceType,
 domain  tcyesno          iManuallyAdded,
@@ -25,18 +25,18 @@ If the record does not exist a new record will be created.
 Pre:    db.retry.point
 Post:   commit.transaction
 Input:
-iAttendanceType                       - Attendance type
-iManuallyAdded                        - Manually added
-iNumberOfHours                        - Number of hours
+iAttendanceType - Attendance type
+iManuallyAdded  - Manually added
+iNumberOfHours  - Number of hours
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Record updated
-<> 0                                          - An error occurred
+Return: 0                       - Record updated
+<> 0                    - An error occurred
 ```

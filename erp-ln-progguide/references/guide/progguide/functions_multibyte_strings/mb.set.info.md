@@ -36,4 +36,5 @@ endfor
 
 ## Related topics
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

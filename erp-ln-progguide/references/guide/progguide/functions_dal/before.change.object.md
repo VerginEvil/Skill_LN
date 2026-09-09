@@ -11,7 +11,7 @@ This function is implemented in the 4GL Engine and can be used in DAL script typ
 
 ## When called
 This hook only applies to DAL2.
-It is called by the 4GL engine at the moment the end-user starts modifying the record. It is also executed when a [dal.change.object()](../functions_db_operations/dal.change.object.md) is done.
+It is called by the [4GL engine](../glossary/glossary.md#fourgl_engine) at the moment the end-user starts modifying the record. It is also executed when a [dal.change.object()](../functions_db_operations/dal.change.object.md) is done.
 
 ## Return value
 The hook normally returns 0. Do not return DALHOOKERROR to prevent the current record to be updated. Only return DALHOOKERROR in case of unusual errors, like a data set-up problem.
@@ -29,5 +29,7 @@ function extern long before.change.object()
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

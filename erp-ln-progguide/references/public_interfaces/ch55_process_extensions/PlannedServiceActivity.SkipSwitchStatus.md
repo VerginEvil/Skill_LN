@@ -4,23 +4,24 @@
 >
 > Group: Process Extensions for PlannedServiceActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2109-2111
-
-Skips Planned Service Activity when Switching its Status. This process extension is available from 2020.05 ( KB2120655 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2132-2133
 
 ```baan
+Skips Planned Service Activity when Switching its Status.
+This process extension is available from 2020.05 (KB2120655).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension PlannedServiceActivity.SkipSwitchStatus can be used
 to skip Planned Service Activities when switching the status.
 Sessions where this Process Extension can be implemented:
--               Switch Status Maintenance Plan (tsspc2201m000).
+- Switch Status Maintenance Plan (tsspc2201m000).
 Fields that are available to be used in this Process Extension:
--               All fields of table Planned Activities (tsspc200).
--               If in the selection range of session 'Switch Status Maintenance Plan'
+- All fields of table Planned Activities (tsspc200).
+- If in the selection range of session 'Switch Status Maintenance Plan'
 (tsspc2201m000) the field which controls the selection of
 serialized items is either set to 'Selection of Serialized Items',
 or set to 'Selection of Top Items', then also all fields of table
 'Serialized Items' (tscfg200) can be used.
--               If in the selection range of session 'Switch Status Maintenance Plan'
+- If in the selection range of session 'Switch Status Maintenance Plan'
 (tsspc2201m000) the field which controls the selection of maintenance
 scenarios is set to 'Selection of Scenarios', then also all fields of
 table 'Preventive Maintenance Scenario Lines' (tsspc131) can be used.
@@ -62,7 +63,3 @@ endif
 return (false)
 }
 ```
-
-## Process Extensions for PriceBookLine
-
-The following process extension(s) is/are available: PriceBookLine.SkipGlobalUpdatePricesViaPriceBooks

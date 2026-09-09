@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AssemblyPart
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 860-861
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 870-871
 
 ```baan
 DLL:   tiextascapi
-This function is available from     2023.01 (KB2259064  ).
+This function is available from 2023.01 (KB2259064).
 Syntax: long AssemblyPart.StartProcessReturn(
 long             iStartMode,
 domain  tccwoc           iLineStationFrom,
@@ -22,15 +22,15 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts the session Return Assembly Parts
 (tiasc7245m000).
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iStartMode (Mandatory)
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
@@ -61,11 +61,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - If the Return Assembly Parts session was started
+Return: 0       - If the Return Assembly Parts session was started
 succesfully.
-<> 0                          - Otherwise.
+<> 0    - Otherwise.
 ```
-
-## Public Interfaces for AssemblyProductVariant
-
-The following functions are available: AssemblyProductVariant.CalculateStandardCost AssemblyProductVariant.GenerateStructure

@@ -20,4 +20,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

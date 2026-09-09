@@ -1,14 +1,27 @@
 # Comparable data types in Infor Enterprise Server SQL
 Certain constructions within the Infor Enterprise Server SQL language require that the data types of two entities are *comparable*. Such constructions include:
+
 - Comparison predicates
-- UNION  The following list shows which data types are comparable. Two data types are comparable if they are on the same line.
+
+- UNION
+
+The following list shows which data types are comparable. Two data types are comparable if they are on the same line.
+
 - integer, real
+
 - string, multibyte string
+
 - date
+
 - interval days
+
 - datetime (UTC)
+
 - interval seconds
-- raw  Note: the types *interval days* and *interval seconds* are not types that can be defined in the Data Dictionary, but that can only occur during evalution of an expression. A value that is the result of the subtraction of two values of type *date* is of type *interval days*. A value that is the result of the subtraction of two values of type *datetime* is of type *interval seconds*.
+
+- raw
+
+Note: the types *interval days* and *interval seconds* are not types that can be defined in the Data Dictionary, but that can only occur during evalution of an expression. A value that is the result of the subtraction of two values of type *date* is of type *interval days*. A value that is the result of the subtraction of two values of type *datetime* is of type *interval seconds*.
 
 ## Examples
 The following constructions are allowed:

@@ -24,5 +24,7 @@ Notes  Due to browser security restrictions it is not possible to open a local (
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)
+
 - [Document Viewer overview](../functions_vwr/overview.md)

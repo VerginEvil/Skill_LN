@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.11 (KB3512062  ).
+This function is available from 2024.11 (KB3512062).
 Syntax: long ProductionOrder.Split(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

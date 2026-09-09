@@ -2,27 +2,48 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.string( [ const string aspect, ... ] )`
+`function string sjv.string( [ const string aspect,... ] )`
 
 ## Description
 Indicates a JSON string is expected. By default, the string is optional (i.e., it does not have to appear in the JSON), may be of any length, including a length of zero characters (i.e. an empty string), but may not be null. The following aspects can be specified:
-- ` [sjv.length()](sjv.length.md)`- specifies the exact length in characters
-- ` [sjv.min()](sjv.min.md)`- specifies the minimum length in characters
-- ` [sjv.max()](sjv.max.md)`- specifies the maximum length in characters
-- ` [sjv.required()](sjv.required.md)`- specifies the string is required
-- ` [sjv.nullable()](sjv.nullable.md)`- specifies the string is nullable
-- ` [sjv.filled()](sjv.filled.md)`- specifies the string may not be an empty string
-- ` [sjv.enum()](sjv.enum.md)`- specifies a list of allowed values   You can also specify one of the following formats:
-- ` [sjv.alpha()](sjv.alpha.md)`- the string may only contain characters in the range [a-zA-Z]
-- ` [sjv.alphanum()](sjv.alphanum.md)`- the string may only contain characters in the range [a-zA-Z0-9]
-- ` [sjv.base64()](sjv.base64.md)`- the string must be a valid base64 encoded string
-- ` [sjv.email()](sjv.email.md)`- the string must be a valid email address
-- ` [sjv.hex()](sjv.hex.md)`- the string must be a valid HEX encoded string
-- ` [sjv.isodate()](sjv.isodate.md)`- the string must be a date in ISO 8601 format
-- ` [sjv.isodatetime()](sjv.isodatetime.md)`- the string must be a datetime in ISO 8601 format
-- ` [sjv.numeric()](sjv.numeric.md)`- the string may only contain characters in the range [0-9]
-- ` [sjv.url()](sjv.url.md)`- the string must be a valid url
-- ` [sjv.uuid()](sjv.uuid.md)`- the string must be a valid UUID (or GUID) of 36 characters   Example:
+
+- [sjv.length()](sjv.length.md)- specifies the exact length in characters
+
+- [sjv.min()](sjv.min.md)- specifies the minimum length in characters
+
+- [sjv.max()](sjv.max.md)- specifies the maximum length in characters
+
+- [sjv.required()](sjv.required.md)- specifies the string is required
+
+- [sjv.nullable()](sjv.nullable.md)- specifies the string is nullable
+
+- [sjv.filled()](sjv.filled.md)- specifies the string may not be an empty string
+
+- [sjv.enum()](sjv.enum.md)- specifies a list of allowed values
+
+You can also specify one of the following formats:
+
+- [sjv.alpha()](sjv.alpha.md)- the string may only contain characters in the range [a-zA-Z]
+
+- [sjv.alphanum()](sjv.alphanum.md)- the string may only contain characters in the range [a-zA-Z0-9]
+
+- [sjv.base64()](sjv.base64.md)- the string must be a valid base64 encoded string
+
+- [sjv.email()](sjv.email.md)- the string must be a valid email address
+
+- [sjv.hex()](sjv.hex.md)- the string must be a valid HEX encoded string
+
+- [sjv.isodate()](sjv.isodate.md)- the string must be a date in ISO 8601 format
+
+- [sjv.isodatetime()](sjv.isodatetime.md)- the string must be a datetime in ISO 8601 format
+
+- [sjv.numeric()](sjv.numeric.md)- the string may only contain characters in the range [0-9]
+
+- [sjv.url()](sjv.url.md)- the string must be a valid url
+
+- [sjv.uuid()](sjv.uuid.md)- the string must be a valid UUID (or GUID) of 36 characters
+
+Example:
 ```
 
 string  string.def(1) based
@@ -60,7 +81,7 @@ result = sjv.validate(json, string.def)
 ## Arguments
 | | | |
 |---|---|---|
-| `[ const string` | `aspect, ... ]` |  a list of aspects and/or formats the string is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.nullable()](sjv.nullable.md), and [sjv.url()](sjv.url.md)  |
+| `[ const string` | `aspect,... ]` |  a list of aspects and/or formats the string is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.nullable()](sjv.nullable.md), and [sjv.url()](sjv.url.md)  |
 
 ## Return values
 a definition string to build a JSON validation definition that can be passed to [sjv.validate()](sjv.validate.md)
@@ -70,6 +91,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

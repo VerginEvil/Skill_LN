@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1988-1990
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2007-2009
 
 ```baan
 Syntax: long tcext.mcs0002.get.customer.defined.item.signal.information(
@@ -30,20 +30,20 @@ The process extension is only called when the standard
 signal information retrieval logic is executed correctly.
 External variables available for use by this process extension
 function:
--                       proc_ext_get_item_signal_info_item
+- proc_ext_get_item_signal_info_item
 [type: domain tcitem]
 Related Item code.
--                       proc_ext_get_item_signal_info_site
+- proc_ext_get_item_signal_info_site
 [type: domain tcsite]
 Related Site. Only used when the sites concept is
 available.
 Implementation Example:
 Intention:
-For a specific Site (For Example: Site                               - "ABC") and
-Item (For Example: Item                               - XYZ), when Item Signal is
+For a specific Site (For Example: Site - "ABC") and
+Item (For Example: Item - XYZ), when Item Signal is
 blocked it is still allowed to process further without
 blocking for specific users profiles (For Example: Sales
-User Profile Table                               - tdsls039).
+User Profile Table - tdsls039).
 Hook Declarations:
 table ttdsls039
 extern domain tcsite proc_ext_get_item_signal_info_site
@@ -75,27 +75,23 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.company                             - Company to which the signal applies
-i.item.signal                                 - Item Signal
+Input:  i.company               - Company to which the signal applies
+i.item.signal           - Item Signal
 Input/Output:
-io.description                                - Item Signal Description
-io.blcp                                       - Purchase Status
-io.blcs                                       - Sales Status
-io.blsv                                       - Service Status
-io.blpo                                       - Requisition through Production Status
-io.blpi                                       - Production Issue Status
-io.blps                                       - Process Issue Status
-io.blad                                       - Adjustments Status
-io.blcc                                       - Cycle Counting Status
-io.blrc                                       - Receipt Correction Status
-io.bloc                                       - Ownership Change Status
-io.blac                                       - Allocation Change Status
-io.blpl                                       - Planning Status
-io.blmi                                       - Miscellaneous Status
-Return: 0                                     - Success
-<> 0                                          - Error
+io.description          - Item Signal Description
+io.blcp                 - Purchase Status
+io.blcs                 - Sales Status
+io.blsv                 - Service Status
+io.blpo                 - Requisition through Production Status
+io.blpi                 - Production Issue Status
+io.blps                 - Process Issue Status
+io.blad                 - Adjustments Status
+io.blcc                 - Cycle Counting Status
+io.blrc                 - Receipt Correction Status
+io.bloc                 - Ownership Change Status
+io.blac                 - Allocation Change Status
+io.blpl                 - Planning Status
+io.blmi                 - Miscellaneous Status
+Return: 0                       - Success
+<> 0                    - Error
 ```
-
-## Process Extensions for ComposeShippingStructure
-
-The following process extension(s) is/are available: ComposeShippingStructure.CommandHandling ComposeShippingStructure.CustomCommand

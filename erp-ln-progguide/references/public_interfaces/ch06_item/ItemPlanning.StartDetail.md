@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 211-211
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 212-212
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2023.10 (KB2303593  ).
+This function is available from 2023.10 (KB2303593).
 Syntax: long ItemPlanning.StartDetail(
 long             iStartMode,
 domain  cpitem           iPlanItem,
@@ -19,14 +19,14 @@ in detail mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Primary Key Fields:
-iPlanItem               Plan Item                       - Mandatory
+iPlanItem               Plan Item - Mandatory
 Output: oExceptionMessage       The last message if any message is
 found. If more than one message is
 found, these are present in the

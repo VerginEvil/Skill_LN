@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractingModel
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 833-834
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 843-844
 
 ```baan
 DLL:   tiextsubapi
-This function is available from     2023.04 (KB2282924  ).
+This function is available from 2023.04 (KB2282924).
 Syntax: long SubcontractingModel.SetUseForCosting(
 domain  tcsite           iProductionSite,
 domain  tcitem           iProduct,
@@ -19,12 +19,12 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to set the Use for Costing flag for a
 Subcontracting Model.
-For all Subcontracting Model›¼À                      ™s revisions for this Product and
+For all Subcontracting Model›¼À™s revisions for this Product and
 Site, the use for Costing flag will be set.
 For all other Subcontracting Models related to this Product and
 Site, the Use for Costing flag will be cleared.
 This function follows the same logic as the form command
-›¼ÀœUse for Costing›¼À                       in session Product Subcontracting List
+›¼ÀœUse for Costing›¼À• in session Product Subcontracting List
 (tisub1100m000).
 This Public Interface can only be used if the Sites concept is
 active.

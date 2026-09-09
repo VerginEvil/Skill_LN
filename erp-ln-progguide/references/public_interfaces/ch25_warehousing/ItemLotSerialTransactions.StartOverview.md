@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemLotSerialTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1120-1122
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1130-1132
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2024.07 (KB3501687  ).
+This function is available from 2024.07 (KB3501687).
 Syntax: long ItemLotSerialTransactions.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -34,10 +34,10 @@ Transactions(whltc3510m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -86,23 +86,19 @@ If this argument is empty, it will be overwritten by
 the first value for the given iBusinessObjectType and
 iBusinessObject
 Output: for iStartMode MODAL:
-oItem                                         - Selected Item.
-oLot                                          - Selected Lot.
-oSerial                                       - Selected Serial.
-oTransactionDate                              - Selected Transaction Date.
-oSequence                                     - Selected Sequence
-oExceptionMessage                             - The last message if any message is
+oItem                   - Selected Item.
+oLot                    - Selected Lot.
+oSerial                 - Selected Serial.
+oTransactionDate        - Selected Transaction Date.
+oSequence               - Selected Sequence
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for ItemLotSerialTracking
-
-The following functions are available: ItemLotSerialTracking.GetChildren ItemLotSerialTracking.PrintReceipts

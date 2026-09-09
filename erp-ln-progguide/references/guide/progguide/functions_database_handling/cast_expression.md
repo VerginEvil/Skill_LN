@@ -5,7 +5,7 @@ With the CAST expression you can assign a type to a parameter.
 ```
 
 <cast expression>
-    ::= CAST ( Parameter AS <parameter cast type> )
+    ::= CAST ( <parameter> AS <parameter cast type> )
 
 <parameter cast type>
     ::= INTEGER | REAL | DATE | TIMESTAMP | STRING | RAW
@@ -15,7 +15,7 @@ With the CAST expression you can assign a type to a parameter.
 The value of *Parameter* is restricted to the name of a column. A syntax error will result when any other type of expression is used.
 
 ## Semantics
-The cast operator assigns the type *<parameter cast type>* to the *<parameter>*. The cast expression itself will also be of type *<parameter cast type>*.
+The cast operator assigns the type *<**parameter cast type**>* to the *<**parameter**>*. The cast expression itself will also be of type *<**parameter cast type**>*.
 
 ## Examples
 The following CAST expression assigns the type *integer* to the parameter *param*.

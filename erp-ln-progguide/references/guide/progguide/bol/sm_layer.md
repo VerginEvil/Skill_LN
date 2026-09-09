@@ -1,7 +1,11 @@
 # Interface Conversion Protected Layer
 In this library the logic of the protected calculated fields must be programmed in specific hooks:
+
 - function long <component>.{all|<attribute>}.map.to.{specific|<attribute>}()
-- function long <component>.<attribute>.map.from.{all|specific|<attribute>}()   'all' will be used when more then one attribute has been mapped to the current attribute. Normally the mapped attribute will be filled out in <attribute>. If there is no mapping specified 'specific' will be used instead.
+
+- function long <component>.<attribute>.map.from.{all|specific|<attribute>}()
+
+'all' will be used when more then one attribute has been mapped to the current attribute. Normally the mapped attribute will be filled out in <attribute>. If there is no mapping specified 'specific' will be used instead.
 The system will generate the library. The file can be divided into two parts. The first part is read-only, while in the second part the content of the hooks must be programmed (see the example below).
 
 ## Example Read-only
@@ -70,7 +74,11 @@ In the development part, it is possible to report problems. The standard functio
 
 ## Related topics
 - [Business Object Layer](overview.md)
+
 - [Public Layer](sb_layer.md)
+
 - [Interface Conversion Public Layer](sc_layer.md)
+
 - [Protected Layer](st_layer.md)
+
 - [Specific Methods Library](sf_layer.md)

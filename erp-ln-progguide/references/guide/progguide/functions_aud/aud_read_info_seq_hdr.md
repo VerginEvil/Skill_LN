@@ -21,7 +21,7 @@ Use [aud_read_seq_hdr()](aud_read_seq_hdr.md) to read the sequence header from t
 | | |
 |---|---|
 | 0 | Success |
-| -1 | Error; Probably invalid *seqid*.  |
+| -1 | Error; Probably invalid *seqid*. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -29,6 +29,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - sequence header](macros_sequence_header.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

@@ -20,10 +20,7 @@ Note that the sequence header information is not automatically copied to the seq
 | | |
 |---|---|
 | 0 | Success |
-| -1 |  Error; Possible reasons are: Error occurred while opening the information file Open file limit reached Incorrect sequence identifier  |
--
--
--
+| -1 | Error; Possible reasons are: Error occurred while opening the information file Open file limit reached Incorrect sequence identifier |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -31,5 +28,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

@@ -11,8 +11,8 @@ Bitwise AND function
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `pattern1` |  |
-| `long` | `pattern2` |  |
+| `long` | `pattern1` |    |
+| `long` | `pattern2` |    |
 
 ## Return values
 The function bit.and returns the bitwise AND of the supplied input values.
@@ -33,8 +33,8 @@ Bitwise exclusive OR function
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `pattern1` |  |
-| `long` | `pattern2` |  |
+| `long` | `pattern1` |    |
+| `long` | `pattern2` |    |
 
 ## Return values
 The function bit.exor returns the bitwise exclusive OR of the supplied input values.
@@ -55,8 +55,8 @@ Bitwise IN function
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `pattern1` |  |
-| `long` | `pattern2` |  |
+| `long` | `pattern1` |    |
+| `long` | `pattern2` |    |
 
 ## Return values
 The function bit.in returns whether the bitset represented by the first input value is a subset of the bitset represented by the second input value.
@@ -78,8 +78,8 @@ Bitwise OR function
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `pattern1` |  |
-| `long` | `pattern2` |  |
+| `long` | `pattern1` |    |
+| `long` | `pattern2` |    |
 
 ## Return values
 The function bit.or returns the bitwise OR of the supplied input values.
@@ -100,7 +100,7 @@ Bitwise inversion.
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `value` |  |
+| `long` | `value` |    |
 
 ## Return values
 The function bit.inv returns the two’s complement inversion of the input value.
@@ -113,10 +113,15 @@ Notice that the behavior of this function does not depend on the width of the us
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 Notes  You can also use the mathematical operators +, -, and / for computing bit operations. The operands must be declared as variables of type SET. You can declare such a variable only with a domain declaration where the domain is of database type SET.
+
 - The operator + equates to the function *bit.or()*.
+
 - The operator * equates to the function *bit.and()*.
+
 - The operator / equates to the function *bit.exor()*.
+
 - The operator - equates to a special form of the function *bit.and()*. That is, `a-b` for sets equates to `bit.and(a, bit.inv(b))` for longs. If the SET variables are represented as longs, the following example explains the - operator: `0101 0110 ---- 0001`
+
 - When using SET constants as operands, the keyword IN equates to the function *bit.in()*. The following example illustrates the use of bit operations on SET constants. Note that EMPTY is a keyword for the empty set; all bits are zero (set value 0).
 ```
 
@@ -254,10 +259,6 @@ bit.or(5,-4) = -3
 -----
 11101
 ```
-| | | |
-|---|---|---|
-|  |  |  |
-|  |  |  |
 ```
 
 bit.inv(6) = -7
@@ -290,10 +291,6 @@ bit.in(4,-4) = true
 -----
 11111
 ```
-| | | |
-|---|---|---|
-|  |  |  |
-|  |  |  |
 
 ## Related topics
 - [Bit operations: overview and synopsis](bit_operations_overview_and_synopsis.md)

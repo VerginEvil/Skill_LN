@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for StandardCost
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2249-2250
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2272-2272
 
 ```baan
 Syntax: long tiext.cpr0001.standard.cost.skip.actualize(
@@ -17,12 +17,12 @@ Item/Enterprise Unit combination.
 A message may be returned, to present information about the
 decision to the user.
 When this function is called all fields of table:
--                       Item Costing Data (ticpr007) are read and current.
+- Item Costing Data (ticpr007) are read and current.
 Pre:    NA
 Post:   NA
 Input:  NA
-Output: o.skip.actualize                      - decision result
-o.message                                     - message, multibyte - max 300 characters
-Return: 0                                     - success
-DALHOOKERROR                                  - error
+Output: o.skip.actualize        - decision result
+o.message               - message, multibyte - max 300 characters
+Return: 0                       - success
+DALHOOKERROR            - error
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 640-641
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 643-644
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2020.11 (KB2151944  ).
+This function is available from 2020.11 (KB2151944).
 Syntax: long JobShopBillOfMaterial.ApproveRevision(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -28,14 +28,14 @@ Input:  iSite                   Site (mandatory).
 iProduct                Main item (mandatory).
 iBillOfMaterialCode     BOM Model (mandatory).
 iRevision               Revision (mandatory).
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - JS BOM Revision is set to Approved
-<> 0                                          - JS BOM Revision could not be Approved
+Return: 0                       - JS BOM Revision is set to Approved
+<> 0                    - JS BOM Revision could not be Approved
 ```

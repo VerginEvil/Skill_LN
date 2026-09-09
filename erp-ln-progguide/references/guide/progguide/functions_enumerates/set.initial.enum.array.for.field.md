@@ -15,7 +15,7 @@ This function applies to enumerated fields that are displayed as listbox or opti
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in 4GL script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2100.
-Notes  This function can only be called in the *after.form.read* section. Use the function ` [set.enum.array.for.field()](set.enum.array.for.field.md)` in other sections.
+Notes  This function can only be called in the *after.form.read* section. Use the function [set.enum.array.for.field()](set.enum.array.for.field.md) in other sections.
 You can set enumerate values for the current occurrence only.
 If the existing value of an enumerated field in not included in the new set, the 4GL Engine selects the nearest valid option.
 
@@ -32,4 +32,5 @@ after.form.read:
 
 ## Related topics
 - [Enumerates overview and synopsis](overview_and_synopsis.md)
+
 - [Enumerate and set constants](../3gl_features/enumerate_and_set_constants.md)

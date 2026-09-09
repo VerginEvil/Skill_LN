@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1190-1192
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1200-1202
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.12 (KB3612207  ).
+This function is available from 2025.12 (KB3612207).
 Syntax: long OutboundAdvice.StartGenerateV2(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -25,7 +25,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Generate Outbound Advice
 (whinh4201m000). Depending on the main table of the calling
-session, Non                      -Consecutive Record Selection (NCRS) is used.
+session, Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Warehousing Orders      (whinh200) or
 Outbound Order Lines    (whinh220) or
@@ -162,14 +162,14 @@ LabelLayout                     domain tclabl           empty string
 LabelCopies                     domain tcmcs.long       0
 HandlingUnitsOnly               domain tcyesno          tcyesno.no
 LabelPrintingMethod             domain whinh.prmt       whinh.prmt.not.appl
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

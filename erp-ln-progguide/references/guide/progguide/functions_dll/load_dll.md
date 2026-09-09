@@ -10,10 +10,12 @@ You can also use *load_dll()* to replace one or more functions within a DLL by o
 For a full discussion on function overloading, see [Function overloading](../dynamic_link_libraries/function_overloading.md).
 
 ## Arguments
-| | | |
-|---|---|---|
-| `string` | `dll_name` |  The name of the DLL.  |
-| `[ long` | `overload ]` |  This optional argument sets the overload flag for the specified DLL. The possible values are:  |
+| | |
+|---|---|
+| 0 | places the DLL as the last element in the search list of all dynamically loaded DLLs this is the default option |
+| DLL_OVERLOAD | places the DLL as the first element in the search list of all dynamically loaded DLLs |
+| DLL_SILENT_ERR | suppresses error messages |
+You can combine DLL_SILENT_ERR with either of the other options.
 
 ## Return values
 | | |

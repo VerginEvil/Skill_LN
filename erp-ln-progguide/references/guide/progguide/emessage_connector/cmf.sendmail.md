@@ -2,13 +2,16 @@
 
 ## Syntax:
 `#include <bic_cmf>`
-`function long cmf.sendMail( string sender, string subject, string recipients.to(,), long num.recipients.to, string recipients.cc(,), long num.recipients.cc, string recipients.bcc(,), long num.recipients.bcc, string body, string body.mime, string attachments(,), string attachment.mimes(,), long num.attachments )`
+`function long cmf.sendMail( string sender, string subject, string recipients.to(,), long num.recipients.to, string recipients.cc(,), long num.recipients.cc, string recipients.bcc(,), long num.recipients.bcc, string body, string body.mime, string attachments(,), string attachment.mimes(,), long num.attachments, [ string service ] )`
 
 ## Description
 Convenience function to send a mail to one or more recipients, with the possibility to add attachments to the mail.
 Note: the sender and the recipients can be specified in the following ways:
-- *User name <mail address>*: e.g. "John Doe <jdoe@acme.com>"; this value is split into a user name ("John Doe") and a mail address (jdoe@acme.com).
+
+- *User name**<**mail address**>*: e.g. "John Doe <jdoe@acme.com>"; this value is split into a user name ("John Doe") and a mail address (jdoe@acme.com).
+
 - *Mail address only*: e.g. "jdoe@acme.com"; the mail address is also used as the user name; note that any value of 8 characters or less, is interpreted as an LN user code, even if it contains the '@' sign. So a value like "a@b.com" is not interpreted as a mail address, but as an LN user code. Use the 'User name <mail address>' format to prevent any ambiguities.
+
 - *LN user code*: e.g. "jdoe"; the mail address and user name are resolved using the CMF address book.
 
 ## Arguments
@@ -27,6 +30,7 @@ Note: the sender and the recipients can be specified in the following ways:
 | `string` | `attachments(,)` |  An array of paths to attachment files.  |
 | `string` | `attachment.mimes(,)` |  An array of mime types of the attachment files.  |
 | `long` | `num.attachments` |  The number of attachments; can be 0.  |
+| `[ string` | `service ]` |  The eMessage connector service to be used to send the mail. If not specified (or empty), service SMTP will be used. Available with KB3641113 / LNCE 2025.12.  |
 
 ## Return values
 | | |
@@ -86,4 +90,5 @@ endif
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)

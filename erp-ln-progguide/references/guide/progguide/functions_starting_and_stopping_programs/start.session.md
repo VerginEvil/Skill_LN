@@ -20,7 +20,10 @@ If you specify a variable name in the *returnfld* argument, the function returns
 ## Context
 This function is implemented in the 4GL Tools and can be used in 4GL script types.
 In the following case it is possible to use this function in a not trusted object:
-- TIVLevel >= 2120 and Value of argument session.code starts with "tx" or "otx"    Notes  You can use *start.session()* in both 3GL and 4GL programs, but only for starting 4GL sessions.
+
+- TIVLevel >= 2120 and Value of argument session.code starts with "tx" or "otx"
+
+Notes  You can use *start.session()* in both 3GL and 4GL programs, but only for starting 4GL sessions.
 You cannot use *start.session()* from a report script.
 The function replaces other functions for starting sessions, such as [zoom.to$()](zoom.to.md) and *start.main.session()*.
 

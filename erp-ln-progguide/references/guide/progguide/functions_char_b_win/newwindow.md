@@ -11,9 +11,9 @@ This creates a new window. The new window automatically becomes the current wind
 | | | |
 |---|---|---|
 | `long` | `height` |  The height and width of the new window.  |
-| `long` | `width` |  |
+| `long` | `width` |    |
 | `long` | `row` |  These indicate the position of the top left corner of the new window, relative to the top left corner of the parent window.  |
-| `long` | `col` |  |
+| `long` | `col` |    |
 
 ## Return values
 The window ID for the new window.

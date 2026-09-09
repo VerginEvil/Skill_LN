@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderMaterialCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1453-1454
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1467-1467
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2026.09 (KB3691643  ).
+This function is available from 2026.09 (KB3691643).
 Syntax: long ServiceOrderMaterialCosts.ConfirmScrap(
 domain  tcorno           iServiceOrder,
 domain  tcpono           iMaterialLine,
@@ -46,6 +46,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

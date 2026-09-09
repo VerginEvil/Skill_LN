@@ -1,11 +1,11 @@
 ---
 name: erp-ln-progguide
-description: Infor ERP LN / Baan 4GL programmer's reference. Use when writing, reading, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and their hooks), or calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs) in ttadv / Infor Studio / LN Cloud.
+description: Infor ERP LN / Baan 4GL programmer's reference. Use when writing, reading, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), embedding GenAI assistance (genai.*, set.genai.*) in sessions, developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and their hooks), or calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs) in ttadv / Infor Studio / LN Cloud.
 ---
 
 # Infor ERP LN Programmer's Guide (Baan 4GL)
 
-Full text of the official Infor *Programmer's Guide* (`progguide 10.8.12pre en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)* and the *AFS Developer's Guide (Infor Integration 6.2)*, converted to plain Markdown: **2,906 + 155 + 162 + 2,332 + 76 pages**, including **2,366 bshell function references**, **1,805 public interface / process extension references** and all **`stpapi.*` AFS primitives** with syntax, arguments, return values, and usage.
+Full text of the official Infor *Programmer's Guide* (`progguide 2610 en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)* and the *AFS Developer's Guide (Infor Integration 6.2)*, converted to plain Markdown: **2,970 + 155 + 162 + 2,361 + 76 pages**, including **2,425 bshell function references**, **1,833 public interface / process extension references** and all **`stpapi.*` AFS primitives** with syntax, arguments, return values, and usage.
 
 ## How to answer questions (token-efficient workflow)
 
@@ -51,7 +51,7 @@ references/
   afs/                        AFS Developer's Guide (stpapi.* primitives, field
                               buffer, message handling); start at AFS_INDEX.md
 index/INDEX.tsv               every page: path TAB title
-references/FUNCTION_INDEX.md  all 2366 functions grouped by topic, grep this first
+references/FUNCTION_INDEX.md  all 2425 functions grouped by topic, grep this first
 references/EXTENSIONS_INDEX.md chapter list + orientation for the extensions guide
 references/PUBLIC_INTERFACES_INDEX.md  index of all public interfaces per chapter
 references/AFS_INDEX.md       stpapi.* primitive list with signatures
@@ -69,6 +69,7 @@ scripts/search.py             full-text search tool (stdlib Python only)
 - **Predefined variables**: see `guide/progguide/misc/predefined_variables.md`.
 - **LN Extensions** (Extension Modeler): customize standard components without code changes to them. Extension points: domain, table, report, session, BOD/BDE, OData REST, menu, process. Hooks are `function extern` DAL-style functions (e.g. `before.save.object(long mode)`, `method.is.allowed()`, `<field>.check.input()`, `before.context.send()`); errors via `dal.set.error.message("@...")` + `DALHOOKERROR`. CDFs are `cdf_<name>` fields with their own logic hooks. See `references/EXTENSIONS_INDEX.md`.
 - **Public Interfaces**: callable 4GL DLL functions on standard LN data/processes (`Address.Create()`, `SalesOrder.SkipPrint` style process extensions in `tdext.*`/`whext.*`/`tiext.*`/... DLLs). Each reference page has DLL name, availability (release/KB), syntax, Usage (Expl/Pre/Post/Input/Output) and Return values. Grep `references/PUBLIC_INTERFACES_INDEX.md` or search with `--dir public_interfaces`.
+- **GenAI in sessions** (LN 2610+, TIV 2496+): native AI assistance inside standard UI sessions via `guide/progguide/functions_genai/` — `genai.processing.start()` / `genai.processing.ready()` bracket AI work, `set.genai.field()` marks a Text field for process animation, `session.set.genai()` (+ `.icon` variant with action icons) flags the session, `set.genai.command(s)` wires field buttons. See `functions_genai/overview_and_synopsis.md` first.
 - **AFS / Function Server**: drive standard sessions from 4GL via `stpapi.*` primitives (`stpapi.put.field()`, `stpapi.find()`, `stpapi.insert()`, `stpapi.continue.process()` ...). Field buffer semantics, message handling, synchronized dialogs and `api.mode` are covered in `afs/ch03`+`afs/ch04`. See `references/AFS_INDEX.md`; search with `--dir afs`.
 
 Authoritative details always live in the reference pages; do not rely on this summary alone.
@@ -78,6 +79,9 @@ Authoritative details always live in the reference pages; do not rely on this su
 | Task | Start at |
 |---|---|
 | Signature/usage of any bshell function | `references/FUNCTION_INDEX.md` |
+| GenAI assistance in a session (LN 2610) | `guide/progguide/functions_genai/overview_and_synopsis.md`, then `genai.processing.start.md` |
+| Base64 validation / HTTP service info (2610) | `functions_base64/base64.validate.md`, `functions_http_client/http.service.info.md` |
+| Baan SQL subquery syntax (renamed from `sub_query`) | `sql/progguide/functions_database_handling/subquery.md` |
 | Which 4GL section/subsection exists | `guide/progguide/4gl_features/` |
 | Write DAL hooks | `guide/progguide/functions_dal/overview.md` |
 | File/dir I/O | `guide/progguide/functions_directory_file_operations/` |
@@ -102,6 +106,6 @@ Authoritative details always live in the reference pages; do not rely on this su
 
 ## Notes
 
-- Sources: Infor progguide 10.8.12pre (en) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (11082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US). Content is verbatim from the official guides.
+- Sources: Infor progguide 2610 (en) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (25082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US). Content is verbatim from the official guides.
 - All files UTF-8 Markdown; code examples fenced; tables preserved.
 - `search.py` needs only Python 3 stdlib; safe on Windows/Linux/macOS.

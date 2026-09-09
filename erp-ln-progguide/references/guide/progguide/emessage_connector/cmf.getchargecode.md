@@ -17,7 +17,7 @@ Gets the message charge code of the message identified by *mid* and returns stri
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error (most likely invalid object id or element not present).  |
+| -1 | Error (most likely invalid object id or element not present). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

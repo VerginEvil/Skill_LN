@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Kanban
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1288-1289
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1298-1299
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.02 (KB3647754  ).
+This function is available from 2026.02 (KB3647754).
 Syntax: long Kanban.GenerateOrders(
 domain  tckbid           iKanbanSignal,
 domain  whloca           iLocationTo,
@@ -73,6 +73,6 @@ oOrderOrigin
 oOrderNumber
 oOrderLine
 oOrderSequence
-Return: 0               - Advice or Order has been created successfully.
-DALHOOKERROR                       - Advice/Order could not be created.
+Return: 0 - Advice or Order has been created successfully.
+DALHOOKERROR - Advice/Order could not be created.
 ```

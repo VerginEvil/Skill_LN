@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopRouting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 657-658
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 660-661
 
 ```baan
 DLL:   tiextrouapi
-This function is available from     2021.05 (KB2156270  ).
+This function is available from 2021.05 (KB2156270).
 Syntax: long JobShopRouting.Copy(
 domain  tcsite           iSourceSite,
 domain  tcitem           iSourceProduct,

@@ -9,7 +9,7 @@ This checks whether a specified group is defined on the system. Whether group na
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `groupname` |  |
+| `const string` | `groupname` |    |
 
 ## Return values
 TRUE group exists

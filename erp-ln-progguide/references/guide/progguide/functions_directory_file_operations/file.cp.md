@@ -15,12 +15,13 @@ This copies a specified source file to a specified target file. Both files can b
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success. (If *source* and *target* are the same local file, then *e* is set to 1, otherwise to 0.)  |
-| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable.  |
+| >= 0 | Success. (If *source* and *target* are the same local file, then *e* is set to 1, otherwise to 0.) |
+| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

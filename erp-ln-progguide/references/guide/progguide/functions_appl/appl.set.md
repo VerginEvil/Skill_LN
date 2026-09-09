@@ -18,7 +18,7 @@ This creates an application lock for the current application.
 | 0 | success |
 | -1 | application-wide lock present |
 | -3 | internal error |
-| > 0 | application lock already present; mode is returned  |
+| > 0 | application lock already present; mode is returned |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -43,4 +43,5 @@ appl.delete( "tisfc001" & tisfc001.pdno )
 
 ## Related topics
 - [Application locks: overview](application_locks_overview.md)
+
 - [Application locks: synopsis](application_locks_synopsis.md)

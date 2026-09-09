@@ -25,4 +25,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Application locks: overview](application_locks_overview.md)
+
 - [Application locks: synopsis](application_locks_synopsis.md)

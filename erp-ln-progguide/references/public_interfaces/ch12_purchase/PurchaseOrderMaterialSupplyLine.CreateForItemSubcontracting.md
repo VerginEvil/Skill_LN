@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderMaterialSupplyLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 473-474
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 475-476
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long PurchaseOrderMaterialSupplyLine.CreateForItemSubcontracting(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -36,7 +36,7 @@ This function does not support the operation subcontracting
 scenario where only one or more operations of the production of
 an end item are subcontracted. In that scenario, the material
 supply lines can only be maintained from the production order.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Mandatory)
@@ -56,8 +56,8 @@ iPlannedReceiptDate     Planned Receipt Date
 iCustomsValue           Customs Value
 iCustomsValueCurrency   Customs Value Currency (Mandatory if
 iCustomsValue is not 0)
-iSupplyFromWarehouse    Supply                      -from Warehouse
-iSupplyToWarehouse      Supply                      -to Warehouse
+iSupplyFromWarehouse    Supply-from Warehouse
+iSupplyToWarehouse      Supply-to Warehouse
 Output:
 oExceptionMessage       The last message if any message is
 found. If more than one message is

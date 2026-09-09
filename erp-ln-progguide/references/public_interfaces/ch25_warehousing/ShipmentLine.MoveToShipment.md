@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1164-1165
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1174-1175
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.11 (KB2211254  ).
+This function is available from 2021.11 (KB2211254).
 Syntax: long ShipmentLine.MoveToShipment(
 domain  whinh.shpm       iShipment,
 domain  tcpono           iShipmentLine,
@@ -28,21 +28,21 @@ If no destination shipment is passed a new shipment will be
 generated and returned to the calling function.
 Pre:    db.retry.point()
 Post:   abort/commit transaction
-Input:  iShipment                             - Shipment; Mandatory
-iShipmentLine                                 - Shipment Line; Mandatory
-ioDestinationShipment                         - Destination Shipment; Optional
+Input:  iShipment               - Shipment; Mandatory
+iShipmentLine           - Shipment Line; Mandatory
+ioDestinationShipment   - Destination Shipment; Optional
 If empty new shipment will be created.
-iReason                                       - Compose Reason; Mandatory if Shipment
+iReason                 - Compose Reason; Mandatory if Shipment
 is planned by FM.
-iReason                                       - Compose Reason; Mandatory if
+iReason                 - Compose Reason; Mandatory if
 destination shipment belongs to the load which is planned by FM.
-iAcceptWarnings                               - Accept warnings; Mandatory
-Output: ioDestinationShipment                 - Destination Shipment
-oExceptionMessage                             - The last message if any message is
+iAcceptWarnings         - Accept warnings; Mandatory
+Output: ioDestinationShipment   - Destination Shipment
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

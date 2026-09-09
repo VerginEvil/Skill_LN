@@ -18,5 +18,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Digital Signatures overview](overview.md)
+
 - [Digital Signatures synopsis](synopsis.md)
+
 - [Digital Signatures examples](examples.md)

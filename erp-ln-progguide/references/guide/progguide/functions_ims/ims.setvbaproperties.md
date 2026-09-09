@@ -15,7 +15,7 @@ Sets the properties of the Variable Byte Array (VBA).
 ## Return values
 | | |
 |---|---|
-| -1 | Error, most probably *bytearrray* is not a variable byte array .  |
+| -1 | Error, most probably *bytearrray* is not a variable byte array. |
 | 0 | Success. |
 
 ## Context
@@ -23,4 +23,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Byte arrays overview](byte_arrays_overview.md)
+
 - [Byte arrays synopsis](byte_arrays_synopsis.md)

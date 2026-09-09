@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EstimatedToolRequirement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 870-871
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 880-881
 
 ```baan
 DLL:   tiexttrpapi
-This function is available from     2024.01 (KB2304919  ).
+This function is available from 2024.01 (KB2304919).
 Syntax: long EstimatedToolRequirement.StartDetail(
 long             iStartMode,
 domain  titrp.otyp       iOrderType,
@@ -24,26 +24,26 @@ in Detail mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
-iOrderType                                    - Order Type      (Mandatory)
-iOrderNumber                                  - Order Number    (Mandatory)
-iLine                                         - Line            (Mandatory)
-iActivity                                     - Activity        (Mandatory)
-iOperationStep                                - Operation Step  (Mandatory)
-iSequenceNumber                               - Sequence Number (Mandatory)
-Output: oExceptionMessage                     - The last message if any message is
+iOrderType              - Order Type      (Mandatory)
+iOrderNumber            - Order Number    (Mandatory)
+iLine                   - Line            (Mandatory)
+iActivity               - Activity        (Mandatory)
+iOperationStep          - Operation Step  (Mandatory)
+iSequenceNumber         - Sequence Number (Mandatory)
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Otherwise.
+Return: 0                       - Session started
+<> 0                    - Otherwise.
 ```

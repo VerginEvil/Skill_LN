@@ -5,8 +5,8 @@ Note that a group becomes active when the form on which it occurs becomes curren
 
 ## Main section
 
-## group.<group number>:
-This section defines the group for which the actions programmed in the group subsections are executed. The group number is automatically generated when the group is created and can be obtained from the DFE.
+## group.group number:
+This section defines the group for which the actions programmed in the group subsections are executed. The group number is automatically generated when the group is created and can be obtained from the [DFE](../glossary/glossary.md#dfe).
 
 ## Subsections
 
@@ -22,5 +22,7 @@ The actions programmed in this subsection are executed each time the form on whi
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)
+
 - [Flow of 4GL engine](flow_of_standard_program.md)

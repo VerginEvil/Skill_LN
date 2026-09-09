@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1071-1073
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1081-1082
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.05 (KB2117931  ).
+This function is available from 2020.05 (KB2117931).
 Syntax: long InboundAdvice.StartAutomaticInboundProcessing(
 domain  tcorno           iInboundAdvice,
 domain  tcpono           iInboundAdviceLine,
@@ -67,13 +67,13 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iInboundAdvice                        - Mandatory
-iInboundAdviceLine                            - Mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iInboundAdvice          - Mandatory
+iInboundAdviceLine      - Mandatory
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

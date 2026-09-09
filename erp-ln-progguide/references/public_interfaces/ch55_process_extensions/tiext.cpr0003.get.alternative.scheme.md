@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for StandardCost
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2254-2255
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2277-2278
 
 ```baan
 Syntax: long tiext.cpr0003.get.alternative.scheme(
@@ -16,13 +16,13 @@ Usage:        Expl:   This method is called in the process of Standard Cost
 Calculation. It must return the Alternative Cost
 Calculation Scheme to be used for the calculation.
 When this method is called all fields of table:
--                       Items - Costing (ticpr007) for the given Item and
+- Items - Costing (ticpr007) for the given Item and
 Enterprise Unit are current.
 Implementation Example:
 Intention:
 For certain calculation codes the use of Cost
 Calculation Scheme with many components is
-required. The Items                               - Costing table (ticpr007)
+required. The Items - Costing table (ticpr007)
 is extended with a Customer Defined Field (altc)
 with Data Type String having domain ticpr.chrt
 Hook Declarations:
@@ -36,10 +36,10 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.calculation.code                    - calculation code
-i.item                                        - item for calculation
-i.enterprise.unit                             - enterprise unit
-Output: o.alternative.scheme                  - the alternative cost calculation
+Input:  i.calculation.code      - calculation code
+i.item                  - item for calculation
+i.enterprise.unit       - enterprise unit
+Output: o.alternative.scheme    - the alternative cost calculation
 scheme to be used in the calculation.
-Return: 0                                     - success
+Return: 0                       - success
 ```

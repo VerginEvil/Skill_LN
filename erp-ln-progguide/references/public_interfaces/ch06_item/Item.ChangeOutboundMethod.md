@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 163-165
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 164-165
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long Item.ChangeOutboundMethod(
 domain  tcitem           iItem,
 domain  tcobpr           iOldOutboundMethod,
@@ -29,13 +29,13 @@ Pre:    N.a.
 Post:   N.a.
 Input:  iItem                   Optional
 iOldOutboundMethod      Optional, ignored if iItem is empty.
-1                               - LIFO
-2                               - FIFO
-3                               - By Location
+1 - LIFO
+2 - FIFO
+3 - By Location
 iNewOutboundMethod      Optional, ignored if iItem is empty.
-1                               - LIFO
-2                               - FIFO
-3                               - By Location
+1 - LIFO
+2 - FIFO
+3 - By Location
 iInventoryDate  Optional, required if iNewOutboundPriority
 is FIFO or LIFO.
 iDevice         Optional, ignored if iPrintRrrors is No.
@@ -47,7 +47,7 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iItem is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
+- selection range fields (From/To)
 Processing Options have a direct relationship with the form fields
 on session Change Outbound Method (whwmd3202m000) and are not
 explained in further detail here.
@@ -95,7 +95,7 @@ Json.add(ItemArray, Item)
 ReportName only needs to filled for customized reports,
 otherwise the standard report is used based on the ReportNumber.
 ReportName must start with an "r", e.g. "rwhwmd320201001"
-Output: o.data.processed                      - true:  Method Changed.
+Output: o.data.processed        - true:  Method Changed.
 false: Method not changed.
 Return: 0: OK, <> 0: Error
 ```

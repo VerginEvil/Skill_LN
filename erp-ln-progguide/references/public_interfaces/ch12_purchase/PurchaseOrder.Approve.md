@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 441-442
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 443-444
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.07 (KB3682350  ).
+This function is available from 2026.07 (KB3682350).
 Syntax: long PurchaseOrder.Approve(
 domain  tcorno           iPurchaseOrder,
 long             iProcessingOptionSet,
@@ -24,8 +24,8 @@ the internal transaction logic and would create one large database
 transaction, with potential locking problems as a consequence.
 Pre:    Not Applicable
 Post:   Not Applicable
-Input:  iPurchaseOrder                        - Purchase order (Mandatory)
-iProcessingOptionSet                          - Processing Option Set (Optional).
+Input:  iPurchaseOrder          - Purchase order (Mandatory)
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default approval options
 are applied.
 A Processing Option Set can be created
@@ -50,14 +50,14 @@ OverwriteManualAndModifiedLandedCosts   boolean                 false
 ApplyApprovalRules                      boolean                 false
 CheckAmountUpto                         domain tcamnt           0.0
 CheckAmountUptoCurrency                 domain tcccur           ""
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Approval was successful
-<> 0                                          - An error occurred
+Return: 0                       - Approval was successful
+<> 0                    - An error occurred
 ```

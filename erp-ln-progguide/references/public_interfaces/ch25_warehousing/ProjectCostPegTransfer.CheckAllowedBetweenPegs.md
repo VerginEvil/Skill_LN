@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectCostPegTransfer
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1088-1089
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1098-1099
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.09 (KB2304789  ).
+This function is available from 2023.09 (KB2304789).
 Syntax: long ProjectCostPegTransfer.CheckAllowedBetweenPegs(
 domain  tccprj           iProjectFrom,
 domain  tcpdm.cspa       iElementFrom,
@@ -29,23 +29,23 @@ At least one of the arguments iProjectFrom or iProjectTo has to
 be filled when calling this Public Interface.
 Pre:    N.a.
 Post:   N.a.
-Input:  iProjectFrom               - Project from
-iElementFrom                       - Element from
-iActivityFrom                       - Activity from
-iProjectTo                       - Project to
-iElementTo                       - Element to
-iActivityTo                       - Activity to
-iCostPegTransfer                       - Cost Peg Transfer
-iCostPegTransferLine                       - Cost Peg Transfer Line
-iOrigin                       - Origin
-iTransferType                       - Transfer Type
-Output: oTransferAllowed               - Transfer Allowed Indicator
-oExceptionMessage                       - The last message if any message is found. If
+Input:  iProjectFrom - Project from
+iElementFrom - Element from
+iActivityFrom - Activity from
+iProjectTo - Project to
+iElementTo - Element to
+iActivityTo - Activity to
+iCostPegTransfer - Cost Peg Transfer
+iCostPegTransferLine - Cost Peg Transfer Line
+iOrigin - Origin
+iTransferType - Transfer Type
+Output: oTransferAllowed - Transfer Allowed Indicator
+oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0                     - Cost Peg transfer is allowed between the pegs
-<> 0                          - Error
+Return: 0       - Cost Peg transfer is allowed between the pegs
+<> 0    - Error
 ```

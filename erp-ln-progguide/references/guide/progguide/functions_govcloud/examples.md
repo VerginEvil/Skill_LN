@@ -13,4 +13,5 @@ Below a part of 3GL usage of [in.fips.mode()](in.fips.mode.md) call
 
 ## Related topics
 - [GovCloud functions overview](overview.md)
+
 - [GovCloud functions synopsis](synopsis.md)

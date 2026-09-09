@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 739-740
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 738-739
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.10 (KB3511095  ).
+This function is available from 2024.10 (KB3511095).
 Syntax: long ProductionOrder.PrintRejects(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -22,12 +22,12 @@ ProcessingOptionSet.Create(), and cleaned up after use, via a
 call to ProcessingOptionSet.Delete().
 Pre:    N.A.
 Post:   N.A.
-Input:  i.site                                - Site for which report must be
+Input:  i.site                  - Site for which report must be
 printed (Mandatory when the Site
 concept is active).
-i.production.order                            - Production Order (Optional. Must
+i.production.order      - Production Order (Optional. Must
 be in i.site).
-i.processing.option.set                       - A Processing Option Set can be
+i.processing.option.set - A Processing Option Set can be
 created via a call to
 ProcessingOptionSet.Create().
 If 0, then user default/session
@@ -69,15 +69,15 @@ CompletedOrdersOnly             domain  tcyesno         tcyesno.no
 PrintingDevice                  domain  tcmcs.str14     ""
 PrintingFileoutPathAndName      domain  tcmcs.str100    ""
 Default values:
-ProductionOrderFrom               -   If the input variable field iProductionOrder is
+ProductionOrderFrom -   If the input variable field iProductionOrder is
 given, it will be used as the default value,
 otherwise it will be defaulted with blank.
-*To               -                   If the "*From" field is provided then "*To"
+*To -                   If the "*From" field is provided then "*To"
 field will be defaulted with "*From" field,
 otherwise the "*To" fields will be defaulted to
 their maximum domain value.
 For example:
-ProductionOrderTo               -     If ProductionOrderFrom field is set, then
+ProductionOrderTo -     If ProductionOrderFrom field is set, then
 ProductionOrderTo field will be the defaulted
 with ProductionOrderFrom field, otherwise the
 ProductionOrderTo field will be defaulted to
@@ -89,6 +89,6 @@ is WorkCenter(tisfc.rjst.cwoc) otherwise default values are taken.
 MachineFrom and MachineTo values are allowed only when SortBy is
 Machine(tisfc.rjst.mcno) otherwise default values are taken.
 Output: N.A.
-Return: 0                                     - Print Rejects is succesfully.
-<> 0                                          - Otherwise.
+Return: 0                       - Print Rejects is succesfully.
+<> 0                    - Otherwise.
 ```

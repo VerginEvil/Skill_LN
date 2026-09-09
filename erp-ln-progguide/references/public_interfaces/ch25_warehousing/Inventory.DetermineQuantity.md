@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 939-941
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 949-951
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2021.08 (KB2192478  ).
+This function is available from 2021.08 (KB2192478).
 Syntax: long Inventory.DetermineQuantity(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -58,7 +58,7 @@ determined.
 This is mandatory to fill when
 iSpecificOWnerBuyFromBusinessPartner is set to True
 iBuyFromBusinessPartner
-The buy                              -from business partner for which inventory
+The buy-from business partner for which inventory
 quantity needs to be determined.
 This is mandatory to fill when
 iSpecificOWnerBuyFromBusinessPartner is set to True and
@@ -83,9 +83,9 @@ iSpecificLot
 Indicator (True/False) if inventory quantity needs to be
 determined for a specific lot.
 This indicator can only be set when:
--                                iOwnership is Company Owned and
--                                item is defined as lot controlled in inventory and
--                                iSpecificProject = False
+- iOwnership is Company Owned and
+- item is defined as lot controlled in inventory and
+- iSpecificProject = False
 This is mandatory to fill.
 iLot
 The lot for which inventory quantity needs to be
@@ -95,9 +95,9 @@ iSpecificSerial
 Indicator (True/False) if inventory quantity needs to
 be determined for a specific serial. This indicator can
 only be set when:
--                                iOwnership is Company Owned and
--                                item is defined as serialized in inventory and
--                                iSpecificProject = False
+- iOwnership is Company Owned and
+- item is defined as serialized in inventory and
+- iSpecificProject = False
 This is mandatory to fill.
 iSerial
 The serial for which inventory quantity needs to be
@@ -127,8 +127,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The inventory and inventory value have been found
+Return: 0 - The inventory and inventory value have been found
 successfully.
-<> 0                       - Error. The inventory and inventory value could not be
+<> 0 - Error. The inventory and inventory value could not be
 determined.
 ```

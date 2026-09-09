@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StockPointInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 990-992
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1000-1001
 
 ```baan
 DLL:   whextinrapi
-This function is available from     2023.09 (KB2297960  ).
+This function is available from 2023.09 (KB2297960).
 Syntax: long StockPointInventory.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,10 +31,10 @@ Usage:        Expl    This function starts the overview session Stock Point Inve
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -90,23 +90,19 @@ Optional
 iInventoryDate
 Optional
 Output: for iStartMode MODAL:
-oWarehouse                                    - Warehouse of selected record
-oLocation                                     - Location of selected record
-oItem                                         - Item of selected record
-oLot                                          - Lot of selected record
-oInventoryDate                                - Inventory Date of selected record
-oExceptionMessage                             - The last message if any message is
+oWarehouse      - Warehouse of selected record
+oLocation       - Location of selected record
+oItem           - Item of selected record
+oLot            - Lot of selected record
+oInventoryDate  - Inventory Date of selected record
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for StockPointTransaction
-
-The following functions are available: StockPointTransactions.StartDetail StockPointTransactions.StartOverview

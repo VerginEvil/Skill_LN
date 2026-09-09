@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 184-184
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 185-185
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2023.01 (KB2259343  ).
+This function is available from 2023.01 (KB2259343).
 Syntax: long Item.InsertSerialNumber(
 domain  tcitem           iItem,
 domain  tcibd.sern       iSerialNumber,
@@ -29,6 +29,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - The Serial Number has been inserted
-<> 0                          - Error. The Serial Number could not been created
+Return: 0       - The Serial Number has been inserted
+<> 0    - Error. The Serial Number could not been created
 ```

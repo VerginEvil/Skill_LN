@@ -1,10 +1,15 @@
 # eMessage Connector examples
 
 ## Examples:
-- How to use the Infor LN eMessage Connector API to construct and send a message
-- How to use function cmf.sendToPerson
-- How to use the message dialog
-- How to use the Infor LN eMessage Connector API to construct and send an meeting request over SMTP  Tip: Maximize the help window for a good view of the examples.
+- [How to use the Infor LN eMessage Connector API to construct and send a message](#1)
+
+- [How to use function cmf.sendToPerson](#2)
+
+- [How to use the message dialog](#3)
+
+- [How to use the Infor LN eMessage Connector API to construct and send an meeting request over SMTP](#4)
+
+Tip: Maximize the help window for a good view of the examples.
 
 ## How to use the Infor LN eMessage Connector API to construct and send a message
 In this example function cmf.send is used to send the message. The main difference with cmf.sendToPerson (see next section for an example) is that when using cmf.send only the message id is suplied as an argument, while cmf.sendToPerson needs both a message- and an addresslist id. This means cmf.send sends the message to the recipients in the message object, while cmf.sendToPerson sends the message to the recipients in the addresslist object.
@@ -132,7 +137,9 @@ function long create.xml.header()
 
 ## How to use function cmf.sendToPerson
 Use cmf.sendToPerson if the same message has to be send to multiple recipients and when using the Message Dialog to construct message- and addresslist objects. As arguments a message-id of a message object and an addresslist-id of an addresslist object (among others) have to be supplied. Cmf.sendToPerson delivers the message to all recipients on the addresslist. Message- and addresslist objects can be constructed in two ways:
+
 - With user interface: use the Message Dialog. Using this session the user can determine some message characteristics and construct an addresslist. After exiting the Message Dialog, the id’s of the message- and addresslist objects are available in the variables cmf.MessageObject and cmf.AddressList (defined in global include file bic_global).
+
 - Without user interface: use the eMessage Connector API to build a message- and addresslist object. But watch out: using cmf.sendToPerson the message will solely be delivered to recipients in the addresslist object. Any recipients in the message object will NOT be reached.
 ```
 
@@ -539,4 +546,5 @@ function string createAndSendAppointment(const string a_uuid, boolean cancel)
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)

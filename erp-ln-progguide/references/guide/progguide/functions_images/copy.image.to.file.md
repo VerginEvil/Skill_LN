@@ -27,5 +27,7 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Images on Forms Overview](overview.md)
+
 - [Images on Forms synopsis](synopsis.md)
+
 - [Images on Forms Examples](examples.md)

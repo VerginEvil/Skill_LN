@@ -11,4 +11,5 @@ You can also use the function [color.dialog()](../functions_client_file_access/c
 
 ## Related topics
 - [Colors overview](overview.md)
+
 - [Colors synopsis](synopsis.md)

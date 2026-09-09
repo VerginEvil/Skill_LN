@@ -16,8 +16,8 @@ This returns status information about a specified process.
 ## Return values
 | | |
 |---|---|
-| < 0 | Could not retrieve info: process does not exist.  |
-| >= 0 | The process ID of the next process in the internal process list, or 0 if this is the last process in that list.  |
+| < 0 | Could not retrieve info: process does not exist. |
+| >= 0 | The process ID of the next process in the internal process list, or 0 if this is the last process in that list. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

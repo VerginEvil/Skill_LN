@@ -8,13 +8,12 @@ The _compnr predicate specifies the actual company number of a table.
     ::= <compnr column reference> = <compnr value>
 
 <compnr column reference>
-    ::= !! a Column reference whose column name is _compnr
+    ::= !! a <column reference> whose column name is _compnr
 
 <compnr value>
-    ::= Integer constant
-      | Parameter
+    ::= <integer constant>
+      | <parameter>
 ```
-* *
 
 ## Syntactical restrictions
 The value of the integer constant must lie between 0 and 999, all inclusive.

@@ -1,7 +1,7 @@
 # stat.set.real.long()
 
 ## Syntax:
-`function void stat.set.real.long( const long i.long )`
+`function long stat.set.real.long( const long i.long )`
 
 ## Description
 This function sets the real long value of a Stat-field.

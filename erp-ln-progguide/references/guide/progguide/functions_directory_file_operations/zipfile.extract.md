@@ -32,7 +32,6 @@ string	srcedir(PATH_MAXLEN)
 string	trgtdir(PATH_MAXLEN)
 string	zipfile(PATH_MAXLEN)
 
-
 	srcedir = path.combine(getenv$("HOME"), "sources")
 	trgtdir = path.combine(getenv$("HOME"), "zip archive")
 	zipfile = path.combine(trgtdir, "target.zip")
@@ -45,4 +44,5 @@ string	zipfile(PATH_MAXLEN)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

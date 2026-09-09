@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PickingList
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1259-1260
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1269-1270
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.07 (KB2288175  ).
+This function is available from 2023.07 (KB2288175).
 Syntax: long PickingList.SplitAdvice(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -24,19 +24,19 @@ Usage:        Expl:   This public interface will split the given picking list.
 Pre:    db.retry.point must be set
 Post:   Commit the transaction in case of success.
 Abort the transaction in case of failure.
-Input:  iOrderOrigin                          - Mandatory
-iOrderNumber                                  - Mandatory
-iOrderSet                                     - Optional
-iOrderLine                                    - Optional
-iOrderSequence                                - Optional
-iAdvice                                       - Mandatory
-Output: oNewAdvice                            - Created Outbound Advice.
-oNewPickingSequence                           - Created Picking Sequence.
-oExceptionMessage                             - The last message if any message is
+Input:  iOrderOrigin            - Mandatory
+iOrderNumber            - Mandatory
+iOrderSet               - Optional
+iOrderLine              - Optional
+iOrderSequence          - Optional
+iAdvice                 - Mandatory
+Output: oNewAdvice              - Created Outbound Advice.
+oNewPickingSequence     - Created Picking Sequence.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

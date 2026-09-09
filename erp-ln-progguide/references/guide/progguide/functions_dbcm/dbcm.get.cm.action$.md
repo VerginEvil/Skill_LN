@@ -14,8 +14,11 @@ Retrieves the Change Management action id of the Object that is identified by th
 ## Return values
 The action id of the Object as string; or an empty string in case the Object is not checked-out.
 For the standard actions UI Create, UI Change and UI Delete, the action ids are predefined:
+
 - `DBCM_ACTION_CREATE`
+
 - `DBCM_ACTION_CHANGE`
+
 - `DBCM_ACTION_DELETE`
 
 ## Context
@@ -24,4 +27,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

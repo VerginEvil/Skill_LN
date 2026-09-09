@@ -11,10 +11,16 @@ It is not necessary to use this function within functions such as db.bind(). The
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `file_basename` |  The name of the file that must be found. The file name must begin with *xppmmm* where *pp* is a package code, *mmm* is a module code, and *x* is a single character that corresponds to the file type, as shown in column one of the following table:  |
-| `string` | `file_type` |  The file type. Use the values shown in column three of the above table.  |
-| `ref string` | `file_path` |  This returns the full path to the specified file. If the file is not found, it returns the full path (including filename) where the file should be created. If the *file_type* is unknown, or *file_basename* starts with an invalid character, this argument returns the value of *file_basename*.  |
-| `[ long` | `log.options ]` |  PATHNAME.NOLOG: Do not log errors in $BSE/log PATHNAME.LOG: Do log errors in $BSE/log (default)  |
+| Character | Description | file_type argument |
+| d | data/domain definition | "D" |
+| r | report | "O" |
+| o | object | "O" |
+| f | form | "S" |
+| m | menu | "M" |
+| p | program script | "P" |
+| i | include file | "P" |
+| b | additional files | "B" |
+For example, when searching for a report, the file name specified must begin with 'r'. The name of the report object located begins with 'o'.
 
 ## Return values
 | | |
@@ -39,4 +45,5 @@ endif
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

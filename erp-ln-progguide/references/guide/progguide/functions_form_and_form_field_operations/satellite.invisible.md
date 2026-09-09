@@ -10,7 +10,7 @@ This function is relevant in multi-main table controller sessions only.
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `session.code` |   |
+| `const string` | `session.code` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -26,4 +26,5 @@ after.form.read:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

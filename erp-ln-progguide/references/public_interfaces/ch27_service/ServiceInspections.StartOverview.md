@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceInspections
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1362-1364
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1374-1375
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2023.06 (KB2293111  ).
+This function is available from 2023.06 (KB2293111).
 Syntax: long ServiceInspections.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,8 +23,8 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.   : This function starts the overview session Inspections
 (tscfg3100m000).
-Pre     :               -
-Post    :               -
+Pre     : -
+Post    : -
 Input   : iStartMode: Not used; Not mandatory
 Session is always started MODELESS. That means that
 parent and child are parallel sessions that can be
@@ -33,7 +33,7 @@ iStartFilter: Not mandatory
 iStartFilter determines the View fields when the
 session is started.
 Possible values         | View fields
-------------------------                              |------------------------
+------------------------|------------------------
 ""                      | No view fields
 "SerializedItem"        | Item, Serial
 "ServiceOrderActivity"  | Service Order, Activity
@@ -74,7 +74,3 @@ functions in Exception to get all relevant information.
 Return  : 0             Session started
 <> 0          An error occurred
 ```
-
-## Public Interfaces for Call
-
-The following functions are available: Call.CreateInvoice Call.GenerateSerializedItem Call.SetStatusToInProcess Call.StartOverview Call.TransferToCustomerClaim Call.TransferToMaintenanceSalesOrderPartLine Call.TransferToPlannedActivity Call.TransferToServiceOrder Call.TransferToServiceOrderV2 Call.TransferToServiceQuote Call.TransferToWorkOrder Call.ViewInvoice

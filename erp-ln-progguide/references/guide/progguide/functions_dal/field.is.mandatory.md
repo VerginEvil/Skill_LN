@@ -20,9 +20,11 @@ This function is implemented in the 4GL Engine and can be used in DAL script typ
 
 ## When called
 - At the time of checking the fields value, but ONLY in case the field is empty
-- Since Enterprise Server 8.3, the 4GL engine now also calls the field.is.mandatory() hook when displaying data, in order to be able to determine if a form field is mandatory (this is used by the UI to display a red asterix in front of the form field or not). In this case, the hook is called when displaying the form field and also when the field is empty. Any dal error messages set in the hook are ignored     Note  If this hook does not exist, the table field definition in the Data Dictionary is checked. So if the field is defined as mandatory in the Data Dictionary, the field must have a value.
-Make sure that the hook does not conflict with the Mandatory setting of the field in the Data Dictionary. So do not return False in case the field is defined as Mandatory in the Data Dictionary.
-The 4GL engine will show the following message to the end-user in case the field is empty and it appears to be mandatory: Enter a value for the %1$s field.
+
+- Since Enterprise Server 8.3, the [4GL engine](../glossary/glossary.md#fourgl_engine) now also calls the field.is.mandatory() hook when displaying data, in order to be able to determine if a form field is mandatory (this is used by the UI to display a red asterix in front of the form field or not). In this case, the hook is called when displaying the form field and also when the field is empty. Any dal error messages set in the hook are ignored
+
+Note  First the table field definition in the Data Dictionary is checked. If the field is defined as mandatory in the Data Dictionary, the field.is.mandatory hook is not called.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) will show the following message to the end-user in case the field is empty and it appears to be mandatory: Enter a value for the %1$s field.
 It is advised to set an error message with [dal.set.error.message(), dal.set.warning.message(), dal.set.info.message()](../functions_message_handling/dal.set.error.message.md) to indicate the reason why the field is mandatory.
 
 ## Example
@@ -42,5 +44,7 @@ function extern boolean whinh200.sfit.is.mandatory()
 
 ## Related topics
 - [Extended DAL (DAL2)](dal2_overview.md)
+
 - [DAL2 and the 4GL Engine](dal2_4gle.md)
+
 - [DAL2 Flow of field hooks](dal2_flow.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 769-770
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 768-769
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2021.12 (KB2198728  ).
+This function is available from 2021.12 (KB2198728).
 Syntax: long ProductionOrder.ScrapRejectedMaterial(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

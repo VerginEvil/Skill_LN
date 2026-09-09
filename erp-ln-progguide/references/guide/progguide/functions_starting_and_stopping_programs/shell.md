@@ -10,8 +10,14 @@ This starts the vt200 compatible terminal emulator to execute the command specif
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `command` |  The command to be executed.  |
-| `long` | `mode` |  This can be a combination of the following options:  |
+| 0 | No main window is created for the terminal emulator. This may result in starting a terminal emulator in the main window of the process that calls the shell function. The first status field displays "ottstpvtemul" while the shell process is running. |  |
+|  | SHELL_BACKGROUND | Background processing. No main window is created and the process produces no output. This is similar to SHELL_NO_OUTPUT + SHELL_NO_WAIT. |
+|  | SHELL_CLS | Current screen is cleared before the command is executed. |
+|  | SHELL_CONFIRM | Displays the message "Press RETURN", or its local equivalent, in the right lower corner of the window after the shell process has finished. |
+|  | SHELL_MAXWINSIZE | The terminal emulator sizes its main window to the maximum size. A new main window is created. |
+|  | SHELL_NO_WAIT | The shell function does not wait for the emulator to end. This is useful for starting shell processes (such as an editor) while continuing processing. The variable *shell.pid* is set to the process number of the activated terminal emulator process. A new main window is created. |
+|  | SHELL_NO_OUTPUT | The terminal emulator does produce any output. This implies the SHELL_NO_MWINDOW option. |
+|  | SHELL_MWINDOW | A main window is created. This displays the output of the shell command. |
 
 ## Return values
 > 0 return code of *command*

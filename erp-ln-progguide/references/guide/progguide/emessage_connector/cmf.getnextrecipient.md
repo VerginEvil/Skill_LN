@@ -16,7 +16,7 @@ Retrieves the recipient entry in the message identified by the combination of ro
 | | |
 |---|---|
 | <> 0 | Recipient Id. |
-| 0 | No (next) recipient found or invalid object id.  |
+| 0 | No (next) recipient found or invalid object id. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -24,5 +24,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

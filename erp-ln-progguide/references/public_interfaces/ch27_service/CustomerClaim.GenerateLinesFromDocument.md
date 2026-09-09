@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1522-1523
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1537-1537
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2025.06 (KB3555637  ).
+This function is available from 2025.06 (KB3555637).
 Syntax: long CustomerClaim.GenerateLinesFromDocument(
 domain  tcorno           iCustomerClaim,
 ref             boolean          oClaimLinesGenerated,

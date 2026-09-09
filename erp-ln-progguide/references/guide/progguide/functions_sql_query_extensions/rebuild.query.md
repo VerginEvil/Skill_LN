@@ -11,5 +11,7 @@ This function is implemented in the 4GL Tools and can be used in 4GL script type
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Query extensions sample program](example.md)

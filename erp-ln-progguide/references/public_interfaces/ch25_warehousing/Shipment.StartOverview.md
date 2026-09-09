@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1158-1159
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1168-1169
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.08 (KB2252307  ).
+This function is available from 2022.08 (KB2252307).
 Syntax: long Shipment.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,10 +29,10 @@ Usage:        Expl    This function starts the overview session Shipments
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -91,15 +91,15 @@ Optional
 iCustomerOrder
 Optional
 Output: for iStartMode MODAL:
-oShipment                                     - selected shipment
-oExceptionMessage                             - The last message if any message is
+oShipment               - selected shipment
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

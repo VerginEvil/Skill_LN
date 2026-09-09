@@ -20,5 +20,7 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [Process Change Manager overview](overview.md)
+
 - [Process Change Manager synopsis](synopsis.md)
+
 - [Process Change Manager Code Examples](examples.md)

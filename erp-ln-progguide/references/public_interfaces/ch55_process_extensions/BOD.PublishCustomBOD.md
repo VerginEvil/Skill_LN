@@ -4,11 +4,12 @@
 >
 > Group: Process Extensions for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1959-1961
-
-Publish Custom BOD. This process extension is available from 2020.12 ( KB2164036 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1978-1979
 
 ```baan
+Publish Custom BOD.
+This process extension is available from 2020.12 (KB2164036).
+Technical information for this process extension:
 Usage:       With this Process Extension, it is possible to publish already existing
 data through an initial load for custom BODs.
 The session Publish Custom BODs (tcbod0299m000) is available as a
@@ -18,16 +19,16 @@ how their data must be selected from the database, which function must be
 called to publish the BOD for the selected data and how metadata has
 to be filled in the BODs.
 The following methods are present and must be implemented:
--                   tcext.bod0001.get.custom.bodnames()
+-      tcext.bod0001.get.custom.bodnames()
 This method is called when session Publish Custom BODs is started.
 With this method you specify which custom BODs need to be
 published. You can specify upto 50 BODs. For each BOD the session
 will display a separate tab, just like the standard BOD publishing
 sessions (for example Publish Order Management Transactional Data
--                     tdbod0200m000).
+- tdbod0200m000).
 You can define custom fields in the process extension to add
 selection criteria to the tabs (see below).
--                   tcext.bod0001.get.initial.load.query()
+-      tcext.bod0001.get.initial.load.query()
 This method is called once for each selected custom BOD when the
 processing is started in session Publish Custom BODs.
 Use this method to return the SQL query to read the root table
@@ -36,9 +37,9 @@ you defined in the process extension. For each selected record
 during the execution of this query, the BOD is created and
 published according the common options in the first tab of the
 Publish Custom BODs session.
-The following methods are present and are mutually exclusive              -
+The following methods are present and are mutually exclusive -
 one of these two methods must be implemented for a custom BOD:
--                   tcext.bod0001.get.custom.bod.publish.function()
+-      tcext.bod0001.get.custom.bod.publish.function()
 This method must be used if the SQL query in the
 tcext.bod0001.get.initial.load.query() method contains a GROUP BY
 clause or the SQL query returns more records than required for
@@ -49,7 +50,7 @@ must be published, should provide metadata for the BOD, and should
 call the BOD.Publish() function to actually publish the BOD.
 This method is called for each record that is selected by the SQL
 query. Use this method to return the name of the function.
--                   tcext.bod0001.get.custom.bod.properties()
+-      tcext.bod0001.get.custom.bod.properties()
 This method must be used if a BOD must be published for each
 record that is returned by the SQL query in the
 tcext.bod0001.get.initial.load.query() method and the SQL query
@@ -75,20 +76,19 @@ Configurable Fields tab of session Publish Custom BODs. With Form
 Personalization you can move the custom fields to the tab for the custom
 BOD to which the custom fields apply.
 Summary of steps:
--              Create process extension BOD.PublishCustomBOD
--              Implement function tcext.bod0001.get.custom.bodnames()
--              Create custom fields for the selection ranges
--              Implement function tcext.bod0001.get.initial.load.query()
--              Implement either function tcext.bod0001.get.custom.bod.properties() or
+- Create process extension BOD.PublishCustomBOD
+- Implement function tcext.bod0001.get.custom.bodnames()
+- Create custom fields for the selection ranges
+- Implement function tcext.bod0001.get.initial.load.query()
+- Implement either function tcext.bod0001.get.custom.bod.properties() or
 implement function tcext.bod0001.get.custom.bod.publish.function()
--              If function tcext.bod0001.get.custom.bod.publish.function() is
+- If function tcext.bod0001.get.custom.bod.publish.function() is
 implemented, program publishing logic in the custom BOD publish function
--              Create session extension Publish Custom BODs (tcbod0299m000)
--              Add the custom fields from process extension BOD.PublishCustomBOD
--              Run session Publish Custom BODs (tcbod0299m000)
--              Personalize form to move the custom fields from the Configurable Fields
+- Create session extension Publish Custom BODs (tcbod0299m000)
+- Add the custom fields from process extension BOD.PublishCustomBOD
+- Run session Publish Custom BODs (tcbod0299m000)
+- Personalize form to move the custom fields from the Configurable Fields
 tab to the BOD specific tab
--              Test the publishing of the custom BOD
-```
-
+- Test the publishing of the custom BOD
 To implement this process extension, you need to implement the following method(s):
+```

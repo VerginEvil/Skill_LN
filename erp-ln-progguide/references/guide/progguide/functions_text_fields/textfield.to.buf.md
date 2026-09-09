@@ -34,4 +34,5 @@ when.field.changes:
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

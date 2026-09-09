@@ -1,7 +1,7 @@
 # stat.set.real.utc()
 
 ## Syntax:
-`function void stat.set.real.utc( const long i.utc )`
+`function long stat.set.real.utc( const long i.utc )`
 
 ## Description
 This function sets the real utc value of a Stat-field.

@@ -9,7 +9,7 @@ This displays the specified message in the first status field of a 4GL form.
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `strg` |  |
+| `string` | `strg` |    |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.

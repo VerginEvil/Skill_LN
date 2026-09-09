@@ -2,8 +2,8 @@
 The GBF error codes must be interpreted as follows:
 | | |
 |---|---|
-| >= 0 |  Successful completion If the function at hand has a meaningful non-zero return value, for example, an object identification (usually given as obj.id), or count of objects, then that number will be returned. If the function only returns a status, for example, update successful, then 0 will be returned.  |
-| < 0 |  Unsuccessful completion The actual returned number indicates a more precise reason of the failure. See also the function [gbf.error.string()](gbf.error.string.md) which translates any of these error codes and return values into its mnemonic string.  |
+| >= 0 | Successful completion If the function at hand has a meaningful non-zero return value, for example, an object identification (usually given as obj.id), or count of objects, then that number will be returned. If the function only returns a status, for example, update successful, then 0 will be returned. |
+| < 0 | Unsuccessful completion The actual returned number indicates a more precise reason of the failure. See also the function [gbf.error.string()](gbf.error.string.md) which translates any of these error codes and return values into its mnemonic string. |
 Possible successful completion return values (thus all >= 0) and their meaning:
 | | |
 |---|---|
@@ -70,8 +70,13 @@ endif
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)

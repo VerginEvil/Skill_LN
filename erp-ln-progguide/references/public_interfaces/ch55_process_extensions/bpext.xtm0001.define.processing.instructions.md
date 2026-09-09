@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ExtendedTimeManagement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2009-2010
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2028-2029
 
 ```baan
 Syntax: long bpext.xtm0001.define.processing.instructions(
@@ -43,10 +43,10 @@ End of Example of Implementation
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.number.of.elements                  - Number of processing instructions
+Output: o.number.of.elements    - Number of processing instructions
 o.processing.instructions
--                                               Array with instruction names
-Return: 0                                     - Success
-<> 0                                          - When an error occurs in setting
+- Array with instruction names
+Return: 0                       - Success
+<> 0                    - When an error occurs in setting
 processing instructions.
 ```

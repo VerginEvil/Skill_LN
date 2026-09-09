@@ -4,9 +4,15 @@ Therefore it should be possible to extend the standard behavior without moving t
 For a SalesOrder for instance a number of actions is needed after all order lines have been added or changed.
 Each before/after hook has to be created manually in the development part of the script.
 The name of the hook is built as follows:
+
 - <dll name>befero|after.<method>()
-- example: gaadv.bl090sf00.before.Create()  or specified for a component:
+
+- example: gaadv.bl090sf00.before.Create()
+
+or specified for a component:
+
 - <dll name>befero|after.<method><component name>()
+
 - example: gaadv.bl090sf00.before.Create.Header()
 
 ## Example
@@ -33,5 +39,7 @@ In the development part, it is possible to report problems. The standard functio
 
 ## Related topics
 - [Specific Methods](specific_methods.md)
+
 - [Filter Hooks](filter_hooks.md)
+
 - [Protected Layer](st_layer.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2197-2198
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2220-2220
 
 ```baan
 Syntax: long whext.dll0017.receipt.line.handle.before.confirm(
@@ -24,12 +24,8 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.receipt                             - Receipt
-i.receipt.line                                - Receipt Line
+Input:  i.receipt               - Receipt
+i.receipt.line          - Receipt Line
 Output: N.a.
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for ReceivableInvoice
-
-The following process extension(s) is/are available: ReceivableInvoice.SkipPrintSpecification

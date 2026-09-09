@@ -9,7 +9,7 @@ This stops execution of the current process for a specified number of millisecon
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `msec` |  |
+| `long` | `msec` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

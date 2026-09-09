@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseRequisitionPrepareConversion
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 423-424
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 425-425
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.05 (KB3657632  ).
+This function is available from 2026.05 (KB3657632).
 Syntax: long PurchaseRequisitionPrepareConversion.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Prepare Conversion (tdpur2600m100).
 Input:  iStartMode              Specifies the start mode for the session
 (mandatory).
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used
@@ -42,7 +42,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PurchaseContract
-
-The following functions are available: PurchaseContract.Activate PurchaseContract.Deactivate PurchaseContract.GetTotalAmounts PurchaseContract.StartWorkbench PurchaseContract.Terminate

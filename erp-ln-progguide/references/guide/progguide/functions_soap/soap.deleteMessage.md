@@ -19,4 +19,5 @@ The specified `soapMessage` must be a valid handle; in case the handle has the v
 
 ## Related topics
 - [SOAP client overview](overview.md)
+
 - [SOAP client synopsis](synopsis.md)

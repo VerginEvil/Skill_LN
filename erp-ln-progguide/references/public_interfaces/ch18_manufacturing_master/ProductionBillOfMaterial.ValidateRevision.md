@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 628-629
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 631-631
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2021.06 (KB2189918  ).
+This function is available from 2021.06 (KB2189918).
 Syntax: long ProductionBillOfMaterial.ValidateRevision(
 domain  tcitem           iProduct,
 domain  tibmrv           iRevision,
@@ -31,7 +31,3 @@ information.
 Return: 0       PBOM Revision passed all the validation checks.
 <> 0    PBOM Revision did not pass all the validation checks.
 ```
-
-## Public Interfaces for ProductionWarehouseOrders
-
-The following functions are available: ProductionWarehouseOrders.StartDetail

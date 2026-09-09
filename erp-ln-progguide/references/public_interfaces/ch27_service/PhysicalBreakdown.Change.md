@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PhysicalBreakdown
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1352-1354
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1364-1366
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long PhysicalBreakdown.Change(
 domain  tscfg.actn       iAction,
 domain  tcitem           iItem,
@@ -55,9 +55,9 @@ present is covered by an active Service Contract the
 Serialized Item will not be directly installed, but
 preparation for the installation will be done.
 This is done by:
--                         Setting Status of Installation Group line to
+- Setting Status of Installation Group line to
 'To be Installed'
--                         Or setting the Status of the Physical Breakdown relation
+- Or setting the Status of the Physical Breakdown relation
 under which the Serialized Item is present to
 'To be Installed'.
 In both cases the status time will be set to the current time.
@@ -80,9 +80,9 @@ present is covered by an active Service Contract the
 Serialized Item will not be directly removed, but preparation
 for the removal will be done.
 This is done by:
--                         Setting status of Installation Group line to
+- Setting status of Installation Group line to
 'To be Removed',
--                         Or setting the status of the Physical Breakdown relation
+- Or setting the status of the Physical Breakdown relation
 under which the Serialized Item is present to
 'To be Removed'.
 In both cases the status time will be set to the current time.
@@ -105,57 +105,57 @@ item and serial.
 Pre     : a db.retry.point() must have been specified.
 Post    : an abort.transaction() or commit.transaction() must be
 executed.
-Input   :               - iAction             - Action to be done.
+Input   : - iAction             - Action to be done.
 Possible values are:
--                                                       tscfg.actn.add     - Install
--                                                       tscfg.actn.replace - Replace
--                                                       tscfg.actn.remove  - Remove
--                         iItem               - The Item the action is performed at.
+- tscfg.actn.add     - Install
+- tscfg.actn.replace - Replace
+- tscfg.actn.remove  - Remove
+- iItem               - The Item the action is performed at.
 In case of Installation:
--                                                      The Item to be installed
+-The Item to be installed
 In case of Replacement:
--                                                      The Item that is to be replaced
+-The Item that is to be replaced
 In case of Removal:
--                                                      The Item that is removed
--                         iSerialNumber       - The Serial Number of the item
+-The Item that is removed
+- iSerialNumber       - The Serial Number of the item
 action is performed at.
--                         iReplaceWithItem    - The Item which replaces the existing
+- iReplaceWithItem    - The Item which replaces the existing
 Anonymous Item.
--                         iReplaceWithSerialNumber
--                                               Serial Number of the Replacing Item.
--                         iReplaceWithLot     - Lot of the Replacing Item.
--                         iReplaceWithQuantity
--                                               Anonymous Item Quantity.
--                         iReplaceAtPosition
--                                               Position in the Breakdown under the
+- iReplaceWithSerialNumber
+- Serial Number of the Replacing Item.
+- iReplaceWithLot     - Lot of the Replacing Item.
+- iReplaceWithQuantity
+- Anonymous Item Quantity.
+- iReplaceAtPosition
+- Position in the Breakdown under the
 Parent Serialized Item where exactly
 the replacement has to be made.
--                         iInstallWithLot     - Lot of Item which needs to be
+- iInstallWithLot     - Lot of Item which needs to be
 installed or removed or replaced.
--                         iParentReplaceItem
--                                               The Replacement Item or the Parent
+- iParentReplaceItem
+- The Replacement Item or the Parent
 Item the new component is to be
 installed at (depending on the action).
--                         iParentReplaceSerialNumber
--                                               The Serial Number of the Replacement
+- iParentReplaceSerialNumber
+- The Serial Number of the Replacement
 Item or the Parent Item the new
 component is to be installed at
 (depending on the action).
--                         iTopItemStatus   - The Top Item Status
--                         iInstallationGroup- The Installation Group to which
+- iTopItemStatus   - The Top Item Status
+- iInstallationGroup- The Installation Group to which
 the Serialized Item will be linked
 as Top Item.
--                         iInstallationGroupLineNumber
--                                               The Installation Group line number.
--                         iQuantity           - The Quantity of the Anonymous
+- iInstallationGroupLineNumber
+- The Installation Group line number.
+- iQuantity           - The Quantity of the Anonymous
 item being installed or removed.
-Output  :               - ExceptionMessage
+Output  : - ExceptionMessage
 The last message if any message is found. If more than
 one message is given, these are present in the
 oExceptionID.
--                         oExceptionID
+- oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                                   - No error
-<> 0                                          - An error occurred
+Return  : 0                     - No error
+<> 0                  - An error occurred
 ```

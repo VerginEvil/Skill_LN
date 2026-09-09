@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Specification
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 595-597
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 599-599
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2026.01 (KB3606127  ).
+This function is available from 2026.01 (KB3606127).
 Syntax: long Specification.StartDetail(
 long             iStartMode,
 domain  tcguid           iSpecificationID,
@@ -42,9 +42,3 @@ information.
 Return: 0                       Session started successfully.
 <> 0                    Otherwise.
 ```
-
-## Chapter 17 Public Interfaces for Standard Costs
-
-## Public Interfaces for SimulatedPurchasePrices
-
-The following functions are available: SimulatedPurchasePrices.StartOverview

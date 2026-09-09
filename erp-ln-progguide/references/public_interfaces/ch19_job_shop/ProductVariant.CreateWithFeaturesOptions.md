@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 667-670
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 670-673
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2026.09 (KB3626749  ).
+This function is available from 2026.09 (KB3626749).
 Syntax: long ProductVariant.CreateWithFeaturesOptions(
 domain  tcitem           iGenericItem,
 domain  tcreft           iReferenceType,
@@ -31,16 +31,16 @@ etc.
 Pre:    db.retry point must be set.
 Post:   Transaction must be aborted or committed.
 Input:  iGenericItem
--                               Generic Item. (Mandatory).
+- Generic Item. (Mandatory).
 iReferenceType
--                               Reference Type of Product Variant to be created.
+- Reference Type of Product Variant to be created.
 Standard reference type will be used as default value
 if the input value is empty.
 iItemConfigurationStructure
--                               XML Structure with features and options for Product
+- XML Structure with features and options for Product
 Variant to be created.
 iProcessingOptionSet
--                               Processing Option Set (Optional). If 0, then user
+- Processing Option Set (Optional). If 0, then user
 default/session default values are applied.
 A Processing Option Set can be created via a call to
 ProcessingOptionSet.Create() in DLL tcextextapi. After
@@ -48,14 +48,14 @@ the call the option set can be deleted by calling
 ProcessingOptionSet.Delete().
 Processing Options are used for detailed specification of product
 variant settings.
-Order                                         - Sales Order Number of Item.
-OrderPosition                                 - Sales Order Position of Item.
+Order                   - Sales Order Number of Item.
+OrderPosition           - Sales Order Position of Item.
 AlternativeSalesQuotation
--                                               Alternative Sales Quotation of
+- Alternative Sales Quotation of
 Item.
-BusinessPartner                               - Business Partner of Sales Order.
-SalesCurrency                                 - Sales Currency of Sales Order.
-ReferenceDate                                 - Reference Date of Sales Order.
+BusinessPartner         - Business Partner of Sales Order.
+SalesCurrency           - Sales Currency of Sales Order.
+ReferenceDate           - Reference Date of Sales Order.
 Processing Options which are not provided will be filled with default
 value.
 NAME                            TYPE                    DEFAULT
@@ -65,7 +65,7 @@ AlternativeSalesQuotation       domain  tcpono          0
 BusinessPartner                 domain  tccom.bpid      ""
 SalesCurrency                   domain  tcccur          ""
 ReferenceDate                   domain  tiutcs          0
-XML Structure for creating variant for Non                      -cpq:
+XML Structure for creating variant for Non-cpq:
 <ItemConfiguration>
 <ConfigurationComponent>
 <Sequence>1</Sequence>
@@ -79,13 +79,13 @@ XML Structure for creating variant for Non                      -cpq:
 </UnitPrice>
 <Feature>
 <OptionClass type="StringType">FEATURE_CODE</OptionClass>
-<!                                  -- type: "NumericType", "IndicatorType", or "StringType" -->
+<!-- type: "NumericType", "IndicatorType", or "StringType" -->
 <Sequence>1</Sequence>
 <OptionClassDescription>Feature
 Description</OptionClassDescription>
 <Option>OPTION_VALUE</Option>
 <OptionDescription>Option Description</OptionDescription>
-<Note>Optional feature                                  -level note text</Note>
+<Note>Optional feature-level note text</Note>
 </Feature>
 <Feature>
 <OptionClass type="NumericType">WEIGHT</OptionClass>
@@ -94,13 +94,13 @@ Description</OptionClassDescription>
 <Option>25.5</Option>
 <OptionDescription>25.5 kg</OptionDescription>
 </Feature>
-<!                              -- ... more Feature siblings ... -->
+<!-- ... more Feature siblings ... -->
 </ConfigurationComponent>
-<!                          -- Subsequent ConfigurationComponents = child/sub items -->
+<!-- Subsequent ConfigurationComponents = child/sub items -->
 <ConfigurationComponent>
 <Sequence>2</Sequence>
-<ParentComponent>1</ParentComponent>  <!                              -- Sequence nr of parent -
--      >
+<ParentComponent>1</ParentComponent>  <!-- Sequence nr of parent -
+->
 <ItemID>
 <ID>CHILD_ITEM_001</ID>
 </ItemID>
@@ -112,21 +112,21 @@ Description</OptionClassDescription>
 <Option>RED</Option>
 <OptionDescription>Red</OptionDescription>
 </Feature>
-<!                              -- ... more Features ... -->
+<!-- ... more Features ... -->
 </ConfigurationComponent>
-<!                          -- Deeper nesting via ParentComponent referencing any prior Sequence
---      >
+<!-- Deeper nesting via ParentComponent referencing any prior Sequence
+-->
 <ConfigurationComponent>
 <Sequence>3</Sequence>
-<ParentComponent>2</ParentComponent>  <!                              -- Child of sequence 2 -->
+<ParentComponent>2</ParentComponent>  <!-- Child of sequence 2 -->
 <ItemID>
 <ID>SUB_CHILD_ITEM</ID>
 </ItemID>
 <Feature>
-<!                                  -- ... -->
+<!-- ... -->
 </Feature>
 </ConfigurationComponent>
-<!                          -- ... more ConfigurationComponent siblings ... -->
+<!-- ... more ConfigurationComponent siblings ... -->
 </ItemConfiguration>
 Code Snippet:
 long            iItemConfigurationStructure
@@ -144,7 +144,7 @@ item.id = xmlNewNode("ItemID",XML_ELEMENT, cc.id)
 req.id = xmlNewDataElement("ID"," ITEM_CODE_001",item.id)
 req.id = xmlNewDataElement("Note"," ",cc.id)
 unit.price.id = xmlNewNode("UnitPrice ",XML_ELEMENT,cc.id)
-req.id = xmlNewDataElement("Amount",.150.00.,unit.price.id)
+req.id = xmlNewDataElement("Amount",›¼À•150.00›¼À•,unit.price.id)
 |* Feature 1
 add.feature.to.item.configuration.structure(
 cc.id,
@@ -199,9 +199,9 @@ i.opt.dsca,feature)
 req.id = xmlNewDataElement("Note",i.note,feature)
 }
 Output:
-oCreatedProductVariant                        - Product Variant Created
+oCreatedProductVariant  - Product Variant Created
 Return:
-0                                     - Success. Product Variant Created with Features
+0               - Success. Product Variant Created with Features
 <> 0
--                                       Error occurred during creating Product Variant.
+- Error occurred during creating Product Variant.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BRA.TaxForecast
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1911-1916
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1931-1936
 
 ```baan
 DLL:   btexttaxapi
-This function is available from     2026.05 (KB3655446  ).
+This function is available from 2026.05 (KB3655446).
 Syntax: long BRA.TaxForecast.Calculate(
 domain  btncmp           iLogisticCompany,
 domain  btmcs.tror       iTransactionOrigin,
@@ -107,8 +107,6 @@ ISO 8601 format.
 This will repeat for the number of "taxLines".
 ]
 }
-All the JSON keys have a specific function to retrieve its
-value.
 This function is very flexible, allowing the user to use as many
 optional arguments as possible. Therefore, the more optional
 input arguments are provided, the more detailed the search will
@@ -130,15 +128,15 @@ The program will use the following hierarchy according to the
 transaction origin:
 If the transaction origin is inbound (btmcs.tror.input), this
 means that the establishment is receiving the invoice.
-The establishment will then be the "ship                      -to" and "invoice-to"
+The establishment will then be the "ship-to" and "invoice-to"
 business partner. In this case, the user must provide the
-"ship                      -from" and "invoice-from" data to inform the program of the
+"ship-from" and "invoice-from" data to inform the program of the
 origin of the invoice.
 If the transaction origin is outbound (btmcs.tror.output), this
 means that the establishment is issuing the invoice. Then the
-establishment will be the "ship                      -from" and "invoice-from"
+establishment will be the "ship-from" and "invoice-from"
 business partner. In this case, the user must provide the
-"ship                      -to" and "invoice-to" data to inform the program of the
+"ship-to" and "invoice-to" data to inform the program of the
 destination of the invoice.
 The item data is also important and should be used as several
 tax parameters are determined from the item code. There are
@@ -149,11 +147,11 @@ Post:   This function won't set the tax forecast tables, all
 the data will be set in the output JSON.
 Other public interfaces can be called to get the values from the
 tax forecast JSON.
-Input:  iLogisticCompany                      - Logistic company. This is a mandatory
+Input:  iLogisticCompany        - Logistic company. This is a mandatory
 argument.
-iTransactionOrigin                            - Transaction origin. This is a
+iTransactionOrigin      - Transaction origin. This is a
 mandatory argument.
-iProcessingOptionSet                          - Processing option have a direct
+iProcessingOptionSet    - Processing option have a direct
 impact of the calculation results.
 The more data is set, the more
 accurate the calculation will be.
@@ -162,50 +160,50 @@ A processing option set can  be
 created via a call to
 ProcessingOptionSet.Create().
 optional arguments:
-paymentTerms                                  - Payment terms
-establishment                                 - Establishment
-fiscalDocumentTypeCode                        - Fiscal document type code
-shipFromBp                                    - Ship-from Business Partner
-shipFromBpAddress                             - Ship-from Business Partner Address
-shipToBp                                      - Ship-to Business Partner
-shipToBpAddress                               - Ship-to Business Partner Address
-invoiceFromBp                                 - Invoice-from Business Partner
-invoiceFromBpAddress                          - Invoice-from Business Partner Address
-invoiceToBp                                   - Invoice-to Business Partner
-invoiceToBpAddress                            - Invoice-to Business Partner Address
-countryFrom                                   - Country-from
-stateFrom                                     - State-from
-cityFrom                                      - City-from
-countryTo                                     - Country-to
-stateTo                                       - State-to
-cityTo                                        - City-to
-item                                          - Item code
-itemUnit                                      - Item unit
-itemQuantity                                  - Item quantity
-itemTotalPrice                                - Total price of the item
-goodsAmount                                   - Goods amount
-totalAmount                                   - Total amount
-freight                                       - Freight
-insurance                                     - Insurance
-generalExpenses                               - General expenses
-customsExpenses                               - Customs expenses
-additionsDiscounts                            - Additions/discounts
-taxDiscount                                   - Tax discount
-itemType                                      - Item type
-itemGroup                                     - Item group
-itemFiscalData                                - Item fiscal data
-warehouse                                     - Warehouse
-itemUtilization                               - Item utilization
-goodsOrigin                                   - Goods origin
-ncmFiscalClassification                       - NCM fiscal classification
-cest                                          - CEST
-lineType                                      - Line type
-project                                       - Project code
-element                                       - Project element
-activity                                      - Project activity
-extension                                     - Project extension
-projectCostComponent                          - Project cost component
-useInputItemData                              - If "yes" the function will use
+paymentTerms            - Payment terms
+establishment           - Establishment
+fiscalDocumentTypeCode  - Fiscal document type code
+shipFromBp              - Ship-from Business Partner
+shipFromBpAddress       - Ship-from Business Partner Address
+shipToBp                - Ship-to Business Partner
+shipToBpAddress         - Ship-to Business Partner Address
+invoiceFromBp           - Invoice-from Business Partner
+invoiceFromBpAddress    - Invoice-from Business Partner Address
+invoiceToBp             - Invoice-to Business Partner
+invoiceToBpAddress      - Invoice-to Business Partner Address
+countryFrom             - Country-from
+stateFrom               - State-from
+cityFrom                - City-from
+countryTo               - Country-to
+stateTo                 - State-to
+cityTo                  - City-to
+item                    - Item code
+itemUnit                - Item unit
+itemQuantity            - Item quantity
+itemTotalPrice          - Total price of the item
+goodsAmount             - Goods amount
+totalAmount             - Total amount
+freight                 - Freight
+insurance               - Insurance
+generalExpenses         - General expenses
+customsExpenses         - Customs expenses
+additionsDiscounts      - Additions/discounts
+taxDiscount             - Tax discount
+itemType                - Item type
+itemGroup               - Item group
+itemFiscalData          - Item fiscal data
+warehouse               - Warehouse
+itemUtilization         - Item utilization
+goodsOrigin             - Goods origin
+ncmFiscalClassification - NCM fiscal classification
+cest                    - CEST
+lineType                - Line type
+project                 - Project code
+element                 - Project element
+activity                - Project activity
+extension               - Project extension
+projectCostComponent    - Project cost component
+useInputItemData        - If "yes" the function will use
 the item data from the optional
 arguments. If "no" the function will
 determine the item data from the item
@@ -217,7 +215,7 @@ table and will ignore the arguments:
 * goodsOrigin
 * ncmFiscalClassification
 * cest
-useInputBpLocationData                        - If "yes" the function will use
+useInputBpLocationData  - If "yes" the function will use
 the business partner location data
 from the optional arguments. If "no"
 the function will determine the
@@ -276,23 +274,15 @@ extension                       domain  btptc.cstl      ""
 projectCostComponent            domain  tccpcp          ""
 useInputItemData                domain  btyesno         btyesno.no
 useInputBpLocationData          domain  btyesno         btyesno.no
-Output: oTaxForecastJson                      - JSON containing all the tax forecast
+Output: oTaxForecastJson        - JSON containing all the tax forecast
 calculation details.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0/DALHOOKERROR
 ```
-
-## Public Interfaces for BRA.TaxForecastCalculation
-
-The following functions are available:
-
-## Public Interfaces for BRA.WarehouseReceipt
-
-The following functions are available: BRA.WarehouseReceipt.CreateBrazilianInvoice BRA.WarehouseReceipt.RevertBrazilianInvoice

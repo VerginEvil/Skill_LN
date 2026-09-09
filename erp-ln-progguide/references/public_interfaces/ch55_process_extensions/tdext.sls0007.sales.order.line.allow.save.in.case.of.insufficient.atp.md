@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2235-2236
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2258-2259
 
 ```baan
 Syntax: boolean tdext.sls0007.sales.order.line.allow.save.in.case.of.insufficient.atp(
@@ -18,19 +18,19 @@ The standard logic of LN only allows this in case the sales order
 possible to also allow this for non EDI orders.
 When this function is called from the standard, the following
 applies:
--                       i.sales.order is filled
--                       i.sales.order.line is filled
--                       i.sales.order.line sequence is filled (can be zero)
--                       A record of tdsls401 is current
-Input:  i.sales.order                         - Sales Order
-i.sales.order.line                            - Sales Order Line
+- i.sales.order is filled
+- i.sales.order.line is filled
+- i.sales.order.line sequence is filled (can be zero)
+- A record of tdsls401 is current
+Input:  i.sales.order           - Sales Order
+i.sales.order.line      - Sales Order Line
 i.sales.order.line.sequence
--                                               Sales Order Line Sequence
+- Sales Order Line Sequence
 Output: Not Applicable
-Return: true                                  - The extension has determined that it is
+Return: true                    - The extension has determined that it is
 allowed to save the order line when there
 is insufficient ATP.
-false                                         - The extension has determined that it is
+false                   - The extension has determined that it is
 not allowed to save the order line when
 there is insufficient ATP.
 This reflects the standard LN logic for

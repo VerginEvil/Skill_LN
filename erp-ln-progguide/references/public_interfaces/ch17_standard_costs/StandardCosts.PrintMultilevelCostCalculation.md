@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 612-613
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 615-616
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2024.09 (KB2329136  ).
+This function is available from 2024.09 (KB2329136).
 Syntax: long StandardCosts.PrintMultilevelCostCalculation(
 domain  tcitem           iItem,
 long             iProcessingOptionSet,
@@ -21,9 +21,9 @@ ProcessingOptionSet.Create(), and cleaned up after use, via a
 call to ProcessingOptionSet.Delete().
 Pre:    N.A.
 Post:   N.A.
-Input:  iItem               -         Item for which the standard cost should be
+Input:  iItem -         Item for which the standard cost should be
 calculated (Optional).
-iProcessingOptionSet                       -
+iProcessingOptionSet -
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
 If 0, then user default/session default values
@@ -53,15 +53,15 @@ PrintDetailsByComponent         domain  tcyesno         tcyesno.no
 PrintHighPrecision              domain  tcyesno         tcyesno.yes
 PrintingDevice                  domain  tcmcs.str14     ""
 PrintingFileoutPathAndName      domain  tcmcs.str100    ""
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Print Multilevel Cost Calculation
+Return: 0                       - Print Multilevel Cost Calculation
 is successfully.
-<> 0                                          - Otherwise.
+<> 0                    - Otherwise.
 ```

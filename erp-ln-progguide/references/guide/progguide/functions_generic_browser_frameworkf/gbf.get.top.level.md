@@ -11,7 +11,7 @@ The application should call for all nodes the function: [gbf.add.object()](gbf.a
 ## Return values
 | | |
 |---|---|
-|  GBF.DO.CONTINUE or 0  | Successful completion, GBF will continue working  |
+| GBF.DO.CONTINUE or 0 | Successful completion, GBF will continue working |
 | GBF.DO.ABORT | Abort GBF, which will end the GBF and return with an error, see [gbf.start()](gbf.start.md) |
 | GBF.DO.EXIT | Finish GBF, which will end the GBF and return with 0, see [gbf.start()](gbf.start.md) |
 Any return other that these values will be treated as if GBF.DO.ABORT has been returned.
@@ -21,10 +21,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

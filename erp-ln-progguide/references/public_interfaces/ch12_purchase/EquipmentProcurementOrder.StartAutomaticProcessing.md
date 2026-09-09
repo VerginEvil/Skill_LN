@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EquipmentProcurementOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 488-490
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 490-491
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2025.01 (KB3545450  ).
+This function is available from 2025.01 (KB3545450).
 Syntax: long EquipmentProcurementOrder.StartAutomaticProcessing(
 domain  tcorno           iEquipmentProcurementOrder,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -31,13 +31,7 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Automatic Processing finished or
+Return: 0                       - Automatic Processing finished or
 next activities are not automatic.
-<> 0                                          - An error occurred
+<> 0                    - An error occurred
 ```
-
-## Chapter 13 Public Interfaces for Pricing
-
-## Public Interfaces for Pricing
-
-The following functions are available: Pricing.CalculateAmounts Pricing.GetGeneralSettings Pricing.GetPurchaseSettings Pricing.GetSalesSettings Pricing.GetServiceSettings Pricing.GlobalUpdateOfPricesViaPriceBooks Pricing.RetrievePriceBookDataForItem Pricing.SimulatePurchasePrice Pricing.SimulateSalesPrice Pricing.SimulateServicePrice Pricing.SimulateTransferPrice Pricing.StartPriceSimulator

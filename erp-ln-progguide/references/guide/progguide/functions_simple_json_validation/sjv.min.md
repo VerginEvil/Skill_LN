@@ -6,11 +6,18 @@
 
 ## Description
 Specifies a minimum value, length or number of elements.
+
 - For strings: specifies the expected minimum length in characters.
+
 - For arrays: specifies the expected minimum number of elements.
+
 - For longs and doubles: specifies the expected minimum value.
+
 - For dates: specifies the expected minimum value, pass a long expressing the date in days since 0001-01-01.
-- For UTC values: specifies the expected minimum value, pass a long expressing the UTC value in seconds since 1970 UTC.  Example:
+
+- For UTC values: specifies the expected minimum value, pass a long expressing the UTC value in seconds since 1970 UTC.
+
+Example:
 ```
 
 string  min.def(1) based
@@ -69,6 +76,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

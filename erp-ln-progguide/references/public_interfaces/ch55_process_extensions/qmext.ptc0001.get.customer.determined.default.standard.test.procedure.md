@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for QualityManagement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2193-2195
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2216-2217
 
 ```baan
 Syntax: long qmext.ptc0001.get.customer.determined.default.standard.test.procedure(
@@ -46,28 +46,24 @@ the extension when it is not valid or not given, otherwise
 standard logic will fail for creation on QM Order Inspection.
 Pre:    NA
 Post:   NA
-Input:  i.origin               -> Origin
-i.item                       -> Item
-i.business.partner                       -> Business Partner (For Sales/Purchase)
-i.order                       -> order
-i.line                       -> Line (For Material (BOM))
-i.sub.item                       -> Sub Item (For Material (BOM))
-i.routing                       -> Routing (For Routing)
-i.operation                       -> Operation (For Routing)
-i.task                       -> Task (For origin Routing)
-i.work.station                        -> Work Station (for origin Routing (RPT))
-i.warehouse.from                       -> Source warehouse (For Warehouse Transfer)
-i.warehouse.to                       -> To Warehouse (For Warehouse Transfer)
-i.work.station                       -> Work Station
-i.stp.from.stnd.logic                       -> As defaulted under the standard logic
-i.version.from.stnd.logic                       -> As defaulted under the standard logic
-Output: o.standard.test.procedure               - The standard test procedure
+Input:  i.origin -> Origin
+i.item -> Item
+i.business.partner -> Business Partner (For Sales/Purchase)
+i.order -> order
+i.line -> Line (For Material (BOM))
+i.sub.item -> Sub Item (For Material (BOM))
+i.routing -> Routing (For Routing)
+i.operation -> Operation (For Routing)
+i.task -> Task (For origin Routing)
+i.work.station  -> Work Station (for origin Routing (RPT))
+i.warehouse.from -> Source warehouse (For Warehouse Transfer)
+i.warehouse.to -> To Warehouse (For Warehouse Transfer)
+i.work.station -> Work Station
+i.stp.from.stnd.logic -> As defaulted under the standard logic
+i.version.from.stnd.logic -> As defaulted under the standard logic
+Output: o.standard.test.procedure - The standard test procedure
 determined by the extension.
-o.version                             - The Version determined by the extension
-Return: 0                     -       Success
-DALHOOKERROR                          - Otherwise.
+o.version       - The Version determined by the extension
+Return: 0       -       Success
+DALHOOKERROR    - Otherwise.
 ```
-
-## Process Extensions for QualityNonConformance
-
-The following process extension(s) is/are available: QualityNonConformance.SkipPrint

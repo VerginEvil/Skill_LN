@@ -4,16 +4,16 @@
 `function long len( string value )`
 
 ## Description
-This function returns the length in characters (character count) of the supplied string argument.
-Notice that for single-byte strings there is *no* difference between the byte count and the character count. Consequently, for single-byte strings there is *no* difference between the bshell functions `len()` and [len.in.bytes()](len.in.bytes.md).
+This function returns the [length in characters (character length)](../3gl_features/data_types.md#character length) of the supplied string argument.
+Notice that for single-byte strings there is *no* difference between the [byte length](../3gl_features/data_types.md#byte length) and the [character length](../3gl_features/data_types.md#character length). Consequently, for single-byte strings there is *no* difference between the bshell functions `len()` and [len.in.bytes()](len.in.bytes.md).
 
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `value` |  |
+| `string` | `value` |    |
 
 ## Return values
-This function returns the length in characters (character count) of the supplied string argument. Notice that, regarding the character count, there is a difference between a single-byte string value and a multibyte string value.
+This function returns the [length in characters (character length)](../3gl_features/data_types.md#character length) of the supplied string argument. Notice that, regarding the character length, there is a difference between a single-byte string value and a [multibyte string value](../3gl_features/multibyte_strings.md#character length).
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -35,4 +35,5 @@ lng = len( strip$(fix) )     | Returns 3
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

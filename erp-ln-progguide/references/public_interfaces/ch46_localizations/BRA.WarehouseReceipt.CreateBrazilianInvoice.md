@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BRA.WarehouseReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1916-1917
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1936-1937
 
 ```baan
 DLL:   lpextbraapi
-This function is available from     2025.10 (KB3630696  ).
+This function is available from 2025.10 (KB3630696).
 Syntax: long BRA.WarehouseReceipt.CreateBrazilianInvoice(
 domain  tcncmp           iWarehouseCompany,
 domain  whinh.shpm       iWarehouseReceiptId,
@@ -22,15 +22,15 @@ this function, therefore, retry point, commit transaction and
 abort transaction will be handled.
 Pre:    No open database transaction.
 Post:   n.a.
-Input:  iWarehouseCompany                     - Warehouse company
-iWarehouseReceiptId                           - Warehouse receipt ID
-Output: oInvoiceLinesCreated                  - Number of Brazilian invoice lines
+Input:  iWarehouseCompany       - Warehouse company
+iWarehouseReceiptId     - Warehouse receipt ID
+Output: oInvoiceLinesCreated    - Number of Brazilian invoice lines
 created.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

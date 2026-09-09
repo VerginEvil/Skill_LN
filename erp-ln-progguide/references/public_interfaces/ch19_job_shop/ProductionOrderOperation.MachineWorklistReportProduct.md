@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 793-795
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 793-794
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.08 (KB3617574  ).
+This function is available from 2026.08 (KB3617574).
 Syntax: long ProductionOrderOperation.MachineWorklistReportProduct(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -25,8 +25,8 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:
 Expl:   This public interface is designed to report quantities for
-machine operations . including both completed and rejected
-quantities . and consolidate those quantities up to the
+machine operations ›¼À” including both completed and rejected
+quantities ›¼À” and consolidate those quantities up to the
 production order operation level.
 The function retrieves Work Center and Machine Type information
 based on the provided Production Order, Operation, and Machine
@@ -47,59 +47,59 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process. Transaction handling
 will be done inside PI.
-Input:  iSite                   . Site (Mandatory when the site concept
+Input:  iSite                   ›¼À“ Site (Mandatory when the site concept
 is active)
-iProductionOrder        . Production Order (Mandatory, must
+iProductionOrder        ›¼À“ Production Order (Mandatory, must
 belong to the iSite)
-iOperation              . Operation (Mandatory, must belong to
+iOperation              ›¼À“ Operation (Mandatory, must belong to
 the iProductionOrder)
-iMachineNumber          . Machine Number (Mandatory, must
+iMachineNumber          ›¼À“ Machine Number (Mandatory, must
 belong to the iProductionOrder and
 iOperation)
-iTransactionDate                              - Transaction Date is used for fetching
+iTransactionDate        - Transaction Date is used for fetching
 the right Shift information for
 posting the machine operation
 quantities
-iCompletedQty           . Quantity to Complete (must be >=0)
+iCompletedQty           ›¼À“ Quantity to Complete (must be >=0)
 If the item is serialized, then it
 must be matched with the number of
 serials given in
 iSerialArrayProduced().
 Either the Quantity to Complete or
 Quantity to Reject must be input.
-iRejectedQty            . Quantity to Reject (must be >=0)
+iRejectedQty            ›¼À“ Quantity to Reject (must be >=0)
 If the item is serialized, then the
 Quantity to Reject must be equal to
 number of serials in
 iSerialArrayRejected().
-iRejectReason           . Reject Reason
+iRejectReason           ›¼À“ Reject Reason
 Mandatory if the Quantity to Reject
 > 0
-Reject Reason must be of type .
+Reject Reason must be of type ›¼À“
 "Rejection of Production Result".
-iSerialArrayProduced()  . if the item is Serial Controlled,
+iSerialArrayProduced()  ›¼À“ if the item is Serial Controlled,
 entered serial numbers must match
 with the Quantity to Complete. Entered
 Serial Numbers must exist in the
-Production Order As                                                -Built.
-iSerialArrayRejected()  . if the item is Serial Controlled,
+Production Order As-Built.
+iSerialArrayRejected()  ›¼À“ if the item is Serial Controlled,
 entered serial numbers must match
 with the Quantity to Reject. Entered
 Serial Numbers must exist in the
-Production Order As                                                -Built
-iLotCode                . Lot Code must be set if the item is
+Production Order As-Built
+iLotCode                ›¼À“ Lot Code must be set if the item is
 lot controlled
 Entered Lot code must exist in the
 system
 Output:
 oExceptionMessage
--                              The last error message found during the execution of
+- The last error message found during the execution of
 public interface. If multiple error messages are found,
 by using "oExceptionID", messages can be retrieved.
 oExceptionID
--                              An ID that refers to the exception information. Use
+- An ID that refers to the exception information. Use
 "Exception" related functions to retrieve related
 information.
-Return: 0                     - Success
-<>0                           - Error occurred during the process
+Return: 0       - Success
+<>0     - Error occurred during the process
 ```

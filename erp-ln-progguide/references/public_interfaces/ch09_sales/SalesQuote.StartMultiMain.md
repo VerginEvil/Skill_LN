@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 293-294
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 295-295
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2020.06 (KB2127961  ).
+This function is available from 2020.06 (KB2127961).
 Syntax: long SalesQuote.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the Multi-Main session Sales Quotatio
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

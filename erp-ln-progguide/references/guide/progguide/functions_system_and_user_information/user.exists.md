@@ -9,7 +9,7 @@ This checks whether a specified user is defined on the system. Whether user name
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `username` |  |
+| `const string` | `username` |    |
 
 ## Return values
 TRUE user exists

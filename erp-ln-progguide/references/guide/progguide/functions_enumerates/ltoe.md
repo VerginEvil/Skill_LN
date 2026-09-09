@@ -28,4 +28,5 @@ active = ltoe( 1 )            | active now equals tcyesno.yes
 
 ## Related topics
 - [Enumerates overview and synopsis](overview_and_synopsis.md)
+
 - [Enumerate and set constants](../3gl_features/enumerate_and_set_constants.md)

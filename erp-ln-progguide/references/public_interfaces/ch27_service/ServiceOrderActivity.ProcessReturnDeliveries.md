@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1447-1448
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1460-1461
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.05 (KB2235890  ).
+This function is available from 2022.05 (KB2235890).
 Syntax: long ServiceOrderActivity.ProcessReturnDeliveries(
 domain  tcorno           iServiceOrder,
 domain  tsmdm.acln       iActivityLine,
@@ -34,16 +34,16 @@ calling this function the existing database transactions should
 either have been aborted or committed).
 Post:   If warehouse procedures have been set to automatic, then these
 are executed.
-Input:  iServiceOrder                         - Service Order: Mandatory
-iActivityLine                                 - Service Order Activity: Not mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iServiceOrder           - Service Order: Mandatory
+iActivityLine           - Service Order Activity: Not mandatory
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```

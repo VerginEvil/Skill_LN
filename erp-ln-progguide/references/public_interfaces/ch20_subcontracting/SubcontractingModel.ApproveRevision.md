@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractingModel
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 830-831
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 840-841
 
 ```baan
 DLL:   tiextsubapi
-This function is available from     2023.04 (KB2282924  ).
+This function is available from 2023.04 (KB2282924).
 Syntax: long SubcontractingModel.ApproveRevision(
 domain  tcsite           iProductionSite,
 domain  tcitem           iProduct,

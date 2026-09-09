@@ -25,13 +25,15 @@ long aud_get_time_mm( string s_tim() )
 ```
 | | |
 |---|---|
-| *aud_get_date_yyyy()* | This retrieves the year value from the date string *s_dat*. The year is represented by four digits.  |
-| *aud_get_date_mm()* | This retrieves the month value from the date string *s_dat*.  |
-| *aud_get_date_dd()* | This retrieves the day value from the date string *s_dat*.  |
-| *aud_get_time_hh()* | This retrieves the hours value from the time string *s_tim*.  |
-| *aud_get_time_mm()* | This retrieves the minutes value from the time string *s_tim*.  |
+| *aud_get_date_yyyy()* | This retrieves the year value from the date string *s_dat*. The year is represented by four digits. |
+| *aud_get_date_mm()* | This retrieves the month value from the date string *s_dat*. |
+| *aud_get_date_dd()* | This retrieves the day value from the date string *s_dat*. |
+| *aud_get_time_hh()* | This retrieves the hours value from the time string *s_tim*. |
+| *aud_get_time_mm()* | This retrieves the minutes value from the time string *s_tim*. |
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

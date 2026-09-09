@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1640-1641
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1659-1660
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2023.05 (KB2292786  ).
+This function is available from 2023.05 (KB2292786).
 Syntax: long BOD.CreateLastModificationPersonNode(
 domain  tcmcs.str50      iLogonCode,
 ref     domain  tcmcs.long       oXmlNode,
@@ -17,10 +17,10 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function creates a LastModificationPerson node based on
 the iLogonCode.
 The current LN user (logname$) is used instead of iLogonCode if:
--                       Input variable iLogonCode is empty.
--                       Length of input variable iLogonCode is greater than
+- Input variable iLogonCode is empty.
+- Length of input variable iLogonCode is greater than
 length of domain 'tclogn' (string 16).
--                       The iLogonCode does not exist as LN User.
+- The iLogonCode does not exist as LN User.
 The LastModificationPerson node is not created if this function
 is called in company 0 or if no employee exists for iLogonCode
 in the Employee (tccom001) table. In this case oXmlNode is
@@ -36,16 +36,16 @@ lid="ccc">xxx</ID>
 </LastModificationPerson>
 Pre:    NA
 Post:   NA
-Input:  iLogonCode                            - The logon code of the LN User
-Output: oXmlNode                              - Generated Node
-oExceptionMessage                             - The last message if any message is
+Input:  iLogonCode              - The logon code of the LN User
+Output: oXmlNode                - Generated Node
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Error occurred.
+Return: 0                       - OK.
+<> 0                    - Error occurred.
 ```

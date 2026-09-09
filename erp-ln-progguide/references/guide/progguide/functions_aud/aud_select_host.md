@@ -11,18 +11,16 @@ Audit files can be located on more than one host (for example, on the local host
 *aud_select_host()* selects and returns the name of the host on which the audit files for a specified table and company are to be accessed. You can use this host name as input to [aud_open_audit()](aud_open_audit.md), [aud_read_info_hdr()](aud_read_info_hdr.md), and [aud_write_info_hdr()](aud_write_info_hdr.md).
 
 ## Arguments
-| | | |
-|---|---|---|
-| `const string` | `table_name()` |  The name of the table for which audit files are to be accessed. This takes the form *ppmmfff*, where *pp* is the package code, *mmm* is the module code, and *fff* is the file number.  |
-| `long` | `compno` |  The company number.  |
-| `long` | `user_interaction` |  Specifies whether or not user interaction is required. Possible values are:  |
-| `ref string` | `host_name()` |  This returns the name of the selected host.  |
+| | |
+|---|---|
+| USR_INTACTION_YES | If there is more than one host in the host list for the specified table and company number, the user is prompted to select the host to be used. The function then returns the name of that host. If there is only one host in the list, that host is returned automatically, without user interaction. |
+| USR_INTACTION_NO | No user interaction. The 3GL library automatically selects the host. It returns the name of the first host in the host list. If there is only one host in the list, it returns the name of that host. |
 
 ## Return values
 | | |
 |---|---|
 | >= 0 | Success |
-| -1 | Error; Possibly unable to find host list or auditing not enabled for the specified table and company.  |
+| -1 | Error; Possibly unable to find host list or auditing not enabled for the specified table and company. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -36,5 +34,7 @@ Note that this environment variable applies to all tables. If it is set, it is u
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

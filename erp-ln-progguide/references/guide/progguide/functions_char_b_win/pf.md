@@ -25,7 +25,7 @@ You define settings 9 to 24 in the printer information file of the particular pr
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

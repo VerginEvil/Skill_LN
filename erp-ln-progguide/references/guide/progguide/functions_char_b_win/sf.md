@@ -10,7 +10,7 @@ Use this to set all text on the screen to bold. Use face="Courier New" sf$(0) to
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

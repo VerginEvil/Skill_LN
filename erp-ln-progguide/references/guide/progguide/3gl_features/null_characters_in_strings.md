@@ -1,8 +1,8 @@
 # NULL characters in strings
 A string is a sequence of characters. A string variable may contain a NULL character (also named null or abbreviated to [NUL](../misc/ascii_table.md)). The NULL character is encoded by means of a byte with the value 0 (zero).
 Usually, such a NULL character is interpreted as an end of string marker. According to that interpretation, the NULL character itself is not part of the string value. Also all the bytes after the NULL character, until the end of the memory available for the string, are not part of the string value and their content is in most cases irrelevant.
-This way, the character count of the string value stored in a string variable may be smaller than the character limit of the string variable.
-Likewise, the byte count of the string value stored in a string variable may be smaller than the byte limit of the string variable.
+This way, the [character length](data_types.md#character length) of the string value stored in a string variable may be smaller than the [character capacity](data_types.md#character capacity) of the string variable.
+Likewise, the [byte length](data_types.md#byte length) of the string value stored in a string variable may be smaller than the [byte capacity](data_types.md#byte capacity) of the string variable.
 As an example, the following piece of code shows the assignment of string values of different lengths to a string variable of length 6.
 ```
 
@@ -25,7 +25,7 @@ my_string = ""          | String variable my_string now contains the empty strin
 
 ## Zero-padding
 As said above, in most cases the value of the bytes after the terminating NULL character is irrelevant. When an explicit action is performed in order to observe the value of any of these bytes, then it becomes relevant what their value is. It is the intention to let such bytes be observed as if *zero-padding* had taken place, i.e. as if all bytes after the terminating NULL character have the value 0.
-However, zero-padding is a too expensive action to be performed immediately whenever applicable, e.g. as part of each assignment of a string value to a variable with a higher byte limit than the byte count of the assigned string value.
+However, zero-padding is a too expensive action to be performed immediately whenever applicable, e.g. as part of each assignment of a string value to a variable with a higher [byte capacity](data_types.md#byte capacity) than the [byte length](data_types.md#byte length) of the assigned string value.
 Therefore, instead of performing the actual zero-padding, the string variable is marked *dirty*. This indicates that the bytes after the terminating NULL character have an undefined value, but should be considered as having the value 0.
 Whenever any action is performed to observe the actual value of a possibly dirty byte, first the actual zero-padding is performed and the *dirty* mark is removed from the string variable.
 The following example shows how this can be observed in the debugger.
@@ -99,19 +99,29 @@ As said, the usual interpretation of a NULL character is that it marks the end o
 
 ## Modifying a binary string
 There are several ways to modify the value of separate bytes of a string variable without interpreting them as a NULL-terminated sequence of TSS-encoded characters. The following list shows several examples.
+
 - [seq.read()](../functions_directory_file_operations/seq.read.md). The bytes read from the specified file are stored into the specified buffer, without any interpretation.
+
 - [store.byte()](../functions_string_operations/store.byte.md), [store.short()](../functions_string_operations/store.short.md), [store.long()](../functions_string_operations/store.long.md), [store.double()](../functions_string_operations/store.double.md), [store.float()](../functions_string_operations/store.float.md), [store.utc()](../functions_string_operations/store.utc.md). These functions treat the ref string supplied as their second argument merely as a sequence of bytes. The bytes written to the string are not the encoding of certain characters, but the applicable encoding of the first argument of each function.
-- [copy.mem()](../functions_memory_operations/copy.mem.md). The amount of bytes to be copied is determined by the properties of the source and destination arguments (type and declared size, etc.), *not* by their current value. The copied bytes are not interpreted.
+
+- [copy.mem()](../functions_memory_operations/copy.mem.md). The number of bytes to be copied is determined by the properties of the source and destination arguments (type and declared capacity, etc.), *not* by their current value. The copied bytes are not interpreted.
+
 - [base64.decode()](../functions_base64/base64.decode.md). The binary output resulting from the decoding of the base64-encoded input is stored in the output string, without any interpretation. Any subsequent bytes of the output string are left unchanged.
+
 - [base64.encode()](../functions_base64/base64.encode.md). The base64-encoded output resulting from the encoding of the binary input is stored in the output string, *without* NULL-termination. Any subsequent bytes of the output string are left unchanged.
 
 ## Observing a binary string
 There are several ways to observe the value of separate bytes of a string variable without interpreting them as a NULL-terminated sequence of TSS-encoded characters. The following list shows several examples.
+
 - [seq.write()](../functions_directory_file_operations/seq.write.md). The specified number of bytes from the specified buffer are written to the specified file, without any interpretation.
+
 - [load.byte()](../functions_string_operations/load.byte.md), [load.short()](../functions_string_operations/load.short.md), [load.long()](../functions_string_operations/load.long.md), [load.double()](../functions_string_operations/load.double.md), [load.float()](../functions_string_operations/load.float.md), [load.utc()](../functions_string_operations/load.utc.md). These functions treat the string supplied as their argument merely as a sequence of bytes. The bytes read from the string are not the encoding of certain characters, but the applicable encoding of the value to be returned by each function.
-- [copy.mem()](../functions_memory_operations/copy.mem.md). The amount of bytes to be copied is determined by the properties of the source and destination arguments (type and declared size, etc.), *not* by their current value. The copied bytes are not interpreted.
-- [base64.encode()](../functions_base64/base64.encode.md). All bytes of the binary input are used, as determined by the byte limit.
-- [base64.decode()](../functions_base64/base64.decode.md). All bytes of the base64-encoded input are used, as determined by the byte limit.
+
+- [copy.mem()](../functions_memory_operations/copy.mem.md). The number of bytes to be copied is determined by the properties of the source and destination arguments (type and declared capacity, etc.), *not* by their current value. The copied bytes are not interpreted.
+
+- [base64.encode()](../functions_base64/base64.encode.md). All bytes of the binary input are used, as determined by the [byte capacity](data_types.md#byte capacity).
+
+- [base64.decode()](../functions_base64/base64.decode.md). All bytes of the base64-encoded input are used, as determined by the [byte capacity](data_types.md#byte capacity).
 
 ## Record buffers as binary strings
 A record buffer (rcd.<table name>) is a binary string. When data is copied to or from a record buffer, all bytes are copied without interpretation, which implies that 0-valued bytes are not interpreted as NULL-termination.
@@ -127,4 +137,5 @@ strbuf2       = strbuf          | NULL-terminated string from strbuf is copied (
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Variables](variables.md)

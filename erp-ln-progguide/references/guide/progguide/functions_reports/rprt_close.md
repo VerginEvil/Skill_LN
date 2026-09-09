@@ -19,4 +19,5 @@ See [rprt_open()](rprt_open.md).
 
 ## Related topics
 - [Reports overview and synopsis](overview_and_synopsis.md)
+
 - [Spooling overview and synopsis](../functions_spooling/overview_and_synopsis.md)

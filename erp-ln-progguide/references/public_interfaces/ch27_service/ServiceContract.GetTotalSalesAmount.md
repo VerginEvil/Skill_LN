@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1391-1392
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1403-1403
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2023.11 (KB2303875  ).
+This function is available from 2023.11 (KB2303875).
 Syntax: long ServiceContract.GetTotalSalesAmount(
 domain  tcorno           iServiceContract,
 ref     domain  tcamnt           oContractTotalSalesAmount,
@@ -17,8 +17,8 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.:  This function calculates the net sales amount in contract
 currency for the passed contract.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iServiceContract
 Service Contract
 Mandatory
@@ -33,6 +33,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Amount could be determined.
-<> 0                          - Error occurred.
+Return: 0       - Amount could be determined.
+<> 0    - Error occurred.
 ```

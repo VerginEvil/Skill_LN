@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectInvoicing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1730-1732
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1750-1751
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.08 (KB2332111  ).
+This function is available from 2024.08 (KB2332111).
 Syntax: long ProjectInvoicing.StartProcessProFormaInvoices(
 domain  tccono           iFromContract,
 domain  tccono           iToContract,
@@ -21,11 +21,11 @@ Usage:        Expl:   This public interface can be used to start the session
 Process Pro Forma Invoices (tppin4200m100).
 Pre:    N.A
 Post:   N.A
-Input:  iFromContract                                 - From Contract. Optional
-iToContract                                           - To Contract. Optional
-iFromContractLine                                     - From Contract Line. Optional
-iToContractLine                                       - To Contract Line. Optional
-iProcessingOptionSet                       -
+Input:  iFromContract                   - From Contract. Optional
+iToContract                     - To Contract. Optional
+iFromContractLine               - From Contract Line. Optional
+iToContractLine                 - To Contract Line. Optional
+iProcessingOptionSet -
 Optional, if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -80,14 +80,14 @@ DeviceForProFormaInvoice        domain  tppdm.s014      <empty>
 PrintProcessReport              domain  tcyesno         tcyesno.no
 PrintErrorReport                domain  tcyesno         tcyesno.yes
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```

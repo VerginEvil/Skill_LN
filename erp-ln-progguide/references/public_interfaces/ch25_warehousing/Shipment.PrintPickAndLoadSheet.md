@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1149-1151
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1159-1161
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.04 (KB2328091  ).
+This function is available from 2024.04 (KB2328091).
 Syntax: long Shipment.PrintPickAndLoadSheet(
 domain  whinh.shpm       iShipment,
 domain  tcmcs.str15      iDevice,
@@ -31,8 +31,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iShipment is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ShipmentArray
+- selection range fields (From/To)
+- ShipmentArray
 The Pick and Load Sheet will then be printed for the given
 iShipment.
 In case option ShipmentArray is set then the selection range
@@ -102,13 +102,13 @@ ReportNameAscending and ReportNameDescending only need to filled for
 customized reports, otherwise the standard reports are used based on
 the SortByOrder.
 ReportNames must start with an "r", e.g. "rwhinh443011201"
-Output: oDataProcessed                        - true:  Pick and Load Sheet Printed.
+Output: oDataProcessed          - true:  Pick and Load Sheet Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

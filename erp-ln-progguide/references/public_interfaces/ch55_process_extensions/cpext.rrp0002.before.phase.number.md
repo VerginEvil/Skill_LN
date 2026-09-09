@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2077-2078
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2098-2099
 
 ```baan
 Syntax: long cpext.rrp0002.before.phase.number(
@@ -22,7 +22,7 @@ domain  tcncmp          i.company,
 domain  cpcom.plnc      i.scenario,
 domain  cpcom.phnu      i.phase.number)
 {
-|* Apply phase                              -specific logic
+|* Apply phase-specific logic
 if i.phase.number = 1 then
 set.phase.parameters(i.company, i.scenario)
 endif
@@ -30,9 +30,9 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.company                     - Company
-i.scenario                            - Scenario
-i.phase.number                        - Phase Number
+Input:  i.company       - Company
+i.scenario      - Scenario
+i.phase.number  - Phase Number
 Output: N.A
-Return: 0                             - Success
+Return: 0               - Success
 ```

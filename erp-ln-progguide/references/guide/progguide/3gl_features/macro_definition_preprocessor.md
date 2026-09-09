@@ -54,7 +54,7 @@ An error occurs if you apply #undef to an unknown macro. To be sure that the mac
 See [Conditional compilation (preprocessor)](conditional_compilation_preprocessor.md) for a detailed description of #ifdef and #endif calls.
 
 ## Variable macro arguments
-You can use the ellipsis notation ( , ... ) to define the macro with a varying number of arguments. For example:
+You can use the ellipsis notation (,... ) to define the macro with a varying number of arguments. For example:
 ```
 
 #define fillbuf(buf1, format, ...)  buf1 = sprintf$(format, ...)
@@ -70,4 +70,5 @@ The macro definition can contain a number of arguments, but the ellipsis notatio
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Preprocessor](preprocessor.md)

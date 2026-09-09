@@ -24,4 +24,5 @@ This function is available in ES10.5.x from TIV level 2151.
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

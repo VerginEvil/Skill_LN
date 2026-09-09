@@ -5,7 +5,7 @@ The OR boolean operator evaluates to True if the left or the right search condit
 ```
 
 <or boolean operator>
-    ::= Search condition OR Search condition
+    ::= <search condition> OR <search condition>
 ```
 
 ## Semantics
@@ -26,5 +26,7 @@ salary > 20000 OR bonus > 1000
 
 ## Related topics
 - [AND boolean operator](and_sc.md)
+
 - [NOT boolean operator](not_sc.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 551-555
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 555-558
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2026.01 (KB3606086  ).
+This function is available from 2026.01 (KB3606086).
 Syntax: long ItemOrderPlan.StartSessionForOrder(
 domain  cpcom.plnc       iPlanItemScenario,
 domain  cpitem           iPlanItem,
@@ -95,7 +95,7 @@ tckoor.act.sls.sched.f  Sales Schedule Forecast Sales Schedule Lines
 (tdsls3611m000)
 tckoor.act.dpt.wrk.man  Maintenance Work Order (Manual)
 Warehousing Order (whinh2100m100)
-tckoor.stock            Stock                   Warehouse               - Item
+tckoor.stock            Stock                   Warehouse - Item
 Inventory(whwmd2515m000)
 tckoor.act.asc.man      Assembly Order (Manual) Warehousing Order (whinh2100m100)
 tckoor.epp.quote        Service Quote           Maintenance Sales Quote
@@ -111,7 +111,7 @@ tckoor.cycle.count      Cycle Counting Order    Cycle Counting Order Lines
 tckoor.adjustment       Adjustment Order        Adjustment Order Lines
 (whinh5121m000)
 tckoor.apl.asc          Planned Assembly Order  Planned Order (Assembly)
-\      (tiapl5636m000)
+\(tiapl5636m000)
 tckoor.cp.rpt           Planned Production Schedule
 Planned Order(cprrp1600m000)
 tckoor.product.sched    Production Schedule     Production Schedule Line
@@ -136,22 +136,22 @@ tckoor.bp.forecast      Forecast from Customer  Forecast by Revision from Custom
 (cpvmi0506m100)
 tckoor.aggr.demand      Forecast to Supplier    Forecast to Supplier
 (cpvmi0102m000)
-tckoor.bfbp.trf.pur     Buy              -From BP Transfer (Purchase)
+tckoor.bfbp.trf.pur     Buy-From BP Transfer (Purchase)
 Purchase Order Lines
 (tdpur4100m900)
-tckoor.bfbp.trf.sched   Buy              -From BP Transfer (Schedule)
+tckoor.bfbp.trf.sched   Buy-From BP Transfer (Schedule)
 Purchase Schedule Lines
 (tdpur3610m000)
-tckoor.stbp.trf.sls     Sold              -To BP Transfer (Sales)
+tckoor.stbp.trf.sls     Sold-To BP Transfer (Sales)
 Sales Order Lines (tdsls4100m900)
-tckoor.stbp.trf.sched   Sold              -To BP Transfer (Schedule)
+tckoor.stbp.trf.sched   Sold-To BP Transfer (Schedule)
 Sales Schedule Lines
 (tdsls3611m000)
-tckoor.stbp.trf.wh.man  Sold              -To BP Transfer (WH Manual)
+tckoor.stbp.trf.wh.man  Sold-To BP Transfer (WH Manual)
 Warehousing Order (whinh2100m100)
-tckoor.stbp.trf.man     Sold              -To BP Transfer (Manual)
+tckoor.stbp.trf.man     Sold-To BP Transfer (Manual)
 Warehousing Order (whinh2100m100)
-tckoor.stbp.trf.wh.dis  Sold              -To BP Transfer (WH Distribution)
+tckoor.stbp.trf.wh.dis  Sold-To BP Transfer (WH Distribution)
 Warehousing Order (whinh2100m100)
 tckoor.cp.cpt           Planned Cost Peg Transfer
 Planned Cost Peg Transfers
@@ -167,7 +167,7 @@ Pre:    N.A.
 Post:   N.A.
 Input:  iPlanItemScenario       Plan Item Scenario
 iPlanItem               Plan Item
-iOrderType›¼                                 OrderType
+iOrderType›¼•           OrderType
 iOrderNumber            Order Number.
 iPosition               Position.
 iSequence               Sequence Number.
@@ -175,42 +175,42 @@ iTransferOriginatesFromProductionOrder
 Transfer Originates From Production Order.
 iTransactionType        Transaction Type
 Mandatory for below Origins
--                                               Production Plan (tckoor.mps.prod)
--                                               Purchase Plan (Purchase Plan)
--                                               Sales Order (Manual) (tckoor.act.sls.man)
--                                               Purchase Order (Manual) (tckoor.act.pur.man)
--                                               Assembly Order (Manual) (tckoor.act.asc.man)
--                                               Production Order (Manual) (tckoor.act.sfc.man)
--                                               Warehouse Transfer (Distribution)
+- Production Plan (tckoor.mps.prod)
+- Purchase Plan (Purchase Plan)
+- Sales Order (Manual) (tckoor.act.sls.man)
+- Purchase Order (Manual) (tckoor.act.pur.man)
+- Assembly Order (Manual) (tckoor.act.asc.man)
+- Production Order (Manual) (tckoor.act.sfc.man)
+- Warehouse Transfer (Distribution)
 (tckoor.enterprise.plan)
--                                               Sold-To BP Transfer (WH Distribution)
+- Sold-To BP Transfer (WH Distribution)
 (tckoor.stbp.trf.wh.dis)
--                                               Warehouse Transfer (tckoor.act.trf)
--                                               Sold-To BP Transfer (WH Manual)
+- Warehouse Transfer (tckoor.act.trf)
+- Sold-To BP Transfer (WH Manual)
 (tckoor.stbp.trf.wh.man)
--                                               Warehouse Transfer (Manual) (tckoor.act.trf.man)
--                                               Sold-To BP Transfer (Manual)
+- Warehouse Transfer (Manual) (tckoor.act.trf.man)
+- Sold-To BP Transfer (Manual)
 (tckoor.stbp.trf.man)
--                                               Service Order (Manual) (tckoor.act.srv.man)
--                                               Maintenance Sales Order (Manual)
+- Service Order (Manual) (tckoor.act.srv.man)
+- Maintenance Sales Order (Manual)
 (tckoor.act.srv.sls.man)
--                                               Maintenance Work Order (Manual)
+- Maintenance Work Order (Manual)
 (tckoor.act.dpt.wrk.man)
--                                               Project (tckoor.project)
--                                               Project (Manual) (tckoor.project.man)
--                                               Confirmed Supply (tckoor.conf.supply)
+- Project (tckoor.project)
+- Project (Manual) (tckoor.project.man)
+- Confirmed Supply (tckoor.conf.supply)
 iDate                   Date
 Mandatory for below Origins
--                                               Forecast to Supplier (tckoor.aggr.demand)
--                                               Expected Supply (tckoor.exp.supply)
--                                               Confirmed Supply (tckoor.conf.supply)
--                                               Forecast from Customer (tckoor.bp.forecast)
--                                               Assembly Part Demand (tckoor.cf.ap)
+- Forecast to Supplier (tckoor.aggr.demand)
+- Expected Supply (tckoor.exp.supply)
+- Confirmed Supply (tckoor.conf.supply)
+- Forecast from Customer (tckoor.bp.forecast)
+- Assembly Part Demand (tckoor.cf.ap)
 iBusinessPartner        Business Partner
 Mandatory for below Origins
--                                               Forecast to Supplier (tckoor.aggr.demand)
--                                               Expected Supply (tckoor.exp.supply)
--                                               Confirmed Supply (tckoor.conf.supply)
+- Forecast to Supplier (tckoor.aggr.demand)
+- Expected Supply (tckoor.exp.supply)
+- Confirmed Supply (tckoor.conf.supply)
 Output: oExceptionMessage       The last message, if any message is
 found. If more than one message is
 found, these are present in the
@@ -222,9 +222,3 @@ information.
 Return: 0                       Public Interface succesfully completed
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for
-
-## PlanItemExceptionMessageTotal
-
-The following functions are available: PlanItemExceptionMessageTotals.StartOverview

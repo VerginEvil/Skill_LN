@@ -29,10 +29,9 @@ void
 ```
 | | | |
 |---|---|---|
-|  |  |  |
 |  | [progress.indicator.exists()](progress.indicator.exists.md) | `( )` |
 |  | [create.progress.indicator()](create.progress.indicator.md) | `( string title() [, long mode] )` |
-|  | [change.progress.indicator()](change.progress.indicator.md) | `( long percentage [, string message, ...] )` |
+|  | [change.progress.indicator()](change.progress.indicator.md) | `( long percentage [, string message,...] )` |
 |  | [change.progress.delay()](change.progress.delay.md) | `( long delay )` |
 |  | [change.progress.title()](change.progress.title.md) | `( string title() )` |
 |  | [destroy.progress.indicator()](destroy.progress.indicator.md) | `( )` |

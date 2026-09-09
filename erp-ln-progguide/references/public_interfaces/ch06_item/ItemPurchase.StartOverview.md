@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPurchase
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 199-200
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 200-200
 
 ```baan
 DLL:   tdextipuapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemPurchase.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ in overview mode (tdipu0101m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -55,7 +55,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ItemPurchaseBySite
-
-The following functions are available: ItemPurchaseBySite.StartDetail

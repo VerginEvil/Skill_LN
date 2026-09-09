@@ -11,4 +11,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

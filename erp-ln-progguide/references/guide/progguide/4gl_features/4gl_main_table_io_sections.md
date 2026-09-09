@@ -48,6 +48,9 @@ read.view:
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)
+
 - [Flow of 4GL engine](flow_of_standard_program.md)
+
 - [Transition issues (BAAN IV to Infor Enterprise Server)](../functions_dal/transition_issues_baan_iv_to_baanerp.md)

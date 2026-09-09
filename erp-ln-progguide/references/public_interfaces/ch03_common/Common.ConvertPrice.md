@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 102-103
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 103-104
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2022.03 (KB2220118  ).
+This function is available from 2022.03 (KB2220118).
 Syntax: long Common.ConvertPrice(
 domain  tcitem           iItem,
 domain  tccitg           iItemGroup,

@@ -5,7 +5,7 @@
 `function long cmf.receive( long mid, domain ttcmf.prov service, long block )`
 
 ## Description
-Receives a Infor LN eMessage Connector message object and returns the object id in *mid*. The appropriate connector must have been previously started prior to calling this function using cmf.startService()cmf.startService .
+Receives a Infor LN eMessage Connector message object and returns the object id in *mid*. The appropriate connector must have been previously started prior to calling this function using cmf.startService()cmf.startService.
 
 ## Arguments
 | | | |
@@ -27,5 +27,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

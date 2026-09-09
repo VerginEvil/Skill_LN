@@ -22,17 +22,17 @@ The following table shows the minimum and maximum values of domain types support
 | | | |
 |---|---|---|
 | Domain type | Minimum value | Maximum value |
-|  byte/enumerated (unsigned 7-bit integer range)  | 0 | 127 (0x7f) |
-|  integer (signed 16-bit integer range)  | -32,768 (-0x8000) | 32,767 (0x7fff) |
-|  long/text (signed 32-bit integer range)  | -2,147,483,648 (-0x8000,0000) | 2,147,483,647 (0x7fff,ffff) |
-|  float (32-bit floating point range)  | -999,999,999,999.9e20 | 999,999,999,999.9e20 |
-|  double (64-bit floating point range)  | -999,999,999,999.9e64 | 999,999,999,999.9e64 |
+| byte/enumerated (unsigned 7-bit integer range) | 0 | 127 (0x7f) |
+| integer (signed 16-bit integer range) | -32,768 (-0x8000) | 32,767 (0x7fff) |
+| long/text (signed 32-bit integer range) | -2,147,483,648 (-0x8000,0000) | 2,147,483,647 (0x7fff,ffff) |
+| float (32-bit floating point range) | -999,999,999,999.9e20 | 999,999,999,999.9e20 |
+| double (64-bit floating point range) | -999,999,999,999.9e64 | 999,999,999,999.9e64 |
 | string[1] | chr(1) | "~" (or other value, depending on the locale, max length 1024) |
 | enumerate | the minimal value of all the defined enumerate constants of the concerned enumerate domain | the maximal value of all the defined enumerate constants of the concerned enumerate domain |
 | bitset | 0, which corresponds to the empty set | the value corresponding to the full set, i.e. a set containing all the defined set elements of the concerned bitset domain. |
-| date |  0, which is an invalid date value. The minimum valid date value is 1, which corresponds to January 1, 0001.  | 3,652,059, which corresponds to December 31, 9999 |
-| time | 0, which corresponds to January 1, 1970, 00:00:00 UTC. |  2,147,483,647 (0x7fff,ffff), which corresponds to January 19, 2038, 03:14:07 UTC. In the Utc40 mode and in the Utc64 mode this maximum is set to 253,402,214,400 (0x3a,fff2,f000), which corresponds to the begin of the last day of the last four-digit year, i.e. December 31, 9999, 00:00:00 UTC. Notice that even in local time this maximum value is well before the begin of the first five-digit year 10000, i.e. January 1, 10000, 00:00:00 local time When the bshell is not in 64-bit mode, then this value cannot be stored in a long variable, so the maximum then remains 0x7fff,ffff.  |
-| multibyte string |  configurable using the TSS dictionary programs (session: Maintain Locale Data)  |  configurable using the TSS dictionary programs (session: Maintain Locale Data)  |
+| date | 0, which is an invalid date value. The minimum valid date value is 1, which corresponds to January 1, 0001. | 3,652,059, which corresponds to December 31, 9999 |
+| time | 0, which corresponds to January 1, 1970, 00:00:00 UTC. | 2,147,483,647 (0x7fff,ffff), which corresponds to January 19, 2038, 03:14:07 UTC. In the [Utc40 mode](../functions_date_time_zones/overview.md#Utc40) and in the [Utc64 mode](../functions_date_time_zones/overview.md#Utc64) this maximum is set to 253,402,214,400 (0x3a,fff2,f000), which corresponds to the begin of the last day of the last four-digit year, i.e. December 31, 9999, 00:00:00 UTC. Notice that even in local time this maximum value is well before the begin of the first five-digit year 10000, i.e. January 1, 10000, 00:00:00 local time When the bshell is not in [64-bit mode](../3gl_features/data_types.md#Long64), then this value cannot be stored in a long variable, so the maximum then remains 0x7fff,ffff. |
+| multibyte string | configurable using the TSS dictionary programs (session: Maintain Locale Data) | configurable using the TSS dictionary programs (session: Maintain Locale Data) |
 
 ## Numeric domains with a range expression
 When the concerned domain has a range expression, then it is tried to involve the range expression also in the calculation. However, it is practically impossible to do this for all allowed range expressions in general. At the moment it is implemented for numeric domains only. Above that, the range expression must be of a specific form:
@@ -64,4 +64,5 @@ set.min(value) | value contains -2147483648
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

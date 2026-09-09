@@ -26,7 +26,7 @@ This function will copy an image or set of images based on its guid into the ima
 | -2 | The source Image does not exist |
 | -3 | The copy of the image failed |
 | -4 | Failed to call the copy function |
-| -5 | The source and target image sets are equivalent after mapping logical tables  |
+| -5 | The source and target image sets are equivalent after mapping logical tables |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2110.
@@ -35,5 +35,7 @@ Note  The second optional parameter, `omit.transaction` is available from TIV le
 
 ## Related topics
 - [Images on Forms Overview](overview.md)
+
 - [Images on Forms synopsis](synopsis.md)
+
 - [Images on Forms Examples](examples.md)

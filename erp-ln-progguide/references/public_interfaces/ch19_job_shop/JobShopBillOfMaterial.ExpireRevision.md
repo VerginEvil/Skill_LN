@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 643-644
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 646-647
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2021.08 (KB2201787  ).
+This function is available from 2021.08 (KB2201787).
 Syntax: long JobShopBillOfMaterial.ExpireRevision(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -29,16 +29,16 @@ Input:  iSite                   Site (Mandatory).
 iProduct                Product (Mandatory).
 iBillOfMaterialCode     BOM Model (Mandatory).
 iRevision               Revision (Mandatory).
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Specified JS BOM Revision has
+Return: 0                       - Specified JS BOM Revision has
 successfully been expired.
-<> 0                                          - Specified JS BOM Revision has not been
+<> 0                    - Specified JS BOM Revision has not been
 expired.
 ```

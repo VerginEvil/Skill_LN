@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductAvailability
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 577-579
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 581-582
 
 ```baan
 DLL:   cpextrmpapi
-This function is available from     2025.02 (KB3524293  ).
+This function is available from 2025.02 (KB3524293).
 Syntax: long ProductAvailability.GetWhenAvailableSchedule(
 domain  tcplnc           iScenario,
 domain  tcitem           iItem,
@@ -25,14 +25,14 @@ Usage:        Expl:   This Public Interface can be used to return the list of qu
 and dates detailing when certain quantities of a given plan item
 are planned to be in a given warehouse. Returns the same data as
 the When Available form command on session cprrp4800m000.
-Pre:                  -
-Post:                 -
-Input:  iScenario                             - Planning Scenarion. Mandatory.
-iItem                                         - Item. Mandatory
-iCompany                                      - Ordering Company. Mandatory.
-iQuantity                                     - Ordered Quantity. Mandatory.
-iQuantityUnit                                 - Ordered Quantity Unit. Mandatory.
-iProcessingOptionSet                          - Processing Option Set (Optional).
+Pre:    -
+Post:   -
+Input:  iScenario               - Planning Scenarion. Mandatory.
+iItem                   - Item. Mandatory
+iCompany                - Ordering Company. Mandatory.
+iQuantity               - Ordered Quantity. Mandatory.
+iQuantityUnit           - Ordered Quantity Unit. Mandatory.
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default printing options
 are applied.
 A Processing Option Set can be created
@@ -81,31 +81,27 @@ UseUnallocatedInventory         domain  tcyesno         tcyesno.yes
 ProjectPegProject               domain  tccprj          ""
 ProjectPegElement               domain  tccspa          ""
 ProjectPegActivity              domain  tccact          ""
-Output: oNumberOfScheduleLines                - The number of schedule lines.
-oAvailabilitySchedule                         - An array of length oNumberOfScheduleLines.
+Output: oNumberOfScheduleLines  - The number of schedule lines.
+oAvailabilitySchedule   - An array of length oNumberOfScheduleLines.
 Every entry denotes the quantity of
 the Plan Item that becomes available
 at the related date from
 oWhenAvailableSchedule. Quantities are
 not cumulative.
 Must be declared based.
-oWhenAvailableSchedule                        - An array of length oNumberOfScheduleLines.
+oWhenAvailableSchedule  - An array of length oNumberOfScheduleLines.
 Every entry denotes the date at which
 the related quantity from
 oAvailabilitySchedule is available.
 Must be declared based.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Otherwise.
+Return: 0                       - OK.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for PlannedOrderDistribution
-
-The following functions are available: PlannedOrderDistribution.StartOverview

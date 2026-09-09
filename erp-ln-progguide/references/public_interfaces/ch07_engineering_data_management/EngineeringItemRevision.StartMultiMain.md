@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringItemRevision
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 254-255
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 256-257
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.03 (KB3609108  ).
+This function is available from 2026.03 (KB3609108).
 Syntax: long EngineeringItemRevision.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -20,18 +20,18 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface starts the Multi Main Session "Engineering
 Item Revision"(tiedm1100m100). Use "Engineering Item
-Revision" session to modify and define revisions of E                      -items.
+Revision" session to modify and define revisions of E-items.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a Zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Start Filter (Not used)
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: Sort by Engineering Item, Engineering
@@ -52,7 +52,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for EngineeringBillOfMaterial
-
-The following functions are available: EngineeringBillOfMaterial.ApproveMBCByProduction EngineeringBillOfMaterial.Copy EngineeringBillOfMaterial.FinalizeMBC EngineeringBillOfMaterial.GenerateMBCCopyData EngineeringBillOfMaterial.ProcessMBC EngineeringBillOfMaterial.StartOverview EngineeringBillOfMaterial.StartPrint

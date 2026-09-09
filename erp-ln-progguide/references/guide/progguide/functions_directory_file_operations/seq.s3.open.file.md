@@ -22,8 +22,8 @@ Note that all data written to an S3 stream will be lost if seq.close() is not ca
 ## Return values
 | | |
 |---|---|
-| >=1 | Success; S3 stream pointer returned for use in subsequent operations.  |
-| <1 | Error; that is, the negative value of the equivalent of the system error (for example, for a permission error, the function returns -13, or when opening a non-existent object for reading, the function returns -ENOENT).  |
+| >=1 | Success; S3 stream pointer returned for use in subsequent operations. |
+| <1 | Error; that is, the negative value of the equivalent of the system error (for example, for a permission error, the function returns -13, or when opening a non-existent object for reading, the function returns -ENOENT). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2450.
@@ -52,4 +52,5 @@ seq.close(fd)
 
 ## Related topics
 - [seq.s3.ls()](seq.s3.ls.md)
+
 - [file.s3.rm()](file.s3.rm.md)

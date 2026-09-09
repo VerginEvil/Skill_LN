@@ -30,5 +30,7 @@ function extern long before.destroy.object()
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

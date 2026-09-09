@@ -22,9 +22,12 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_object' is a JSON value of type JSON_TYPE_OBJECT.
+
 - Parameter 'json_value' is a JSON value.
+
 - Parameter 'json_value' is detached (i.e. not assigned to a member of another JSON object or JSON array)
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

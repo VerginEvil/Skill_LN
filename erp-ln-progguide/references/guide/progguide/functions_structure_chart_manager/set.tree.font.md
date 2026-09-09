@@ -38,5 +38,7 @@ set.tree.font("test", 1, font, proc_id)
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Structure ChartManager synopsis](synopsis.md)
+
 - [Tree structures: example](example.md)

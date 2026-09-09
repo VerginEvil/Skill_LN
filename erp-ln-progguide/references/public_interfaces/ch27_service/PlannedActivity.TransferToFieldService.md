@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1516-1521
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1531-1535
 
 ```baan
 DLL:   tsextspcapi
-This function is available from     2023.08 (KB2290765  ).
+This function is available from 2023.08 (KB2290765).
 Syntax: long PlannedActivity.TransferToFieldService(
 domain  tcorno           iPlannedActivity fixed,
 domain  tcpono           iActivityLine,
@@ -63,7 +63,7 @@ iTravelTime (so iPerformATPCheck upto and including
 iUpdateActivitiesWithLatestPlannedMaterialLine,) are only
 used when the Material Availability functionality has been
 switched on in the SPC Planning Parameters.
-All the options which are available in the Transfer                      -session
+All the options which are available in the Transfer-session
 are also available as input arguments for this
 interface function. It can be useful to look at the Help for
 session tsspc2220m000.
@@ -243,10 +243,6 @@ executed successfully, then it can contain information
 that there is a material shortage, but that that is not
 blocking because of the setting of the input argument
 iBlockRelease.
-Return  : 0                           - No error
-<> 0                                  - An error occurred
+Return  : 0             - No error
+<> 0          - An error occurred
 ```
-
-## Public Interfaces for CustomerClaim
-
-The following functions are available: CustomerClaim.Close CustomerClaim.GenerateLinesFromDocument CustomerClaim.GenerateSerializedItem CustomerClaim.StartMultiMain CustomerClaim.StartOverview CustomerClaim.Submit

@@ -21,4 +21,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Secure Hash Algorithm overview](sha_overview.md)
+
 - [Secure Hash Algorithm synopsis](sha_synopsis.md)

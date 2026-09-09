@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for DeliveryNote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1136-1139
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1146-1149
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.03 (KB3540150  ).
+This function is available from 2025.03 (KB3540150).
 Syntax: long DeliveryNote.Print(
 domain  tcdeln           iDeliveryNote,
 domain  whinh.shpm       iPreliminaryDeliveryNote,
@@ -36,16 +36,16 @@ ProcessingOptionSet.Create().
 In case iDeliveryNote is filled then field
 iPreliminaryDeliveryNote and the following options of the
 iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       DeliveryNoteArray
--                       PreliminaryDeliveryNoteArray
+- selection range fields (From/To)
+- DeliveryNoteArray
+- PreliminaryDeliveryNoteArray
 The Delivery Note will then be printed for the given
 iDeliveryNote.
 In case iPreliminaryDeliveryNote is filled then the following
 options of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       DeliveryNoteArray
--                       PreliminaryDeliveryNoteArray
+- selection range fields (From/To)
+- DeliveryNoteArray
+- PreliminaryDeliveryNoteArray
 The Delivery Note will then be printed for the given
 iPreliminaryDeliveryNote.
 In case option DeliveryNoteArray is set then the selection range
@@ -124,13 +124,13 @@ In a similar way the PreliminairyNoteArray can be set.
 ReportName only needs to filled for customized reports, otherwise
 the standard report is automatically used.
 ReportName must start with an "r", e.g. "rwhinh447701001"
-Output: oDataProcessed                        - true:  Delivery Note Printed.
+Output: oDataProcessed          - true:  Delivery Note Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -9,7 +9,6 @@ One aspect in which the company_nr predicate deviates is that when no company_nr
     ::= <company_nr column reference> = <company value>
       | <company_nr column reference> IN <company number set>
 
-
 <company_nr column reference>
     ::= !! a <column reference> whose column name is company_nr
 
@@ -19,39 +18,38 @@ One aspect in which the company_nr predicate deviates is that when no company_nr
       | <parameter>
 
 <company number set>
-    ::= ( <company number> [{, <company number>}...] )
+    ::= ( <company number> [ { , <company number> }... ] )
 
 <company number>
     ::= <integer constant>
 ```
-* *
 
 ## Syntactical restrictions
-*I.* The value of the *<company number>* must lie between 0 and 999, all inclusive.
-*II.* The *<parameter>* must be of type *integer*.
-*III.* A *<company_nr predicate>* shall neither be contained in an [OR condition](or_sc.md) nor be contained in a [NOT condition](not_sc.md).
-The following example demonstrates the incorrect use of a *<company_nr predicate>* in a .
+*I.* The value of the *<**company number**>* must lie between 0 and 999, all inclusive.
+*II.* The *<**parameter**>* must be of type *integer*.
+*III.* A *<**company_nr predicate**>* shall neither be contained in an [OR condition](or_sc.md) nor be contained in a [NOT condition](not_sc.md).
+The following example demonstrates the incorrect use of a *<**company_nr predicate**>* in an [OR condition](or_sc.md).
 ```
 
 SELECT * FROM dbtst120
 WHERE dbtst120.company_nr IN (100,200) OR empno = 10
 ```
-*IV.* A shall contain at most one *<company number set>*.
-The following example demonstrates the incorrect use of more than one *<company number set>* in one .
+*IV.* A [query specification](query_specification.md) shall contain at most one *<**company number set**>*.
+The following example demonstrates the incorrect use of more than one *<**company number set**>* in one [query specification](query_specification.md).
 ```
 
 SELECT * FROM dbtst120, dbtst100
 WHERE dbtst120.company_nr IN (100,200) AND dbtst100.company_nr IN (200,300)
 ```
-*V.* At most one *<company_nr predicate>* shall reference any one .
-The following example demonstrates the incorrect use of more than one *<company_nr predicate>* referencing the same .
+*V.* At most one *<**company_nr predicate**>* shall reference any one [table reference](from.md).
+The following example demonstrates the incorrect use of more than one *<**company_nr predicate**>* referencing the same [table reference](from.md).
 ```
 
 SELECT * FROM dbtst120
 WHERE company_nr = 100 AND company_nr = 200
 ```
-*VI.* If a company number set of any is restricted with a *<company_nr predicate>* then the company number set of *every* shall be restricted with a *<company_nr predicate>*.
-The following example demonstrates the incorrect use of more than one *<company_nr predicate>* referencing the same .
+*VI.* If a company number set of any [table reference](from.md) is restricted with a *<**company_nr predicate**>*, then the company number set of *every*[table reference](from.md) shall be restricted with a *<**company_nr predicate**>*.
+The following example demonstrates the incorrect use of more than one *<**company_nr predicate**>* referencing the same [table reference](from.md).
 ```
 
 SELECT * FROM dbtst120 AS "emps" LEFT JOIN dbtst100 ON workdept = deptno
@@ -83,4 +81,5 @@ WHERE "emps".company_nr IN (100,200)
 
 ## Related topics
 - [FROM clause](from.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

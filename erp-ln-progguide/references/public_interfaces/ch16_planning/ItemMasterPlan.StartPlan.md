@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemMasterPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 541-542
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 545-545
 
 ```baan
 DLL:   cpextrmpapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemMasterPlan.StartPlan(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,11 +23,11 @@ Usage:        Expl:   This function starts the session Item Master Plan (cprmp21
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

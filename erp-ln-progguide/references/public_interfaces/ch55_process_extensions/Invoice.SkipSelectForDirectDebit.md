@@ -4,30 +4,31 @@
 >
 > Group: Process Extensions for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2063-2064
-
-Skips the invoice during selection for direct debit. This process extension is available from 2026.08 ( KB3677300 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2082-2083
 
 ```baan
+Skips the invoice during selection for direct debit.
+This process extension is available from 2026.08 (KB3677300).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension Invoice.SkipSelectForDirectDebit can be used to skip an
 invoice during selection for direct debit.
 Sessions where this Process Extension can be implemented:
--                       Select Invoices for Direct Debit (tfcmg4220m000)
+- Select Invoices for Direct Debit (tfcmg4220m000)
 Fields that are available to be used in this Process Extension:
--               proc_ext_acp_or_acr     - "acp" for Purchase Invoice or Credit Note.
+- proc_ext_acp_or_acr     - "acp" for Purchase Invoice or Credit Note.
 "acr" for Sales Invoice or Credit Note.
--               proc_ext_schedule       - "true" if selection is done on Schedule level.
+- proc_ext_schedule       - "true" if selection is done on Schedule level.
 "false" if selection is done on Invoice level.
--               proc_ext_inv_comp       - The Invoice Company of the Purchase Invoice/
+- proc_ext_inv_comp       - The Invoice Company of the Purchase Invoice/
 Sales Invoice/Credit Note.
--               proc_ext_inv_ttyp       - The Transaction Type.
--               proc_ext_inv_docn       - The Document Number.
--               proc_ext_inv_line       - The Invoice Line Number.
--               proc_ext_inv_sch_line   - The Invoice Schedule Line Number.
+- proc_ext_inv_ttyp       - The Transaction Type.
+- proc_ext_inv_docn       - The Document Number.
+- proc_ext_inv_line       - The Invoice Line Number.
+- proc_ext_inv_sch_line   - The Invoice Schedule Line Number.
 (Only available if proc_ext_schedule = true)
--               proc_ext_inv_dued       - The Due Date of the Invoice or Schedule Line.
--               proc_ext_inv_bpid       - The Business Partner.
-(Either Invoice                                          -from or Invoice-to)
+- proc_ext_inv_dued       - The Due Date of the Invoice or Schedule Line.
+- proc_ext_inv_bpid       - The Business Partner.
+(Either Invoice-from or Invoice-to)
 Pseudocode: In the code below,
 if the extender defined expression evaluates to true
 then the invoice from tfacr500 is skipped

@@ -8,8 +8,8 @@ This disables all the fields of the specified (dynamic) group. See [disable.fiel
 There is a second, optional, argument that can have two possible values:
 | | |
 |---|---|
-| DISABLE | The default mode, it does not need to be specified.  |
-| READONLY | In this mode the fields become read-only and cannot be edited by the user.  |
+| DISABLE | The default mode, it does not need to be specified. |
+| READONLY | In this mode the fields become read-only and cannot be edited by the user. |
 This function is relevant to dynamic forms only.
 
 ## Arguments
@@ -32,4 +32,5 @@ disable.group(5,READONLY)
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

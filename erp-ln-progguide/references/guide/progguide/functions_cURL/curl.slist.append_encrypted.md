@@ -1,7 +1,7 @@
 # curl.slist.append_encrypted()
 
 ## Syntax:
-`function long curl.slist.append_encrypted( ref long listId, const string headerName, ... )`
+`function long curl.slist.append_encrypted( ref long listId, const string headerName,... )`
 
 ## Description
 curl.slist.append_encrypted() appends specified element to a linked list of strings. If the element is encrypted, it would be decrypted first, otherwise, it is parsed as it is.
@@ -15,7 +15,7 @@ The list should be freed after usage with [curl.slist.free.all()](curl.slist.fre
 |---|---|---|
 | `ref long` | `listId` |  A new (= value zero) or existing list ID.  |
 | `const string` | `headerName` |  Header name (header key) of the HTTP header content to append.  |
-| `` | `...` |  List of const string type texts to generate header value that can be interpreted by cURL.  |
+|  | `...` | List of const string type texts to generate header value that can be interpreted by cURL. |
 
 ## Return values
 | | |

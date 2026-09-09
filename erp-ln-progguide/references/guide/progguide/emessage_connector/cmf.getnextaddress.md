@@ -17,7 +17,7 @@ Retrieves the next address child element in the address list root element identi
 | | |
 |---|---|
 | <> 0 | Id of address list child element. |
-| 0 | End of child elements reached or invalid address list id supplied.  |
+| 0 | End of child elements reached or invalid address list id supplied. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

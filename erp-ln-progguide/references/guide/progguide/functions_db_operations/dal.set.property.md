@@ -13,7 +13,7 @@ In order to notify the DAL about a change to the value of a property, you must u
 | `string` | `tbl.name` |  A string containing the name of the DAL.  |
 | `long` | `object_set` |  The ID of an open object set (if this ID is not known, use the table ID).  |
 | `string` | `prop_name` |  The name of the property whose value must be changed.  |
-| `void` | `value` |  |
+| `void` | `value` |    |
 | `long` | `mode` |  Use this to indicate the value for the *has_changed* flag of the property. The possible values are DAL_NEW or DAL_UPDATE.  |
 
 ## Return values
@@ -58,4 +58,5 @@ function extern long after.save.object(long mode)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

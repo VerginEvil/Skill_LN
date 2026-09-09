@@ -1,7 +1,7 @@
 # set.dynamic.synchronized.dialog()
 
 ## Syntax:
-`function void set.dynamic.synchronized.dialog( const string sessioncode, [ const string parent.field, const string child.field, ... ] )`
+`function void set.dynamic.synchronized.dialog( const string sessioncode, [ const string parent.field, const string child.field,... ] )`
 
 ## Description
 This function can be used to set the synchronize session when the session to start depends on data of the record, or when the synchronized session uses a child table.
@@ -11,8 +11,8 @@ Note that the session must have a regular synchronized dialog set for this funct
 | | | |
 |---|---|---|
 | `const string` | `sessioncode` |  The session code of the child session.  |
-| `[ const string` | `parent.field ]` |  |
-| `[ const string` | `child.field, ... ]` |  The parent.field and child.field parameters can be used to define the field mapping between the sessions, if the main table differs. This can be used to use a child table as synchronized session. When these arguments are specified, the synchronized session will be started in overview ( `MULTI_OCC`) mode.  |
+| `[ const string` | `parent.field ]` |    |
+| `[ const string` | `child.field,... ]` |  The parent.field and child.field parameters can be used to define the field mapping between the sessions, if the main table differs. This can be used to use a child table as synchronized session. When these arguments are specified, the synchronized session will be started in overview ( `MULTI_OCC`) mode.  |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in 4GL script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2120.
@@ -82,5 +82,7 @@ before.program:
 
 ## Related help topics
 - [Synchronized sessions overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)
+
 - [Child synchronization sample program](example.md)

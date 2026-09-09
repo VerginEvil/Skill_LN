@@ -2,7 +2,7 @@
 The browse list session needs to import one or more variables from the parent session. Based on the imported values, the browse list session reads records from the maintable and displays them.
 
 ## Automatic import
-The 4GL engine automatically imports variables (i.e. the primary key values). This happens in the following 5 situations:
+The [4GL engine](../glossary/glossary.md#fourgl_engine) automatically imports variables (i.e. the primary key values). This happens in the following 5 situations:
 
 ## 1. Table reference exists from parent field to main table of child session
 
@@ -10,14 +10,14 @@ The 4GL engine automatically imports variables (i.e. the primary key values). Th
 A browse list session with main table Y is started from a parent session with main table X. Table X has a reference (foreign key) to table Y.
 
 ## Result
-The 4GL engine imports the browse field(s) from table X and stores them in the primary key fields of table Y.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) imports the browse field(s) from table X and stores them in the primary key fields of table Y.
 
 ## Consequences for programming in UI script
 None
 
 ## Example
 The Currency field in the Business Partner table refers to the Currency table.
-When the Currencies browse session is started by browsing from the Currency field on the Business Partner session, the 4GL engine imports the Currency field from the Business Partner to the Currency field of the Currency table.
+When the Currencies browse session is started by browsing from the Currency field on the Business Partner session, the [4GL engine](../glossary/glossary.md#fourgl_engine) imports the Currency field from the Business Partner to the Currency field of the Currency table.
 
 ## 2. Table reference exists from main table of child session to main table of parent session
 
@@ -25,7 +25,7 @@ When the Currencies browse session is started by browsing from the Currency fiel
 A browse list session with main table Y is started from a parent session with main table X. A field in table Y refers to table X. (In most cases, there is an identifying relationship between table X and table Y, e.g. order header (table X) and order lines (table Y).)
 
 ## Result
-The 4GL engine imports the primary key fields from table X and stores them in the primary key fields of table Y.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) imports the primary key fields from table X and stores them in the primary key fields of table Y.
 
 ## Example
 Primary key of table X is order number. Primary key of table Y is order number, position number.
@@ -41,7 +41,7 @@ Note  Automatic import is not possible if two or more main table fields of the c
 A browse list session with main table X is started from a parent session with with the same main table.
 
 ## Result
-The 4GL engine imports the primary key values from the parent session of table X and stores them in the primary key fields of table X in the browse list session.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) imports the primary key values from the parent session of table X and stores them in the primary key fields of table X in the browse list session.
 
 ## Example
 The user browses from the Business Partner Details session to the Business Partners browse list session to select a Parent Business Partner.
@@ -72,7 +72,7 @@ after.zoom:
 A browse list session with main table X is started from a parent session without a main table (e.g. a print session).
 
 ## Result
-The 4GL engine imports the primary key values of table X (if available) from the parent process and stores them in the primary key fields of the browse list sessions' main table.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) imports the primary key values of table X (if available) from the parent process and stores them in the primary key fields of the browse list sessions' main table.
 
 ## Example
 Browse list session Business Partners is started from the parent session Print Business Partners. The main table of the browse list session is tccom100. The 4GL engine tries to import tccom100.bpid from the print session and stores it in the tccom100.bpid field of the main table of the browse list session.
@@ -96,13 +96,12 @@ before.zoom:
 A browse list session with main table Y starts from a parent session with main table X. There is no relationship between table X and table Y (e.g. in case of an integration between packages).
 
 ## Result
-The 4GL engine imports the primary key values of table Y from the parent session and stores them in the primary key fields of table Y of the browse list session.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) imports the primary key values of table Y from the parent session and stores them in the primary key fields of table Y of the browse list session.
 
 ## Consequences for programming in UI script
 In many cases you will have to re-program the parent session in such a way that the primary key fields of the main table of the browse list session are filled.
 
-## Example
-Example: (Browsing to Freight Service Levels from Warehousing Orders)
+## Example: browsing to Freight Service Levels from Warehousing Orders
 ```
 
 declaration:
@@ -143,8 +142,8 @@ on.entry:
         import("zoom.bpid", tccom111.stbp)
 ```
 
-## Example
-(E.g. browsing to Business Partners by Parent Business Partner)
+## Example: browsing to session with other than primary key
+E.g. browsing to Business Partners by Parent Business Partner.
 Parent session UI script
 ```
 
@@ -182,6 +181,9 @@ Note  Note that the start option of the browse list session can cause this not t
 
 ## Related topics
 - [Definition](browsing_definition.md)
+
 - [Overview of browsing](browsing_overview.md)
+
 - [Exporting variables](browsing_exporting.md)
+
 - [Starting a browse list session](browsing_starting.md)

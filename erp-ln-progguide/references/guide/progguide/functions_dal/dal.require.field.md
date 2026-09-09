@@ -10,9 +10,9 @@ This function can be used to determine a specific order for the calls to the upd
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `fieldname` |  |
-| `[ long` | `element ]` |  |
-| `[ ref boolean` | `field.changed ]` |  |
+| `const string` | `fieldname` |    |
+| `[ long` | `element ]` |    |
+| `[ ref boolean` | `field.changed ]` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in DAL script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1300.

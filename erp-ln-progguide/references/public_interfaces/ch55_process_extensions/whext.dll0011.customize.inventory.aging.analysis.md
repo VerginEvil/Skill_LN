@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for InventoryAgingAnalysis
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2043-2043
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2062-2062
 
 ```baan
 Syntax: long whext.dll0011.customize.inventory.aging.analysis(

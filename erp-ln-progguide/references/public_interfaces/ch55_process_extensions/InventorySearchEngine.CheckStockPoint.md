@@ -4,11 +4,12 @@
 >
 > Group: Process Extensions for InventorySearchEngine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2047-2048
-
-Allows to perform preview of the stock point selection and skips of stock points. This process extension is available from 2019.09 ( KB2073261 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2066-2067
 
 ```baan
+Allows to perform preview of the stock point selection and skips of stock points.
+This process extension is available from 2019.09 (KB2073261).
+Technical information for this process extension:
 Usage:        With this Process Extension, it is possible to perform additional
 checks on the inventory search engine related to the found stock points,
 which is used during the generation of outbound advices (whinh4201m000)
@@ -35,10 +36,10 @@ An example:
 Suppose there are a couple of locations in the system which require
 higher priority when advising / picking inventory as opposed to the
 location type (bulk / pick). So the following locations:
-BULK1               - Bulk - Prio 10  - Available inventory: ITEM X 20 pcs
-BULK2               - Bulk - Prio 20  - Available inventory: ITEM X 40 pcs
-BULK3               - Bulk - Prio 30  - Available inventory: ITEM X 60 pcs
-PICK1               - Pick - Prio 10  - Available inventory: ITEM X 80 pcs
+BULK1 - Bulk - Prio 10  - Available inventory: ITEM X 20 pcs
+BULK2 - Bulk - Prio 20  - Available inventory: ITEM X 40 pcs
+BULK3 - Bulk - Prio 30  - Available inventory: ITEM X 60 pcs
+PICK1 - Pick - Prio 10  - Available inventory: ITEM X 80 pcs
 The standard will first always consider the locations of type Pick, but
 suppose the customer wants to use the bulk locations first, which has
 the highest priority. An order is created for 80 pcs of the item ITEM X.
@@ -62,6 +63,5 @@ on that location, so an outbound advice of 40 pcs will be created, next
 the BULK3 will be selected from which also 40 pcs will be available, as
 a result also an outbound advice will be created, for the remaining 40
 pcs.
-```
-
 To implement this process extension, you need to implement the following method(s):
+```

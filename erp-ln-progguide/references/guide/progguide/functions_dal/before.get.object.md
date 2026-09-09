@@ -12,14 +12,14 @@ This object hook replaces the *before.read* subsection of the *main.table.io* ev
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `direction` |  |
+| `long` | `direction` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in DAL script types.
 
 ## Return value
 The hook returns 0 if reading of the record is permitted. Negative return values (DALHOOKERROR) are ignored by the calling program.
-Note  This hook is only executed in case the 4GL engine reads data from the maintable. It is *not* executed when you do [dal.new()](../functions_db_operations/dal.new.md), [dal.update()](../functions_db_operations/dal.update.md) or [dal.destroy()](../functions_db_operations/dal.destroy.md).
+Note  This hook is only executed in case the [4GL engine](../glossary/glossary.md#fourgl_engine) reads data from the maintable. It is *not* executed when you do [dal.new()](../functions_db_operations/dal.new.md), [dal.update()](../functions_db_operations/dal.update.md) or [dal.destroy()](../functions_db_operations/dal.destroy.md).
 
 ## Example
 ```
@@ -32,5 +32,7 @@ function extern long before.get.object(long dir)
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

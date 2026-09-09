@@ -10,7 +10,7 @@ This function is relevant to dynamic forms only and can be used only in the befo
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `group.nr` |   |
+| `long` | `group.nr` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -24,4 +24,5 @@ before.program:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

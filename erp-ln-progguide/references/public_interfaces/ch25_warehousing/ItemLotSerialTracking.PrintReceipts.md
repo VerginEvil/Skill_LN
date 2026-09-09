@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemLotSerialTracking
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1124-1125
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1134-1135
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2024.04 (KB2328014  ).
+This function is available from 2024.04 (KB2328014).
 Syntax: long ItemLotSerialTracking.PrintReceipts(
 domain  tcitem           iItem,
 domain  tcclot           iLotCode,
@@ -69,20 +69,16 @@ TrackBoth                       domain tcyesno          tcyesno.no
 NewPage                         domain tcyesno          tcyesno.no
 PrintLevel                      domain whltc.levl       whltc.levl.first
 PrintTill                       domain tcdate           current date
-Output: o.data.processed                      - true:  Receipts Printed.
+Output: o.data.processed        - true:  Receipts Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK
-<> 0                                          - Error.
+Return: 0                       - OK
+<> 0                    - Error.
 ```
-
-## Public Interfaces for SerializedItem
-
-The following functions are available: SerializedItem.Convert

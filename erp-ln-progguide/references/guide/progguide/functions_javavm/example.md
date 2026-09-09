@@ -71,7 +71,6 @@ public class TestListener implements IQueueListener
         }
     }
 
-
     /** This listener method will be called whenever a new bucket
      * appears on the m_queueFromERP queue */
 public void onReceive(IBucket p_bucket)
@@ -103,4 +102,3 @@ public void onReceive(IBucket p_bucket)
     }
 }
 ```
-******

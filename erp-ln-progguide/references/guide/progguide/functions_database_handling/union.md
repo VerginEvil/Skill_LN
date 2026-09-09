@@ -1,16 +1,16 @@
 # UNION operator
-The UNION operator joins the result sets of two SELECT statements. If the ALL keyword is *not* specified then all redundant duplicates are removed from the resulting row set. The order in which the rows of the two row sets are joined is undefined. If needed the order of the complete row set can be defined as usual by using an ORDER BY clause in the containing statement.
+The UNION operator joins the result sets of two SELECT statements. If the ALL keyword is *not* specified then all [redundant duplicates](sql_glossary.md#RedundantDuplicates) are removed from the resulting row set. The order in which the rows of the two row sets are joined is [undefined](sql_glossary.md#Undefined). If needed the order of the complete row set can be defined as usual by using an ORDER BY clause in the containing statement.
 
 ## Syntax
 ```
 
 <UNION operator>
-    ::= Query expression UNION [ALL] Query expression
+    ::= <query expression> UNION [ALL] <query expression>
 ```
 
 ## Syntactical restrictions
 *Degree*
-The two *<query expressions>* must have the same degree. Note that some columns ( *e.g. _index1*) may expand to multiple columns. If this restriction is not met, the following parse error is given:
+The two *<**query expressions**>* must have the same [degree](sql_glossary.md#Degree). Note that some columns ( *e.g. _index1*) may expand to multiple columns. If this restriction is not met, the following parse error is given:
 ```
 SQLState 42I71: Queries in UNION have different number of result columns
 ```
@@ -20,7 +20,7 @@ The data types of every corresponding column must be [comparable](comparable_dat
 SQLState 42T21: Incompatible types for UNION column <n>
 ```
 *Select targets*
-Only the first branch of the UNION shall contain select targets in the SELECT clause. If this restriction is not met, the following parse error is given:
+Only the first branch of the UNION shall contain [select targets](sql_glossary.md#SelectTarget) in the SELECT clause. If this restriction is not met, the following parse error is given:
 ```
 SqlState 42I73: Unexpected select target '<name>'
 ```
@@ -67,7 +67,7 @@ SELECT firstnme FROM dbtst120 b
 *Note*: To make columns of type *string* of the same length, *space-padding* is used. So, each work department is padded with 14 spaces in the UNION above.
 *Note*: To make columns of type *raw* of the same length, *zero-padding* is used.
 *Name of result columns*
-If the unqualified column names of two corresponding columns are the same, then the name of the result column is this name. Otherwise the name of the result column is an implementation defined name, which is not visible outside this UNION.
+If the [unqualified column names](sql_glossary.md#QualifiedColumnName) of two corresponding columns are the same, then the name of the result column is this name. Otherwise the name of the result column is an [implementation defined](sql_glossary.md#ImplementationDefined) name, which is not visible outside this UNION.
 *Example*: The output column name of the following query is "empno", because both output columns have the unqualified column name "empno". Notice that the qualified column names actually are different.
 ```
 SELECT empno FROM dbtst120 a
@@ -121,16 +121,16 @@ The following example joins the names of all employees in companies 000 and 001 
 ```
 
 SELECT _compnr, firstnme, lastname
-FROM dbtst120
-WHERE salary > 40000
-   AND _compnr = 000
+FROM   dbtst120
+WHERE  salary > 40000
+AND    _compnr = 000
 
 UNION ALL
 
 SELECT _compnr, firstnme, lastname
-FROM dbtst120
-WHERE salary > 40000
-   AND _compnr = 001
+FROM   dbtst120
+WHERE  salary > 40000
+AND    _compnr = 001
 
 ORDER BY _compnr
 ```
@@ -138,5 +138,7 @@ Note that in this case it is possible to sort *by name*, since both SELECT state
 
 ## Related topics
 - [Using program variables](using_program_variables.md)
+
 - [Comparable data types in Infor Enterprise Server SQL](comparable_datatypes.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

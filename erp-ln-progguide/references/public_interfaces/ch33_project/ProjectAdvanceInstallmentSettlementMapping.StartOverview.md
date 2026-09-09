@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectAdvanceInstallmentSettlementMapping
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1738-1739
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1757-1758
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.08 (KB3501651  ).
+This function is available from 2024.08 (KB3501651).
 Syntax: long ProjectAdvanceInstallmentSettlementMapping.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,15 +21,15 @@ ref     domain  tppdm.nins       oInstallment,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts the session
-"Advance                       - Installment Settlement Mapping"
+"Advance - Installment Settlement Mapping"
 (tppin4112m000) in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used
@@ -51,7 +51,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ProjectHoldback
-
-The following functions are available: ProjectHoldback.StartOverview

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1461-1462
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1475-1477
 
 ```baan
 DLL:   tsexteppapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long ServiceQuote.GenerateSerializedItem(
 domain  tcorno           iQuote,
 domain  tcpono           iQuoteRevision,
@@ -24,7 +24,7 @@ Usage:        Expl:   This function generates a serialized item based on the dat
 the given Quote (Line).
 A new serial will be generated for the item defined on the
 Quote or, when iQuoteLine is filled, on the Quote Line.
-The sold                      -to business partner defined on the Quote will be set
+The sold-to business partner defined on the Quote will be set
 as owner of the serialized item.
 Optionally the generated serialized item can be linked to the
 installation group defined on the Quote (Line).
@@ -73,9 +73,9 @@ the value of iLinkToInstallationGroup will be ignored.
 iUpdateSerialOnQuote
 Controls if the serial number must be set on the Quote
 (Line) based on which the serialized item is generated.
--                               yes: The serial number on the quote/line is updated
+- yes: The serial number on the quote/line is updated
 with the generated serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -86,9 +86,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated succesfull and (optionally)
+Return: 0       - Serialized Item generated succesfull and (optionally)
 updated on the Quote (Line).
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the Quote (Line) failed.

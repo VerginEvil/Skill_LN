@@ -7,13 +7,14 @@ The comparison of two doubles or floats inside queries is unreliable. For exampl
 If a query contains a construction like
 where double.col = 0.0
 and the tolerance of the comparison is known, it can be rewritten into
-where double.col > 0.0 - :tolerance and double.col < 0.0 + :tolerance
+where double.col > 0.0 -:tolerance and double.col < 0.0 +:tolerance
 Similarly, the expression
 double.col > 0.0
 can be rewritten into
-double.col > 0.0 - :tolerance
+double.col > 0.0 -:tolerance
 If the absolute difference between two doubles is (approximately) equal to the tolerance, the result is still unpredictable.
 
 ## Related topics
 - [Reliability of double.cmp()](reliability.of.double.cmp.md)
+
 - [Comparison of doubles in queries](comparison.of.doubles.in.queries.md)

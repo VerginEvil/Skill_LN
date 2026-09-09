@@ -23,7 +23,7 @@ You define codes 9 to 22 in the printer information file for the particular prin
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

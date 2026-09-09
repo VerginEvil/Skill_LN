@@ -12,7 +12,7 @@ This removes all charts from the chart list for the specified users. It is not n
 |---|---|---|
 | `string` | `chart_manager(80)` |  This specifies the name of a relevant Business Chart Manager application. The name takes the following format: pp package code mmm module code xxx the name of the application  |
 | `string` | `owner_from(14)` |  These specify the range of users for whom the charts are to be removed.  |
-| `string` | `ower_to(14)` |  |
+| `string` | `ower_to(14)` |    |
 
 ## Return values
 | | |
@@ -26,6 +26,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

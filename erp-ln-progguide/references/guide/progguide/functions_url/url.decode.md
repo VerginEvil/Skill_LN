@@ -29,9 +29,13 @@ decoded_str = url.decode("http://example.com/hello%2C%20world%21")
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2153 - 2199 (ES 10.5.2.1)
+
 - 2231 - 2299 (ES 10.6.1.1)
+
 - 2393 - 2399 (ES 10.7.4.1)
+
 - 2451 and above (ES 10.8.5)
 
 ## Related topics

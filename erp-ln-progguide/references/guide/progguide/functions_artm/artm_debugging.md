@@ -6,11 +6,15 @@ The [bshell resource](../misc/bshell_resources.md) *art_trace* can be set for de
 | 1 | Tracing enabled for access to loaded ARM shared library. |
 | 3 | Detailed tracing enabled for access to loaded ARM shared library. |
 | 5 | Tracing enabled with emulation of ARM shared library via stubs. |
-| 5 | The trace information is send to the file *$BSE/tmp/bshell.pid*.  |
+| 5 | The trace information is send to the file *$BSE/tmp/bshell.pid*. |
 
 ## Related topics
 - [Application Response Time Measurement (ARTM) Overview](artm_overview.md)
+
 - [Application Response Time Measurement (ARTM) Synopsis](artm_synopsis.md)
+
 - [Application Response Time Measurement (ARTM) Error Codes](artm_error_codes.md)
+
 - [Application Response Time Measurement (ARTM) Examples](artm_examples.md)
+
 - [Bshell resource "art_trace"](../misc/bshell_resources.md)

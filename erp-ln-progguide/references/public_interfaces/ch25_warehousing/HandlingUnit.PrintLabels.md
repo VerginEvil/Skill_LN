@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1044-1047
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1054-1057
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.06 (KB3560682  ).
+This function is available from 2025.06 (KB3560682).
 Syntax: long HandlingUnit.PrintLabels(
 domain  whhuid           iHandlingUnit,
 domain  whwmd.lbpb       iLabelPrintedBy,
@@ -39,16 +39,16 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iHandlingUnit               - Handling Unit Id (Optional).
+Input:  iHandlingUnit - Handling Unit Id (Optional).
 If iHandlingUnit is filled then iProcessingOptionSet will
 be ignored.
-iLabelPrintedBy                       - Label printed By Infor LN or External
+iLabelPrintedBy - Label printed By Infor LN or External
 application. (Mandatory)
-iLabelLayout                       - Label Layout (Mandatory if iLabelPrintedBy =
+iLabelLayout - Label Layout (Mandatory if iLabelPrintedBy =
 Infor LN)
-iLabelDevice                       - Label Device (Mandatory)
-iNumberOfCopies                       - Number of Copies (Mandatory)
-iPrintOption                       - Print option indicator for Handling Unit Labels
+iLabelDevice - Label Device (Mandatory)
+iNumberOfCopies - Number of Copies (Mandatory)
+iPrintOption - Print option indicator for Handling Unit Labels
 only. Range or Structure. (Mandatory)
 iProcessingOptionSet Optional, if 0, the default options
 are applied.
@@ -163,10 +163,10 @@ Json.add(HandlingUnittArray, HandlingUnit)
 HandlingUnit = Json.newObject()
 Json.setString(HandlingUnit, "HandlingUnit", "HU200")
 Json.add(HandlingUnitArray, HandlingUnit)
-Output: oExceptionMessage               - The last message if any message is found. If
+Output: oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error

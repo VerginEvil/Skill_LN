@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Warehouse
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 90-92
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 91-92
 
 ```baan
 DLL:   tcextemmapi
-This function is available from     2024.08 (KB3501694  ).
+This function is available from 2024.08 (KB3501694).
 Syntax: long Warehouse.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,10 +27,10 @@ Usage:        Expl:   This function starts session Warehouses (tcemm1112m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -65,20 +65,16 @@ iSite
 Optional: Filter on Site
 iInEnterprisePlanningOnly
 Optional: Filter on Include in EP when iInEpOnly is True
-Output: oWarehouse                            - for iStartMode MODAL: Selected
+Output: oWarehouse              - for iStartMode MODAL: Selected
 Warehouse
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for Common
-
-The following functions are available: Common.CalculateDiscountAmounts Common.CalculateDueDates Common.CalculateTranportationDate Common.CheckIBANCode Common.ConvertAmount Common.ConvertAmountToWords Common.ConvertAmountWithRates Common.ConvertAmountWithTargetRates Common.ConvertISODurationToSeconds Common.ConvertLeadTimeToISODuration Common.ConvertPrice Common.ConvertQuantity Common.ConvertTime Common.GenerateFirstFreeNumber Common.GetAdditionalEntityInfo Common.GetConversionFactor Common.GetCurrencyRates Common.GetFinancialCompanyOfEntity Common.GetFormattedAddress Common.GetISOCodeOfLNLanguage Common.GetParameters Common.RoundAmount Common.RoundQuantity Common.UpdateApprovedConversionFactor Common.ValidateNumberGroupSeries

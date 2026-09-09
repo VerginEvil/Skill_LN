@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplierStagePaymentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 481-483
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 483-485
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long SupplierStagePaymentLines.StartDetail(
 long             iStartMode,
 domain  tdssp.boty       iBusinessObjectType,
@@ -24,19 +24,19 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function starts the session Supplier Stage Payments
 Details (tdpur5120m000).
 This session can be started for three different contexts:
--                       Request for Quote (RFQ) Response
+- Request for Quote (RFQ) Response
 To use this context set iBusinessObjectType to value
 tdssp.boty.tdpur106 and specify the fields:
 iRequestForQuote
 iRequestForQuoteLine
 iRequestForQuoteResponseSequence
 iRequestForQuoteBidder
--                       Purchase Order Line
+- Purchase Order Line
 To use this context set iBusinessObjectType to value
 tdssp.boty.tdpur401 and specify the fields:
 iPurchaseOrder
 iPurchaseOrderLine
--                       Purchase Order
+- Purchase Order
 To use this context set iBusinessObjectType to value
 tdssp.boty.tdpur400 and specify the fields:
 iPurchaseOrder

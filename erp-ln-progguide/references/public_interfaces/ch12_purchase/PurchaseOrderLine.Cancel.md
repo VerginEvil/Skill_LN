@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 454-457
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 456-458
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2022.06 (KB2225144  ).
+This function is available from 2022.06 (KB2225144).
 Syntax: long PurchaseOrderLine.Cancel(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -39,19 +39,19 @@ order steps. A separate Public Interface can be used to
 start automatic order steps if necessary:
 'PurchaseOrder.StartAutomaticProcessing'
 In some cases, this may be needed:
--                           If a production order is linked to the cancelled (back)
+- If a production order is linked to the cancelled (back)
 order line, then there can still be inventory waiting to
 be transferred from the warehouse to the shopfloor.
 When the backorder is cancelled this transfer order still
 needs to get an update.
--                           For order lines that are invoiced by stage payments it is
+- For order lines that are invoiced by stage payments it is
 possible that variance transactions are written after
 cancellation of an order line (last open detail/backorder
 line). In that case the variances must be processed
 automatically after the commit of the transaction, which
 can be achieved by calling Public Interface
 'PurchaseOrder.StartAutomaticProcessing'.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder  Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Optional)

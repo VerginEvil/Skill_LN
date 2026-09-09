@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InventoryCommitment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 956-958
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 966-968
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2023.12 (KB2310181  ).
+This function is available from 2023.12 (KB2310181).
 Syntax: long InventoryCommitment.CommitInventoryToOrderLine(
 domain  whinp.corg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -43,25 +43,25 @@ accordingly.
 The new committed quantity becomes iCommittedInOrderUnit
 (if possible)
 When iCommittedInOrderUnit = 0.0, the function perform a
-de                      -commitment (remove the committed quantity).
+de-commitment (remove the committed quantity).
 It is expected that the issue order has been read and checked
 whether the commitment is allowed from the order standpoint.
-Input:  iOrderOrigin                          - Order Origin (Mandatory)
-iOrderNumber                                  - Order Number (Mandatory)
-iOrderLine                                    - Order Line
-iOrderSequence                                - Order Sequence
-iBillOfMaterialLine                           - Bill of Material Line
-iItem                                         - Item (Mandatory)
-iOldEffectivityUnit                           - Old Effectivity Unit
-iEffectivityUnit                              - Effectivity Unit
-iSpecification                                - Specification
-iWarehouse                                    - Warehouse (Mandatory)
-iCommittedInOrderUnit                         - New committed quantity (to update the
+Input:  iOrderOrigin            - Order Origin (Mandatory)
+iOrderNumber            - Order Number (Mandatory)
+iOrderLine              - Order Line
+iOrderSequence          - Order Sequence
+iBillOfMaterialLine     - Bill of Material Line
+iItem                   - Item (Mandatory)
+iOldEffectivityUnit     - Old Effectivity Unit
+iEffectivityUnit        - Effectivity Unit
+iSpecification          - Specification
+iWarehouse              - Warehouse (Mandatory)
+iCommittedInOrderUnit   - New committed quantity (to update the
 old one) expressed in order units.
-iOrderUnit                                    - Order Unit
-iOrderQuantity                                - Order Quantity
-iPlannedDeliveryDate                          - Planned Delivery Date (Mandatory)
-iInventoryBuffer                              - To avoid the check on the available
+iOrderUnit              - Order Unit
+iOrderQuantity          - Order Quantity
+iPlannedDeliveryDate    - Planned Delivery Date (Mandatory)
+iInventoryBuffer        - To avoid the check on the available
 to commit quantity.
 This is used for "Consumption of
 Inventory Buffers" ONLY !
@@ -69,23 +69,23 @@ true: the DLL is used for commitment
 within the consumption of
 inventory buffers
 false: otherwise (common value)
-iUpdateRelatedOrderLine                       - Update Related Order Line
--                                               true: committed quantitity is also
+iUpdateRelatedOrderLine - Update Related Order Line
+- true: committed quantitity is also
 updated towards the related
 order line (e.g. Sales line)
 false: otherwise
 Output: o.committed.in.inventory.unit
--                                               Committed quantity in inventory unit
+- Committed quantity in inventory unit
 o.committed.in.order.unit
--                                               Committed quantity in order unit
-oExceptionMessage                             - The last message if any message is
+- Committed quantity in order unit
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error has been detected.
-<> 0                                          - An Error is detected.
+Return: 0                       - No error has been detected.
+<> 0                    - An Error is detected.
 ```

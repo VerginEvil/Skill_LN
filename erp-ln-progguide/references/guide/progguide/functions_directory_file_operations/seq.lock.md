@@ -7,18 +7,18 @@
 This sets read and write locks on a specified file or segment of a file.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `mode` |  The type of lock to set:  |
-| `long` | `offset` |  To set a lock on a segment of the file, use this argument and the *size* argument to specify the offset of the segment from the beginning of the file and the length of the segment. The value of this argument must be >= 0 for mode SEQ_R_LCK and mode SEQ_W_LCK. It will be ignored for mode SEQ_F_R_LCK and for mode SEQ_F_W_LCK;  |
-| `long` | `size` |  For an explanation see the *offset* argument. The value of this argument must be >= 1 for mode SEQ_R_LCK and mode SEQ_W_LCK. It will be ignored for mode SEQ_F_R_LCK and for mode SEQ_F_W_LCK;  |
-| `long` | `fp` |  The file pointer returned by [seq.open()](seq.open.md) when the file was opened.  |
+| | |
+|---|---|
+| SEQ_R_LCK | read lock |
+| SEQ_W_LCK | write lock |
+| SEQ_F_R_LCK | file lock (read) |
+| SEQ_F_W_LCK | file lock (write) |
 
 ## Return values
 | | |
 |---|---|
 | >= 0 | Success. |
-| -1 | Error; probably *fp* not connected.  |
+| -1 | Error; probably *fp* not connected. |
 | < -1 | Operating system error code. |
 
 ## Context
@@ -28,4 +28,5 @@ A write lock prevents any process from setting a read lock or a write lock on th
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

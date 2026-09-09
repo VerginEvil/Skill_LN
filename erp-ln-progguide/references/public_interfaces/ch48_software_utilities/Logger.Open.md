@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Logger
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1926-1928
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1945-1946
 
 ```baan
 DLL:   tcextstlapi
-This function is available from     2026.03 (KB3602838  ).
+This function is available from 2026.03 (KB3602838).
 Syntax: long Logger.Open(
 domain  tcmcs.str100     iLoggerFileName,
 ref             long             oLoggerIdentifier,
@@ -17,9 +17,9 @@ ref             long             oExceptionID )
 Usage:        Expl:   This public interface is designed to programmatically open
 logger utility.
 Behavior:
--                       If the error LOGGER_ERR_LOGGING_OFF (-1) is encountered, then
+- If the error LOGGER_ERR_LOGGING_OFF (-1) is encountered, then
 logger is not enabled.
--                       Otherwise, logger is enabled.
+- Otherwise, logger is enabled.
 Please refer to the session Application Logger (tcstl0502m000)
 help for additional information.
 Usage Example:
@@ -68,13 +68,7 @@ Exception to get all relevant
 information.
 Return: 0                       Logger opened successfully.
 < 0                     Error(s) occurred.
--                                              1 -    logger is not enabled.
--                                              2 -    failed to open log file.
--                                              7 -    no open logs are found.
+-1 -    logger is not enabled.
+-2 -    failed to open log file.
+-7 -    no open logs are found.
 ```
-
-## Chapter 49 Public Interfaces for Exchange
-
-## Public Interfaces for ExchangeScheme
-
-The following functions are available: ExchangeScheme.NonRegularImport ExchangeScheme.RegularImport

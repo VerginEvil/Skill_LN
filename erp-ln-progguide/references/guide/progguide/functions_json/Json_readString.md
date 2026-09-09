@@ -9,8 +9,6 @@ Reads JSON text from a string, parses it and creates a JSON value from it.
 By default, the JSON text is interpreted as TSS text.
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `const string` | `json_str` |  The string to read the JSON text from.  |
@@ -25,4 +23,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

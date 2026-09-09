@@ -2,10 +2,10 @@
 | | |
 |---|---|
 | Title | Infor ES Programmers Guide |
-| Version | 10.8.12pre (10.8.12pre) |
-| Publication date | 2024/10/08 01:57 PM CEST |
+| Version | 2610 (2610) |
+| Publication date | 2026/07/28 02:43 PM CEST |
 
-## Copyright © 2024 Infor
+## Copyright 2026 Infor
 
 ## Important Notices
 The material contained in this publication (including any supplementary information) constitutes and contains confidential and proprietary information of Infor.

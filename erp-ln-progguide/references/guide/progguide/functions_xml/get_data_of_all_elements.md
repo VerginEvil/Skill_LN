@@ -18,7 +18,7 @@ For each child XML_ELEMENT node that has a name equal to *name*, get the data co
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; Value of parameter node when successful.  |
+| <> 0 | Success; Value of parameter node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -33,4 +33,5 @@ long	xmlAllocDataElement( ref string basedString(), long node, const string name
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

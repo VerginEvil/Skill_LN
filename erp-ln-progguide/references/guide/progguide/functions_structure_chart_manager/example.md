@@ -97,4 +97,5 @@ endwhile
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Structure ChartManager synopsis](synopsis.md)

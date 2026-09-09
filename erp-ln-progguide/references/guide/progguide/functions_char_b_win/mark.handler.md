@@ -11,7 +11,7 @@ The predefined variables *marked* and *mark.status* are not affected by this fun
 ## Arguments
 | | | |
 |---|---|---|
-| `ref long` | `mark.table()` |  |
+| `ref long` | `mark.table()` |    |
 
 ## Return values
 0 no records marked
@@ -38,4 +38,5 @@ endfor
 
 ## Related topics
 - [Character-based windows - overview and synopsis](overview_and_synopsis.md)
+
 - [mark.occ()](../functions_form_and_form_field_operations/mark.occ.md)

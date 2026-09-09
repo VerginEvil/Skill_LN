@@ -5,13 +5,13 @@
 `function long client.download.file( const string source, [ string mime.type, string target ] )`
 
 ## Description
-Download the server file passed in the source argument to the client. Calling this function will result in a download dialog in which the user can choose to select the file for download. This function will return when the user closes the download dialog. The mime.type can be used to indicate the file type such that the browser has the option to start the client application which is associated with this mime.type. When the mime.type is not specified, the mime.type will be determined based on the file extension of the file specified in the optional target argument. When the optional target argument is also not specified, the mime.type will be determined based on the file extension of the file specified in the source argument. Conversion of CRLF characters is only done for text files (file extension .txt or mime.type "text/plain"). All other file types are copied in binary mode. This function is only supported for LN UI.
+Download the server file passed in the source argument to the client. Calling this function will result in a download dialog in which the user can choose to select the file for download. This function will return when the user closes the download dialog. The mime.type can be used to indicate the file type such that the browser has the option to start the client application which is associated with this mime.type. When the mime.type is not specified, the mime.type will be determined based on the file extension of the file specified in the optional target argument. When the optional target argument is also not specified, the mime.type will be determined based on the file extension of the file specified in the source argument. Conversion of CRLF characters is only done for text files (file extension.txt or mime.type "text/plain"). All other file types are copied in binary mode. This function is only supported for LN UI.
 
 ## Arguments
 | | | |
 |---|---|---|
 | `const string` | `source` |  Specifies the file on the server.  |
-| `[ string` | `mime.type ]` |  optional string representing the MIME Media type of the file. The official list can be found here: https://www.iana.org/assignments/media-types/media-types.xhtml.  |
+| `[ string` | `mime.type ]` |  optional string representing the MIME Media type of the file. The official list can be found here: [https://www.iana.org/assignments/media-types/media-types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml).  |
 | `[ string` | `target ]` |  optional string representing the proposed file name on the client  |
 
 ## Return values
@@ -26,4 +26,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

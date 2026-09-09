@@ -17,7 +17,9 @@ This standard command has (as other standard commands) an is.allowed before.choi
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2350.
 Notes  For this function to have effect:
+
 - The function should be used in the before program. To have the Insert in Detail added to the action menu.
+
 - At other places in the source this function can be executed to change the insert in detail session.
 
 ## Example
@@ -28,7 +30,6 @@ before.program:
 		set.insert.in.detail.session()"tsctm1110m300", "tsctm110.term", "tsctm110.term")
 		|* tsctm1110m300 is set as the insert session when the action Insert in Detail is used
 	endif
-
 
 choice.insert.in.detail:
 before.choice:

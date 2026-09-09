@@ -25,4 +25,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Programmable Dialogs Example](example.md)

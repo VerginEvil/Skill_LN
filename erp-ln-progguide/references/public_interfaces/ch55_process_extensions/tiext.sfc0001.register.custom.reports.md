@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2136-2137
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2159-2160
 
 ```baan
 Syntax: long tiext.sfc0001.register.custom.reports(
@@ -52,16 +52,16 @@ Pre:    Use the extension modeler to link the custom report to session
 tisfc0408m000.
 Post:   Determine if the custom report must be printed using
 tiext.sfc0001.check.print.condition().
-Input:                -
+Input:  -
 Output: o.number.of.custom.reports
--                                               The number of custom reports
+- The number of custom reports
 registered in this method.
-o.custom.report.groups                        - The array with the group numbers of
+o.custom.report.groups  - The array with the group numbers of
 all custom reports.
-o.custom.report.spools                        - The array with the spooler devices for
+o.custom.report.spools  - The array with the spooler devices for
 the custom reports.
-o.message                                     - message, multibyte - max 300 characters.
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+o.message               - message, multibyte - max 300 characters.
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

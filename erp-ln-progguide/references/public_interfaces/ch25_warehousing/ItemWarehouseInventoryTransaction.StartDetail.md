@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemWarehouseInventoryTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 914-914
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 924-924
 
 ```baan
 DLL:   whextinrapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemWarehouseInventoryTransaction.StartDetail(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -22,11 +22,11 @@ Inventory Transactions (whinr1510s000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Following input variables form the primary key, these fields
@@ -38,14 +38,14 @@ iItem
 iWarehouse
 iTransactionDate
 iSequence
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

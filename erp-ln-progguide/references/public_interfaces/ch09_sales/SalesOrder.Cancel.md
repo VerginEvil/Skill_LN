@@ -4,21 +4,21 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 314-315
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 316-316
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2026.08 (KB3687527  ).
+This function is available from 2026.08 (KB3687527).
 Syntax: long SalesOrder.Cancel(
 domain  tcorno           iSalesOrder,
 long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function cancels the given sales order.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales Order (Mandatory)
-iProcessingOptionSet                          - Processing Option Set (Optional).
+Input:  iSalesOrder             - Sales Order (Mandatory)
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default cancel options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -48,11 +48,11 @@ PurchaseOrderLineChangeOrderSequence      domain tcmcs.str8     ""
 PurchaseOrderLineChangeReason             domain tccdis         ""
 PurchaseOrderLineChangeType               domain tccdis         ""
 CancelCrossDockOrderLine                  domain tcyesno        tcyesno.no
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

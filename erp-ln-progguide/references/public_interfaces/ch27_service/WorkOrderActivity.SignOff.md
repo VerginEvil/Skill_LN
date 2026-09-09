@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1501-1504
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1516-1518
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2025.09 (KB3610664  ).
+This function is available from 2025.09 (KB3610664).
 Syntax: long WorkOrderActivity.SignOff(
 domain  tcorno           iWorkOrder,
 domain  tsmdm.acln       iActivityLine,
@@ -57,20 +57,20 @@ solution is not filled.
 Otherwise when the actual problem or actual solution is
 empty, the signing off is cancelled if all of the below
 are true:
--                               The Work Order did not originate from a call;
--                               The Problem Solution handling on the
+- The Work Order did not originate from a call;
+- The Problem Solution handling on the
 service type is 'Warning';
--                               Parameter 'Diagnostics' is not implemented;
--                               There is no next department transfer
+- Parameter 'Diagnostics' is not implemented;
+- There is no next department transfer
 work order present.
 ActionForNonExecutedInspections
 domain  tscfg.upd.ista
 tscfg.upd.ista.change.status
 If this option is set to 'Change Status', the status of
-every non                              -executed inspection is set to 'Not Measured'.
+every non-executed inspection is set to 'Not Measured'.
 If this option is set to 'Delete Inspections', every
-non                              -executed inspection is deleted.
-If this option is set to 'Cancel', and non                              -executed
+non-executed inspection is deleted.
+If this option is set to 'Cancel', and non-executed
 inspections are present, then signing off the
 Work Order Activity is cancelled.
 IgnoreUnapprovedSubcontractedPurchaseOrders
@@ -97,7 +97,3 @@ processing option set, signing off or closing may still
 have been cancelled without any message given.
 <> 0    Error(s) occurred.
 ```
-
-## Public Interfaces for WorkOrderMaterialCosts
-
-The following functions are available: WorkOrderMaterialCosts.ProcessReturnDeliveries

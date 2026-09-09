@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 792-793
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 792-792
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.06 (KB3537727  ).
+This function is available from 2025.06 (KB3537727).
 Syntax: long ProductionOrderOperation.GetMaximumQuantityToReportComplete(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

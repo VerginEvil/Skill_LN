@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectActivityBudgetOverview
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1741-1743
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1761-1762
 
 ```baan
 DLL:   tpextptcapi
-This function is available from     2025.12 (KB3625106  ).
+This function is available from 2025.12 (KB3625106).
 Syntax: long ProjectActivityBudgetOverview.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,11 +26,11 @@ in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -45,24 +45,20 @@ Allowed values:
 2: sort by Project
 iQueryExtend
 A specific query to be used when zooming to this session.
-iProject                              - Project. Mandatory
-iPlan                                 - Plan linked to project. Optional
-iActivity                             - Activity. Optional
+iProject        - Project. Mandatory
+iPlan           - Plan linked to project. Optional
+iActivity       - Activity. Optional
 Output: for iStartMode MODAL :
-oProject                                      - Project
-oActivity                                     - Activity
-oExceptionMessage                             - The last message if any message is
+oProject        - Project
+oActivity       - Activity
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectOrderLineBalance
-
-The following functions are available: ProjectOrderLineBalance.StartOverview

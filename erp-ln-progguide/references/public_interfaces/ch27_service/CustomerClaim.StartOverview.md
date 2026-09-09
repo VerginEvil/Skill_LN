@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1525-1526
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1539-1541
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long CustomerClaim.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,19 +29,19 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used. (Optional)
+Specifies the table-index that is to be used. (Optional)
 Supported values:
 1: sort by Customer Claim
-2: sort by Sold                               -to Business Partner
+2: sort by Sold-to Business Partner
 3: sort by (Serialized) Item
 4: sort by Service Department
 5: sort by Project

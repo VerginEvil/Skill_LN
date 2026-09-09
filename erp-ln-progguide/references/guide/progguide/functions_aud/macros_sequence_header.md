@@ -41,7 +41,6 @@ long aud_get_seq_status( string seq_hdr() )
 ```
 ```
 
-
 AUD_TERM_MAX_SIZE     file terminated because it reached its
                                   maximum size
 AUD_TERM_DD_CHGD      file terminated because table definitions in
@@ -108,24 +107,26 @@ void aud_set_seq_status( long st, string seq_hdr() )
 ```
 | | |
 |---|---|
-|  *aud_get_app_info1()* to *aud_get_app_info4()* aud_get_app_info4()  | These fill their second argument with the application-specific information from the sequence header.  |
-| *aud_get_creat_date()* | This returns the creation date (in UTC) of the sequence file. Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC date to a local date.  |
-| *aud_get_creat_time()* | This returns the creation time (in UTC) of the sequence file. Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC time to a local time.  |
-| *aud_get_no_audit_flds()* | This returns the number of audited fields in the sequence file.  |
-| *aud_get_no_prim_flds()* | This returns the number of primary key fields among the audited fields in the sequence file.  |
-| *aud_get_no_trans()* | This returns the number of transactions in the sequence file.  |
-| *aud_get_seqno()* | This returns the sequence number of the sequence file.  |
+| *aud_get_app_info1()* to *aud_get_app_info4()* aud_get_app_info4() | These fill their second argument with the application-specific information from the sequence header. |
+| *aud_get_creat_date()* | This returns the creation date (in UTC) of the sequence file. Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC date to a local date. |
+| *aud_get_creat_time()* | This returns the creation time (in UTC) of the sequence file. Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC time to a local time. |
+| *aud_get_no_audit_flds()* | This returns the number of audited fields in the sequence file. |
+| *aud_get_no_prim_flds()* | This returns the number of primary key fields among the audited fields in the sequence file. |
+| *aud_get_no_trans()* | This returns the number of transactions in the sequence file. |
+| *aud_get_seqno()* | This returns the sequence number of the sequence file. |
 | *aud_get_seq_status()* | This returns a value indicating the termination status of the sequence file. Possible values are: This value can be bitwise anded with predefined constants to determine the reason for termination of a particular sequence file. For example: |
-| *aud_get_seq_full_status()* | This returns the value of the status field in the sequence header. Note that you cannot use this value because the version information is included in the status. Use *aud_get_seq_status()* instead.  |
-| *aud_get_seq_version()* | This returns the version of the sequence file as stored in the sequence header.  |
-| *aud_get_term_date()* | This returns the termination date (in UTC) of the sequence file (if the file is terminated). Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC date to a local date.  |
-| *aud_get_term_time()* | This returns the termination time (in UTC) of the sequence file (if the file is terminated). Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC time to a local time.  |
-|  aud_set_app_info1() to aud_set_app_info4()  | These write application-specific information to *seq_hdr*.  |
-| *aud_set_term_date()* | This stores the content of *t_date* in the termination date field of the sequence header.  |
-| *aud_set_term_time()* | This stores the content *t_time* in the termination time field of the sequence header.  |
-| *aud_set_seq_status()* | This stores the content of *st* in the status field of the sequence header.  |
+| *aud_get_seq_full_status()* | This returns the value of the status field in the sequence header. Note that you cannot use this value because the version information is included in the status. Use *aud_get_seq_status()* instead. |
+| *aud_get_seq_version()* | This returns the version of the sequence file as stored in the sequence header. |
+| *aud_get_term_date()* | This returns the termination date (in UTC) of the sequence file (if the file is terminated). Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC date to a local date. |
+| *aud_get_term_time()* | This returns the termination time (in UTC) of the sequence file (if the file is terminated). Use [utc.to.local()](../functions_date_time_zones/utc.to.local.md) to convert the UTC time to a local time. |
+| aud_set_app_info1() to aud_set_app_info4() | These write application-specific information to *seq_hdr*. |
+| *aud_set_term_date()* | This stores the content of *t_date* in the termination date field of the sequence header. |
+| *aud_set_term_time()* | This stores the content *t_time* in the termination time field of the sequence header. |
+| *aud_set_seq_status()* | This stores the content of *st* in the status field of the sequence header. |
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

@@ -9,4 +9,5 @@ For a further details see [Database handling overview](../functions_database_han
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Variables](variables.md)

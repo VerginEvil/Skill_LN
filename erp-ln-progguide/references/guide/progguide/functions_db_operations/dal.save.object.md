@@ -10,11 +10,16 @@ In case [DAL2 Field dependencies](../functions_dal/dal2_field_dependencies.md) h
 Note that this is done based on the values of the fields that have been set by calling [dal.set.field()](dal.set.field.md)
 Before the record is saved all (changed) fields will be validated.
 The sequence of the actions is as follows:
-1. Table level permission is checked.
-1. For all fields set, the [fieldname.make.valid()](../functions_dal/fieldname.make.valid.md) is executed, e.g. to perform rounding of data.
-1. All dependent fields are triggered to update themselves.
-1. Record level permission is checked.
-1. The actual save (insert or update) is done.
+
+- Table level permission is checked.
+
+- For all fields set, the [fieldname.make.valid()](../functions_dal/fieldname.make.valid.md) is executed, e.g. to perform rounding of data.
+
+- All dependent fields are triggered to update themselves.
+
+- Record level permission is checked.
+
+- The actual save (insert or update) is done.
 
 ## Arguments
 | | | |
@@ -27,27 +32,35 @@ The sequence of the actions is as follows:
 |---|---|
 | 0 | Record is saved |
 | DALHOOKERROR | One of the hooks blocked the save action |
-| DALDBERROR | A domain or reference error occurred (only in Integration context (e.g. via a BOL))  |
+| DALDBERROR | A domain or reference error occurred (only in Integration context (e.g. via a BOL)) |
 | DALNOSETPERM | No table level permission |
 | DALNOOBJPERM | No record level permission |
-| > 0 | The error code of the db.insert() or db.update() function  |
+| > 0 | The error code of the db.insert() or db.update() function |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Hooks called
 - [before.open.object.set()](../functions_dal/before.open.object.set.md) if this is the first call to the DAL
+
 - [after.new.object()](../functions_dal/after.new.object.md) in case of a new record
+
 - [after.change.object()](../functions_dal/after.change.object.md) in case of an existing record
+
 - for all fields set, the [fieldname.make.valid()](../functions_dal/fieldname.make.valid.md) hook is executed
+
 - for each dependent field:
--
+
 - [field.update()](../functions_dal/field.update.md)
+
 - [method.is.allowed()](../functions_dal/method.is.allowed.md)
+
 - for each (DAL_NEW) / each changed (DAL_UPDATE) field:
--
+
 - one or more field hooks
+
 - [before.save.object()](../functions_dal/before.save.object.md)
+
 - [after.save.object()](../functions_dal/after.save.object.md)
 
 ## Error Handling
@@ -102,4 +115,5 @@ table fields
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Product
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 653-656
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 656-658
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long Product.StartMultiLevelProductionStructure(
 long             iStartMode,
 domain  tcsite           iSite,
@@ -36,10 +36,10 @@ time is assumed.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iSite
@@ -49,13 +49,13 @@ iProduct
 Product (Mandatory).
 The product for which the browser is started.
 iReferenceDate (Optional).
-Reference date for top                              -level selection. Only used when
+Reference date for top-level selection. Only used when
 no specific model is given as top level object.
 iSupplySource (Optional).
 Supply Source can be either of the following:
-tcsrce.shopfloor                                      - Job Shop
-tcsrce.repetitive                                     - Repetitive
-tcsrce.subcontract                                    - Subcontract
+tcsrce.shopfloor        - Job Shop
+tcsrce.repetitive       - Repetitive
+tcsrce.subcontract      - Subcontract
 If no value is given, the product's actual supply source
 is used.
 iBillOfMaterialCode
@@ -103,10 +103,6 @@ An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0               -     Session started.
-<> 0                       -  Otherwise.
+Return: 0 -     Session started.
+<> 0 -  Otherwise.
 ```
-
-## Public Interfaces for JobShopRouting
-
-The following functions are available: JobShopRouting.ApproveRevision JobShopRouting.ClearUseForPlanning JobShopRouting.Copy JobShopRouting.CopyOperations JobShopRouting.CopyV2 JobShopRouting.CreateNewRevision JobShopRouting.ExpireRevision JobShopRouting.SetUseForCosting JobShopRouting.SetUseForPlanning JobShopRouting.StartMultiMain

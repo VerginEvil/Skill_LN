@@ -1,19 +1,20 @@
 # string.scan()
 
 ## Syntax:
-`function long string.scan( string value$, string format$, [ void ... ] )`
+`function long string.scan( string value$, string format$, [ void... ] )`
 
 ## Description
 This function scans the supplied *value$* string argument for fields matching the conversion symbols in the supplied *format$* string argument and stores the field values in the subsequent remaining reference arguments.
 
 ## Arguments
-**
-******
-| | | |
-|---|---|---|
-| `string` | `value$` |  Input string value to be scanned, looking for input fields matching the conversion symbols in the *format$* argument. Its contents, whether or not of type multibyte string, are considered to be encoded in TSS. An input field is defined as all characters up to the current separator character or up to a character that does not match the type of the corresponding conversion symbol.  |
-| `string` | `format$` |  Format string, containing a mixture of conversion symbols and ordinary characters. Its contents, whether or not of type multibyte string, are considered to be encoded in TSS. A conversion symbol consists of the percent character '%', followed by a specific character sequence. For this moment, only one of the single letter sequences 'd', 'f', or 's' is allowed. Any other character sequence that might follow the percent character is reserved for future use and the current behavior of the function string.scan for such a conversion symbol is undefined.  |
-| `[ void` | `... ]` |  Reference arguments to which the field values scanned from the *value$* string argument must be assigned. Implicit conversion from type string to the type of the corresponding reference argument is performed. Typical (but not enforced) usage is to supply a reference argument of type string for conversion symbol %s, a reference argument of type double for conversion symbol %f and a reference argument of type long for conversion symbol %d.  |
+| | |
+|---|---|
+| Conversion symbol | Description |
+| %d | Conversion symbol matching the decimal representation of an integer value: a sequence of decimal digits '0', …, '9', optionally preceded by a minus sign '-'. |
+| %f | Conversion symbol matching the decimal representation of a floating point value: a sequence of decimal digits '0', …, '9' and at most one decimal point '.', optionally preceded by a minus sign '-', optionally followed by an exponent part: the letter 'e' or 'E', an optional plus sign '+' or minus sign '-' and a sequence of decimal digits '0', …, '9'. |
+| %s | Conversion symbol matching the representation of a string value: a sequence of characters not equal to the current separator character. |
+When a conversion symbol is immediately followed by an ordinary character, then that ordinary character serves as the separator character during the match of the conversion symbol. When a conversion symbol is immediately followed by a next conversion symbol, then the default value for the separator character during the match of the conversion symbol is a space character ' '. When a conversion symbol is not followed by any further character (i.e. it is at the end of the *format$* string), then there is no separator character during the match of the conversion symbol.
+A separator character matches at most one occurrence of itself in the *value$* string. Any other ordinary character in the *format$* string matches any number (including zero) of occurrences of itself in the *value$* string.
 
 ## Return values
 This function returns the number of successfully scanned and assigned fields. This implies that the returned value will not be greater than the number of conversion symbols in the *format$* string and also not greater than the number of supplied reference arguments to assign field values to. The returned value will be even less than both mentioned numbers when the match of a conversion symbol fails.

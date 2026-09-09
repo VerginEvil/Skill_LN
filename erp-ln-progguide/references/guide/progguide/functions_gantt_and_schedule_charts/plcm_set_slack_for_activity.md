@@ -28,4 +28,5 @@ This function supports one slack per activity for LN UI 12.0.3 and two slacks pe
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [Example](example.md)

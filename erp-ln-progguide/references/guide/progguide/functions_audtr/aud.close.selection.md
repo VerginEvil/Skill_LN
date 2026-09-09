@@ -14,9 +14,9 @@ The opening of the audit trail is not done explicitly in comparison to the low-l
 ## Return values
 | | |
 |---|---|
-| AUD_OK | All files are closed successfully and the dynamic SQL selection is also closed successfully  |
-| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid.  |
-| AUD_FAIL | Not all files could be closed or the dynamic SQL statement is not closed successfully.  |
+| AUD_OK | All files are closed successfully and the dynamic SQL selection is also closed successfully |
+| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid. |
+| AUD_FAIL | Not all files could be closed or the dynamic SQL statement is not closed successfully. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -30,5 +30,7 @@ The function [aud.select.transactions()](aud.select.transactions.md) has to be c
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

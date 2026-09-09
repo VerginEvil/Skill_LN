@@ -1,6 +1,6 @@
 # cURL handling overview
 Below is a list of all cURL functions.
-A detailed description of the cURL functions can be found in the documentation of the libcurl c interface.
+A detailed description of the cURL functions can be found in the [documentation of the libcurl c interface](https://curl.se/libcurl/c/).
 
 ## cURL 3GL convenience functions
 | | | |
@@ -24,7 +24,7 @@ A detailed description of the cURL functions can be found in the documentation o
 | `long` | [curl.setopt](curl.setopt.md) | `()` |
 | `long` | [curl.perform()](curl.perform.md) | `()` |
 | `long` | [curl.slist.append](curl.slist.append.md) | `(ref long ListId, const string SomeText)` |
-| `long` | [curl.slist.append_encrypted](curl.slist.append_encrypted.md) | `(ref long ListId, ...)` |
+| `long` | [curl.slist.append_encrypted](curl.slist.append_encrypted.md) | `(ref long ListId,...)` |
 | `void` | [curl.slist.free.all](curl.slist.free.all.md) | `(ref long ListId)` |
 | `string` | [curl.strerror$()](curl.strerror$.md) | `(long CurlCode)` |
 | `string` | [curl.xml.get.error$()](curl.xml.get.error$.md) | `()` |
@@ -33,19 +33,19 @@ A detailed description of the cURL functions can be found in the documentation o
 ## cURL MIME functions
 | | | |
 |---|---|---|
-| `long` | `curl.mime.init` | `()` |
-| `long` | `curl.mime.addpart` | `(long mime_handle)` |
-| `long` | `curl.mime.name` | `(long mime_handle, const string name())` |
-| `long` | `curl.mime.data` | `(long PartId, const string data(), [long datasize])` |
-| `long` | `curl.mime.data_cb` | `(long PartId, long sio_id, long datasize)` |
-| `long` | `curl.mime.filedata` | `(long PartId, const string local_filename())` |
-| `long` | `curl.mime.filename` | `(long PartId, const string remote_filename())` |
-| `long` | `curl.mime.subparts` | `(long PartId, long mime_handle)` |
-| `long` | `curl.mime.type` | `(long PartId, const string type())` |
-| `long` | `curl.mime.headers` | `(long PartId, long slist_id)` |
-| `long` | `curl.mime.encoder` | `(long PartId, const string encoding())` |
-| `void` | `curl.mime.free` | `(long mime_handle)` |
-| `long` | `curl.setopt.mimepost` | `(long mime_handle)` |
+| `long` | `curl.mime.init` |  `()`  |
+| `long` | `curl.mime.addpart` |  `(long mime_handle)`  |
+| `long` | `curl.mime.name` |  `(long mime_handle, const string name())`  |
+| `long` | `curl.mime.data` |  `(long PartId, const string data(), [long datasize])`  |
+| `long` | `curl.mime.data_cb` |  `(long PartId, long sio_id, long datasize)`  |
+| `long` | `curl.mime.filedata` |  `(long PartId, const string local_filename())`  |
+| `long` | `curl.mime.filename` |  `(long PartId, const string remote_filename())`  |
+| `long` | `curl.mime.subparts` |  `(long PartId, long mime_handle)`  |
+| `long` | `curl.mime.type` |  `(long PartId, const string type())`  |
+| `long` | `curl.mime.headers` |  `(long PartId, long slist_id)`  |
+| `long` | `curl.mime.encoder` |  `(long PartId, const string encoding())`  |
+| `void` | `curl.mime.free` |  `(long mime_handle)`  |
+| `long` | `curl.setopt.mimepost` |  `(long mime_handle)`  |
 [cURL MIME example](curl.mime.example.md)
 
 ## SSO functions

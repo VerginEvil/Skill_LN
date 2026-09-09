@@ -4,7 +4,7 @@
 `function void display.all( )`
 
 ## Description
-Use this function to display all fields on a form. Usually, the 4GL engine displays fields automatically, either when the form is opened or when data in a related input field is changed. However, there are situations when you need to use these functions to display fields. For example, to display fields that are not in the input field TAB sequence, or to send data to the form during batch processes.
+Use this function to display all fields on a form. Usually, the [4GL engine](../glossary/glossary.md#fourgl_engine) displays fields automatically, either when the form is opened or when data in a related input field is changed. However, there are situations when you need to use these functions to display fields. For example, to display fields that are not in the input field TAB sequence, or to send data to the form during batch processes.
 | | |
 |---|---|
 | display.all() | Displays all fields of all occurrences. |
@@ -21,4 +21,5 @@ The function *display.all()*, *display.occ()*, and *display.curr.occ()* do not a
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 892-894
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 902-903
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2026.06 (KB3642533  ).
+This function is available from 2026.06 (KB3642533).
 Syntax: long ProjectPCS.StartCopyCustomizedProductStructureToStandardStructure(
 long             iStartMode,
 domain  tcsite           iSite,
@@ -20,26 +20,26 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function is used to start session Copy Customized Product
 Structure to Standard Structure (tipcs2232m000).
 If input arguments are specified as "", then screen defaults
-apply if they are set                      -up.
+apply if they are set-up.
 The same holds for options in the processing option set;
 and screen defaults also apply when options are left out.
 Otherwise, screen defaults are ignored.
-Input:  iStartMode                            - Specifies the start mode for the
+Input:  iStartMode              - Specifies the start mode for the
 session (Mandatory). Possible values:
-MODAL                                                 - The parent session is blocked
+MODAL - The parent session is blocked
 until the child session exits. The
 session will be started as a zoom
 session.
-MODELESS_ALWAYS                                                 - Parent and child are
+MODELESS_ALWAYS - Parent and child are
 parallel sessions that can be
 manipulated simultaneously, even if
 the session is a Dialog.
-iSite                                         - Site. Only applicable when
+iSite                   - Site. Only applicable when
 Job Shop by Site is active for
 operations. (Optional).
-iSourceCustomizedItem                         - Source Customized Item. (Optional).
-iTargetStandardItem                           - Target Standard Item. (Optional).
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iSourceCustomizedItem   - Source Customized Item. (Optional).
+iTargetStandardItem     - Target Standard Item. (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default printing options
 are applied.
 A Processing Option Set can be created
@@ -59,18 +59,18 @@ IncludeUseUpMaterials                 domain tcyesno      tcyesno.no
 GenerateNewItemCodes                  domain tcyesno      tcyesno.yes
 ApproveConversionFactors              domain tcyesno      tcyesno.yes
 CopyToStandardItemConfiguration       domain tcyesno      tcyesno.no
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Copy Customized Product Structure
+Return: 0                       - Copy Customized Product Structure
 to Standard Structure is started
 successfully.
-<> 0                                          - Copy Customized Product Structure
+<> 0                    - Copy Customized Product Structure
 to Standard Structure is not started
 successfully.
 ```

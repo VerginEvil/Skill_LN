@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AssemblyLineStationOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 859-860
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 869-870
 
 ```baan
 DLL:   tiextascapi
-This function is available from     2021.09 (KB2187705  ).
+This function is available from 2021.09 (KB2187705).
 Syntax: long AssemblyLineStationOrder.ReportFinishedV2(
 domain  tcsite           iSite,
 domain  tcorno           iAssemblyOrder,
@@ -38,18 +38,14 @@ iLineStation            Line Station (mandatory).
 iActualStartTime        Actual Start Time (not mandatory).
 iActualCompletionTime   Actual Completion Time (mandatory).
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       Report as Finished is successfully completed
 <> 0                    Report as Finished is not completed
 ```
-
-## Public Interfaces for AssemblyPart
-
-The following functions are available: AssemblyPart.StartProcessReturn

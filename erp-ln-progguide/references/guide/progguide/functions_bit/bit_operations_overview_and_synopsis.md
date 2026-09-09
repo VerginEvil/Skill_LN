@@ -48,10 +48,10 @@ long
 ```
 | | | |
 |---|---|---|
-|  | bit.and |  |
-|  | bit.exor |  |
-|  | bit.in |  |
-|  | bit.inv |  |
-|  | bit.or |  |
-|  | bit.shiftl |  |
-|  | bit.shiftr |  |
+|  | [bit.and](bit_and_exor_in_inv_or.md#bit_and) |  |
+|  | [bit.exor](bit_and_exor_in_inv_or.md#bit_exor) |  |
+|  | [bit.in](bit_and_exor_in_inv_or.md#bit_in) |  |
+|  | [bit.inv](bit_and_exor_in_inv_or.md#bit_inv) |  |
+|  | [bit.or](bit_and_exor_in_inv_or.md#bit_or) |  |
+|  | [bit.shiftl](bit_shift.md#bit_shiftl) |  |
+|  | [bit.shiftr](bit_shift.md#bit_shiftr) |  |

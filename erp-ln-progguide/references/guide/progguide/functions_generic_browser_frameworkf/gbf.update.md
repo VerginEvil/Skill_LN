@@ -8,11 +8,11 @@
 All but gbf.update.object() are defines and these functions are defined as:
 | | |
 |---|---|
-| gbf.update.deffunc(obj.id, def.func) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, def.func, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU)  |
-| gbf.update.dropfunc(obj.id, drop.func) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, drop.func, GBF.NO.UPD.MENU)  |
-| gbf.update.desc(obj.id, description) | gbf.update.object(obj.id, description, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU)  |
-| gbf.update.icon(obj.id, icon.set) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, icon.set, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU)  |
-| gbf.update.menumask(obj.id, menumask) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, menumask)  |
+| gbf.update.deffunc(obj.id, def.func) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, def.func, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU) |
+| gbf.update.dropfunc(obj.id, drop.func) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, drop.func, GBF.NO.UPD.MENU) |
+| gbf.update.desc(obj.id, description) | gbf.update.object(obj.id, description, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU) |
+| gbf.update.icon(obj.id, icon.set) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, icon.set, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, GBF.NO.UPD.MENU) |
+| gbf.update.menumask(obj.id, menumask) | gbf.update.object(obj.id, GBF.NO.UPD.DESC, GBF.NO.UPD.ICON, GBF.NO.UPD.FUNC, GBF.NO.UPD.FUNC, menumask) |
 The gbf.update.object() function updates the given object, that is one or more of the attributes of the given obj.id are changed from what it was on its [gbf.add.object()](gbf.add.object.md) call, or any preceding call. The items that can be updated are:
 
 ## Arguments
@@ -32,9 +32,9 @@ The gbf.update.object() function updates the given object, that is one or more o
 |---|---|
 | 0 | Successful completion |
 | GBF.ILL.ICON | Illegal icon.set identification |
-| GBF.ILL.FUNCTION | Illegal default.function.id or drop.function.id value  |
+| GBF.ILL.FUNCTION | Illegal default.function.id or drop.function.id value |
 | GBF.ILL.OBJECT | Illegal obj.id given |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -46,10 +46,17 @@ These functions may only be called by the application when the GBF issues a call
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

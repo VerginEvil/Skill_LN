@@ -16,5 +16,7 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Query extensions sample program](example.md)

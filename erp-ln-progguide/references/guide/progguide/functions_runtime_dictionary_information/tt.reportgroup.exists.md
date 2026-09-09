@@ -10,8 +10,8 @@ When more than one report is linked to a session, the reports may be grouped. Re
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `session(13)` |  |
-| `long` | `report_group` |  |
+| `string` | `session(13)` |    |
+| `long` | `report_group` |    |
 
 ## Return values
 TRUE report group exists

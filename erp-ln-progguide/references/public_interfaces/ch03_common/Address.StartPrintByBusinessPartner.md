@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Address
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 88-90
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 89-91
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2025.05 (KB3566667  ).
+This function is available from 2025.05 (KB3566667).
 Syntax: long Address.StartPrintByBusinessPartner(
 domain  tccom.bpid       iBusinessPartnerFrom,
 domain  tccom.bpid       iBusinessPartnerTo,
@@ -17,9 +17,9 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts session
 'Print Addresses by Business Partner' (ttccom4430m100).
-Input:  iBusinessPartnerFrom                  - Business Partner From
-iBusinessPartnerTo                            - Business Partner To: Mandatory
-iProcessingOptionSet                          - Optional, if 0, the session is started
+Input:  iBusinessPartnerFrom    - Business Partner From
+iBusinessPartnerTo      - Business Partner To: Mandatory
+iProcessingOptionSet    - Optional, if 0, the session is started
 with regular defaulting logic (user
 defaults or session defaults), except
 selection range for Business Partner,
@@ -65,18 +65,14 @@ InvoiceFrom             domain  tcyesno         tcyesno.no
 PayTo                   domain  tcyesno         tcyesno.no
 AllAddressesPerRole     domain  tcyesno         tcyesno.no
 Text                    domain  tcyesno         tcyesno.no
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for Warehouse
-
-The following functions are available: Warehouse.StartOverview

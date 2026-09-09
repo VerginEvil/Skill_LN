@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaimLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1529-1531
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1544-1546
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2024.12 (KB3543998  ).
+This function is available from 2024.12 (KB3543998).
 Syntax: long CustomerClaimLine.CalculateClaimAmount(
 long             iProcessingOptionSet,
 ref     domain  tcamnt           oClaimAmount,

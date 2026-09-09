@@ -31,10 +31,12 @@ The data axis II is used in combination with data axis I when two (or more) diff
 A pie chart can represent only a single data series. The sample data illustrated above can be represented by either twelve or three pie charts, depending on whether the data is sorted by category or series:
 | | |
 |---|---|
-| Sorted by category |  Each pie chart illustrates the relationship between the different series (that is, the companies) for one category. This results in twelve pie charts, one for each category (that is, month). Each diagram has three segments, representing the three data series. The size of each segment is proportional to the value of the data point in relation to the total in the category (month). This option facilitates comparison of the three companies for each month.  |
-| Sorted by series |  Each pie chart illustrates the different category values within one series (that is, a company). This results in three pie charts, one for each company. Each diagram has twelve segments, representing the twelve categories. The size of the segments depends on the data value of each category as a percentage of the total of all data values in the series.  |
+| Sorted by category | Each pie chart illustrates the relationship between the different series (that is, the companies) for one category. This results in twelve pie charts, one for each category (that is, month). Each diagram has three segments, representing the three data series. The size of each segment is proportional to the value of the data point in relation to the total in the category (month). This option facilitates comparison of the three companies for each month. |
+| Sorted by series | Each pie chart illustrates the different category values within one series (that is, a company). This results in three pie charts, one for each company. Each diagram has twelve segments, representing the twelve categories. The size of the segments depends on the data value of each category as a percentage of the total of all data values in the series. |
 
 ## Related topics
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

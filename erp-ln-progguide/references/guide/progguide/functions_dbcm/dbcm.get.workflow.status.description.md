@@ -1,7 +1,7 @@
 # dbcm.get.workflow.status.description()
 
 ## Syntax:
-`function long dbcm.get.workflow.status.description( const string tbl.name$, ref string wf.status.desc$, [ const string fld.name, void fld.value, ... ] )`
+`function long dbcm.get.workflow.status.description( const string tbl.name$, ref string wf.status.desc$, [ const string fld.name, void fld.value,... ] )`
 
 ## Description
 Returns the workflow status description of an object instance for the given table in the current company based on a list of field/value pairs or the primary key field values of the current record buffer.
@@ -11,8 +11,8 @@ Returns the workflow status description of an object instance for the given tabl
 |---|---|---|
 | `const string` | `tbl.name$` |  A table code, like "tdsls400".  |
 | `ref string` | `wf.status.desc$` |  the returned workflow status description like "Draft" or "Pending" or "Not Applicable" if dbcm is not active for the given table. In case of an error this will be an empty string.  |
-| `[ const string` | `fld.name ]` |  |
-| `[ void` | `fld.value ]` |  |
+| `[ const string` | `fld.name ]` |    |
+| `[ void` | `fld.value ]` |    |
 | `[` | `... ]` |  List of field/value pairs in the format "ppmmm999.ffff", value. In case of array elements specify the field as "ppmmm9999.ffff(element)". In case no list of field/value pairs is supplied, the fields of the primary index (index1) and their field values in the current record buffer are used.  |
 
 ## Return values
@@ -57,4 +57,5 @@ function extern void ext.workflow.stat.calculate()
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

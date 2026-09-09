@@ -7,7 +7,7 @@
 This function returns a list of objects present in a given S3 location. It returns a JSON array with the objects sorted lexicographically.
 Note that it is not recursive and only one level is returned: further prefixes (the S3 version of directories) and objects contained therein are omitted.
 If there are no objects with a given prefix, an empty JSON array will be returned.
-*Behavior when TIV level of object is [2490](../tiv/tiv_2490.md) or above:*
+*Behavior when TIV level of object is*[2490](../tiv/tiv_2490.md)*or above:*
 A third optional argument may be provided (see the argument section for the details).
 
 ## Arguments
@@ -43,4 +43,5 @@ json = seq.s3.ls(s3.location.appdata, "test/test", S3.ls.only.directories)
 
 ## Related topics
 - [seq.s3.open.file()](seq.s3.open.file.md)
+
 - [file.s3.rm()](file.s3.rm.md)

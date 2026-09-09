@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1964-1966
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1983-1984
 
 ```baan
 Syntax: long tcext.bod0001.get.initial.load.query(
@@ -20,12 +20,12 @@ forwarded as input arguments for the function that is defined in the
 tcext.bod0001.get.custom.bod.publish.function() method.
 Never implement a statement like "select <table>.*"
 Input:
--              i.bodname         - custom BOD name
+- i.bodname         - custom BOD name
 Output:
--              o.query           - dynamical query (max. length 2048)
+- o.query           - dynamical query (max. length 2048)
 return:
--              0                 - OK
--              DALHOOKERROR      - not OK
+- 0                 - OK
+- DALHOOKERROR      - not OK
 Example of implementation:
 long   retval
 retval = 0
@@ -58,7 +58,3 @@ break
 endcase
 return(retval)
 ```
-
-## Process Extensions for BRA.BrazilianFiscalReceipt
-
-The following process extension(s) is/are available: BRA.BrazilianFiscalReceipt.Validate

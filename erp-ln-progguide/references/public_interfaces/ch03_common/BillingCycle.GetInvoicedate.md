@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BillingCycle
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 139-140
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 140-140
 
 ```baan
 DLL:   tcextmcsapi
-This function is available from     2024.09 (KB3519213  ).
+This function is available from 2024.09 (KB3519213).
 Syntax: long BillingCycle.GetInvoicedate(
 domain  tcncmp           iCompany,
 domain  tcbicy           iBillingCycle,
@@ -29,34 +29,30 @@ Note:
 1) If the input Billing Cycle is empty then the input Cut off
 Date is returned as the Invoice Date. In this case if Cut
 off Date is passed as 0 then Invoice Date 0 is returned.
-2) If Billing Cycle is filled and if input Cut                      -off Date is 0
+2) If Billing Cycle is filled and if input Cut-off Date is 0
 then current date is used.
 3) If Delivery date is 0 then current date is used.
 Pre:    preconditions
 Post:   postconditions
-Input:  iCompany                              - Company Number
-iBillingCycle                                 - Billing Cycle
-iCutOffDate                                   - Current Cut off Date / Invoice Date
-iDeliveryDate                                 - Delivery Date
-iBillableLineAmount                           - Line Amount of the Billable line
-iBillableLineCurrency                         - Currency of Billable Line
-iRateDate                                     - Rate Date of the Billable Line
-iRateType                                     - Rate Type of the Billable Line
-Output: oInvoiceDate                          - New Invoice Date based on Billing
+Input:  iCompany                - Company Number
+iBillingCycle           - Billing Cycle
+iCutOffDate             - Current Cut off Date / Invoice Date
+iDeliveryDate           - Delivery Date
+iBillableLineAmount     - Line Amount of the Billable line
+iBillableLineCurrency   - Currency of Billable Line
+iRateDate               - Rate Date of the Billable Line
+iRateType               - Rate Type of the Billable Line
+Output: oInvoiceDate            - New Invoice Date based on Billing
 Cycle
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - New Invoice Date determined
+Return: 0                       - New Invoice Date determined
 successfully
-<> 0                                          - Error
+<> 0                    - Error
 ```
-
-## Public Interfaces for Country
-
-The following functions are available: Country.StartDetail

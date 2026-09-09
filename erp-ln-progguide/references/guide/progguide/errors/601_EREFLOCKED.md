@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the reference table is locked.  |
+| This error indicates that the reference table is locked. |
 | *Solution:* |
-| Wait until the lock is released or remove the lock yourself.  |
+| Wait until the lock is released or remove the lock yourself. |

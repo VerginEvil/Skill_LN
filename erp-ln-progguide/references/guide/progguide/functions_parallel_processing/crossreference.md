@@ -30,4 +30,5 @@ In the table below a cross reference is shown with the functions available in tc
 
 ## Related topics
 - [Parallel Application Processing Overview](overview.md)
+
 - [Parallel Application Processing synopsis](synopsis.md)

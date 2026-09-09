@@ -11,7 +11,7 @@ This clears a specified area of the current window. The changes become visible o
 | | | |
 |---|---|---|
 | `long` | `column` |  The column and row co-ordinates for the top left corner of the area to be cleared.  |
-| `long` | `row` |  |
+| `long` | `row` |    |
 | `long` | `no_of_cols` |  The number of columns to be cleared.  |
 | `long` | `no_of_rows` |  The number of rows to be cleared.  |
 

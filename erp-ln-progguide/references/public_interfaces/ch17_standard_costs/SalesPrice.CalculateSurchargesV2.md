@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesPrice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 615-616
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 618-619
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2026.08 (KB3684391  ).
+This function is available from 2026.08 (KB3684391).
 Syntax: long SalesPrice.CalculateSurchargesV2(
 domain  tcitem           iItem,
 domain  tccpcc           iSalesPriceCalculationCode,

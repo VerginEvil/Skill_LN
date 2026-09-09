@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BRA.BrazilianReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1902-1904
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1929-1930
 
 ```baan
 DLL:   btextrecapi
-This function is available from     2025.11 (KB3634230  ).
+This function is available from 2025.11 (KB3634230).
 Syntax: long BRA.BrazilianReceipt.MatchReceiptLinesToFiscalDocByWarehouseReceiptArray(
 domain  btncmp           iLogisticCompany,
 domain  btlogn           iLogin,
@@ -45,54 +45,50 @@ Pre:    No open database transaction.
 Do not use NORETIFNOK or dal.set.messages.off() command to get
 the correct error message on o.error.message.
 Post:   n.a.
-Input:  iLogisticCompany                      - Logistic Company
-iLogin                                        - Login Name
-iMarkToLink                                   - Mark to Link Process [True/False]
-iMarkReceiptArray                             - Warehouse Receipt Number Array
-iMarkReceiptLineArray                         - Warehouse Receipt Line Array
-iMarkReceiptArrayLength                       - Receipt Array Length
-iLinkToFiscalDocument                         - Link to Fiscal Document Process
+Input:  iLogisticCompany        - Logistic Company
+iLogin                  - Login Name
+iMarkToLink             - Mark to Link Process [True/False]
+iMarkReceiptArray       - Warehouse Receipt Number Array
+iMarkReceiptLineArray   - Warehouse Receipt Line Array
+iMarkReceiptArrayLength - Receipt Array Length
+iLinkToFiscalDocument   - Link to Fiscal Document Process
 [True/False]
 iLinkFiscalIdentificationType
--                                               Fiscal Identification Type
+- Fiscal Identification Type
 iLinkFiscalIdentificationCode
--                                               Fiscal Identification Code
+- Fiscal Identification Code
 iLinkNewFiscalIdentificationCode
--                                               New Fiscal Identification Code
-iLinkBusinessPartner                          - Business Partner
+- New Fiscal Identification Code
+iLinkBusinessPartner    - Business Partner
 iLinkElectronicFiscalReference
--                                               Electronic Fiscal Reference
+- Electronic Fiscal Reference
 iLinkElectronicFiscalReferenceCode
--                                               Electronic Fiscal Reference Code
-iLinkNfeLocalizer                             - NFe Localizer
-iLinkDocumentNumber                           - Document Number
+- Electronic Fiscal Reference Code
+iLinkNfeLocalizer       - NFe Localizer
+iLinkDocumentNumber     - Document Number
 (Optional when
 iLinkElectronicFiscalReferenceCode is
 informed)
-iLinkSerie                                    - Serie
+iLinkSerie              - Serie
 (Optional when
 iLinkElectronicFiscalReferenceCode is
 informed)
-iLinkIssueDate                                - Issue Date
+iLinkIssueDate          - Issue Date
 (Optional when
 iLinkElectronicFiscalReferenceCode is
 informed)
-iLinkDocumentType                             - Document Type
-iLinkCurrencyRate                             - Currency Rate
-iLinkRelativeReferences                       - Relative References
-Output: oErrorMessage                         - Error message
-oFiscalRreference                             - Fiscal reference (when no errors found)
-oExceptionMessage                             - The last message if any message is
+iLinkDocumentType       - Document Type
+iLinkCurrencyRate       - Currency Rate
+iLinkRelativeReferences - Relative References
+Output: oErrorMessage           - Error message
+oFiscalRreference       - Fiscal reference (when no errors found)
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0/DALHOOKERROR
 ```
-
-## Public Interfaces for BRA.BrazilianInvoice
-
-The following functions are available: BRA.BrazilianInvoice.CancelInvoice BRA.BrazilianInvoice.CopyInvoice BRA.BrazilianInvoice.PrintPostInvoicesByArray BRA.BrazilianInvoice.PrintPostInvoicesByRange

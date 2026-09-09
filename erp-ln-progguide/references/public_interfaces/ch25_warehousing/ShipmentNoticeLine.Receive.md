@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentNoticeLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1008-1009
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1018-1019
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.01 (KB2217879  ).
+This function is available from 2022.01 (KB2217879).
 Syntax: long ShipmentNoticeLine.Receive(
 domain  tccom.bpid       iShipFromBusinessPartner,
 domain  whinh.shpm       iShipmentNotice,
@@ -32,31 +32,31 @@ function will allocate the memory.
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
 After the oReceiptLineArray is used, free the memory.
-Input:  iShipFromBusinessPartner              - Ship-from Business Partner - Mandatory
-iShipmentNotice                               - Shipment Notice - Mandatory
-iShipmentNoticeLine                           - Shipment Notice Line - Mandatory
-iReceipt                                      - Receipt header on which lines must be
+Input:  iShipFromBusinessPartner- Ship-from Business Partner - Mandatory
+iShipmentNotice         - Shipment Notice - Mandatory
+iShipmentNoticeLine     - Shipment Notice Line - Mandatory
+iReceipt                - Receipt header on which lines must be
 added.
 Optional, if empty a new receipt
 header will be created.
-iReceivedQuantity                             - Received Quantity - Optional
+iReceivedQuantity       - Received Quantity - Optional
 Value should not be less then zero.
-iReceivedUnit                                 - Received Unit - Mandatory if received
+iReceivedUnit           - Received Unit - Mandatory if received
 quantity is greater than zero).
-iPackingSlip                                  - Packing Slip - Optional
-iLoad                                         - Load - Optional
-iShipment                                     - Shipment - Optional
-Output: oReceipt                              - Receipt that is created (or populated
+iPackingSlip            - Packing Slip - Optional
+iLoad                   - Load - Optional
+iShipment               - Shipment - Optional
+Output: oReceipt                - Receipt that is created (or populated
 with the iReceipt when iReceipt is
 filled)
-oNumberOfReceiptLines                         - Number of receipt lines that are
+oNumberOfReceiptLines   - Number of receipt lines that are
 created.
-oReceiptLineArray                             - Receipt lines that are created.
-oExceptionMessage                             - The last message if any message is
+oReceiptLineArray       - Receipt lines that are created.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

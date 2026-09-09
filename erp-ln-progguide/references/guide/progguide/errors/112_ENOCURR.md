@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that there is no current record.  |
+| This error indicates that there is no current record. |
 | *Solution:* |
 | Contact Infor support. |

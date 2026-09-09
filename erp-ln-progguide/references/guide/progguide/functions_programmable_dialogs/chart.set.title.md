@@ -23,5 +23,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [dialog.add.chart()](dialog.add.chart.md)
+
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Example chart](examplechart.md)

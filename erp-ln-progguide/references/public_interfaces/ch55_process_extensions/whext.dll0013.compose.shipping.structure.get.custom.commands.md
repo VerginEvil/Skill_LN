@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ComposeShippingStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1993-1994
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2012-2013
 
 ```baan
 Syntax: long whext.dll0013.compose.shipping.structure.get.custom.commands(

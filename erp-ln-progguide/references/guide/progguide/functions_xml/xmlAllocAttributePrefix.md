@@ -17,8 +17,8 @@ Get the prefix of an attribute of the specified node.
 ## Return values
 | | |
 |---|---|
-| 0 | Success; The *basedString* contains the prefix if the *node* is valid, the *attributeNr* is valid and the attribute is in a namespace. It contains the *default.value*, or when this is omitted, the empty string otherwise.  |
-| -1 | The *basedString* is not declared *based*.  |
+| 0 | Success; The *basedString* contains the prefix if the *node* is valid, the *attributeNr* is valid and the attribute is in a namespace. It contains the *default.value*, or when this is omitted, the empty string otherwise. |
+| -1 | The *basedString* is not declared *based*. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -42,5 +42,7 @@ ret = xmlAllocAttributePrefix( prefix, xml_envelope, 1 )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

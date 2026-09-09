@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for TestingCombination
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1770-1772
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1789-1790
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2022.08 (KB2226027  ).
+This function is available from 2022.08 (KB2226027).
 Syntax: long TestingCombinations.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,11 +26,11 @@ Testing Combinations (qmptc0119m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -45,27 +45,23 @@ will be set in the oExceptionMessage and the session will not
 be started.
 Primary Key Fields:
 iOrderOrigin
--                                       Order Origin; Mandatory
+- Order Origin; Mandatory
 iQualityGroup
--                                       Quality Group
+- Quality Group
 iItem
--                                       Item
+- Item
 iItemEffectivityUnit
--                                       Item Effectivity Unit
+- Item Effectivity Unit
 iItemRevision
--                                       Item Revision
-Output: oExceptionMessage                     - The last message if any message is
+- Item Revision
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for StandardTestProcedure
-
-The following functions are available: StandardTestProcedure.StartMultiMain

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 299-300
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 301-302
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2026.01 (KB3643771  ).
+This function is available from 2026.01 (KB3643771).
 Syntax: long SalesContract.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the Multi-Main session Sales Contract
 Input:  iStartMode              Specifies the start mode for the session
 (mandatory).
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

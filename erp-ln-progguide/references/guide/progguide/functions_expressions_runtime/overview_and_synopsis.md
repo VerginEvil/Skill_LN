@@ -7,8 +7,8 @@ Use of these functions increases system load and should be avoided, where possib
 ## Synopsis
 | | | |
 |---|---|---|
-| `double` | [d.expr()](d.expr.md) | `( long expr_id [, arg] )` |
-| `long` | [expr.compile()](expr.compile.md) | `( "expression" )` |
-| `void` | [expr.free()](expr.free.md) | `( long expr_id )` |
-| `long` | [l.expr()](l.expr.md) | `( long expr_id [, arg] )` |
-| `string` | [s.expr$()](s.expr.md) | `( long expr_id [, arg] )` |
+| `double` | [d.expr](d.expr.md) | `( long expr_id, [ void value, boolean suppressError ] )` |
+| `long` | [expr.compile](expr.compile.md) | `( string expression )` |
+| `void` | [expr.free](expr.free.md) | `( long expr_id )` |
+| `long` | [l.expr](l.expr.md) | `( long expr_id, [ void value, boolean suppressError ] )` |
+| `string` | [s.expr$](s.expr.md) | `( long expr_id, [ void value, boolean suppressError ] )` |

@@ -22,5 +22,7 @@ When the difference between two doubles is (almost) equal to the tolerance then 
 
 ## Related topics
 - [Considerations on doubles](considerations.on.doubles.md)
+
 - [Reliability of double.cmp()](reliability.of.double.cmp.md)
+
 - [Comparison of doubles in queries](comparison.of.doubles.in.queries.md)

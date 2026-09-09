@@ -29,4 +29,5 @@ See [rsc.put()](rsc.put.md).
 
 ## Related topics
 - [Resource sets overview](overview.md)
+
 - [Resource sets synopsis](synopsis.md)

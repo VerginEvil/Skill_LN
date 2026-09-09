@@ -9,7 +9,7 @@ This starts a timer that sends an EVTTIMEREVENT event to the calling process eve
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `msec` |  |
+| `long` | `msec` |    |
 
 ## Return values
 A unique identifier for the timer.
@@ -34,4 +34,5 @@ on case evt.type( event )
 
 ## Related topics
 - [Events overview](../events/overview.md)
+
 - [Timers overview and synopsis](overview_and_synopsis.md)

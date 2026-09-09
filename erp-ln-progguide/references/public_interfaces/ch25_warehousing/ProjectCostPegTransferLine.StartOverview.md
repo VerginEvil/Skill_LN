@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectCostPegTransferLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1097-1099
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1107-1109
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.08 (KB2296385  ).
+This function is available from 2023.08 (KB2296385).
 Syntax: long ProjectCostPegTransferLine.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -38,10 +38,10 @@ Transfer Lines (whinh1145m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -132,24 +132,20 @@ Optional
 iToActivity
 Optional
 Output: for iStartMode MODAL:
-oProjectCostPegTransfer                               -
--                                               Project Cost Peg Transfer of selected
+oProjectCostPegTransfer -
+- Project Cost Peg Transfer of selected
 record
 oProjectCostPegTransferLine
--                                               Project Cost Peg Transfer Line of
+- Project Cost Peg Transfer Line of
 selected record
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for AllocationChangeOrder
-
-The following functions are available: AllocationChangeOrder.Generate AllocationChangeOrder.Process

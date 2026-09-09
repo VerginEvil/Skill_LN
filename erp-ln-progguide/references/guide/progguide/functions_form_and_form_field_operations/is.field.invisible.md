@@ -10,7 +10,7 @@ For multicurrency fields specify -1 for the element number, for example: `"tfacr
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `field_name(18)` |   |
+| `string` | `field_name(18)` |    |
 
 ## Return values
 FALSE field is visible
@@ -30,4 +30,5 @@ Note  Use [inputfield.invisible()](inputfield.invisible.md) to hide a field. Use
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

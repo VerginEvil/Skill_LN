@@ -14,6 +14,9 @@ This function is implemented in the 4GL Engine and can be used in UEDLL script t
 
 ## Related topics
 - [User Exit DLL Overview](overview.md)
+
 - [Data Access Layer](../functions_dal/overview.md)
+
 - [Object hooks](../functions_dal/object_hooks.md)
+
 - [4GL main table i/o sections](../4gl_features/4gl_main_table_io_sections.md)

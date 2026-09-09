@@ -20,4 +20,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Multi Tenant functions overview](overview.md)
+
 - [Multi Tenant functions synopsis](synopsis.md)

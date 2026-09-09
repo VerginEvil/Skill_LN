@@ -5,11 +5,16 @@
 
 ## Description
 Returns true if the given string is a valid base64 encoded string.
-According to RFC 4648:
+According to [RFC 4648](https://www.rfc-editor.org/rfc/rfc4648.html):
+
 - a base64 encoded string has a length which is a multiple of 4;
+
 - only characters in the range a-zA-Z0-9+/= are allowed;
+
 - the '=' is only used for padding;
+
 - if padding is required the string ends with either 1 or 2 '=' characters;
+
 - an empty string is a valid base64 encoded string.
 
 ## Arguments
@@ -37,4 +42,5 @@ result = str.isbase64("QQ=")	|* missing equals (=) sign
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

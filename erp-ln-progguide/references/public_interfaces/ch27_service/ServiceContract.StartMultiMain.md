@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1392-1392
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1404-1404
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.10 (KB3613881  ).
+This function is available from 2025.10 (KB3613881).
 Syntax: long ServiceContract.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -19,12 +19,12 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function starts the Multi Main Table session
 'Service Contract' (tsctm3600m000).
 Input:  iStartMode
-Mandatory                               - Specifies the start mode for the session.
+Mandatory - Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

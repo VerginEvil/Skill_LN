@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the current transaction is aborted due to a lock error.  |
+| This error indicates that the current transaction is aborted due to a lock error. |
 | *Solution:* |
 | More information might be available in the log files. |

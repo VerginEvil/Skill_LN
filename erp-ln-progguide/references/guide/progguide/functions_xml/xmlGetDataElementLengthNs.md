@@ -20,7 +20,7 @@ This function may be used to determine the required size of the *data* argument 
 | | |
 |---|---|
 | >= 0 | Success; The length of the value. |
-| -1 | The *node* is invalid, or the *namespaceOrURI* is invalid, or there is no child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child,  |
+| -1 | The *node* is invalid, or the *namespaceOrURI* is invalid, or there is no child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child, |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -50,5 +50,7 @@ length = xmlGetDataElementLengthNs( xml_stockprice, "http://www.example.org/stoc
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

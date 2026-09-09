@@ -4,7 +4,7 @@
 >
 > Group: Public Interfaces for Exception
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 80-80
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 81-81
 
 ```baan
 DLL:   tcextextapi
@@ -14,8 +14,8 @@ Usage:        Expl:   This function deletes the exception to free memory.
 Pre:    ioExceptionID should refer to an Exception.
 Post:   None
 Input:
-ioExceptionID                         - the exception id.
+ioExceptionID   - the exception id.
 Output:
-ioExceptionID                         - the exception id.
+ioExceptionID   - the exception id.
 Return: None
 ```

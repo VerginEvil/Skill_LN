@@ -25,5 +25,7 @@ Note  In case the image is bound to a table field, you must bind the table as we
 
 ## Related topics
 - [Images on Forms Overview](overview.md)
+
 - [Images on Forms synopsis](synopsis.md)
+
 - [Images on Forms Examples](examples.md)

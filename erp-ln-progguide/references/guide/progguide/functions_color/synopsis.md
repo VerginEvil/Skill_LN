@@ -24,4 +24,5 @@ long
 
 ## Related topics
 - [Colors overview](overview.md)
+
 - [Colors synopsis](synopsis.md)

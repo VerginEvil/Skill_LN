@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MachineOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 827-828
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 829-831
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.09 (KB3666965  ).
+This function is available from 2026.09 (KB3666965).
 Syntax: long MachineOperation.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -34,13 +34,13 @@ Post:   None
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                                 - The parent session is blocked until the child
+MODAL   - The parent session is blocked until the child
 session exits. The session will be started as a
 zoom session.
-MODELESS                               - Parent and child are parallel sessions that
+MODELESS - Parent and child are parallel sessions that
 can be manipulated simultaneously.
-iStartFilter                                  - Not used.
-iSessionIndex                                 - The index that will be used.
+iStartFilter            - Not used.
+iSessionIndex           - The index that will be used.
 Standard supported values:
 1: Sort by Site, Production Order,
 Operation, Machine Sequence (default)
@@ -48,41 +48,37 @@ Operation, Machine Sequence (default)
 Type, Machine Number, Planned Setup Start
 Date, Production Order, Operation,
 Machine Sequence
-iQueryExtend                                  - A specific query to be used when zooming
+iQueryExtend            - A specific query to be used when zooming
 to this session.
-iSite                                         - Site(Optional)
--                                               If this value is entered then the Site
+iSite                   - Site(Optional)
+- If this value is entered then the Site
 must exist in Sites.
-iProductionOrder        . Production Order (Optional)
-. If this value is entered then the
+iProductionOrder        ›¼À“ Production Order (Optional)
+›¼À“ If this value is entered then the
 Production
 Order must exist in Production Orders.
-iOperation                                    - Operation (Optional)
--                                               If this value entered then the
+iOperation              - Operation (Optional)
+- If this value entered then the
 Production Order and Operation must
 exist in Operations.
-iMachineSequence                              - Machine Sequence (Optional).
-iWorkCenter                                   - Work Center (Optional)
-iMachineType                                  - Machine Type (Optional)
-iMachineNumber                                - Machine Number (Optional)
+iMachineSequence        - Machine Sequence (Optional).
+iWorkCenter             - Work Center (Optional)
+iMachineType            - Machine Type (Optional)
+iMachineNumber          - Machine Number (Optional)
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
 been selected.
-oProductionOrder        . Production Order
-oOperation                                    - Operation
-oMachineSequence                              - Machine Sequence
-oExceptionMessage                             - The last error message found during the
+oProductionOrder        ›¼À“ Production Order
+oOperation              - Operation
+oMachineSequence        - Machine Sequence
+oExceptionMessage       - The last error message found during the
 execution of public interface.
 If multiple error messages are found,
-by using .oExceptionID., messages can
+by using ›¼ÀœoExceptionID›¼À•, messages can
 be retrieved.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information.Use the functions in
 Exception to get all relevant information
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for InstructionsByOperationStep
-
-The following functions are available: InstructionsByOperationStep.StartOverview

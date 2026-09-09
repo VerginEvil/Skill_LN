@@ -7,15 +7,17 @@
 Removes the most recent messages of the given type from the DAL message buffer. The 2nd argument determines how many messages will remain in the buffer.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `i.type` |  A message type. Parameter i.type should be one of the following values: `MSG.ALL, MSG.ERROR, MSG.WARNING, MSG.INFO`.  |
-| `long` | `i.count` |   |
+| | |
+|---|---|
+| 0 | All messages are removed. |
+| > 0 | The number of messages that have to remain in the list (the most recent ones are removed). |
+| < 0 | The number of messages that have to be removed from the list (starting with the most recent). |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in DAL script types.
 This function is marked as 'conditionally trusted' and can therefore only be used in trusted objects or 'conditionally' in not trusted objects. More about trusted and not trusted objects can be found in the section about [managed execution.](../misc/managed_execution.md).
 In the following case it is possible to use this function in a not trusted object:
+
 - TIVLevel >= 2120 and In a not trusted process
 
 ## Preconditions

@@ -1,7 +1,7 @@
 # activate()
 
 ## Syntax:
-`function long activate( string procname(.), [ string arg1, arg2, ... ] )`
+`function long activate( string procname(.), [ string arg1, arg2,... ] )`
 
 ## Description
 This activates the specified process and places it in the running process queue. Execution starts when the bshell schedules CPU time for the process.
@@ -10,7 +10,7 @@ This activates the specified process and places it in the running process queue.
 | | | |
 |---|---|---|
 | `string` | `procname(.)` |  The process to be activated. The argument can contain a session name (4GL programs) or the name of an object file (3GL programs).  |
-| `[ string` | `arg1, arg2, ... ]` |  Use these optional arguments to pass arguments to the new process. The arguments are always converted to strings. The new process can access these arguments with the [argv$()](argv.md) function.  |
+| `[ string` | `arg1, arg2,... ]` |  Use these optional arguments to pass arguments to the new process. The arguments are always converted to strings. The new process can access these arguments with the [argv$()](argv.md) function.  |
 
 ## Return values
 | | |
@@ -22,6 +22,7 @@ This activates the specified process and places it in the running process queue.
 This function is implemented in the 4GL Tools and can be used in all script types.
 This function is marked as 'conditionally trusted' and can therefore only be used in trusted objects or 'conditionally' in not trusted objects. More about trusted and not trusted objects can be found in the section about [managed execution.](../misc/managed_execution.md).
 In the following case it is possible to use this function in a not trusted object:
+
 - TIVLevel >= 2120 and Value of argument procname starts with "tx" or "otx"
 
 ## Related topics

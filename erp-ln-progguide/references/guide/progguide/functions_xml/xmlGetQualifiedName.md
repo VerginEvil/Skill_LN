@@ -15,8 +15,8 @@ Get the qualified name of the specified node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The value of *node*.  |
-| 0 | The *node* is invalid.  |
+| <> 0 | Success; The value of *node*. |
+| 0 | The *node* is invalid. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -37,5 +37,7 @@ ret = xmlGetQualifiedName( xml_envelope, qname )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2162-2162
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2185-2185
 
 ```baan
 Syntax: boolean tiext.pcs0001.project.pcs.skip.close.implemented(

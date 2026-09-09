@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1507-1512
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1522-1526
 
 ```baan
 DLL:   tsextspcapi
-This function is available from     2025.06 (KB3569155  ).
+This function is available from 2025.06 (KB3569155).
 Syntax: long PlannedActivity.CreateMaintenancePlan(
 long             iProcessingOptionSet,
 ref             boolean          oPlannedActivityCreated,
@@ -252,7 +252,7 @@ it will start using the serialized item planning start
 date which is specified in the service planning
 parameters (tsspc0100m000).
 See the priorities in the parameters (Generate Planned
-Activities                               - Serialized Item Start Date).
+Activities - Serialized Item Start Date).
 GenerationTypeTimeBased
 domain  tsspc.gen.type
 tsspc.gen.type.keep
@@ -280,8 +280,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     -       No Error
-<> 0                          -       Error present. Note that this function is
+Return: 0       -       No Error
+<> 0    -       Error present. Note that this function is
 going to create the maintenance plan
 (planned activities) for a set of serialized items.
 If an error occurs while generating the planned

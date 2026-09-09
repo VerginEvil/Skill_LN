@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1247-1247
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1257-1257
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.05 (KB2237101  ).
+This function is available from 2022.05 (KB2237101).
 Syntax: long ReceiptLine.Split(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -30,17 +30,17 @@ function will allocate the memory.
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
 After the oReceiptLineArray is used, free the memory.
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-Output: oNumberOfReceiptLines                 - Number of receipt lines in array
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+Output: oNumberOfReceiptLines   - Number of receipt lines in array
 after split.
-oReceiptLineArray                             - Array of created receipt lines during
+oReceiptLineArray       - Array of created receipt lines during
 splitting (excluding iReceiptLine).
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

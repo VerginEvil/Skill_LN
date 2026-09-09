@@ -10,7 +10,7 @@ This deletes the specified window. When you delete the current window, the next 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `wind_id` |  |
+| `long` | `wind_id` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

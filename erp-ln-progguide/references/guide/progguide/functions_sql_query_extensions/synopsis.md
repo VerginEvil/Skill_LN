@@ -15,8 +15,9 @@
 | void | [query.extend.hint](query.extend.hint.md) | `( string extension_string [, long mode] )` |
 | void | [query.extend.hint.in.zoom](query.extend.hint.in.zoom.md) | `( string extension_string )` |
 | void | [rebuild.query()](rebuild.query.md) | `( )` |
-| long | [query.define.sort.order()](query.define.sort.order.md) | `(long table.index, const string field.var, direction.var [, const string ..., ...])` |
+| long | [query.define.sort.order()](query.define.sort.order.md) | `(long table.index, const string field.var, direction.var [, const string...,...])` |
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [Query extensions sample program](example.md)

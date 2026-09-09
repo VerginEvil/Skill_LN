@@ -47,18 +47,18 @@ string
 ```
 | | | |
 |---|---|---|
-|  | [sjv.any()](sjv.any.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.object()](sjv.object.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.fields()](sjv.fields.md) | `( const string name, const string type, ... )` |
-|  | [sjv.array()](sjv.array.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.tuple()](sjv.tuple.md) | `( const string aspect, ... )` |
-|  | [sjv.string()](sjv.string.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.double()](sjv.double.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.long()](sjv.long.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.boolean()](sjv.boolean.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.date()](sjv.date.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.utc()](sjv.utc.md) | `( [ const string aspect, ... ] )` |
-|  | [sjv.domain()](sjv.domain.md) | `( [ const string aspect, ... ] )` |
+|  | [sjv.any()](sjv.any.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.object()](sjv.object.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.fields()](sjv.fields.md) | `( const string name, const string type,... )` |
+|  | [sjv.array()](sjv.array.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.tuple()](sjv.tuple.md) | `( const string aspect,... )` |
+|  | [sjv.string()](sjv.string.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.double()](sjv.double.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.long()](sjv.long.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.boolean()](sjv.boolean.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.date()](sjv.date.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.utc()](sjv.utc.md) | `( [ const string aspect,... ] )` |
+|  | [sjv.domain()](sjv.domain.md) | `( [ const string aspect,... ] )` |
 
 ## JSON validation aspects
 ```
@@ -90,7 +90,7 @@ string
 |  | [sjv.min()](sjv.min.md) | `( long|double value )` |
 |  | [sjv.max()](sjv.max.md) | `( long|double value )` |
 |  | [sjv.length()](sjv.length.md) | `( long length )` |
-|  | [sjv.enum()](sjv.enum.md) | `( const string value, ... )` |
+|  | [sjv.enum()](sjv.enum.md) | `( const string value,... )` |
 
 ## JSON string validation formats
 ```
@@ -138,4 +138,5 @@ string
 
 ## Related topics
 - [Simple JSON Validation overview](overview.md)
+
 - [Simple JSON Validation examples](examples.md)

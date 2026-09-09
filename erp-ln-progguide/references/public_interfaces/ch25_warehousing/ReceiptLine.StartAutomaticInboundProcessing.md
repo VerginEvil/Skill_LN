@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1251-1252
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1261-1262
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.05 (KB2117931  ).
+This function is available from 2020.05 (KB2117931).
 Syntax: long ReceiptLine.StartAutomaticInboundProcessing(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -66,13 +66,13 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

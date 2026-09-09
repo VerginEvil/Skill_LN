@@ -3,10 +3,16 @@ Infor Enterprise Server programs are designed to respond to events. Usually, the
 
 ## Event types
 There are four broad categories of events, as listed below. For a full list of event types, see [Event types](../events/event_types.md).
+
 - *User action events.* Most of the events that occur in a BAAN application relate to user interaction. When a user performs an action in the user interface (for example, clicking the mouse or pressing a keyboard key), this generates an event.
+
 - *Timer events.* A process can start a timer that sends an event to the calling process at specified intervals. See [Timers overview and synopsis](../functions_timers/overview_and_synopsis.md).
+
 - *Client events.* A process can send client events to another process by using the [send.event()](../events/send.event.md) function. The sending and receiving processes can determine their own protocol.
-- *Bucket message events.* A process can broadcast bucket message events to other processes by using the [bms.send()](../functions_interprocess_communication_bshell/bms.send.md) function.   Note that functions such as [keyin$()](../functions_char_b_win/keyin.md) and [data.input()](../functions_char_b_win/data.input.md) are based internally on events.
+
+- *Bucket message events.* A process can broadcast bucket message events to other processes by using the [bms.send()](../functions_interprocess_communication_bshell/bms.send.md) function.
+
+Note that functions such as [keyin$()](../functions_char_b_win/keyin.md) and [data.input()](../functions_char_b_win/data.input.md) are based internally on events.
 
 ## Event flow
 When a UI object generates an event, the display server sends that event to the bshell. The bshell distributes received events to the event queues of the appropriate process groups; note that events are sent to process groups and not individual processes. The bshell never requests events; the display server always acts independently.
@@ -17,10 +23,15 @@ A process can set the event mask of a UI object in order to specify the types of
 
 ## Event functions
 BAAN Tools provides the following functions for handling events:
+
 - [next.event()](../events/next.event.md)
+
 - [peek.event()](../events/peek.event.md)
+
 - [pending.events()](../events/pending.events.md)
+
 - [send.event()](../events/send.event.md)
+
 - [select.event.input()](../events/select.event.input.md)
 
 ## Event arrays

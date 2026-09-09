@@ -31,7 +31,6 @@ before.program:
 	query.extend.fld.from(  "texxx110.desc", "texxx110")
 	query.extend.fld.where( "texxx110.desc" ,"texxx110.bpid = texxx100.bpsh")
 
-
 	| Selection methods application field: form.desc
 	query.extend.fld.select("form.desc", "texxx110.desc")
 	query.extend.fld.from(  "form.desc", "texxx110")
@@ -58,5 +57,7 @@ This function is available from Enterprise Server TIV level 2100 and is only usa
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Column filtering](column_filtering.md)

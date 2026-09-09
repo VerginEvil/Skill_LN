@@ -5,7 +5,7 @@
 
 ## Description
 Returns as an output argument a (null terminated) copy of `string$` that will have all instances of `oldstr$` replaced with `newstr$`.
-The `result$` string will be resized as required, which ensures that in `result$` all occurrences of `oldstr$` have been replaced. In order to be able to resize `result$`, the variable passed must be declared as a based string. Use ` [len()](len.md)` to know the new number of characters in `result$`.
+The `result$` string will be resized as required, which ensures that in `result$` all occurrences of `oldstr$` have been replaced. In order to be able to resize `result$`, the variable passed must be declared as a based string. Use [len()](len.md) to know the new number of characters in `result$`.
 
 ## Arguments
 | | | |
@@ -20,8 +20,11 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 Note: The following preconditions no longer apply when `get.tools.tiv()` returns 2210 or higher.
+
 - In case one of the variables passed to `string$`, `oldstr$`, or `newstr$` is declared as a multibyte string, then the variable passed to `result$` must be declared as a multibyte string as well.
+
 - The variable passed to the `result$` parameter must be declared as a based string.
+
 - The variable passed in `string$` respectively in `result$` can not be the same. (Conflict in declaration memory as constant and as output.)
 
 ## Example
@@ -78,5 +81,7 @@ str.replace(source, " ", "  ", nonbased)
 
 ## Related topics
 - [str.replace$()](str.replace$.md)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

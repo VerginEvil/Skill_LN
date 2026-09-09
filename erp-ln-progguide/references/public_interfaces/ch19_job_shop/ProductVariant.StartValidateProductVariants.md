@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 687-688
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 690-691
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2024.10 (KB3526537  ).
+This function is available from 2024.10 (KB3526537).
 Syntax: long ProductVariant.StartValidateProductVariants(
 long             iStartMode,
 domain  tccpva           iProductVariantFrom,
@@ -25,35 +25,35 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel
 sessions that can be manipulated
 simultaneously, even if the session is
 a Dailog.
 iProductVariantFrom
-From Product Variant                               - Optional.
+From Product Variant - Optional.
 The default is the minimum domain value
 iProductVariantTo
-To Product Variant                               - Optional.
+To Product Variant - Optional.
 The default is equal to iProductVariantFrom if it is
 given. The maximum domain value otherwise.
 iBusinessPartnerFrom
-From Business Partner                               - Optional.
+From Business Partner - Optional.
 The default is the minimum domain value.
 iBusinessPartnerTo
-To Business Partner                               - Optional.
+To Business Partner - Optional.
 The default is equal to iBusinessPartnerFrom if it is
 given. The maximum value otherwise.
 iOverwriteSalesPrice
-Control to overwrite the sales price                               - Optional
-Output: oExceptionMessage                     - The last message if any message is
+Control to overwrite the sales price - Optional
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

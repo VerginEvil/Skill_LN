@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Calendar
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 149-150
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 150-151
 
 ```baan
 DLL:   tcextccpapi
-This function is available from     2021.05 (KB2187487  ).
+This function is available from 2021.05 (KB2187487).
 Syntax: long Calendar.GetPeriodCapacity(
 domain  tcncmp           iLogisticCompany,
 domain  tcccp.ccal       iCalendarCode,
@@ -46,6 +46,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                - Function is executed successfully
-<> 0                          - An error occurred
+Return: 0  - Function is executed successfully
+<> 0    - An error occurred
 ```

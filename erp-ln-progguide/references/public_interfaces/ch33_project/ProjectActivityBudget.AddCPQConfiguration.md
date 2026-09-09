@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectActivityBudget
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1696-1697
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1715-1716
 
 ```baan
 DLL:   tpextptcapi
-This function is available from     2022.10 (KB2240749  ).
+This function is available from 2022.10 (KB2240749).
 Syntax: long ProjectActivityBudget.AddCPQConfiguration(
 domain  tccprj           iProject,
 domain  tppss.cpla       iPlan,
@@ -31,56 +31,52 @@ similar to the checks done when configuring an item manually
 in session 'Activity Budget (Material)' (tpptc2110m000) using
 the form command "Configure".
 The checks include:
--                       The Infor Configurator (CPQ) must be implemented
--                       The supplied item in input argument iConfigurableItem must
+- The Infor Configurator (CPQ) must be implemented
+- The supplied item in input argument iConfigurableItem must
 be equal to the item on the Activity Budget Line
--                       The item on the Activity Budget Line must not be configured
+- The item on the Activity Budget Line must not be configured
 yet, meaning that the value of the Product Variant must be
 empty (zero)
--                       The item must:
--                               have Item Type Generic
--                               have CPQ assigned as Configurator
--                       Authorization and Security settings for the Activity Budget
+- The item must:
+- have Item Type Generic
+- have CPQ assigned as Configurator
+- Authorization and Security settings for the Activity Budget
 Line must allow USE of:
--                               Project
--                               Item
+- Project
+- Item
 Restrictions:
 This function must only be called from a BOD context.
 Pre:    Retry point must be set.
 The Activity Budget Line to be updated must already exist.
 Post:   Commit or abort transaction.
-Input:  iProject                              - Project: Mandatory
-iPlan                                         - Plan: Optional
+Input:  iProject                - Project: Mandatory
+iPlan                   - Plan: Optional
 If the Plan is not specified, the
 default or actual Plan of the Project
 will be used.
-iActivity                                     - Activity: Mandatory
-iSequenceNumber                               - Sequence Number: Mandatory
+iActivity               - Activity: Mandatory
+iSequenceNumber         - Sequence Number: Mandatory
 The Line number of the Budget Line.
-iConfigurableItem                             - Configurable Item: Mandatory
+iConfigurableItem       - Configurable Item: Mandatory
 The Item code to be configured.
-iConfigurationID                              - Configuration ID: Mandatory
+iConfigurationID        - Configuration ID: Mandatory
 The Configuration ID with which the
 configuration is stored in CRM/EQ
 (Enterprise Quoting).
-iConfigurationDetailID                        - Configuration Detail ID: Mandatory
+iConfigurationDetailID  - Configuration Detail ID: Mandatory
 The Configuration Detail ID with which
 the configuration is stored in CRM/EQ.
 Output:
-oProductVariant                               - Product Variant
+oProductVariant         - Product Variant
 The new created Product Variant.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectBudget
-
-The following functions are available: ProjectBudget.GenerateBudgetCostAnalysis ProjectBudget.GenerateControlData ProjectBudget.GetTotalBudgetAmountOfProject ProjectBudget.StartGenerateControlData

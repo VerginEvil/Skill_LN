@@ -23,13 +23,13 @@ The following values for BAAN_SQL_TRACE are available (C indicates that an optio
 | | | |
 |---|---|---|
 | BAAN_SQL_TRACE | C/S | Explanation |
-| 1 | C | Shows the initial parse tree of the SQL statement and the validated parse tree after resolving column names to column references, resolving enum constants to integers and defining the select targets.  |
-| 2 | C+S | Shows the initial execution tree and the execution tree after optimization.  |
+| 1 | C | Shows the initial parse tree of the SQL statement and the validated parse tree after resolving column names to column references, resolving enum constants to integers and defining the select targets. |
+| 2 | C+S | Shows the initial execution tree and the execution tree after optimization. |
 | 4 | C+S | Shows the evaluation of the execution tree. |
 | 100 | C | Shows the efficiency of the statement cache. |
-| 200 | C+S | Shows the network packets being transferred between the client and the server.  |
+| 200 | C+S | Shows the network packets being transferred between the client and the server. |
 | 2000 | C | Shows the interface calls on the statement. |
-| 4000 | C | Same as BAAN_SQL_TRACE=2000, but with extra detailed interface calls.  |
+| 4000 | C | Same as BAAN_SQL_TRACE=2000, but with extra detailed interface calls. |
 You can combine trace options by adding the values. For example:
 ```
 

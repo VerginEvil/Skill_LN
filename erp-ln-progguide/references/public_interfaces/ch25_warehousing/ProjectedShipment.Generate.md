@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectedShipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1174-1177
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1184-1187
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.09 (KB3613618  ).
+This function is available from 2025.09 (KB3613618).
 Syntax: long ProjectedShipment.Generate(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -25,15 +25,15 @@ more projected shipments using the defaults or options as
 provided in the iProcessingOptionSet.
 In case iOrderNumber is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       OutboundOrderLineArray
-The projected shipments will then be (re                      -)generated or deleted
+- selection range fields (From/To)
+- OutboundOrderLineArray
+The projected shipments will then be (re-)generated or deleted
 for the given iOrderOrigin, iOrderNumber, iOrderLine and
 iOrderSequence.
 In case option OutboundOrderLineArray is set then the
 selection range fields (From/To) of the iProcessingOptionSet
 will be ignored. The projected shipments will then be
-(re                      -)generated or deleted for the outbound order lines in the
+(re-)generated or deleted for the outbound order lines in the
 array.
 Opening/Closing of the report is handled by this function.
 Pre:    By default the transaction handling is done within this
@@ -140,17 +140,17 @@ Json.add(OutboundOrderLineArray, OutboundOrderLine)
 ReportName only needs to filled for customized reports, otherwise
 the default report is automatically used.
 ReportName must start with an "r", e.g. "rwhinh423011001"
-Output: oDataProcessed                        - true:  Projected Shipment(s)
-(Re                                                       -)Generated/Deleted.
+Output: oDataProcessed          - true:  Projected Shipment(s)
+(Re-)Generated/Deleted.
 false: Nothing is processed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

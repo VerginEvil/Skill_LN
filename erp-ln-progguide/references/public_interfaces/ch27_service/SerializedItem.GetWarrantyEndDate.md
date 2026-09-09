@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SerializedItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1346-1347
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1358-1359
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2025.10 (KB3613621  ).
+This function is available from 2025.10 (KB3613621).
 Syntax: long SerializedItem.GetWarrantyEndDate(
 domain  tcitem           iItem,
 domain  tcibd.sern       iSerialNumber,
@@ -21,14 +21,14 @@ two days is used as Expiry Term.
 The End Date that is determined by this function is the same as
 the date of the field Terms Expire On on the Warranty tab in
 session tscfg2100m000.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iItem
 Item
 iSerialNumber
 Serial Number; Mandatory.
 Output: oEndDate
-The Warranty End Date in number of days from 01                              -01-0001.
+The Warranty End Date in number of days from 01-01-0001.
 0 if no Supplier Warranty is present.
 oExceptionMessage
 The last message if any message is found. If more than
@@ -37,6 +37,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Determining end date successful.
-<> 0                          - An error occurred.
+Return: 0       - Determining end date successful.
+<> 0    - An error occurred.
 ```

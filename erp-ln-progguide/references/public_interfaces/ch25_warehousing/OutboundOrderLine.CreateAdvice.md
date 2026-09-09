@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1226-1228
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1236-1238
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.03 (KB3537605  ).
+This function is available from 2025.03 (KB3537605).
 Syntax: long OutboundOrderLine.CreateAdvice(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -40,59 +40,59 @@ Usage:        Expl:   This function will generate an outbound advice for the
 given input.
 Pre:    db.retry.point().
 Post:   abort/commit transaction.
-Input:  iOrderOrigin                                  - Mandatory
-iOrderNumber                                          - Mandatory
-iOrderLine                                            - Mandatory
-iOrderSequence                                        - Mandatory
-ioAdviceLine                                          - Optional, when input is 0 a
+Input:  iOrderOrigin                    - Mandatory
+iOrderNumber                    - Mandatory
+iOrderLine                      - Mandatory
+iOrderSequence                  - Mandatory
+ioAdviceLine                    - Optional, when input is 0 a
 new advice line will be
 generated
-iHandlingUnit                                         - Mandatory when ownership
+iHandlingUnit                   - Mandatory when ownership
 registration is by physical item
 or allocation registration is by
 physical item.
-iHandlingUnitStpSequence                              - Optional
-iToShipmentHandlingUnit                               - Optional
-iPackageDefinition                                    - Optional
-iFromLocation                                         - Mandatory when item and
+iHandlingUnitStpSequence        - Optional
+iToShipmentHandlingUnit         - Optional
+iPackageDefinition              - Optional
+iFromLocation                   - Mandatory when item and
 warehouse are location
 controlled and Handling Unit is
 empty.
-iToLocation                                           - Optional
-ioRun                                                 - Optional, when left empty a
+iToLocation                     - Optional
+ioRun                           - Optional, when left empty a
 new run will be generated
-iAdvisedQuantityISU                                   - Mandatory
-iUnit                                                 - Mandatory
-iLot                                                  - Mandatory if the item is lot
+iAdvisedQuantityISU             - Mandatory
+iUnit                           - Mandatory
+iLot                            - Mandatory if the item is lot
 controlled in inventory and
 handling unit is empty
-iSerial                                               - Mandatory if the item is
+iSerial                         - Mandatory if the item is
 serial controlled in inventory
 and handling unit is empty
-iEffectivityUnit                                      - Mandatory if lot is filled and
+iEffectivityUnit                - Mandatory if lot is filled and
 item is unit effective and
 handling unit is empty
-iInventoryDate                                        - Mandatory if the item uses
+iInventoryDate                  - Mandatory if the item uses
 FIFO or LIFO as its outbound
 method and handling unit is
 empty
-iBomLine                                              - Mandatory if outbound line is
+iBomLine                        - Mandatory if outbound line is
 issued by material
-iSpecification                                        - Optional. When left empty
+iSpecification                  - Optional. When left empty
 specification will be copied
 from outbound line or handling
 unit if applicable
-iLoad                                                 - Optional
-iShipment                                             - Optional
-iShipmentLine                                         - Optional
-iShipmentLineReferenceDist                            - Optional
-Output: ioAdviceLine                                  - Advice Line
-ioRun                                                 - Run
-oExceptionMessage                                     - The last message if any
+iLoad                           - Optional
+iShipment                       - Optional
+iShipmentLine                   - Optional
+iShipmentLineReferenceDist      - Optional
+Output: ioAdviceLine                    - Advice Line
+ioRun                           - Run
+oExceptionMessage               - The last message if any
 message is found. If more than
 one message is given, these are
 present in the oExceptionID.
-oExceptionID                                          - An ID that refers to the
+oExceptionID                    - An ID that refers to the
 exception information. Use the
 functions in Exception to get
 all relevant information.

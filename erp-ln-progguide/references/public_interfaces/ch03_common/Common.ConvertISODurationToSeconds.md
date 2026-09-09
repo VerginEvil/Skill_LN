@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 101-102
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 102-102
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2024.03 (KB2324302  ).
+This function is available from 2024.03 (KB2324302).
 Syntax: long Common.ConvertISODurationToSeconds(
 domain  tcmcs.st24       iISODuration,
 ref             double           oNumberOfSeconds,
@@ -27,8 +27,8 @@ ISO Duration          "PT2.5H3.1M4.5S"
 Number of seconds     9190.5
 Pre     : NA
 Post    : NA
-Input   : iISODuration                        - The ISO duration (mandatory)
-Output  : oNumberOfSeconds                    - The number of seconds
+Input   : iISODuration          - The ISO duration (mandatory)
+Output  : oNumberOfSeconds      - The number of seconds
 oExceptionMessage     The last message if any message is
 found. If more than one message is
 found, these are present in the

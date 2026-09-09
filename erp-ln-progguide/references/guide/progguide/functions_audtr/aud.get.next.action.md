@@ -17,14 +17,14 @@ If the maximum number of opened files has been reached, the function uses the ac
 | `ref long` | `table.id` |  Id of the table on which the action occurred that is used to retrieve the detailed action data using functions [aud.get.field.status()](aud.get.field.status.md), [aud.put.old.field.value()](aud.put.old.field.value.md), and [aud.put.new.field.value()](aud.put.old.field.value.md). This id is also used to get the meta data information, in case it has been changed.  |
 | `ref long` | `company` |  Infor Enterprise Server company that contains the table on which the database action was done.  |
 | `ref string` | `table.code` |  The code of the updated database table  |
-| `ref bool` | `meta.data.changed` |  |
+| `ref bool` | `meta.data.changed` |    |
 | `ref long` | `current.action.number` |  Sequence number of the action within the transaction.  |
 | `ref string` | `action.type` |  A character that specifies the type of action retrieved. The string contains an 'I' for inserting a row, 'U' for updating a row and a 'D' for deleting a row. For table operations the string contains a 'C' for creating a table, 'L' for clearing a table and 'R' for dropping a table.  |
 
 ## Return values
 | | |
 |---|---|
-| AUD_OK | Next transaction in the selection is determined and transaction header data is retrieved  |
+| AUD_OK | Next transaction in the selection is determined and transaction header data is retrieved |
 | AUD_FAIL | The transaction data could not be retrieved |
 | AUD_NO_MORE_ACTIONS | There are no more transactions in the selection |
 
@@ -51,5 +51,7 @@ Note: The old and new field value is not available if the status shows the field
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

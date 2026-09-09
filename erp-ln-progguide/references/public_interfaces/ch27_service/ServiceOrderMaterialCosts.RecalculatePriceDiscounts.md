@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderMaterialCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1455-1456
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1468-1469
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2026.07 (KB3680879  ).
+This function is available from 2026.07 (KB3680879).
 Syntax: long ServiceOrderMaterialCosts.RecalculatePriceDiscounts(
 domain  tcorno           iServiceOrder,
 domain  tcpono           iMaterialLine,
@@ -35,18 +35,14 @@ NAME                    TYPE                    DEFAULT
 OverwriteManualPrice    domain  tcyesno         tcyesno.yes
 OverwriteManualDiscounts
 domain  tcyesno         tcyesno.yes
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```
-
-## Public Interfaces for ServiceOrderCostLine
-
-The following functions are available: ServiceOrderCostLine.Cost

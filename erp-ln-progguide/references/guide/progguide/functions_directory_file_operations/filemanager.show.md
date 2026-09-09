@@ -18,4 +18,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

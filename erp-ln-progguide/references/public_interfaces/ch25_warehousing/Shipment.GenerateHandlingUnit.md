@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1143-1144
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1153-1153
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long Shipment.GenerateHandlingUnit(
 domain  whinh.shpm       iShipment,
 ref     domain  whhuid           oHandlingUnit,
@@ -19,13 +19,13 @@ given Shipment and all shipment lines.
 Pre:    db.retry.point must be set
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
-Input:  iShipment                     - Shipment (Mandatory)
-Output: oHandlingUnit                         - Generated Handling Unit
-oExceptionMessage                             - The last message if any message is
+Input:  iShipment       - Shipment (Mandatory)
+Output: oHandlingUnit           - Generated Handling Unit
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

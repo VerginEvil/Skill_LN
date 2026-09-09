@@ -30,4 +30,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [seq.processor.push.decompressor()](seq.processor.push.decompressor.md)
+
 - [seq.processor.finish()](seq.processor.finish.md)

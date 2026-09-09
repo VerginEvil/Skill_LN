@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CalculatedItemCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 598-599
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 601-602
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2023.12 (KB2303582  ).
+This function is available from 2023.12 (KB2303582).
 Syntax: long CalculatedItemCosts.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -24,10 +24,10 @@ in Multi Main view (ticpr2601m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

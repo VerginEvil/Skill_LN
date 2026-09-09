@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PrepackingAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1312-1314
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1324-1325
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2026.05 (KB3663694  ).
+This function is available from 2026.05 (KB3663694).
 Syntax: long PrepackingAdvice.StartPrintPackingSheet(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -24,7 +24,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts the session Print Packing Sheet
 (whwmd5440m000). Depending on the main table of the calling
-session, Non                      -Consecutive Record Selection (NCRS) is used.
+session, Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Prepacking Advice(whwmd540) or
 Prepacking Advice Lines (whwmd545) or
@@ -70,18 +70,14 @@ iToPrepackingAdviceStatus
 To Prepacking Advice Status selection field is filled
 with this value. (when iIgnoreSelectionFields is false
 and NCRS is not applicable). Optional
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for ShipmentPlanning
-
-The following functions are available: ShipmentPlanning.StartOverview ShipmentPlanning.StartOverviewV2

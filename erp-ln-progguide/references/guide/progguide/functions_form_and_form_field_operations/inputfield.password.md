@@ -9,11 +9,12 @@ This causes input to the specified field to be displayed as asterisks (*). To sp
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `field_name(18),...` |   |
+| `string` | `field_name(18),...` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

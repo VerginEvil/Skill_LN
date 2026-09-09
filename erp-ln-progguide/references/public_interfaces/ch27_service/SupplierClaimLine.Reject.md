@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplierClaimLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1536-1537
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1551-1552
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long SupplierClaimLine.Reject(
 domain  tcorno           iSupplierClaim,
 domain  tcpono           iClaimLine,
@@ -30,37 +30,37 @@ iAllowToUpdateHeaderStatus.
 Pre     : a db.retry.point() must have been specified.
 Post    : an abort.transaction() or commit.transaction() must be
 executed.
-Input   : iSupplierClaim                              - The Supplier Claim
+Input   : iSupplierClaim                - The Supplier Claim
 Mandatory
-iClaimLine                                            - The Claim Line
+iClaimLine                    - The Claim Line
 Mandatory
 iAllowToUpdateHeaderStatus
--                                                       If true, and the rejected
+- If true, and the rejected
 Claim Line is the last one,
 the Claim header status is
 set to Rejected as well.
-iRejectedBy                                           - The login code of the user who
+iRejectedBy                   - The login code of the user who
 is rejecting.
 Mandatory.
-iRejectionReason                                      - The Rejection Reason.
+iRejectionReason              - The Rejection Reason.
 Note that only a reason code of
 type Claim Rejection which is
 valid on the current date is
 allowed.
 Mandatory.
-iRejectionDate                                        - The Rejection Date
+iRejectionDate                - The Rejection Date
 Mandatory
-iRejectionText                                        - The Rejection Text,
+iRejectionText                - The Rejection Text,
 A valid text number.
 Not mandatory.
-Output  : oExceptionMessage                           - The last message if any message is
+Output  : oExceptionMessage             - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                  - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return  : 0                                           - No error
-<> 0                                                  - An error occurred
+Return  : 0                             - No error
+<> 0                          - An error occurred
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1512-1513
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1527-1528
 
 ```baan
 DLL:   tsextspcapi
-This function is available from     2026.06 (KB3669704  ).
+This function is available from 2026.06 (KB3669704).
 Syntax: long PlannedActivity.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,10 +31,10 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -69,11 +69,11 @@ A Set to set the view fields when the index used is not
 index 1. (Optional)
 INDEX   NAME                    TYPE                    DEFAULT
 ================================================================
-2                      -4,6-8 Item                    domain  tcitem          empty
-2                      -4,6-8 SerialNumber            domain  tcibd.sern      empty
-2,4,7                      -8 StartTime               domain  tsmdm.pldt      0
+2-4,6-8 Item                    domain  tcitem          empty
+2-4,6-8 SerialNumber            domain  tcibd.sern      empty
+2,4,7-8 StartTime               domain  tsmdm.pldt      0
 2,6     ReferenceActivity       domain  tsacm.cact      empty
-5                      -7     InstallationGroup       domain  tsbsc.clst      empty
+5-7     InstallationGroup       domain  tsbsc.clst      empty
 8       MaintenanceScenario     domain  tcorno          empty
 Output:
 oPlannedActivity

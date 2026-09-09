@@ -23,8 +23,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json' is a JSON value of type JSON_TYPE_OBJECT.
+
 - The specified key exists.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

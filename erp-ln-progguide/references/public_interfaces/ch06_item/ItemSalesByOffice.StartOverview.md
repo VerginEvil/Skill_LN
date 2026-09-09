@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemSalesByOffice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 209-211
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 210-211
 
 ```baan
 DLL:   tdextisaapi
-This function is available from     2024.12 (KB3538855  ).
+This function is available from 2024.12 (KB3538855).
 Syntax: long ItemSalesByOffice.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -60,7 +60,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ItemPlanning
-
-The following functions are available: ItemPlanning.StartDetail ItemPlanning.StartOverview

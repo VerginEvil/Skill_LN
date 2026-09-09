@@ -12,21 +12,31 @@ More specifically, the inverse function [seq.r.short()](seq.r.short.md) will ret
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `value` |  The value to write into the file It is not an error (but it is not encouraged) to supply a value outside the unsigned 16-bit value range [0 … 2^16 - 1] (i.e. [0 … 0xffff] or [0 … 65,535]), for which the inverse function [seq.r.short()](seq.r.short.md) will retrieve the original supplied integer value. Explicit wrapping of the input value may be done beforehand by means of the 'remainder after division by 0x10000' operator `\ 0x10000`. However, for a negative input value, the result of the expression `value \ 0x10000` is still not in the desired range [0 … 0xffff] but in the range [-0xffff] … 0]. For complete wrapping to the desired range [0 … 0xffff], the following expression may be used: `(value \ 0x10000 + 0x10000) \ 0x10000`. In 64-bit mode, the bshell is less forgiving than in 32-bit mode. When the bshell is in 64-bit mode, it *is* a fatal error to supply a value outside the signed 32-bit value range [-2^31 … 2^31 - 1] (i.e. [-2,147,483,648 … 2,147,483,647]).  |
+| `long` | `value` |  The value to write into the file It is not an error (but it is not encouraged) to supply a value outside the unsigned 16-bit value range [0 … 2^16 - 1] (i.e. [0 … 0xffff] or [0 … 65,535]), for which the inverse function [seq.r.short()](seq.r.short.md) will retrieve the original supplied integer value. Explicit wrapping of the input value may be done beforehand by means of the 'remainder after division by 0x10000' operator `\ 0x10000`. However, for a negative input value, the result of the expression `value \ 0x10000` is still not in the desired range [0 … 0xffff] but in the range [-0xffff] … 0]. For complete wrapping to the desired range [0 … 0xffff], the following expression may be used: `(value \ 0x10000 + 0x10000) \ 0x10000`. In [64-bit mode](../3gl_features/data_types.md#Long64), the bshell is less forgiving than in [32-bit mode](../3gl_features/data_types.md#Long32). When the bshell is in 64-bit mode, it *is* a fatal error to supply a value outside the signed 32-bit value range [-2^31 … 2^31 - 1] (i.e. [-2,147,483,648 … 2,147,483,647]).  |
 | `long` | `fp` |  The file pointer returned by [seq.open()](seq.open.md) when the particular file was opened. This function writes 2 bytes to the file.  |
 
 ## Return values
 | | |
 |---|---|
-| -1 | Error, most probably *fp* is not a valid file pointer. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*.  |
+| -1 | Error, most probably *fp* is not a valid file pointer. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*. |
 | 0 | Success. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- Related operations: [seq.w.long()](seq.w.long.md)
-- Inverse operations: [seq.r.long()](seq.r.long.md), [seq.r.short()](seq.r.short.md)
-- Special operations for UTC long format values: [seq.r.utc()](seq.r.utc.md), [seq.w.utc()](seq.w.utc.md)
+- [seq.w.long()](seq.w.long.md)
+
+- [seq.r.long()](seq.r.long.md)
+
+- [seq.r.short()](seq.r.short.md)
+
+- [UTC](../functions_date_time_zones/overview.md#utc)
+
+- [seq.r.utc()](seq.r.utc.md)
+
+- [seq.w.utc()](seq.w.utc.md)
+
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

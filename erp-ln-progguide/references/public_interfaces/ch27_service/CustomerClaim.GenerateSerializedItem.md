@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1523-1524
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1537-1538
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long CustomerClaim.GenerateSerializedItem(
 domain  tcorno           iCustomerClaim,
 domain  tcpono           iClaimLine,
@@ -23,7 +23,7 @@ the given Customer Claim (Delivery) Line.
 A new serial will be generated for the item defined on the
 Customer Claim Line or, when iDeliveryLine is filled, on the
 Customer Claim Delivery Line.
-The sold                      -to business partner defined on the Customer Claim will
+The sold-to business partner defined on the Customer Claim will
 be set as owner of the serialized item.
 Optionally the Customer Claim (Delivery) Line can be updated
 with the generated serial number.
@@ -55,10 +55,10 @@ iUpdateSerialOnCustomerClaim
 Controls if the serial number must be set on the
 Customer Claim (Delivery) Line based on which the
 serialized item is generated.
--                               yes: The serial number on the Customer Claim
+- yes: The serial number on the Customer Claim
 (Delivery) Line is updated with the generated
 serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -69,9 +69,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated succesfull and (optionally)
+Return: 0       - Serialized Item generated succesfull and (optionally)
 updated on the Customer Claim (Delivery) Line.
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the Customer Claim (Delivery) Line

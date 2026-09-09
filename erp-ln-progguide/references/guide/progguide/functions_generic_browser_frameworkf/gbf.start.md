@@ -39,18 +39,25 @@ When the GBF is done it will return to the calling application, returning contro
 | 0 | Successful completion |
 | GBF.NO.MEMORY | Not enough memory |
 | GBF.ILL.LEVEL | Illegal read.levels or show.levels given |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
-| GBF.CHILD.ABORT | Exited on a child request, see gbf.menu.action()  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
+| GBF.CHILD.ABORT | Exited on a child request, see gbf.menu.action() |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

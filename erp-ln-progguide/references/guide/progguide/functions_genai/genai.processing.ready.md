@@ -12,4 +12,4 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 Notes  This function must only be called if a GenAI command is active.
 
 ## Related topics
-- [GenAI Functionality on Form Overview](overview_and_synopsis.md)
+- [GenAI Functionality on Form](overview_and_synopsis.md)

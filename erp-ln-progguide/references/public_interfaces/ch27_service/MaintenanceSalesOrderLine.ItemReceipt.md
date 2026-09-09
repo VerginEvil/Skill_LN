@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1481-1482
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1496-1496
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2025.12 (KB3636915  ).
+This function is available from 2025.12 (KB3636915).
 Syntax: long MaintenanceSalesOrderLine.ItemReceipt(
 domain  tcorno           iMaintenanceSalesOrder,
 domain  tcpono           iMaintenanceSalesOrderLine,
@@ -41,6 +41,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error situation
+Return: 0       - No Error
+<> 0    - Error situation
 ```

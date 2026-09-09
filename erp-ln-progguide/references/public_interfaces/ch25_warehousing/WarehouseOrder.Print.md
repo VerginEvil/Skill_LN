@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1018-1020
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1028-1030
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.09 (KB3687883  ).
+This function is available from 2026.09 (KB3687883).
 Syntax: long WarehouseOrder.Print(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -138,7 +138,7 @@ Json.add(OrderLineArray, OrderLine)
 ReportName only needs to filled for customized reports, otherwise
 the report related to the SortOption is automatically used.
 ReportName must start with an "r", e.g. "rwhinh240011000"
-Output: o.data.printed                - true:  Order Printed.
+Output: o.data.printed  - true:  Order Printed.
 false: Nothing Printed.
 Return: 0: OK, <> 0: Error
 ```

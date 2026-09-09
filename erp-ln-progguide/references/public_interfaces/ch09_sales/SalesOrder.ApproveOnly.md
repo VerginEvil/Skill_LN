@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 310-311
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 312-313
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2024.09 (KB3516530  ).
+This function is available from 2024.09 (KB3516530).
 Syntax: long SalesOrder.ApproveOnly(
 domain  tcorno           iSalesOrder,
 domain  tcgen.ynds       iRecalculatePricesAndDiscounts,
@@ -25,41 +25,41 @@ Notes:
 start automatic order steps if necessary:
 'SalesOrderLine.StartAutomaticProcessing'
 * Promotions are not applied when Approving via this Public
-Interface, because promotions require user                          -interaction.
-Pre:    Caller must set retry              -point
+Interface, because promotions require user-interaction.
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales order (Mandatory)
+Input:  iSalesOrder             - Sales order (Mandatory)
 iRecalculatePricesAndDiscounts
--                                               Recalculate prices and discounts:
-No                                                    - Do not recalculate
-Yes                                                   - Recalculate
+- Recalculate prices and discounts:
+No   - Do not recalculate
+Yes  - Recalculate
 Use Default Settings
--                                                       Consider the parameter and/or
+- Consider the parameter and/or
 sales office setting
 'Recalculate Prices and Discounts'
 iRedetermineMaterialPriceInformation
--                                               Redetermine Material Price Information
-No                                                    - Do not redetermine
-Yes                                                   - Redetermine
+- Redetermine Material Price Information
+No   - Do not redetermine
+Yes  - Redetermine
 Use Default Settings
--                                                       Consider the parameter and/or
+- Consider the parameter and/or
 sales office setting
 'Redetermine Material Information
 in Sales'
 iRecalculateAdditionalCosts
--                                               Recalculate additional costs.
-No                                                    - Do not recalculate
-Yes                                                   - See 'Use Default Settings'
+- Recalculate additional costs.
+No   - Do not recalculate
+Yes  - See 'Use Default Settings'
 Use Default Settings
--                                                       Consider the parameter and/or
+- Consider the parameter and/or
 sales office setting
 'Recalculation of Additional
 Costs'
 iHandleCommissionsAndRebates
--                                               Allow linking of relations and
+- Allow linking of relations and
 Recalculation of commissions and
 rebates (Yes/No)
-Output: oOrderApproved                        - The order was approved (true/false)
+Output: oOrderApproved          - The order was approved (true/false)
 oExceptionMessage       The last message if any message is
 found. If more than one message is
 given, these are present in the
@@ -68,7 +68,7 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Success.
+Return: 0                       - Success.
 Note: The order may not be approved in
 this situation. However, the caller
 must still commit the transaction,
@@ -77,5 +77,5 @@ even if the order is not approved
 This is necessary, for example, to
 commit the check results in ZWF
 (e.g., export and sanction list screening).
-<> 0                                          - An error occurred
+<> 0                    - An error occurred
 ```

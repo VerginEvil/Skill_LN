@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 559-560
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 563-564
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2022.07 (KB2248039  ).
+This function is available from 2022.07 (KB2248039).
 Syntax: long PlannedOrders.StartGenerate(
 long             iStartMode,
 domain  cpcom.plnc       iPlanningScenario,
@@ -17,15 +17,15 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface starts the process session
 Generate Order Planning (Item) (cprrp1220m000).
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel
 sessions that can be manipulated
 simultaneously.

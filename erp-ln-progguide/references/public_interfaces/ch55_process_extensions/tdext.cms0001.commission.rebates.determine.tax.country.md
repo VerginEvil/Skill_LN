@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for CommissionsRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1983-1985
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2002-2004
 
 ```baan
 Syntax: long tdext.cms0001.commission.rebates.determine.tax.country(
@@ -37,8 +37,8 @@ The first 8 input arguments uniquely identify a record from
 table tdcms050. These arguments can be used to read
 additional data from tdcms050, or from any of the sales
 order related tables.
-* Master                        -data context
-When the method is invoked in a master                          -data context, the
+* Master-data context
+When the method is invoked in a master-data context, the
 first eight input arguments are left empty except for the
 input argument i.relation, which will be populated
 if available. This means that, in this context, only
@@ -46,33 +46,33 @@ i.relation among the initial eight arguments may contain a
 value; all others remain unset.
 Fallback Logic:
 If either of the following situations occurs:
-* The extension returns a non                        -zero return-value, or
-* The tax                        -country is left empty
-Then, LN will automatically revert to the standard tax                      -country
+* The extension returns a non-zero return-value, or
+* The tax-country is left empty
+Then, LN will automatically revert to the standard tax-country
 determination logic.
 Pre:    NA
 Post:   NA
-Input:  i.type                                        - Type
+Input:  i.type                          - Type
 Possible value(s):
 * tdcms.type.commission
 (Commission)
 * tdcms.type.rebate
 (Rebate)
-i.sales.order                                         - Sales Order
-i.sales.order.line                                    - Sales Order Line
-i.sales.order.line.sequence                           - Sales Sequence number
-i.actual.delivery.line.sequence                       - Sales Actual Delivery
+i.sales.order                   - Sales Order
+i.sales.order.line              - Sales Order Line
+i.sales.order.line.sequence     - Sales Sequence number
+i.actual.delivery.line.sequence - Sales Actual Delivery
 Sequence number
-i.invoice.line                                        - Invoice Line
-i.relation                                            - Relation
-i.serial.number                                       - Serial Number
-i.relation.country                                    - Relation Country
+i.invoice.line                  - Invoice Line
+i.relation                      - Relation
+i.serial.number                 - Serial Number
+i.relation.country              - Relation Country
 i.tax.country.from.standard.logic
--                                                       Tax Country, as determined by
+- Tax Country, as determined by
 the standard logic
-Output: o.tax.country                                 - Tax Country, as determined by
+Output: o.tax.country                   - Tax Country, as determined by
 the extension logic
-Return: 0                                     -       Success
-DALHOOKERROR                                  -       When an error occurs in the
+Return: 0                       -       Success
+DALHOOKERROR            -       When an error occurs in the
 determination of the tax country
 ```

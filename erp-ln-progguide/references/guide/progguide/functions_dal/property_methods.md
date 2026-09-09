@@ -10,6 +10,9 @@ You can call this function from both UI and DAL scripts.
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [DAL hooks](dal_hooks.md)
+
 - [Transition issues (BAAN IV to Infor Enterprise Server)](transition_issues_baan_iv_to_baanerp.md)

@@ -9,7 +9,7 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `string_expres` |   |
+| `string` | `string_expres` |    |
 
 ## Return values
 FALSE

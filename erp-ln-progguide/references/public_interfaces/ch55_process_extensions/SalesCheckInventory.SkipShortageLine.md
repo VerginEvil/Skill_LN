@@ -4,11 +4,12 @@
 >
 > Group: Process Extensions for SalesCheckInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2216-2218
-
-Skips Sales Order Inventory Shortage Lines during Sales Check Inventory. This process extension is available from 2021.04 ( KB2181351 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2239-2241
 
 ```baan
+Skips Sales Order Inventory Shortage Lines during Sales Check Inventory.
+This process extension is available from 2021.04 (KB2181351).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension SalesCheckInventory.SkipShortageLine can be used
 to skip Sales Order Inventory Shortage Lines during Sales Check
 Inventory.
@@ -18,15 +19,15 @@ Order Line Components. Sales Order Line Components are used when
 sales order line is set to 'Component Lines'.
 Shortage Lines for Sales Quotes are not supported/handled in this flow.
 Session where this Process Extension can be implemented:
--               Check Inventory Sales Orders (tdsls4217m000)
+- Check Inventory Sales Orders (tdsls4217m000)
 Fields that are available to be used in this Process Extension:
--               Only the primary key fields of the Sales Order Inventory Shortage
+- Only the primary key fields of the Sales Order Inventory Shortage
 Lines (tdsls417) are current. These fields are:
--                       tdsls417.orno
--                       tdsls417.pono
--                       tdsls417.sqnb
--                       tdsls417.csqn
--                       tdsls417.koor - Applicable values in this process are
+- tdsls417.orno
+- tdsls417.pono
+- tdsls417.sqnb
+- tdsls417.csqn
+- tdsls417.koor - Applicable values in this process are
 'Sales Order Line' and
 'Sales Order Line Component'
 The Check Inventory Sales Orders process checks and rechecks
@@ -37,11 +38,11 @@ from the sales order (line) and also sales order component line in case
 of component handling to build skip conditions.
 External variables that are available to be used in this Process
 Extension:
--               proc_ext_skip_shortage_line_rechecking [ type: boolean ].
+- proc_ext_skip_shortage_line_rechecking [ type: boolean ].
 Supported values are:
--                       True  - The process is rechecking inventory for (promised)
+- True  - The process is rechecking inventory for (promised)
 lines.
--                       False - The process is checking the inventory for lines.
+- False - The process is checking the inventory for lines.
 Note: tables and external variables must also be declared in the
 Process Extension.
 Pseudocode:
@@ -79,7 +80,3 @@ endcase
 return (false)
 }
 ```
-
-## Process Extensions for SalesContract
-
-The following process extension(s) is/are available: SalesContract.SkipPrintSalesContract

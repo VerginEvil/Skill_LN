@@ -9,8 +9,8 @@ This sets the value of a specified [environment variable](../misc/bshell_environ
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `env_var` |  |
-| `string` | `env_value` |  |
+| `string` | `env_var` |    |
+| `string` | `env_value` |    |
 
 ## Return values
 | | |
@@ -35,5 +35,7 @@ ret = setenv("MY_ENV_VAR", "this_is_the_value")
 
 ## Related topics
 - [getenv$()](getenv.md)
+
 - [Bshell environment variables](../misc/bshell_environment_variables.md)
+
 - [System and user information overview and synopsis](overview_and_synopsis.md)

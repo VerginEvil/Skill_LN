@@ -19,4 +19,5 @@ CURRENT_DATE
 
 ## Related topics
 - [CURRENT_TIMESTAMP](current_timestamp.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

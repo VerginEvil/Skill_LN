@@ -1,7 +1,7 @@
 # cmf.sendToPerson()
 
 ## Syntax:
-`function long cmf.sendtoperson( long mid, long aid, long display, long show.progress, ref string message_string(), long convert, string filename1 ... )`
+`function long cmf.sendtoperson( long mid, long aid, long display, long show.progress, ref string message_string(), long convert, string filename1... )`
 
 ## Description
 Takes the message object and sends it to the recipients in the addresslist object that is identified by aid.
@@ -14,26 +14,29 @@ Any errors encountered are stored for each recipient in the addresslist object. 
 |---|---|---|
 | `long` | `mid` |  Message object identification.  |
 | `long` | `aid` |  Identification of the address list.  |
-| `long` | `display` |  |
-| `long` | `show.progress` |  |
+| `long` | `display` |    |
+| `long` | `show.progress` |    |
 | `ref string` | `message_string()` |  Constructed error message which contains the number of recipients that could not be reached, and the error details. If no errors, message_string contains a success message  |
-| `long` | `convert` |  |
-| `string` | `filename1 ...` |   |
+| `long` | `convert` |    |
+| `string` | `filename1...` |    |
 
 ## Return values
 | | |
 |---|---|
 | 0 | Success for all recipients. |
-| -1 | Failure for some or all recipients (Check recipient list object).  |
+| -1 | Failure for some or all recipients (Check recipient list object). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 This function is marked as 'untrusted' and can therefore not be used in custom objects in a cloud-ready environment. See section about [managed execution](../misc/managed_execution.md) for more information.
-Note
+
 - Object id's can be negative
+
 - The calling application is responsible for deleting message and address list object after this function has finished.
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

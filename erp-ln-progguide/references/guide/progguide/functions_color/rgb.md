@@ -9,9 +9,9 @@ Use this to compose a color by specifying its red, green, and blue intensities. 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `red` |  |
-| `long` | `green` |  |
-| `long` | `blue` |  |
+| `long` | `red` |    |
+| `long` | `green` |    |
+| `long` | `blue` |    |
 
 ## Return values
 A long which can be used as a color in graphical contexts such as windows, user interface controls, and so on.
@@ -33,4 +33,5 @@ long new_color, red_int, green_int, blue_int
 
 ## Related topics
 - [Colors overview](overview.md)
+
 - [Colors synopsis](synopsis.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for IntegrationTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2035-2036
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2054-2055
 
 ```baan
 Syntax: long tfext.gld0002.get.max.number.of.document.lines(
@@ -22,11 +22,11 @@ Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
 Output: o.max.number.of.document.lines
--                                               The maximum number of document lines
+- The maximum number of document lines
 to be used during posting integration
 transactions.
-Return: 0                                     - Success
-DALHOOKERROR                                  - Error situation
+Return: 0                       - Success
+DALHOOKERROR            - Error situation
 Example:
 o.max.number.of.document.lines = 900
 ```

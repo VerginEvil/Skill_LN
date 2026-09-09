@@ -14,15 +14,25 @@ Reads a 32-bit value from the file. The 4 bytes read from the file are interpret
 ## Return values
 | | |
 |---|---|
-| -1 |  Error, most probably *fp* is not a valid file pointer or end-of-file was reached. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*. Notice that this error value -1 cannot be distinguished from normal value -1. This is problematic, unless it is known that value -1 is not expected as a normal value to be read from the file.  |
-| >= -2^31 and < 2^31  | The numerical value of the 4 bytes read from the supplied file. This is a value in the signed 32-bit range [-2^31 … 2^31 - 1] (i.e. [-2,147,483,648 … 2,147,483,647]). |
+| -1 | Error, most probably *fp* is not a valid file pointer or end-of-file was reached. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*. Notice that this error value -1 cannot be distinguished from normal value -1. This is problematic, unless it is known that value -1 is not expected as a normal value to be read from the file. |
+| >= -2^31 and < 2^31 | The numerical value of the 4 bytes read from the supplied file. This is a value in the signed 32-bit range [-2^31 … 2^31 - 1] (i.e. [-2,147,483,648 … 2,147,483,647]). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- Related operations: [seq.r.short()](seq.r.short.md)
-- Inverse operations: [seq.w.long()](seq.w.long.md), [seq.w.short()](seq.w.short.md)
-- Special operations for UTC long format values: [seq.r.utc()](seq.r.utc.md), [seq.w.utc()](seq.w.utc.md)
+- [seq.r.short()](seq.r.short.md)
+
+- [seq.w.long()](seq.w.long.md)
+
+- [seq.w.short()](seq.w.short.md)
+
+- [UTC](../functions_date_time_zones/overview.md#utc)
+
+- [seq.r.utc()](seq.r.utc.md)
+
+- [seq.w.utc()](seq.w.utc.md)
+
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

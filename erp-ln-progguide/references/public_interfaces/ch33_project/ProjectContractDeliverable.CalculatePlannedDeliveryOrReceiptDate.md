@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectContractDeliverable
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1689-1690
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1708-1709
 
 ```baan
 DLL:   tpextpdmapi
-This function is available from     2024.08 (KB2329987  ).
+This function is available from 2024.08 (KB2329987).
 Syntax: long ProjectContractDeliverable.CalculatePlannedDeliveryOrReceiptDate(
 domain  tccono           iContract,
 domain  tpctm.cnln       iContractLine,
@@ -39,43 +39,43 @@ If the planned receipt date is zero, it will be
 calculated forward from the planned delivery date.
 Pre:    Not Applicable
 Post:   Not Applicable
-Input:  iContract                             - Contract.
+Input:  iContract               - Contract.
 mandatory, if iProject is empty
 optional, if iProject is provided
-iContractLine                                 - Contract Line.
+iContractLine           - Contract Line.
 mandatory, if iProject is empty
 optional, if iProject is provided
-iTypeOfDeliverable                            - Type of Delivery. Mandatory
-iReturnDeliverable                            - Return Deliverable(Yes/No). Mandatory
-iProject                                      - Project code linked to contract
+iTypeOfDeliverable      - Type of Delivery. Mandatory
+iReturnDeliverable      - Return Deliverable(Yes/No). Mandatory
+iProject                - Project code linked to contract
 deliverable line. Optional
-iItem                                         - Item. Mandatory
-iSite                                         - Site. Optional
-iWarehouse                                    - Warehouse. Mandatory
-iRoute                                        - The Route linked to the contract
+iItem                   - Item. Mandatory
+iSite                   - Site. Optional
+iWarehouse              - Warehouse. Mandatory
+iRoute                  - The Route linked to the contract
 deliverable. Optional
-iCarrier                                      - Carrier for the contract
+iCarrier                - Carrier for the contract
 deliverable. Optional
-iServiceLevel                                 - Service Level. Optional
-iTermsOfDelivery                              - Delivery terms for the contract
+iServiceLevel           - Service Level. Optional
+iTermsOfDelivery        - Delivery terms for the contract
 deliverable. Optional
-iPointOfTitlePassage                          - The Point of title passage for the
+iPointOfTitlePassage    - The Point of title passage for the
 contract deliverable. Optional
-iShipToAddress                                - Address code of the ship to
+iShipToAddress          - Address code of the ship to
 business partner. Optional
-iShipToBusinessPartner                        - Ship to Business Partner. Mandatory
-iPlannedDeliveryDate                          - Planned Delivery Date. Optional
-iPlannedReceiptDate                           - Planned Receipt Date. Optional
-Output: oPlannedDeliveryDate                  - Planned Delivery Date
-oPlannedReceiptDate                           - Planned Receipt Date
-oExceptionMessage                             - The last message if any message is
+iShipToBusinessPartner  - Ship to Business Partner. Mandatory
+iPlannedDeliveryDate    - Planned Delivery Date. Optional
+iPlannedReceiptDate     - Planned Receipt Date. Optional
+Output: oPlannedDeliveryDate    - Planned Delivery Date
+oPlannedReceiptDate     - Planned Receipt Date
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     - Planned Receipt date, Planned Delivery date determined
-<> 0                          - Planned Receipt date, Planned Delivery date not determined
+Return: 0       - Planned Receipt date, Planned Delivery date determined
+<> 0    - Planned Receipt date, Planned Delivery date not determined
 ```

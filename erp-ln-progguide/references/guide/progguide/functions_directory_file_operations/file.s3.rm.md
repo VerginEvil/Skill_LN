@@ -44,4 +44,5 @@ file.s3.rm(S3.location.appdata, "test/test2")
 
 ## Related topics
 - [seq.s3.open.file()](seq.s3.open.file.md)
+
 - [seq.s3.ls()](seq.s3.ls.md)

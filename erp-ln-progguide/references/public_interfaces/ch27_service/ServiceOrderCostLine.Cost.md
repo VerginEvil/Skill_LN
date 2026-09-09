@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderCostLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1456-1460
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1471-1474
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.06 (KB2239580  ).
+This function is available from 2022.06 (KB2239580).
 Syntax: long ServiceOrderCostLine.Cost(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tsmdm.cotp       iCostType,
@@ -56,36 +56,36 @@ Pre:    No open database transaction should be present (so before
 calling this function the existing database transactions should
 either have been aborted or committed).
 Post:
-Input:  iServiceOrder                 -
+Input:  iServiceOrder   -
 The service order.
 Mandatory input.
-iCostType                             -
+iCostType       -
 The cost Type.
 Allowed values are:
-tsmdm.cotp.material                                       - To cost a material line
+tsmdm.cotp.material - To cost a material line
 from tssoc220.
-tsmdm.cotp.labor                                       - To cost a labor line from
+tsmdm.cotp.labor - To cost a labor line from
 tssoc230.
 And the following cost types are from the other costs
 tssoc240.
-tsmdm.cotp.tool                                        - To cost a line with a tool.
-tsmdm.cotp.travel                                      - To cost a travel line.
-tsmdm.cotp.subcon                                      - To cost a subcontracting line.
-tsmdm.cotp.helpdesk                                       - To cost a helpdesk line.
-tsmdm.cotp.other                                       - To cost another cost line.
-tsmdm.cotp.freight                                       - To cost a freight line.
-tsmdm.cotp.quotinv                                       - To cost the quote invoice
+tsmdm.cotp.tool  - To cost a line with a tool.
+tsmdm.cotp.travel- To cost a travel line.
+tsmdm.cotp.subcon- To cost a subcontracting line.
+tsmdm.cotp.helpdesk - To cost a helpdesk line.
+tsmdm.cotp.other - To cost another cost line.
+tsmdm.cotp.freight - To cost a freight line.
+tsmdm.cotp.quotinv - To cost the quote invoice
 line.
-tsmdm.cotp.rental                                       - To cost a rental other cost
+tsmdm.cotp.rental - To cost a rental other cost
 line.
 Mandatory input.
-iCostLine                             -
-The cost line number                               - This is the line number from
+iCostLine       -
+The cost line number - This is the line number from
 either the material lines (tssoc220), the
 labor lines (tssoc230) or the other cost lines
 (tssoc240).
 Mandatory input.
-iIncludeReleasedOrdersAndActivities                           -
+iIncludeReleasedOrdersAndActivities     -
 If this option is set to Yes, then if the cost line
 is either related to an activity with status Released
 or directly to the order header and the order header
@@ -95,19 +95,19 @@ If this option is set to No, then only if the cost
 line is related to a Completed activity or order, the
 costing is executed.
 Mandatory input.
-iSetServiceOrderActivityToCostedWhenAllCostLinesAreCosted                       -
+iSetServiceOrderActivityToCostedWhenAllCostLinesAreCosted -
 If this option is set to Yes and by costing the
 current cost line, all cost lines related to the activity
 to which the cost line is linked, are set to costed, also
 the activity is set to costed.
 Mandatory input.
-iSetServiceOrderToCostedWhenAllActivitiesAreCosted                            -
+iSetServiceOrderToCostedWhenAllActivitiesAreCosted      -
 If this option is set to Yes, the system will also
 set the service order header to Costed if all related
 activities are Costed and all related cost lines are
 Costed.
 Mandatory input.
-iCheckUnconsumedItems                         -
+iCheckUnconsumedItems   -
 If a material line is being costed, and this parameter
 is set to Yes, then if not all unconsumed items have
 been returned, the costing will not proceed.
@@ -115,26 +115,26 @@ If set to No, then the system will continue the
 costing even if there is still unconsumed quantity
 available.
 Mandatory input.
-iRemoveSubsequentDeliveryQuantity                       -
+iRemoveSubsequentDeliveryQuantity -
 If a material line is being costed and the subsequent
 delivery quantity is unequal zero, then with this option
 set to Yes, the system will automatically set the
 subsequent delivery quantity on the material line to
 zero.
 Mandatory input.
-InvoiceFreightLinesinFreightManagement                       -
+InvoiceFreightLinesinFreightManagement -
 If this option is set to Yes, are there are
 freight invoice lines in Freight Management which
 have not been sent to Central Invoicing, then these
 are automatically released to Central Invoicing.
 Mandatory input.
-iIgnoreUnapprovedInvoices                       -
+iIgnoreUnapprovedInvoices -
 If this option is set to Yes and if a subcontracting
 other cost line is being costed and not all purchase
 invoices related to the related purchase order line
 have been approved, then costing will still proceed.
 Mandatory input.
-iCostZeroQuantityForOtherCosts                       -
+iCostZeroQuantityForOtherCosts -
 If this option is set to No and if another cost
 line is being costed (tssoc240) and the actual quantity
 is still zero, then costing will not proceed. Note that
@@ -142,7 +142,7 @@ a Total Travel Line is excluded from this check, because
 the actual quantity for a Total Travel Line is always
 zero.
 Mandatory input.
-iDoNotCostIfOpenInspectionsExist                       -
+iDoNotCostIfOpenInspectionsExist -
 If this option is set to Yes and if the related
 activity can also be set to Costed and open inspections
 exist (tscfg300) related to that activity, then costing
@@ -150,43 +150,43 @@ will not succeed. If also the related order header
 can be set to Costed and open inspections exist
 related to the order, then costing will not succeed.
 Mandatory input.
-iSetOpenInspectionsToNotMeasured                       -
+iSetOpenInspectionsToNotMeasured -
 If the input argument iDoNotCostIfOpenInspectionsExist
 is set to No, this input can be set to Yes.
 If set to Yes, then any open inspection will get the
 status Not Measured.
 Mandatory input.
-iDeleteOpenInspections                       -
+iDeleteOpenInspections -
 If the input argument iDoNotCostIfOpenInspectionsExist
 is set to No and the input argument
 iSetOpenInspectionsToNotMeasured is set to No, this
 input argument can be set to Yes. If set to Yes, then
 any open inspection will be deleted.
 Mandatory input.
-iCurrency                       -
+iCurrency -
 The currency in which the input arguments
 iMaximumLimitForInvoiceAmount and
 iMaximumLimitForOtherAmount are expressed.
 Mandatory input.
-iMaximumLimitForInvoiceAmount                       -
+iMaximumLimitForInvoiceAmount -
 The maximum net invoice amount of the cost line
 which is allowed to be costed.
-iMaximumLimitForOtherAmount                       -
+iMaximumLimitForOtherAmount -
 The maximum other amount (is actually the goodwill
 amount) which is allowed to be costed.
-iLowerMargin                       -
+iLowerMargin -
 If margin control is applicable in the service order
 parameters (or in the settings by service office if
-the Sites                              -concept has been activated), then this
+the Sites-concept has been activated), then this
 is the lowest margin for which it is allowed to cost the
 given cost line.
-iUpperMargin                       -
+iUpperMargin -
 If margin control is applicable in the service order
 parameters (or in the settings by service office if the
-Sites                              -concept has been activated), then this is the
+Sites-concept has been activated), then this is the
 highest margin for which it is allowed to cost the
 given cost line.
-iInvoiceLineStatus                       -
+iInvoiceLineStatus -
 The line status with which the billable line in Central
 Invoicing is created.
 Allowed values are:
@@ -196,7 +196,7 @@ tcsli.stat.not.appl
 If the status is set to tcsli.stat.not.appl then this
 will mean that the system will default it again from
 either the service order parameters or from the
-settings per office, if the Sites                              -concept has been
+settings per office, if the Sites-concept has been
 activated.
 Mandatory input.
 Output: oExceptionMessage
@@ -209,12 +209,8 @@ functions in Exception to get all relevant information.
 Note that if the return value of this function is
 unequal zero, then the status of cost line is not
 changed to Costed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order cost line changed to Costed.
-<> 0                          -       The status of the service order cost line could
+<> 0    -       The status of the service order cost line could
 not be changed to Costed.
 ```
-
-## Public Interfaces for ServiceQuote
-
-The following functions are available: ServiceQuote.GenerateQuoteLinesForMasterRouting ServiceQuote.GenerateSerializedItem ServiceQuote.PrintQuoteDocuments ServiceQuote.Process ServiceQuote.StartOverview ServiceQuote.StartProcess

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OrderInventoryTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 917-919
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 927-928
 
 ```baan
 DLL:   whextinrapi
-This function is available from     2023.02 (KB2274419  ).
+This function is available from 2023.02 (KB2274419).
 Syntax: long OrderInventoryTransaction.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -37,10 +37,10 @@ Usage:        Expl:   This function starts session Order - Inventory Transaction
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -66,27 +66,23 @@ Optional.
 iWarehouse
 Optional.
 Output: for iStartMode MODAL:
-oOrderCompany                                 - order company of selected transaction
-oTypeOfOrder                                  - type of orderd of selected transaction
-oOrder                                        - order of selected transaction
-oOrderLine                                    - order line of selected transaction
-oTransactionDate                               - transaction date of selected
+oOrderCompany   - order company of selected transaction
+oTypeOfOrder    - type of orderd of selected transaction
+oOrder          - order of selected transaction
+oOrderLine      - order line of selected transaction
+oTransactionDate - transaction date of selected
 transaction
-oSequence                                     - sequence of selected transaction
-oItem                                         - item of selected transaction
-oWarehouse                                    - warehouse of selected transaction
-oExceptionMessage                             - The last message if any message is
+oSequence       - sequence of selected transaction
+oItem           - item of selected transaction
+oWarehouse      - warehouse of selected transaction
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for ItemIssueByPeriod
-
-The following functions are available: ItemIssueByPeriod.StartDetail ItemIssueByPeriod.StartOverview

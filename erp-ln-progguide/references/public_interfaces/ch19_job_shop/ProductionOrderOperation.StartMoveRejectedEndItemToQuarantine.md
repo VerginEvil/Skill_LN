@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 804-805
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 803-804
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.04 (KB3608602  ).
+This function is available from 2026.04 (KB3608602).
 Syntax: long ProductionOrderOperation.StartMoveRejectedEndItemToQuarantine(
 long             iStartMode,
 domain  tcsite           iSite,

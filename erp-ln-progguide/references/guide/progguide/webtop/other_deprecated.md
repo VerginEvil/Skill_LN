@@ -2,17 +2,29 @@
 
 ## Deprecated predefined variables
 The following predefined variables are deprecated:
+
 - attr.adju
+
 - attr.bitset
+
 - attr.echo
+
 - attr.enum.mask
+
 - attr.imax
+
 - attr.input
+
 - attr.maxlen
+
 - auto.nextform
+
 - [Predefined variables](../misc/predefined_variables.md)
+
 - fattr.descr$
+
 - fattr.helpfile$
+
 - fattr.toplines
 
 ## Deprecated functions

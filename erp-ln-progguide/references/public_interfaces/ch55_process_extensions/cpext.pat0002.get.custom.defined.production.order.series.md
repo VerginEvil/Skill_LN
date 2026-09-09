@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for TransferOrderPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2282-2282
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2310-2310
 
 ```baan
 Syntax: long cpext.pat0002.get.custom.defined.production.order.series(
@@ -28,9 +28,9 @@ o.order.series is filled with custom.order.series
 endif
 Pre:    NA
 Post:   NA
-Input:  i.order.series                - the order series from the standard session
-Output: o.order.series                - the order series to use for this transfer.
+Input:  i.order.series  - the order series from the standard session
+Output: o.order.series  - the order series to use for this transfer.
 may be left empty, in that case the input Order
 series will be used for the transfer
-Return: 0                             - Success
+Return: 0               - Success
 ```

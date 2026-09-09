@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractChange
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1394-1396
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1406-1407
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.11 (KB3565748  ).
+This function is available from 2025.11 (KB3565748).
 Syntax: long ServiceContractChange.Create(
 domain  tcorno           iServiceContract,
 long             iProcessingOptionSet,
@@ -83,12 +83,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No error; however, error messages can have been set.
-<> 0                          - An error occurred
+Return: 0       - No error; however, error messages can have been set.
+<> 0    - An error occurred
 ```
-
-## Public Interfaces for
-
-## ServiceContractConfigurationLine
-
-The following functions are available: ServiceContractConfigurationLine.Create ServiceContractConfigurationLine.GetContractCoverageDetails

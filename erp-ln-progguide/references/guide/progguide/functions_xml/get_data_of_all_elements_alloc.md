@@ -20,7 +20,7 @@ For each child XML_ELEMENT node that has a name equal to *name*, get the data co
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error: the supplied *basedString* argument is not a based string.  |
+| -1 | Error: the supplied *basedString* argument is not a based string. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -34,4 +34,5 @@ string	xmlDataElement$( long node, const string name, [ const string default.val
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

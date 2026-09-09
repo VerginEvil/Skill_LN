@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SerializedItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 244-246
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 246-247
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2026.04 (KB3617513  ).
+This function is available from 2026.04 (KB3617513).
 Syntax: long SerializedItem.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,14 +29,14 @@ automatically or manually.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used. Default index is 1.
 Standard supported values:
 1: Sort by Item, Serial Number
@@ -61,9 +61,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for
-
-## ReceivedProductionBillOfMaterial
-
-The following functions are available: ReceivedProductionBillOfMaterial.Process

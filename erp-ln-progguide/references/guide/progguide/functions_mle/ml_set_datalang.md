@@ -46,5 +46,7 @@ It is important to keep track of the current data language when switching to ano
 
 ## Related topics
 - [Multi Language Data overview](overview.md)
+
 - [Multi Language Data synopsis](synopsis.md)
+
 - [Multi Language Data support code examples](examples.md)

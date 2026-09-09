@@ -26,4 +26,5 @@ set.file.for.textfield("info.text", "${BSE}/log/log.bshell")
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

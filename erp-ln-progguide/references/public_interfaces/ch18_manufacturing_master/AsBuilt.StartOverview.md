@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AsBuilt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 632-634
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 635-636
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2024.01 (KB2304915  ).
+This function is available from 2024.01 (KB2304915).
 Syntax: long AsBuilt.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,10 +31,10 @@ Headers (timfc0110m000) in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used.
@@ -49,12 +49,12 @@ Item.
 Type, Order, Schedule Line.
 iQueryExtend            A specific query to be used when zooming
 to this session. Optional.
-iOrderType              Order Type                       - Optional
+iOrderType              Order Type - Optional
 iOrderNumber            Order Number can be either Production
-Order or Assembly Order                                               - Optional
-iSchedulePosition       Schedule Position                       - Optional
-iItem                   Item                       - Optional
-iSerialNumber           Serial Number                       - Optional
+Order or Assembly Order - Optional
+iSchedulePosition       Schedule Position - Optional
+iItem                   Item - Optional
+iSerialNumber           Serial Number - Optional
 Output: Variables below contain the values of the selected record.
 They are only filled if i.start.mode is MODAL and 1 record has
 been selected.
@@ -75,9 +75,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Chapter 19 Public Interfaces for Job Shop
-
-## Public Interfaces for BillOfMaterialLines
-
-The following functions are available: BillOfMaterialLines.StartOverview

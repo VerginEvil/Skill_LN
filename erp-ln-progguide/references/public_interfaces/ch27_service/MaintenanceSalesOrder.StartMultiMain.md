@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1475-1476
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1490-1491
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2026.05 (KB3663572  ).
+This function is available from 2026.05 (KB3663572).
 Syntax: long MaintenanceSalesOrder.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Order (tsmsc1100m100).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

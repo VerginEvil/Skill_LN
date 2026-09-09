@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for PaymentReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2100-2102
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2123-2125
 
 ```baan
 Syntax: domain tcmcs.s999m tfext.cmg0001.get.value.for.custom.payment.element(
@@ -20,8 +20,8 @@ Following tables are current when this extension is triggered
 (during creation of the XML Bank File):
 tccom000        Implemented Software Components (Companies)
 tccom100        Business Partners
-tccom115        Bank Accounts by Pay                      -by Business Partner
-tccom125        Bank Accounts by Pay                      -to Business Partner
+tccom115        Bank Accounts by Pay-by Business Partner
+tccom125        Bank Accounts by Pay-to Business Partner
 tccom130        Addresses
 tccom139        Cities by Country
 tcmcs002        Currencies
@@ -46,7 +46,7 @@ name.of.bp      = ""
 composed.amount = 0.0
 on case i.custom.element.code
 case "910210000000":
-|* Name of Composed Pay                              -to BP
+|* Name of Composed Pay-to BP
 get.var(pid, "tccom100.nama", name.of.bp)
 return(name.of.bp)
 case "911200000000":
@@ -64,10 +64,10 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    N.A.
 Post:   N.A.
-Input:  i.payment.company                     - Payment Company
-i.custom.element.code                         - The custom element code mapped to
+Input:  i.payment.company       - Payment Company
+i.custom.element.code   - The custom element code mapped to
 an XML attribute.
-i.accounting.office                           - Accounting Office.
+i.accounting.office     - Accounting Office.
 Output: N.A.
 Return: String with the value of the custom payment element.
 ```

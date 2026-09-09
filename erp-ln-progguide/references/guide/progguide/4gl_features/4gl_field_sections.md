@@ -3,14 +3,14 @@ You use field sections to program actions that you want to be executed for a var
 
 ## Main sections
 
-## field.<field name>:
+## field.field name:
 The subsections associated with this main section are executed for the specified field. The field name you specify must correspond with the name on the form.
 
 ## field.all:
 The subsections associated with this main section are executed for all fields on the form
 
 ## field.other:
-A subsection associated with this section is executed for all fields for which the particular subsection has not been programmed in a *field.<field name>* section.
+A subsection associated with this section is executed for all fields for which the particular subsection has not been programmed in a *field.**<**field name**>* section.
 
 ## Subsections
 
@@ -35,21 +35,23 @@ When a zoom process is started on the specified field, the actions programmed in
 ## before.checks:
 For non-enum fields the actions programmed in this subsection are executed when the field looses focus. I.e.: the TAB key has been pressed or the user clicked on another field. The subsection is executed immediately before the domain and references are checked. You can use this section, for example, to change the value of the field before the domain and reference checks.
 For enum fields (type DB.ENUM or DB.BITSET) the actions programmed in this subsection are executed in two cases:
+
 - when the user changes the value of the field; in this case the subsection is executed just before the *when.field.changes* subsection
+
 - when the field looses focus, but only in case the field's value was not changed
 
 ## domain.error:
 The actions programmed in this subsection are executed if the domain check causes an error after data has been entered in the field. You can use this section to provide your own error message instead of the standard message.
 
 ## ref.input:
-The actions programmed in this subsection are executed if a reference error occurs. If you program this section, the 4GL engine does not display a message.
+The actions programmed in this subsection are executed if a reference error occurs. If you program this section, the [4GL engine](../glossary/glossary.md#fourgl_engine) does not display a message.
 
 ## ref.display:
 The actions programmed in this subsection are executed if there is an error in the reference display.
 
 ## check.input:
 This section is replaced by [Data Access Layer](../functions_dal/overview.md) functionality (if a DAL exists for the table).
-The actions programmed in this subsection are executed immediately after the domain and reference checks. You can use this section to test for errors that are not detected automatically. If the 4GL engine detects an error, the focus remains on the field. In a script, you can use [set.input.error()](../functions_message_handling/set.input.error.md) to display an error message and start input again.
+The actions programmed in this subsection are executed immediately after the domain and reference checks. You can use this section to test for errors that are not detected automatically. If the [4GL engine](../glossary/glossary.md#fourgl_engine) detects an error, the focus remains on the field. In a script, you can use [set.input.error()](../functions_message_handling/set.input.error.md) to display an error message and start input again.
 
 ## on.input:
 This section is supported for backward compatibility. Functionality has been replaced by Form Commands.
@@ -103,5 +105,7 @@ before.display:
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)
+
 - [Flow of 4GL engine](flow_of_standard_program.md)

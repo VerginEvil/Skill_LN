@@ -9,12 +9,14 @@ This function displays the specified message in the status bar of a composite se
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `message` |  The the message to be shown in the composite status bar  |
+| `const string` | `message` |  The message to be shown in the composite status bar  |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in 4GL script types.
 
 ## Related topics
 - [Composite Sessions overview](overview.md)
+
 - [Composite Sessions synopsis](synopsis.md)
+
 - [Composite Sessions Code Examples](examples.md)

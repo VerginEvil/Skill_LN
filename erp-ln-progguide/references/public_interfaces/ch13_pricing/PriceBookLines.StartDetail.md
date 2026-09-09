@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PriceBookLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 526-527
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 528-529
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long PriceBookLines.StartDetail(
 long             iStartMode,
 domain  tdpcg.prbk       iPriceBook,
@@ -36,9 +36,9 @@ sessions that can be manipulated
 simultaneously.
 iPriceBook              Price Book (Mandatory)
 iItem                   Item (Mandatory)
-iBuyFromBusinessPartner Buy                      -From Business Partner (Optional)
+iBuyFromBusinessPartner Buy-From Business Partner (Optional)
 iShipFromBusinessPartner
-Ship                                              -From Business Partner (Optional)
+Ship-From Business Partner (Optional)
 iCurrency               Currency
 The price book currency (Mandatory)
 iQuantityUnit           Quantity Unit

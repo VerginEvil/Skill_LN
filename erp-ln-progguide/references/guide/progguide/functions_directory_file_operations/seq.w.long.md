@@ -12,21 +12,31 @@ More specifically, the inverse function [seq.r.long()](seq.r.long.md) will retri
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `value` |  The value to write into the file. In 64-bit mode, the bshell is less forgiving than in 32-bit mode. When the bshell is in 64-bit mode, it is a fatal error to supply a value outside the signed 32-bit value range [-2^31 … 2^31 - 1] (i.e. [-0x80000000 … 0x7fffffff] or [-2,147,483,648 … 2,147,483,647]). See [store.long()](../functions_string_operations/store.long.md) for a description of explicit wrapping that might be done beforehand.  |
+| `long` | `value` |  The value to write into the file. In [64-bit mode](../3gl_features/data_types.md#Long64), the bshell is less forgiving than in [32-bit mode](../3gl_features/data_types.md#Long32). When the bshell is in 64-bit mode, it is a fatal error to supply a value outside the signed 32-bit value range [-2^31 … 2^31 - 1] (i.e. [-0x80000000 … 0x7fffffff] or [-2,147,483,648 … 2,147,483,647]). See [store.long()](../functions_string_operations/store.long.md) for a description of explicit wrapping that might be done beforehand.  |
 | `long` | `fp` |  The file pointer returned by [seq.open()](seq.open.md) when the particular file was opened. This function writes 4 bytes to the file.  |
 
 ## Return values
 | | |
 |---|---|
-| -1 | Error, most probably *fp* is not a valid file pointer. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*.  |
+| -1 | Error, most probably *fp* is not a valid file pointer. The last system error is available in [predefined variable](../misc/predefined_variables.md) *e*. |
 | 0 | Success. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- Related operations: [seq.w.short()](seq.w.short.md)
-- Inverse operations: [seq.r.long()](seq.r.long.md), [seq.r.short()](seq.r.short.md)
-- Special operations for UTC long format values: [seq.r.utc()](seq.r.utc.md), [seq.w.utc()](seq.w.utc.md)
+- [seq.w.short()](seq.w.short.md)
+
+- [seq.r.long()](seq.r.long.md)
+
+- [seq.r.short()](seq.r.short.md)
+
+- [UTC](../functions_date_time_zones/overview.md#utc)
+
+- [seq.r.utc()](seq.r.utc.md)
+
+- [seq.w.utc()](seq.w.utc.md)
+
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

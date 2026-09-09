@@ -9,9 +9,15 @@ FROM table reference(s) ...
 WHERE each row fulfills the condition(s) ...
 ```
 The following sections provide information on SQL syntax and using SQL:
+
 - [SQL reserved words](sql_reserved_words.md)
+
 - [SQL data types](sql_data_types.md)
+
 - [SELECT statement](select_statement.md)
+
 - [Multi Language Data](multi_language_data.md)
+
 - [SQL states and messages](../sql_states_and_messages/help_sql_states_and_messages.md)
+
 - [SQL glossary](sql_glossary.md)

@@ -25,14 +25,14 @@ It is strongly discouraged to manipulate menu entries that are otherwise dealt w
 ## Arguments:gbf.set.std.menu
 | | |
 |---|---|
-| menu.pattern | The menu.pattern holds the pattern of all standard menu items which should be updated.  |
-| disabled | When disable is set to true all of the specified standard GBF menu items and headings will be disabled. Also the associated keystroke with this menu.pattern is not usable as long as these menu items are disabled. These standard GBF menu items can become selectable again by setting this parameter to false.  |
-| checked | If true a ticmark will be added in front of all of the specified standard GBF menu items and headings. When checked is set to false these ticmarks will be removed again.  |
+| menu.pattern | The menu.pattern holds the pattern of all standard menu items which should be updated. |
+| disabled | When disable is set to true all of the specified standard GBF menu items and headings will be disabled. Also the associated keystroke with this menu.pattern is not usable as long as these menu items are disabled. These standard GBF menu items can become selectable again by setting this parameter to false. |
+| checked | If true a ticmark will be added in front of all of the specified standard GBF menu items and headings. When checked is set to false these ticmarks will be removed again. |
 
 ## Arguments:gbf.set.std.menu.checked, gbf.set.std.menu.not.checked, gbf.set.std.menu.enabled,gbf.set.std.menu.disabled
 | | |
 |---|---|
-| menu.pattern | The menu.pattern holds the pattern of all standard menu items which should be updated.  |
+| menu.pattern | The menu.pattern holds the pattern of all standard menu items which should be updated. |
 
 ## Arguments
 | | | |
@@ -45,7 +45,7 @@ It is strongly discouraged to manipulate menu entries that are otherwise dealt w
 | | |
 |---|---|
 | 0 | Successful completion |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -54,10 +54,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

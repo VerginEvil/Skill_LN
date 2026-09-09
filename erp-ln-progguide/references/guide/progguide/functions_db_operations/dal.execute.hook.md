@@ -28,4 +28,5 @@ Minimal tools version is 10.7.3 with tools solution 2139062 installed. Otherwise
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

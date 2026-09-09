@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OrderPegging
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 593-595
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 597-598
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.12 (KB3531509  ).
+This function is available from 2024.12 (KB3531509).
 Syntax: long OrderPegging.StartSelect(
 long             iStartMode,
 domain  cpcom.plnc       iScenario,
@@ -89,18 +89,14 @@ PrintProjectPeg                 domain  tcyesno         tcyesno.no
 PrintOptionList                 domain  tcyesno         tcyesno.no
 PrintEffectivityUnit            domain  tcyesno         tcyesno.no
 PrnitExceptionMessages          domain  tcyesno         tcyesno.no
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       Session started succesfully.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for Specification
-
-The following functions are available: Specification.StartDetail

@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_json>`
-`function long Json.getBoolean( long json_object, const string key )`
+`function boolean Json.getBoolean( long json_object, const string key )`
 
 ## Description
 Convenience function for directly returning the 3GL boolean value of the JSON boolean value associated with the specified key of a JSON object.
@@ -22,8 +22,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_object' is a JSON value of type JSON_TYPE_OBJECT.
+
 - The specified key exists.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that an illegal address has been used.  |
+| This error indicates that an illegal address has been used. |
 | *Solution:* |
 | Contact Infor support. |

@@ -14,5 +14,7 @@ Note  This function is available from [Tools Interface Version (TIV)](../tiv/tiv
 
 ## Related topics
 - [Record selection Overview](overview.md)
+
 - [Record selection Synopsis](synopsis.md)
+
 - [Improved Record selection Cookbook](cookbook.md)

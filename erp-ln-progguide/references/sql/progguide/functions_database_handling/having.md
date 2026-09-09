@@ -1,11 +1,11 @@
 # HAVING clause
-The HAVING clause specifies a grouped table. The input table of the HAVING clause is also a grouped table that is the result of applying the [GROUP BY clause](group_by.md). The HAVING clause rejects each group of the grouped table for which the search condition evaluates to False or Unknown.
+The HAVING clause specifies a [grouped table](sql_glossary.md#GroupedTable). The input table of the HAVING clause is also a grouped table that is the result of applying the [GROUP BY clause](group_by.md). The HAVING clause rejects each group of the grouped table for which the search condition evaluates to False or Unknown.
 
 ## Syntax
 ```
 
 <having clause>
-    ::= HAVING Search condition
+    ::= HAVING <search condition>
 ```
 
 ## Semantics
@@ -67,5 +67,7 @@ edlevel    salary            firstnme            ...
 
 ## Related topics
 - [GROUP BY clause](group_by.md)
+
 - [SELECT clause](select.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

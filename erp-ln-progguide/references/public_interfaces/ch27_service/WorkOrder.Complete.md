@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1487-1489
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1501-1504
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2020.12 (KB2162018  ).
+This function is available from 2020.12 (KB2162018).
 Syntax: long WorkOrder.Complete(
 domain  tcorno           iWorkOrder,
 domain  tsmdm.acln       iWorkOrderActivityLine,
@@ -38,18 +38,18 @@ yes, the work order header will be set to completed as well.
 When the work order is set to completed successfully, the
 warehouse procedure steps that are set to automatic execution,
 are started. Next, based on WCS parameters/office settings, the
-work order can be signed                      -off and closed automatically.
+work order can be signed-off and closed automatically.
 Note:
--                       When an Electronic Signature is required for completing a
+- When an Electronic Signature is required for completing a
 work order, this public interface can only be used when called
 in an LN UI component. Only in that case the signature request
 dialog can be started.
--                       When interactive counter reading reset rules are defined for
+- When interactive counter reading reset rules are defined for
 any of the work order activities, the session for resetting
 the counters is not started when this public interface is
 used. Resetting these counters can be done using LN UI.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit and/or abort
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iWorkOrder
 Work Order. (mandatory)
@@ -77,17 +77,17 @@ controlled, this status will be assigned to it.
 If the work order item is serialized controlled and the
 actual quantity is set to 1, only the following
 statusses are valid:
--                                       active
--                                       working condition
--                                       defective
--                                       to be recycled
+- active
+- working condition
+- defective
+- to be recycled
 An actual maintained quantity of zero, implies that the
 serialized item is not repaired and will not be
 returned. Its status is set to Removed.
 iCreateFollowupWorkOrderForRemainingQuantity
-Create Follow                              -up Work Order for remaining quantity.
+Create Follow-up Work Order for remaining quantity.
 (mandatory Yes/No)
-Only applicable for non                              -serialized controlled items.
+Only applicable for non-serialized controlled items.
 iCopyEstimatesToActuals
 Copy Estimates to Actuals. (mandatory Yes/No)
 The required quantity of work order other resource lines
@@ -101,7 +101,7 @@ iUpdateActualQuantityOnWorkOrderActivity
 Set the actual maintained quantity on the work order
 activity. When the activity is derived from a master
 routing and a previous activity is present with status
-Completed, Singed                              -off or Closed, the actual quantity of
+Completed, Singed-off or Closed, the actual quantity of
 the previous activity is taken and set on the current
 work order activity line.
 When no master routing is used the planned quantity as
@@ -118,11 +118,11 @@ When the work order is set to completed and there are
 open/pending inspections present, this variable can be
 used to indicate what to do with these inspections.
 Possible values are:
--                                       change status
+- change status
 inspection status is set to Not Measured
--                                       delete inspection
+- delete inspection
 the inspections are deleted.
--                                       cancel
+- cancel
 the inspections remain as is.
 iContinueCloseWorkOrderIfPurchaseOrderNotApprovedYet
 When the work order is set to completed and next
@@ -139,7 +139,7 @@ parameters/office settings, open physical breakdown
 changes can be set to closed.
 (mandatory Yes/No)
 Output: oWorkOrderSignedOff
-Indicates if the work order is set to Signed                              -Off.
+Indicates if the work order is set to Signed-Off.
 oWorkOrderClosed
 Indicates if the work order is set to Closed.
 oExceptionMessage
@@ -149,6 +149,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - work order set to completed succesfull
-<> 0                          - Error during completing work order occurred
+Return: 0       - work order set to completed succesfull
+<> 0    - Error during completing work order occurred
 ```

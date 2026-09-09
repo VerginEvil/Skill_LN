@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 762-764
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 762-763
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2022.04 (KB2235599  ).
+This function is available from 2022.04 (KB2235599).
 Syntax: long ProductionOrder.ReportProductWithSerials(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -45,17 +45,17 @@ if the status is 'Completed'. When false,
 additional processing of the warehouse orders
 is required.
 iSetStatusToCompleted is not allowed when:
--                       the production order requires backflushing and
--                       backflushing is not automatic and
--                       actual costing is used.
+- the production order requires backflushing and
+- backflushing is not automatic and
+- actual costing is used.
 Printing labels is not supported in this Public Interface.
 An error will be returned when the production order
 requires label printing.
 There should be no pending logical transactions before calling
 this function.
 Commit or abort transactions are handled within the function.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iSite                   Site (mandatory when the Site concept
 is active).
 iProductionOrder        Production Order (mandatory and must
@@ -93,6 +93,6 @@ information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       The reported quantities and / or
-status change is succssfully processed.
+status change is successfully processed.
 <> 0                    Errors occurred.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrderMaterialCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1587-1589
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1602-1603
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2026.09 (KB3691643  ).
+This function is available from 2026.09 (KB3691643).
 Syntax: long RentalOrderMaterialCosts.ConfirmScrap(
 domain  tcorno           iRentalOrder,
 domain  tcpono           iMaterialLine,
@@ -47,12 +47,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```
-
-## Chapter 29 Public Interfaces for Invoicing
-
-## Public Interfaces for Invoice
-
-The following functions are available: Invoice.ComposePrintPostInvoices Invoice.CreditInvoiceLine Invoice.GetInterimRevenueLedgerAccountAndDimensions Invoice.Reprint Invoice.StartInvoicing360 Invoice.StartMultiMain

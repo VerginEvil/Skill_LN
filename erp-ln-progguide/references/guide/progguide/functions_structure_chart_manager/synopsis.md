@@ -86,4 +86,5 @@ void
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Tree structures: example](example.md)

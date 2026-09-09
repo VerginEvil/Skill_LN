@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 550-551
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 554-555
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2020.06 (KB2127795  ).
+This function is available from 2020.06 (KB2127795).
 Syntax: long ItemOrderPlan.StartPlanForProjectPeg(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,7 +27,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts the Item Order Plan (cprrp0520m000),
 but only if Planning and if Project Pegging is implemented.
-The Item Order Plan is started in the Item                       - Project Peg View.
+The Item Order Plan is started in the Item - Project Peg View.
 Input:  iStartMode              Not used. Session is always
 started MODELESS (Parent and child are
 parallel sessions that can be manipulated

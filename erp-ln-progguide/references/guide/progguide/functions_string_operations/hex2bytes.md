@@ -31,6 +31,8 @@ numbytes = hex2bytes("9bbcc1ac", bytes)
 ```
 
 ## Related topics
-- Inverse operation: [bytes2hex()](bytes2hex.md)
+- [bytes2hex()](bytes2hex.md)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

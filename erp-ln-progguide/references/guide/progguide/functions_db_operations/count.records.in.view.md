@@ -27,4 +27,5 @@ function void update.total.line()
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

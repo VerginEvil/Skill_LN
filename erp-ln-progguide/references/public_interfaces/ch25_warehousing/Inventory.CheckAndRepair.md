@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 934-936
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 944-946
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2026.03 (KB3647801  ).
+This function is available from 2026.03 (KB3647801).
 Syntax: long Inventory.CheckAndRepair(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -58,15 +58,15 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iItem is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (Item From/To)
--                       ItemArray
+- selection range fields (Item From/To)
+- ItemArray
 Rebuilding will then be performed for the given iItem.
 In case option ItemArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
 Rebuilding will be performed for the items in the array.
 In case iWarehouse is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (Warehouse From/To)
+- selection range fields (Warehouse From/To)
 Processing Options have a direct relationship with the form fields
 on session Rebuild Check and Repair Inventory (whwmd6290m000)
 and are not explained in further detail here.
@@ -106,11 +106,11 @@ Json.add(ItemArray, Item)
 Item = Json.newObject()
 Json.setString(Item, "Item", "         ITEM0003")
 Json.add(ItemArray, Item)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

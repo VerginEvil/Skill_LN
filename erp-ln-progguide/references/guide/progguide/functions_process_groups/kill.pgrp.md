@@ -9,7 +9,7 @@ This ends all processes within the specified process group. All windows and grap
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `process_id` |  |
+| `long` | `process_id` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -27,4 +27,5 @@ kill.pgrp( child_group )
 
 ## Related topics
 - [Process groups overview](overview.md)
+
 - [Process groups synopsis](synopsis.md)

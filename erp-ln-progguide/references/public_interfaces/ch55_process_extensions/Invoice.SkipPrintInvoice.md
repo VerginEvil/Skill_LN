@@ -4,26 +4,27 @@
 >
 > Group: Process Extensions for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2061-2062
-
-Skips Printing Invoice. This process extension is available from 2021.03 ( KB2176978 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2080-2081
 
 ```baan
+Skips Printing Invoice.
+This process extension is available from 2021.03 (KB2176978).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension Invoice.SkipPrintInvoice can be used
 to skip invoices when printing the invoices in Central Invoicing.
 Sessions where this Process Extension can be implemented:
--               Print Invoices (cisli2400m000, cisli2405m000 )
+- Print Invoices (cisli2400m000, cisli2405m000 )
 Fields that are available to be used in this Process Extension:
--               Key fields of cisli305        - cisli305.sfcp (Financial Company)
--                                               cisli305.tran (Transaction Type)
--                                               cisli305.idoc (Invoice Number)
+- Key fields of cisli305        - cisli305.sfcp (Financial Company)
+- cisli305.tran (Transaction Type)
+- cisli305.idoc (Invoice Number)
 Those fields can be used to read table cisli305 (binded)
--               proc_ext_print_option         Indicates if a draft or original invoice
+- proc_ext_print_option         Indicates if a draft or original invoice
 is printed or a reprint is done.
 possible values are:
--                                               cisli.prno.draft
--                                               cisli.prno.original
--                                               cisli.prno.reprint
+- cisli.prno.draft
+- cisli.prno.original
+- cisli.prno.reprint
 Note: tables must also be declared in the Process Extension.
 Pseudocode:
 In de code below reprinting of an invoice with InvoiceTo Business Partner

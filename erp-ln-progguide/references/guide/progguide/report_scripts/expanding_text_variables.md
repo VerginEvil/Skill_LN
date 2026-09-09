@@ -4,8 +4,8 @@ Customers can use variables in texts. For example, "address", "city", "salary" a
 
 ## Syntax
 The following is the syntax for variables and expressions included in text lines:
-`$ *variable* or # *variable*`
-`${ *expression*} or #{ *expression*}`
+`$ variable or # variable`
+`${ expression} or #{ expression}`
 When the $ symbol if used, the text moves over to accommodate the expanded variable or expression. When the # symbol is used, the expanded variable or expression overwrites existing text.
 
 ## Example
@@ -26,6 +26,9 @@ ${edit( salary + ( salary * 0.05 ), "ZZZZ9,ZZ" )} per month.
 
 ## Related topics
 - [Report scripts overview](overview.md)
+
 - [Report script sections](sections.md)
+
 - [Predefined variables](predefined_variables.md)
+
 - [Report script functions](functions_in_report_scripts.md)

@@ -2,13 +2,18 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.object( [ const string aspect, ... ] )`
+`function string sjv.object( [ const string aspect,... ] )`
 
 ## Description
 Indicates a JSON object is expected. By default, the object is optional (i.e., it does not have to appear in the JSON), but may not be null. The following aspects can be specified:
-- ` [sjv.fields()](sjv.fields.md)`- specifies one or more fields
-- ` [sjv.required()](sjv.required.md)`- specifies the object is required
-- ` [sjv.nullable()](sjv.nullable.md)`- specifies the object is nullable   Example:
+
+- [sjv.fields()](sjv.fields.md)- specifies one or more fields
+
+- [sjv.required()](sjv.required.md)- specifies the object is required
+
+- [sjv.nullable()](sjv.nullable.md)- specifies the object is nullable
+
+Example:
 ```
 
 string  object.def(1) based
@@ -49,7 +54,7 @@ result = sjv.validate(json, object.def)
 ## Arguments
 | | | |
 |---|---|---|
-| `[ const string` | `aspect, ... ]` |  a list of aspects the object is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.fields()](sjv.fields.md), etc.  |
+| `[ const string` | `aspect,... ]` |  a list of aspects the object is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.fields()](sjv.fields.md), etc.  |
 
 ## Return values
 a definition string to build a JSON validation definition that can be passed to [sjv.validate()](sjv.validate.md)
@@ -59,6 +64,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

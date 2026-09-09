@@ -31,4 +31,5 @@ Furthermore, when this function applies a lock to the selected record, also all 
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

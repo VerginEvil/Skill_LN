@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1237-1240
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1247-1249
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.05 (KB3628985  ).
+This function is available from 2026.05 (KB3628985).
 Syntax: long ReceiptLine.Correct(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -50,11 +50,11 @@ AdjustLocation          domain whloca           Current Location
 NewWeight               domain tcwght           Current Weight
 NewWeightUnit           domain tccuni           Current Unit
 CorrectionDetailArray   domain ttjson           0
-AdjustLocation               - Value is ignored when iHandlingUnit is filled.
+AdjustLocation - Value is ignored when iHandlingUnit is filled.
 When warehouse and item of receipt line are location
 controlled, then this field becomes mandatory when
 iHandlingUnit is not filled.
-NewWeight               - If not set, it's value will be recalculated based on the
+NewWeight - If not set, it's value will be recalculated based on the
 changed NewQuantity and/or NewUnit.
 JSON Object CorrectionDetailArray has the following structure:
 "CorrectionDetailArray": [

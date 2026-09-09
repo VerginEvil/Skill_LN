@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 680-681
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 683-684
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2025.03 (KB3536251  ).
+This function is available from 2025.03 (KB3536251).
 Syntax: long ProductVariant.ProcessSalesConfiguration(
 domain  tccpva           iProductVariant,
 long             iProcessingOptionSet,
@@ -52,26 +52,26 @@ PrintReport                             boolean         false
 PrintingDevice                  domain  tcmcs.str14     ""
 PrintingFileoutPathAndName      domain  tcmcs.str100    ""
 Default values:
-ProductVariantFrom                            - If the input variable field
+ProductVariantFrom              - If the input variable field
 ProductVariantFrom is given, it will
 be used as the default value,
 otherwise it will be defaulted with 0.
-*To                                           - If the "*From" field is provided then
+*To                             - If the "*From" field is provided then
 "*To" field will be defaulted with
 "*From" field, otherwise the "*To"
 fields will be defaulted to their
 maximum domain value.
-Output: oNumberOfProcessed                    - The number of Product Variants that
+Output: oNumberOfProcessed      - The number of Product Variants that
 were successfully processed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Processed Sales configuration
+Return: 0                       - Processed Sales configuration
 successfully.
-<> 0                                          - Otherwise.
+<> 0                    - Otherwise.
 ```

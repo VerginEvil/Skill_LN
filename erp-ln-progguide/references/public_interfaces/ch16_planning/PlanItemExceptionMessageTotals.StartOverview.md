@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanItemExceptionMessageTotal
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 555-557
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 559-560
 
 ```baan
 DLL:   cpextraoapi
-This function is available from     2020.06 (KB2128476  ).
+This function is available from 2020.06 (KB2128476).
 Syntax: long PlanItemExceptionMessageTotals.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -45,7 +45,7 @@ shown. Eg. "CL1PCS000123" will display
 only cluster CL1 plan items for
 project PCS000123.
 iReferenceDateFrom      Filter field. Optional. Default: 0
-iReferenceDateTo        Filter field. Optional. Default: 31                      -12-9999
+iReferenceDateTo        Filter field. Optional. Default: 31-12-9999
 iPriorityFrom           Filter field. Optional. Default: 0
 iPriorityTo             Filter field. Optional. Default: 100
 iSortBy                 Possible values:
@@ -57,18 +57,14 @@ Optional. When empty, the sort order
 is undefined.
 Output: As cprao1120m000 displays aggregated data, no information about
 selected records is returned.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for PlannedOrder
-
-The following functions are available: PlannedOrder.GetUnconfirmedDemand PlannedOrder.Replan PlannedOrder.StartMultiMain PlannedOrders.StartGenerate PlannedOrders.StartOverview PlannedOrders.TransferOrderSet

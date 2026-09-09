@@ -4,18 +4,18 @@
 >
 > Group: Public Interfaces for ServiceQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1467-1472
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1482-1486
 
 ```baan
 DLL:   tsexteppapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long ServiceQuote.StartProcess(
 long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts session Process Quotes (tsepp1203m000).
-Pre     :               -
-Post    :               -
+Pre     : -
+Post    : -
 Input:  iProcessingOptionSet
 Processing Option Set: a processing option set number
 referring to a processing option set containing at
@@ -35,7 +35,7 @@ boolean                 false
 If true, the session defaults are used.
 FromSoldToBusinessPartner
 tccom.bpid              ""
-From Sold                              -to Business Partner selection field is filled
+From Sold-to Business Partner selection field is filled
 with this value, unless IgnoreSelectionFields is False.
 FromServiceOffice
 domain  tccwoc          ""
@@ -51,7 +51,7 @@ From Quote Line selection field is filled with
 this value, unless IgnoreSelectionFields is False.
 ToSoldToBusinessPartner
 tccom.bpid              ""
-To Sold                              -to Business Partner selection field is filled
+To Sold-to Business Partner selection field is filled
 with this value, unless IgnoreSelectionFields is False.
 When not filled, it is defaulted with the max value of
 the domain.
@@ -105,7 +105,7 @@ Indicator whether the ATP check is performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Field is ignored when IgnoreSelectionFields is True.
 PerformPlannedAvailableCheck
 domain  tcyesno         tcyesno.no
@@ -114,7 +114,7 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Field is ignored when IgnoreSelectionFields is True.
 PerformOnHandAvailableCheck
 domain  tcyesno         tcyesno.no
@@ -123,7 +123,7 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Field is ignored when IgnoreSelectionFields is True.
 SkipBlockedInventory
 domain  tcyesno         tcyesno.no
@@ -131,7 +131,7 @@ Indicator whether Blocked Inventory has to be considered
 during the various material availability checks.
 Note: value Yes only allowed if material availability
 is present in the Service Order Parameters
-(or site specific record, if the Sites                              -concept has
+(or site specific record, if the Sites-concept has
 been implemented). Furthermore, at least one of the
 input arguments PerformPlannedAvailableCheck or
 PerformOnHandAvailableCheck should have the value
@@ -194,18 +194,14 @@ Value Yes only allowed if the input argument
 UpdatePlannedDeliveryTimeOfMaterialLines is Yes.
 Field is ignored when IgnoreSelectionFields is True.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for MaintenanceSalesOrder
-
-The following functions are available: MaintenanceSalesOrder.Cost MaintenanceSalesOrder.GenerateSerializedItem MaintenanceSalesOrder.StartDetail MaintenanceSalesOrder.StartMultiMain MaintenanceSalesOrder.StartOverview

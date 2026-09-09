@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 461-463
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 463-464
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.07 (KB3675187  ).
+This function is available from 2026.07 (KB3675187).
 Syntax: long PurchaseOrderLine.RecalculatePriceAndDiscounts(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iPurchaseOrderLine,
@@ -19,12 +19,12 @@ ref             long             oExceptionID )
 Usage:        Expl.:  This function handles the recalculation of prices and discounts,
 and the redetermination of material price information for the given
 purchase order line.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iPurchaseOrder                                - Purchase Order (Mandatory)
-iPurchaseOrderLine                                    - Purchase Order Line (Mandatory)
-iPurchaseOrderLineSequence                            - Purchase Order Line Sequence
-iProcessingOptionSet                                  - Processing Option Set (Optional).
+Input:  iPurchaseOrder                  - Purchase Order (Mandatory)
+iPurchaseOrderLine              - Purchase Order Line (Mandatory)
+iPurchaseOrderLineSequence      - Purchase Order Line Sequence
+iProcessingOptionSet            - Processing Option Set (Optional).
 If 0, the default recalculate options
 are applied.
 A Processing Option Set can be created
@@ -57,15 +57,15 @@ OverwriteIgnoredMaterialLines                   domain tcyesno          tcyesno.
 RedetermineMaterialActualPrices                 domain tcyesno
 tcyesno.yes
 OverwriteManualMaterialActualPrices             domain tcyesno          tcyesno.no
-Output: oExceptionMessage                             - The last message if any message is
+Output: oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - Recalculation was successful, or
+Return: 0                               - Recalculation was successful, or
 no recalculation needed to be done.
-<> 0                                                  - An error occurred.
+<> 0                            - An error occurred.
 ```

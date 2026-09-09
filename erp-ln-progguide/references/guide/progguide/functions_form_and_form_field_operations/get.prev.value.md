@@ -10,7 +10,7 @@ This function only works on the current field
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `value` |   |
+| `long` | `value` |    |
 
 ## Return values
 true when successful, otherwise false.
@@ -20,4 +20,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

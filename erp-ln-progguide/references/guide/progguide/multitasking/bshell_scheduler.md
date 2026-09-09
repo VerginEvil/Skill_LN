@@ -1,9 +1,15 @@
 # Bshell scheduler
 The bshell scheduler is responsible for managing and scheduling processes. It maintains four process queues, as follows:
+
 - running queue
+
 - blocking queue
+
 - sleeping queue
-- terminating queue  The scheduler keeps all processes in one or other of the above process queues, depending on their current state.
+
+- terminating queue
+
+The scheduler keeps all processes in one or other of the above process queues, depending on their current state.
 
 ## Running queue
 The scheduler schedules processor time only for those processes in the running queue. It schedules each process in the running queue in turn, in order of priority. Each scheduled process receives a number of ticks, and the execution of each instruction costs the process a certain number of ticks. When the process has used up all its ticks, the bshell schedules another process.

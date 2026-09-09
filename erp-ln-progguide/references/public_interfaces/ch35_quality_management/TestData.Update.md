@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for TestData
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1782-1784
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1801-1802
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2025.08 (KB3549688  ).
+This function is available from 2025.08 (KB3549688).
 Syntax: long TestData.Update(
 domain  qmptc.iorn       iInspectionOrder,
 domain  tcpono           iInspectionLine,
@@ -70,18 +70,14 @@ update or not.
 Therefore, the Possible Input values are,
 Yes: Update the Measurement Value and Test Data.
 No : Do Not Update the Measurement Value and Test Data.
-Output  : oExceptionMessage                   - The last message if any message is
+Output  : oExceptionMessage     - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID          - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error.
-<> 0                                          - Error found.
+Return: 0                       - No Error.
+<> 0                    - Error found.
 ```
-
-## Public Interfaces for QualityUserProfile
-
-The following functions are available: QualityUserProfile.StartOverview

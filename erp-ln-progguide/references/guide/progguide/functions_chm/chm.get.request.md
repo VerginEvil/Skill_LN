@@ -12,16 +12,16 @@ This retrieves a request from the Business Chart Manager. After calling the func
 |---|---|---|
 | `long` | `chart_no` |  This returns the ID of the relevant chart, as returned by [chm.open()](chm.open.md).  |
 | `ref double` | `category_from_value` |  These indicate the range of data the Chart Manager is asking for. These arguments are relevant only when the return value is CHM_SOURCE_IN.  |
-| `ref double` | `category_to_value` |  |
+| `ref double` | `category_to_value` |    |
 
 ## Return values
 | | |
 |---|---|
 | CHM_ABORT | Quit the Business Chart Manager. |
-| CHM_SOURCE_IN | Send data to the Chart Manager. This value is returned when the user chooses the IN command on the Chart Manager's File menu.  |
-| CHM_SOURCE_OUT | Retrieve data from the Chart Manager. This value is returned when the user chooses the OUT command on the Chart Manager's File menu.  |
-| CHM_TIMER | Execute actions after the interval set by [chm.set.timer()](chm.set.timer.md).  |
-| < value > | This is the ID of an application option defined in the Application Options session (ttchm1120s000). When this value is returned, the application must execute the specific actions related to the particular application option.  |
+| CHM_SOURCE_IN | Send data to the Chart Manager. This value is returned when the user chooses the IN command on the Chart Manager's File menu. |
+| CHM_SOURCE_OUT | Retrieve data from the Chart Manager. This value is returned when the user chooses the OUT command on the Chart Manager's File menu. |
+| CHM_TIMER | Execute actions after the interval set by [chm.set.timer()](chm.set.timer.md). |
+| < value > | This is the ID of an application option defined in the Application Options session (ttchm1120s000). When this value is returned, the application must execute the specific actions related to the particular application option. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -52,6 +52,9 @@ until (request = CHM_ABORT)
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

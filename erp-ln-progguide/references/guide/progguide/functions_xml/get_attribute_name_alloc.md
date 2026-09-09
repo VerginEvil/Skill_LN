@@ -18,11 +18,12 @@ Get an attribute name of an XML_ELEMENT or XML_DTD node by specifying its positi
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error: the supplied *basedString* argument is not a based string.  |
+| -1 | Error: the supplied *basedString* argument is not a based string. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

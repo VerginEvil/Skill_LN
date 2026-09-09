@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalAgreement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1569-1572
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1584-1587
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalAgreement.Cost(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.acln       iAgreementLine,
@@ -37,7 +37,7 @@ either have been aborted or committed).
 Call ProcessingOptionSet.Create() to obtain
 iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iRentalOrder               -
+Input:  iRentalOrder -
 Rental Order
 Mandatory.
 iAgreementLine
@@ -135,14 +135,14 @@ LowerMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if
-the Sites                              -concept has been activated), then this
+the Sites-concept has been activated), then this
 is the lowest margin for which it is allowed to cost the
 given activity line.
 UpperMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if the
-Sites                              -concept has been activated), then this is the
+Sites-concept has been activated), then this is the
 highest margin for which it is allowed to cost the
 given activity line.
 InvoiceLineStatus
@@ -156,7 +156,7 @@ tcsli.stat.not.appl
 If the status is set to tcsli.stat.not.appl then this
 will mean that the system will default it again from
 either the Service Order Parameters or from the
-settings per office, if the Sites                              -concept has been
+settings per office, if the Sites-concept has been
 activated.
 Output: oExceptionMessage
 The last message if any message is found. If more than
@@ -168,8 +168,8 @@ functions in Exception to get all relevant information.
 Note that if the return value of this function is
 unequal zero, then the status of the Agreement is
 not changed to Costed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Agreement changed to Costed.
-<> 0                          -       The status of the Agreement could not be
+<> 0    -       The status of the Agreement could not be
 changed to Costed.
 ```

@@ -39,4 +39,5 @@ result = str.isurl("//example.com/page/1")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

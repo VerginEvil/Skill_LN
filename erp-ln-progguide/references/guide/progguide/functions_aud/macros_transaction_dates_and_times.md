@@ -29,14 +29,16 @@ long aud_get_tran_time_ss( string tran_hdr() )
 ```
 | | |
 |---|---|
-| *aud_get_tran_date_yyyy()* | This retrieves the year value from transaction commit date. The year is represented by four digits.  |
-| *aud_get_tran_date_mm()* | This retrieves the month value from the transaction commit date.  |
-| *aud_get_tran_date_dd()* | This retrieves the day value from the transaction commit date.  |
-| *aud_get_tran_time_hh()* | This retrieves the hours value from the transaction commit time.  |
-| *aud_get_tran_time_mm()* | This retrieves the minutes value from the transaction commit time.  |
-| *aud_get_tran_time_ss()* | This retrieves the seconds value from the transaction commit time.  |
+| *aud_get_tran_date_yyyy()* | This retrieves the year value from transaction commit date. The year is represented by four digits. |
+| *aud_get_tran_date_mm()* | This retrieves the month value from the transaction commit date. |
+| *aud_get_tran_date_dd()* | This retrieves the day value from the transaction commit date. |
+| *aud_get_tran_time_hh()* | This retrieves the hours value from the transaction commit time. |
+| *aud_get_tran_time_mm()* | This retrieves the minutes value from the transaction commit time. |
+| *aud_get_tran_time_ss()* | This retrieves the seconds value from the transaction commit time. |
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

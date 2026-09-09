@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 651-652
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 654-655
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2025.09 (KB3564855  ).
+This function is available from 2025.09 (KB3564855).
 Syntax: long JobShopBillOfMaterial.StartPrintWhereUsedComponent(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -25,10 +25,10 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                                 -       The parent session is blocked until
+MODAL   -       The parent session is blocked until
 the child session exits, the session
 will be started as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel
 sessions that can be manipulated
 simultaneously, even if the session is

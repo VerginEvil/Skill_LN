@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1413-1414
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1425-1426
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2021.08 (KB2197097  ).
+This function is available from 2021.08 (KB2197097).
 Syntax: long ServiceOrder.GenerateActivitiesFromMasterRouting(
 const   domain  tcorno           iServiceOrder fixed,
 const           boolean          iUseAttributesFromOrder,
@@ -102,6 +102,6 @@ oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
 Output  : N.A.
-Return  : 0                                           - No error
-<> 0                                                  - An error occurred
+Return  : 0                             - No error
+<> 0                          - An error occurred
 ```

@@ -16,7 +16,7 @@ Create a new XML node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the new node when successful.  |
+| <> 0 | Success; A reference to the new node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -24,4 +24,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PhysicalBreakdown
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1354-1356
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1366-1367
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2023.09 (KB2305193  ).
+This function is available from 2023.09 (KB2305193).
 Syntax: long PhysicalBreakdown.CreateFromProjectBreakdownStructure(
 domain  tccprj           iSourceProject,
 domain  tscfg.2212.01    iSourceStructure,
@@ -64,6 +64,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                                   - No error
-<> 0                                          - An error occurred
+Return  : 0                     - No error
+<> 0                  - An error occurred
 ```

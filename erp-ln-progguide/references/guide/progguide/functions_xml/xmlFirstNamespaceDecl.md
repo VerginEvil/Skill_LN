@@ -14,8 +14,8 @@ Get the first namespace declaration from an XML node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the first namespace declaration of the *node*.  |
-| 0 | Error. The *node* does not carry any namespace declaration.  |
+| <> 0 | Success; A reference to the first namespace declaration of the *node*. |
+| 0 | Error. The *node* does not carry any namespace declaration. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -44,5 +44,7 @@ xmlns = xmlFirstNamespaceDecl( xml_envelope )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

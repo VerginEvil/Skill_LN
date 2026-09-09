@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectOrderLineBalance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1743-1746
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1762-1764
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2026.03 (KB3631151  ).
+This function is available from 2026.03 (KB3631151).
 Syntax: long ProjectOrderLineBalance.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -36,17 +36,17 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Starts the Order Line Balance session in overview mode.
 Opens different sessions depending on cost type:
--                               tppdm.cotp.materials      - tppss6500m000
--                               tppdm.cotp.equipment      - tppss6501m000
--                               tppdm.cotp.subcontracting - tppss6502m000
+- tppdm.cotp.materials      - tppss6500m000
+- tppdm.cotp.equipment      - tppss6501m000
+- tppdm.cotp.subcontracting - tppss6502m000
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                                 -       The parent session is blocked until the
+MODAL   -       The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -57,7 +57,7 @@ aware that iStartFilter will overrule the index passed in
 this argument. So when not using start filter the session
 index will match the value of this variable.
 Allowed values:
-1)iCostType = tppdm.cotp.materials                               - Session: tppss6500m000
+1)iCostType = tppdm.cotp.materials - Session: tppss6500m000
 1: Sort by Project, Item, TransactionDate
 View fields ›¼À“ Project
 2: Sort by Project, Item, Extension
@@ -71,8 +71,8 @@ View fields ›¼À“ Project, Activity
 6: Sort by Buyer, Project, Order
 View fields ›¼À“ Buyer
 7: Sort by Phantom Item, Item, Project, Transaction Date
-View fields                                    - PhantomItem, Item in Project
-2)iCostType = tppdm.cotp.equipment                               - Session: tppss6501m000
+View fields - PhantomItem, Item in Project
+2)iCostType = tppdm.cotp.equipment - Session: tppss6501m000
 1: Sort by Project, Equipment, Reference Type, Transaction Date
 View fields ›¼À“ Project
 2: Sort by Project, Equipment, Reference Type, Extension
@@ -85,20 +85,20 @@ View fields ›¼À“ Project, Element
 View fields ›¼À“ Project , Activity
 6: Sort by Buyer, Project, Order
 View fields ›¼À“ Buyer
-3)iCostType = tppdm.cotp.subcontracting                               - Session: tppss6502m000
+3)iCostType = tppdm.cotp.subcontracting - Session: tppss6502m000
 1: Sort by Project, Subcontracting, Reference Type,
 Transaction Date
-View fields                                    - Project
+View fields - Project
 2: Sort by Project, Subcontracting, Reference Type, Extension.
-View fields                                    - Project
+View fields - Project
 3: Sort by Project, Order, Subcontracting, Reference Type.
-View fields                                    - Project
+View fields - Project
 4: Sort by Project, Element, Subcontracting, Reference Type.
-View fields                                    - Project, Element
+View fields - Project, Element
 5: Sort by Project, Activity, Subcontracting, Reference Type.
-View fields                                    - Project, Activity
+View fields - Project, Activity
 6: Sort by Buyer, Project, Order
-View fields                                    - Buyer
+View fields - Buyer
 iQueryExtend
 A specific query to be used when zooming to this session.
 iCostType
@@ -138,23 +138,15 @@ iPhantomItem
 Optional
 Only applicable when Cost Type = Materials and index is 7.
 Output: for iStartMode MODAL :
-oProject                                      - project of the selected record.
-oCostObject                                   - selected subcontracting / equipment.
-oItem                                         - selected item for material type.
-oExceptionMessage                             - The last message if any message is found.
+oProject                - project of the selected record.
+oCostObject             - selected subcontracting / equipment.
+oItem                   - selected item for material type.
+oExceptionMessage       - The last message if any message is found.
 If more than one message is given,
 these are present in the oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use Exception functions
 to get all relevant details.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Chapter 34 Public Interfaces for Authorization and
-
-## Security
-
-## Public Interfaces for DataAuthorization
-
-The following functions are available: DataAuthorization.DocumentActionAllowed DataAuthorization.DocumentFilter

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1293-1295
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1303-1305
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2025.11 (KB3629540  ).
+This function is available from 2025.11 (KB3629540).
 Syntax: long PurchaseOrderAdvice.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,10 +26,10 @@ Advice (whina3110m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -49,9 +49,9 @@ data is displayed by Warehouse
 session will be started on index 3
 view field: Warehouse
 "byPartner":
-data is displayed by Buy                                      -from Bussiness Partner
+data is displayed by Buy-from Bussiness Partner
 session will be started on index 4
-view field: Buy                                      -from Bussiness Partner
+view field: Buy-from Bussiness Partner
 iSessionIndex
 Specifies the table index that is to be used. Please
 be aware that the iStartFilter will overrule the index
@@ -72,20 +72,20 @@ The Warehouse to be started
 Mandatory if iStartMode = MODELESS and
 iSessionIndex = 3 (or iStartFilter = "byWarehouse")
 iBuyFromBusinessPartner
-The Buy                              -from Bussiness Partner to be started
+The Buy-from Bussiness Partner to be started
 Mandatory if iStartMode = MODELESS and
 iSessionIndex = 4 (or iStartFilter = "byPartner")
 Output: for iStartMode MODAL:
-oOrderNumber                                  - Production Order Advice of selected
+oOrderNumber    - Production Order Advice of selected
 record
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

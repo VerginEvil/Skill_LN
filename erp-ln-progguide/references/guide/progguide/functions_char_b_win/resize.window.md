@@ -10,8 +10,8 @@ This resizes the current window. You must specify the new width and height in pi
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `width` |  |
-| `long` | `height` |  |
+| `long` | `width` |    |
+| `long` | `height` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.enum( const string value, ... )`
+`function string sjv.enum( const string value,... )`
 
 ## Description
 Indicates a list of allowed values of a JSON string. Use this if an enum domain cannot be used.
@@ -31,7 +31,7 @@ result = sjv.validate(json, enum.def)
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `value, ...` |  a list of allowed values  |
+| `const string` | `value,...` |  a list of allowed values  |
 
 ## Return values
 a definition string to build a JSON validation definition that can be passed to [sjv.validate()](sjv.validate.md)
@@ -41,6 +41,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

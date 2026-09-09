@@ -16,5 +16,7 @@ This function is implemented in the 4GL Engine and can be used in DAL script typ
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

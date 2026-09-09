@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for HandlingUnitBuilding
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2031-2032
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2050-2051
 
 ```baan
 Syntax: long whext.wmd0001.custom.shipment.line(
@@ -18,7 +18,7 @@ building process during creation of handling units for the
 given shipment line.
 This function will be called from the standard process just
 after a handling unit is linked to the given shipment line.
-If a handling unit is re                      -used from inventory (during picking /
+If a handling unit is re-used from inventory (during picking /
 release outbound advice when picking is not in the outbound
 process), the flag i.handling.unit.reused will be set to true.
 Do not change the record buffers with the additional logic, or
@@ -31,14 +31,10 @@ dedicated hard coded string, so it is clear to the end user that
 the message logged is set in the Extension.
 Pre:    NA
 Post:   NA
-Input:  i.shipment                    - shipment
-i.shipment.line                       - shipment line
-i.handling.unit                       - handling unit
-i.handling.unit.reused                       - picked handling unit is reused
+Input:  i.shipment      - shipment
+i.shipment.line - shipment line
+i.handling.unit - handling unit
+i.handling.unit.reused - picked handling unit is reused
 Output: o.error.message.array()
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for HandlingUnitLabel
-
-The following process extension(s) is/are available: HandlingUnitLabel.SkipPrint

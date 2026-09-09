@@ -14,4 +14,5 @@ The sock.listen.ssl() and sock.connect.ssl() can be used to establish secure con
 
 ## Related topics
 - [GovCloud functions synopsis](synopsis.md)
+
 - [GovCloud and FIPS-140-2 Coding Standards and Examples](examples.md)

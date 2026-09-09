@@ -30,10 +30,17 @@ When the header part of a sequence file is being updated, the sequence header in
 
 ## Related topics
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - info header](macros_info_header.md)
+
 - [Macros - sequence header](macros_sequence_header.md)
+
 - [Macros - transaction header](macros_transaction_header.md)
+
 - [Macros - transaction record](macros_transaction_record.md)
+
 - [Macros - transaction dates and times](macros_transaction_dates_and_times.md)
+
 - [Macros - dates and times](macros_dates_and_times.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

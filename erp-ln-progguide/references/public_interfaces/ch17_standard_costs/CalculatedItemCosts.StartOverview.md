@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CalculatedItemCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 599-601
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 602-603
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2023.12 (KB2303582  ).
+This function is available from 2023.12 (KB2303582).
 Syntax: long CalculatedItemCosts.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,10 +27,10 @@ in overview mode (ticpr2501m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -61,7 +61,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for StandardCosts
-
-The following functions are available: StandardCosts.Actualize StandardCosts.ActualizeCostCompStructureForConfigurableItem StandardCosts.Calculate StandardCosts.CalculateAndGetStandardCost StandardCosts.CalculateAndGetStandardCostV2 StandardCosts.CalculateAndGetStandardCostV3 StandardCosts.CalculateForNewItem StandardCosts.CalculateForSimulation StandardCosts.CalculateSingleItem StandardCosts.PrintMultilevelCostCalculation StandardCosts.StartCalculate

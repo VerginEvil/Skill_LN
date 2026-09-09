@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1452-1453
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1465-1466
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long ServiceOrderActivity.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -22,10 +22,10 @@ Activity (tssoc2110m100).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -45,7 +45,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ServiceOrderMaterialCosts
-
-The following functions are available: ServiceOrderMaterialCosts.ConfirmScrap ServiceOrderMaterialCosts.ProcessReturnDeliveries ServiceOrderMaterialCosts.RecalculatePriceDiscounts

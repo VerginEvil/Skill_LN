@@ -21,4 +21,5 @@ CM should be active for the given table.
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

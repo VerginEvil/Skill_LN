@@ -9,7 +9,7 @@ This returns the Windows username of the user that started the BW client
 ## Arguments
 | | | |
 |---|---|---|
-| `ref string` | `username` |  |
+| `ref string` | `username` |    |
 
 ## Return values
 1 (TRUE) Function succeeded, username is filled

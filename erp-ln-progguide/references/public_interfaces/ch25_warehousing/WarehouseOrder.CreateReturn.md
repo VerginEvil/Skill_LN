@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1013-1016
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1023-1025
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.11 (KB2152623  ).
+This function is available from 2020.11 (KB2152623).
 Syntax: long WarehouseOrder.CreateReturn(
 domain  whinh.oorg       iSourceOrderOrigin,
 domain  tcorno           iSourceOrder,
@@ -68,9 +68,9 @@ Copy text indicator (Yes/No). Mandatory to fill.
 iBasedOnQuantity
 Specify which quantity should be used to create the
 return order.
--                               whqty.based.on.received: Based on received quantity
--                               whqty.based.on.shipped: Based on shipped quantity
--                               whqty.based.on.ordered: Based on ordered quantity
+- whqty.based.on.received: Based on received quantity
+- whqty.based.on.shipped: Based on shipped quantity
+- whqty.based.on.ordered: Based on ordered quantity
 iAllOrderLines
 Return all lines indicator (Yes/No). Mandatory to fill.
 When not returning all lines then you have to specify
@@ -134,6 +134,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - Success - Return order has been created successfully.
-<> 0                       - Error - Return order could not be created. r
+Return: 0 - Success - Return order has been created successfully.
+<> 0 - Error - Return order could not be created. r
 ```

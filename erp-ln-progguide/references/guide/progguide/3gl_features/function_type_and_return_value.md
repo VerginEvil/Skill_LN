@@ -1,10 +1,17 @@
 # Function type and return value
 The type declaration in a function declaration indicates the type of the function. Functions can be of the following types:
+
 - long
+
 - double
+
 - string
+
 - domain
-- void (this means that no value is returned)  If you do not specify a type, the function is of type void by default.
+
+- void (this means that no value is returned)
+
+If you do not specify a type, the function is of type void by default.
 The type of a function indicates the (compile time) type of its return value.
 A function of type void does not have a return value. Any return statement in such a function must not have any argument.
 For a non-void function, the type of the return value must be equal to the type of the function.
@@ -55,4 +62,5 @@ function double  return.as.double(   | function of type double
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

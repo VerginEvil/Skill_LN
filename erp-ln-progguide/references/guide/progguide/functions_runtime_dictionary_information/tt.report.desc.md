@@ -11,8 +11,8 @@ The report code has the following format (it must be prefixed by an "r"):
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `reprt(15)` |  |
-| `[ ref string` | `desc() mb ]` |  |
+| `string` | `reprt(15)` |    |
+| `[ ref string` | `desc() mb ]` |    |
 
 ## Return values
 The description is returned.

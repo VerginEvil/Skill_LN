@@ -1,7 +1,7 @@
 # at.base()
 
 ## Syntax:
-`function long at.base( <ref|const> <type> basic_value, [ long position, ... ], <ref|const> <type> based_variable, [ long length, ... ] )`
+`function long at.base( <ref|const> <type> basic_value, [ long position,... ], <ref|const> <type> based_variable, [ long length,... ] )`
 
 ## Description
 Use this function to base one variable (the *based_variable*) on another variable or value (the *basic_value*). The *based_variable* then uses the same memory area as the *basic_value*.
@@ -10,9 +10,9 @@ Use this function to base one variable (the *based_variable*) on another variabl
 | | | |
 |---|---|---|
 | `<ref|const> <type>` | `basic_value` |  The array or string value on which the *based_variable* will be based. The *basic_value* must have the same type as the *based_variable*. If the *basic_value* is not suitable as a reference argument, then it is considered as a const argument and the *based_variable* must be declared as CONST.  |
-| `[ long` | `position, ... ]` |  Optional additional *position* arguments, which specify the start position of the *based_variable* in the corresponding dimension of the *basic_value*. The default start position is 1.  |
+| `[ long` | `position,... ]` |  Optional additional *position* arguments, which specify the start position of the *based_variable* in the corresponding dimension of the *basic_value*. The default start position is 1.  |
 | `<ref|const> <type>` | `based_variable` |  The variable which will be based on the *basic_value*. The *based_variable* must have the same type as the *basic_value*. The *based_variable* must be declared as BASED. If the *basic_value* is considered as a const argument, then the *based_variable* must be declared as CONST.  |
-| `[ long` | `length, ... ]` |  Optional additional *length* arguments, which specify the length of the *based_variable* in the corresponding dimension. The length plus the start position must not exceed the length reserved for the *basic_value*. If you pass value -1 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_value* from the specified start position to the end position. If you pass value 0 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_value* from the specified start position for the declared length of the *based_variable*.  |
+| `[ long` | `length,... ]` |  Optional additional *length* arguments, which specify the length of the *based_variable* in the corresponding dimension. The length plus the start position must not exceed the length reserved for the *basic_value*. If you pass value -1 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_value* from the specified start position to the end position. If you pass value 0 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_value* from the specified start position for the declared length of the *based_variable*.  |
 
 ## Return values
 | | |

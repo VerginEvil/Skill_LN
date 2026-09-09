@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 290-292
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 292-294
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2026.07 (KB3674553  ).
+This function is available from 2026.07 (KB3674553).
 Syntax: long SalesQuote.Print(
 domain  tcqono           iSalesQuote,
 long             iProcessingOptionSet,
@@ -21,12 +21,12 @@ Closing of reports:
 During the printing of the sales quote, one or more reports may be
 opened. This function also closes these reports.
 Transaction handling:
-Retry                         -point and commit/abort transaction are handled within
+Retry-point and commit/abort transaction are handled within
 this function.
 Pre:    NA
 Post:   NA
-Input:  iSalesQuote                           - Sales Quote (Mandatory)
-iProcessingOptionSet                          - Processing Option Set (Optional).
+Input:  iSalesQuote             - Sales Quote (Mandatory)
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default printing options
 are applied.
 A Processing Option Set can be created
@@ -53,27 +53,27 @@ PrintAppendixAfterSalesService          domain tcyesno          tcyesno.no
 PrintToPredefinedDevice                 domain tcyesno          tcyesno.yes
 PrintingDevice                          domain tcmcs.str14      ""
 PrintingFileoutPathAndName              domain tcmcs.str100     ""
--               PrintingDevice: This field can be filled with the device to where the
+- PrintingDevice: This field can be filled with the device to where the
 reports are printed. If not provided, a dialog will be shown to
 enter the device, or when PrintToPredefinedDevice is set to "Yes"
 and defaults are present, printing will be done to the default
 printing device(s).
--               PrintingFileoutPathAndName: Depending on the device, this field can be
+- PrintingFileoutPathAndName: Depending on the device, this field can be
 filled (if needed) with the output path and filename for
 storing the file of the printed report.
-Output: oSalesQuotePrinted                    - True: the sales quote has been printed.
+Output: oSalesQuotePrinted      - True: the sales quote has been printed.
 False: the sales quote is not printed.
-oProcessStopped                               - True: the printing process is stopped by
+oProcessStopped         - True: the printing process is stopped by
 the user or due to an error.
 False: the printing process was completed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The sales quote may have been printed.
-<> 0                                          - An error occurred.
+Return: 0                       - The sales quote may have been printed.
+<> 0                    - An error occurred.
 ```

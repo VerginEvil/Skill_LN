@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplierClaimLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1535-1536
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1550-1551
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long SupplierClaimLine.Approve(
 domain  tcorno           iSupplierClaim,
 domain  tcpono           iClaimLine,
@@ -31,39 +31,39 @@ scenarios below:
 Pre     : a db.retry.point() must have been specified.
 Post    : an abort.transaction() or commit.transaction() must be
 executed.
-Input   : iSupplierClaim                              - The Supplier Claim
+Input   : iSupplierClaim                - The Supplier Claim
 Mandatory
-iClaimLine                                            - The Claim Line
+iClaimLine                    - The Claim Line
 Mandatory
 iAllowToUpdateHeaderStatus
--                                                       If true, and the approved
+- If true, and the approved
 Claim Line is the last one,
 the Claim header status is
 set to Approved as well.
-iApprovalText                                         - The Approval Text,
+iApprovalText                 - The Approval Text,
 A valid text number.
 Not mandatory.
-iApprovalDecision                                     - The Approval Decision.
+iApprovalDecision             - The Approval Decision.
 Note that only a reason code of
 type 'Claim Approval' which is
 valid on the current date is
 allowed.
 Not mandatory.
-iApprovalAction                                       - The Approval Action.
+iApprovalAction               - The Approval Action.
 Not mandatory.
-iApprovedBy                                           - The login code of the user who
+iApprovedBy                   - The login code of the user who
 is approving the line.
 Mandatory.
-iApprovalDate                                         - The Approval Date
+iApprovalDate                 - The Approval Date
 Mandatory
-Output  : oExceptionMessage                           - The last message if any message is
+Output  : oExceptionMessage             - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                  - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return  : 0                                           - No error
-<> 0                                                  - An error occurred
+Return  : 0                             - No error
+<> 0                          - An error occurred
 ```

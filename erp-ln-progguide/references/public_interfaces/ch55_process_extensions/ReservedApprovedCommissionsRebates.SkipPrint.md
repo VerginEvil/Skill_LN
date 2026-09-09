@@ -4,19 +4,20 @@
 >
 > Group: Process Extensions for ReservedApprovedCommissionsRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2203-2205
-
-Skips Reserved and Approved Commissions/Rebates when Printing. This process extension is available from 2023.09 ( KB2302057 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2226-2227
 
 ```baan
+Skips Reserved and Approved Commissions/Rebates when Printing.
+This process extension is available from 2023.09 (KB2302057).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension ReservedApprovedCommissionsRebates.SkipPrint can be used
 to skip Reserved and Approved Commissions/Rebates when Printing the Reserved
 Commissions/Rebates and Approved Commissions/Rebates.
 Session where this Process Extension can be implemented:
--               Print Approved Commissions/Rebates (tdcms2402m000)
--               Print Reserved Commissions/Rebates (tdcms2403m000)
+- Print Approved Commissions/Rebates (tdcms2402m000)
+- Print Reserved Commissions/Rebates (tdcms2403m000)
 Fields that are available to be used in this Process Extension:
--               All fields of table Commissions/Rebates (tdcms050)
+- All fields of table Commissions/Rebates (tdcms050)
 Note: Table must also be declared in the Process Extension.
 So skip conditions can be built on current tdcms050 data
 as instructed below.
@@ -49,9 +50,3 @@ endcase
 return (false)
 }
 ```
-
-## Process Extensions for
-
-## ReservedCommissionsRebates
-
-The following process extension(s) is/are available: ReservedCommissionsRebates.SkipReservationApproval

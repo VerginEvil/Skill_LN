@@ -16,7 +16,7 @@ Delete an attribute with a namespace. If an attribute with the specified *name* 
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the node when successful.  |
+| <> 0 | Success; A reference to the node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -41,5 +41,7 @@ The *xml_envelope* node would serialize to the following XML. Note that the *Enc
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

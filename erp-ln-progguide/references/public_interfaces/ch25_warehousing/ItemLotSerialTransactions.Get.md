@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemLotSerialTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1119-1120
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1129-1130
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2025.12 (KB3599334  ).
+This function is available from 2025.12 (KB3599334).
 Syntax: long ItemLotSerialTransactions.Get(
 domain  tcitem           iItem,
 domain  tcclot           iLot,
@@ -33,10 +33,10 @@ The item code (mandatory)
 e.g. "         RLX FRONT COMP 360"
 iLot
 The lot code (optional)
-e.g. "LOT                              -2017-01-18-03242"
+e.g. "LOT-2017-01-18-03242"
 iSerial
 The serial number (optional)
-e.g. "SER                              -2017-01-18-51788"
+e.g. "SER-2017-01-18-51788"
 iBusinessObjectType
 Business Object Type (optional), to filter the
 transactions to be retrieved. This could be an order
@@ -56,8 +56,8 @@ transactions (whltc310) for the given input selection.
 e.g:
 {
 "Item": "                 RLX FRONT COMP 360",
-"Lot": "LOT                        -2017-01-18-03242",
-"Serial": "SER                        -2017-01-18-51788",
+"Lot": "LOT-2017-01-18-03242",
+"Serial": "SER-2017-01-18-51788",
 "Transactions": [
 {
 "TransactionDate": 1709714921,
@@ -83,11 +83,11 @@ e.g:
 {
 etc..
 }
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -10,8 +10,8 @@ This retrieves the main title and subtitle of the current chart. If the client a
 ## Arguments
 | | | |
 |---|---|---|
-| `ref string` | `main_title()` |  |
-| `ref string` | `sub_title()` |  |
+| `ref string` | `main_title()` |    |
+| `ref string` | `sub_title()` |    |
 
 ## Return values
 | | |
@@ -25,6 +25,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

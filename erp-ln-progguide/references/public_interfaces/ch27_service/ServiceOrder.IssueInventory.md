@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1418-1419
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1430-1431
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2023.10 (KB2307524  ).
+This function is available from 2023.10 (KB2307524).
 Syntax: long ServiceOrder.IssueInventory(
 domain  tcorno           iServiceOrder,
 domain  tsmdm.acln       iActivityLine,
@@ -53,6 +53,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

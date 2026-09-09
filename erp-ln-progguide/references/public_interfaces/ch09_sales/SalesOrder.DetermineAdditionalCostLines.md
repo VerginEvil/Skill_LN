@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 318-319
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 320-321
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2024.05 (KB2320802  ).
+This function is available from 2024.05 (KB2320802).
 Syntax: long SalesOrder.DetermineAdditionalCostLines(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -32,27 +32,27 @@ Pre:    N.A.
 Post:   During the process the output arrays will be allocated,
 so afterwards a free.mem() must be done by the caller in order
 to free the memory which is occupied by the arrays.
-Input:  iSalesOrder                              - Sales Order (Mandatory)
-iSalesOrderLine                                  - Sales Order Line (Optional)
-iSalesOrderLineSequence                          - Sales Order Line Sequence (Optional)
-Output: oNumberOfCostLines                       - Number of Cost Lines that are
+Input:  iSalesOrder                - Sales Order (Mandatory)
+iSalesOrderLine            - Sales Order Line (Optional)
+iSalesOrderLineSequence    - Sales Order Line Sequence (Optional)
+Output: oNumberOfCostLines         - Number of Cost Lines that are
 present in the arrays
-oItemArray                                       - Array with Cost Items
-oAmountArray                                     - Array with Amounts, expressed in
+oItemArray                 - Array with Cost Items
+oAmountArray               - Array with Amounts, expressed in
 the Currency of the Sales Order
-oPlannedDeliveryDateArray                        - Array with Planned Delivery Dates
-oProjectArray                                    - Array with Projects
-oElementArray                                    - Array with Elements
-oActivityArray                                   - Array with Activities
-oExceptionMessage                                - The last message if any message is
+oPlannedDeliveryDateArray  - Array with Planned Delivery Dates
+oProjectArray              - Array with Projects
+oElementArray              - Array with Elements
+oActivityArray             - Array with Activities
+oExceptionMessage          - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                     - An ID that refers to the exception
+oExceptionID               - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                        - Determination of Additional Cost
+Return: 0                          - Determination of Additional Cost
 was successful
-<> 0                                             - An error occurred
+<> 0                       - An error occurred
 ```

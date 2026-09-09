@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaterialToIssueForProductionOrders
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 819-821
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 822-823
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.10 (KB3526640  ).
+This function is available from 2024.10 (KB3526640).
 Syntax: long MaterialToIssueForProductionOrders.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,14 +26,14 @@ Production Orders (ticst0101m100) in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: sort by Production Order,
@@ -61,9 +61,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for
-
-## OperationStepsByProductionOrder
-
-The following functions are available: OperationStepsByProductionOrder.StartOverview

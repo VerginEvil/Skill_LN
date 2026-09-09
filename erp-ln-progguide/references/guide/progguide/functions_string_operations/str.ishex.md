@@ -31,4 +31,5 @@ result = str.ishex("013DZY")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

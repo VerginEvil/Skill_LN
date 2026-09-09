@@ -15,11 +15,12 @@ This starts a session where the user can choose a time zone from a list. The fun
 | | |
 |---|---|
 | 0 | New time zone set. |
-| -1 | User aborted operation; time zone not set . |
+| -1 | User aborted operation; time zone not set. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

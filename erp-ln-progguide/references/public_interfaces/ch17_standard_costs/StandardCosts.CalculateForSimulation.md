@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 609-610
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 612-613
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2021.11 (KB2199520  ).
+This function is available from 2021.11 (KB2199520).
 Syntax: long StandardCosts.CalculateForSimulation(
 domain  tcitem           iItem,
 domain  tcemm.grid       iEnterpriseUnit,
@@ -32,8 +32,8 @@ concept Standard Cost per EU
 is active, otherwise empty).
 iCalculationCode        Calculation Code (Mandatory).
 iCalculationDate        Reference Date for calculation.
-iMethod                                        - Top Down
--                                                Single Level
+iMethod                  - Top Down
+- Single Level
 Output: oExceptionMessage       The last message if any message is
 found. If more than one message is
 given, these are present in the

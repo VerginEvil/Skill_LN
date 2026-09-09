@@ -9,7 +9,7 @@ This checks if the specified session is present in the runtime dictionary.
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `session(13)` |  |
+| `string` | `session(13)` |    |
 
 ## Return values
 0 session not present

@@ -3,21 +3,36 @@ On an Infor Enterprise Server form an image field can be defined which can be bo
 
 ## Functional Characteristics
 Below some functional characteristics of images on forms are described.
+
 - On an Infor Enterprise Server 4GL-form one or more images can be displayed in an area of a fixed size.
+
 - The supported image formats are: JPEG, PNG and GIF (no animated GIF).
+
 - Image files are stored in a central repository on the application server file system. System administration tools are available to manage this repository (e.g. move to another location).
+
 - When multiple application servers are used, the image directory must be located on the master application server. The repository functions will make sure this is transparent for the application.
+
 - An image can be dragged from a Web browser window or Windows Explorer window and dropped onto an Infor Enterprise Server form (when the application has enabled the image control for drop actions).
+
 - Images on forms is only supported by the Web UI and not for the Worktop
 
 ## Authorization
 A user can view an image on a form when all of the following conditions are true:
+
 - The user must have read permission for the image repository table: *ttaad710*
-- The user must have read permission, on the OS level, for the image repository directory which is defined in session *"Image parameters (ttaad7100m000)"*.   A user can change an image on a form (through drag and drop) when all of the following conditions are true:
+
+- The user must have read permission, on the OS level, for the image repository directory which is defined in session *"Image parameters (ttaad7100m000)"*.
+
+A user can change an image on a form (through drag and drop) when all of the following conditions are true:
+
 - In the Dynamic Form Editor (DFE), the drag/drop option for the image field must be checked.
+
 - In the UI script the function: bind.image() must be called to bind the image to a maintable field.
+
 - The current maintable record shown in the session must be editable.
+
 - The user must have write permission for the image repository table: *ttaad710*
+
 - The user must have write permission, on the OS level, for the image repository directory which is defined in session *"Image parameters (ttaad7100m000)"*.
 
 ## Application data model
@@ -27,11 +42,12 @@ Images are linked to records in application tables. This link is represented by 
 An image set is a group of one or more images which belong together. An image set is identified by a GUID. These sets are stored in the image repository. Currently only one image per set can be stored. For future development the image repository is prepared for having more images in an image set
 
 ## Form design
-An image can be added to a form through the DFE. In the DFE choose the menu option: *Insert  Image*.
+An image can be added to a form through the DFE. In the DFE choose the menu option: *Insert****Image*.
 
 ## 4GL UI script
 In the UI script the image field, which is defined in the DFE, must be declared as an external field of domain: *ttdyf.picture*. In order to bind the image field to a maintable record, the function [bind.image()](bind.image.md) must be used. For a complete description of the related functions see the section: [Images on Forms synopsis](synopsis.md).
 
 ## Related topics
 - [Images on Forms synopsis](synopsis.md)
+
 - [Images on Forms Examples](examples.md)

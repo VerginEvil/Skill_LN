@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1408-1410
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1420-1422
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.04 (KB2233573  ).
+This function is available from 2022.04 (KB2233573).
 Syntax: long ServiceOrder.Complete(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tcyesno          iAllowCompletingWithEmptyProblemCode,
@@ -36,11 +36,11 @@ If return warehouse orders are created, then the system will
 at the end also process the warehouse activities which are set
 to automatic.
 Note:
--                       When an Electronic Signature is required for completing a
+- When an Electronic Signature is required for completing a
 service order, this public interface can only be used when
 called in an LN UI component. Only in that case the
 signature request dialog can be started.
--                       When interactive counter reading reset rules are defined for
+- When interactive counter reading reset rules are defined for
 any of the service order activities, the session for resetting
 the counters is not started when this public interface is
 used. Resetting these counters can be done using LN UI.
@@ -51,10 +51,10 @@ Post:   If the order gets blocked, the blocking flag is set on header
 level.
 If return warehouse orders are created and warehouse activities
 have been set to Automatic, these are executed.
-Input:  iServiceOrder                                                         -
+Input:  iServiceOrder                                           -
 The service order.
 Mandatory input.
-iAllowCompletingWithEmptyProblemCode                                          -
+iAllowCompletingWithEmptyProblemCode                    -
 With this input argument the user can indicate that the
 complete action should continue if an activity is set
 to Completed which has an empty problem code and
@@ -63,7 +63,7 @@ indicated that this check should result in a warning.
 Note: this situation would result in LN UI in a question
 for the user.
 Mandatory input.
-iAllowCompletingWithEmptySolutionCode                                         -
+iAllowCompletingWithEmptySolutionCode                   -
 With this input argument the user can indicate that the
 complete action should continue if an activity is set
 to Completed which has an empty solution code and
@@ -83,8 +83,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the service order was not
 changed to Completed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order changed to Completed.
-<> 0                          -       The status of the service order could not be
+<> 0    -       The status of the service order could not be
 changed to Completed.
 ```

@@ -1,4 +1,4 @@
-# String expressions (ON CASE)
+# String expressions (ON CASE statement)
 The expression of type STRING after ON CASE is evaluated and compared with the various CASE expressions that follow. All expressions in the case labels must be of type STRING. For example:
 ```
 
@@ -22,5 +22,7 @@ ENDCASE
 
 ## Related topics
 - [The ON CASE statement](the_on_case_statement.md)
+
 - [3GL programming language features: overview](overview.md)
+
 - [Transfer of control](transfer_of_control.md)

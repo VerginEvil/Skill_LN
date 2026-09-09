@@ -14,9 +14,9 @@ Set the font settings for the text of the visual representation.
 | `long` | `i.visual.representation` |  The handle to the visual representation as returned by a previous call to [sig.sign.set.visual.representation](sig.sign.set.visual.representation.md)  |
 | `string` | `i.name` |  The name of the font, as defined in the Fonts session.  |
 | `long` | `i.size` |  The font size, in points.  |
-| `boolean` | `i.bold` |  |
-| `boolean` | `i.italic` |  |
-| `boolean` | `i.underline` |  |
+| `boolean` | `i.bold` |    |
+| `boolean` | `i.italic` |    |
+| `boolean` | `i.underline` |    |
 
 ## Return values
 | | |
@@ -29,5 +29,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Digital Signatures overview](overview.md)
+
 - [Digital Signatures synopsis](synopsis.md)
+
 - [Digital Signatures examples](examples.md)

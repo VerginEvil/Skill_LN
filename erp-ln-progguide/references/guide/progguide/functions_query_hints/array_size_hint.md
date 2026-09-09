@@ -13,5 +13,7 @@ The size specified will override the default array size (for this particular que
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Array fetching hint](array_fetching_hint.md)
+
 - [Query hints overview](overview.md)

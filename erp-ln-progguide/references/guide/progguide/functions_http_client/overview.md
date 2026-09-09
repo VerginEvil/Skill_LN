@@ -4,20 +4,34 @@ HTTP functions as a request–response protocol in the client–server computing
 
 ## Scope and limitations
 The API provides several functions for sending an HTTP request to a URL. Function [http.send()](http.send.md) is the generic function to configure and send a request. For ease of use the API provides some convenient wrapper functions for the most used HTTP methods, like [http.get()](http.get.md), [http.post()](http.post.md), [http.put()](http.put.md) etc. The API is object based and provides functions for dealing with the following object types:
+
 - http.response
+
 - http.queryparamlist
+
 - http.routeparamlist
+
 - http.headerlist
+
 - http.header
+
 - http.cookiejar
+
 - http.cookie
+
 - http.mimepartlist
+
 - http.mimepart
+
 - http.oauth1params
+
 - http.oauth2params
+
+A special function for use in LN CE is [http.service.info()](http.service.info.md). It can be used to retrieve e.g. the URL, or (if applicable) the OAuth 1.0 key and secret of known services, like ionapi.
 
 ## http.response
 Represents the response returned from the webservice. It contains several properties like the HTTP statuscode, error information, the list of headers returned from the server, the body etc.
+Do not forget to delete the http.response object with [http.response.delete()](http.response.delete.md)
 
 ## http.queryparamlist
 Represents a list of query parameter key-value pairs. This list can be used in case multiple requests have to be made to a webservice using the same query parameters.
@@ -59,29 +73,49 @@ Mime parts can be constructed based on data stored in a string, a stream or a fi
 Introduced with TIV 2340.
 Represents a collection of OAuth1 parameters. This can be used to sign a request in an OAuth1 manner.
 The following OAuth1 parameters can be specified:
+
 - the signature method ("HMAC-SHA1", "HMAC-256", "PLAINTEXT")
+
 - the consumer key
+
 - the consumer secret
+
 - the token (optional)
+
 - the token secret (optional)
+
 - the callback (optional)
+
 - the verifier (optional)
 
 ## http.oauth2params
 Introduced with TIV 2470.
 Represents a collection of OAuth2 parameters. This can be used to sign a request in an OAuth2 manner.
 The following OAuth2 parameters can be specified:
+
 - either an OAuth 2.0 Parameter Set name from session ttaad0108m000
-- or a combination of the following parameters:
-- the grant type (client credentials or password credentials (default))
-- where to put the client authentication (in header (default) or body)
+
+- the grant type (client credentials (default), password credentials, saml2 bearer (as of TIV 2530) or the current user's saml2 bearer (as of TIV 2530)
+
+- where to put the client authentication (in header (default) or body), or use no client authentication at all (as of TIV 2530)
+
 - the client id
+
 - the client secret
+
 - the username (if password credentials grant type is used)
+
 - the password (if password credentials grant type is used)
+
 - the access token url
+
 - the scopes
+
+- the token header, to use an other header than "Authorization" (as of TIV 2530)
+
+- the saml assertion, if a saml2 bearer grant type is used (as of TIV 2530)
 
 ## Related topics
 - [HTTP Client synopsis](synopsis.md)
+
 - [HTTP Client examples](examples.md)

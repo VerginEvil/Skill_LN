@@ -16,12 +16,13 @@ This function may be used to determine the required size of the *data* argument 
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success; Length of the data in the *node*.  |
-| -1 | Error, the specified *node* is incorrect.  |
+| >= 0 | Success; Length of the data in the *node*. |
+| -1 | Error, the specified *node* is incorrect. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

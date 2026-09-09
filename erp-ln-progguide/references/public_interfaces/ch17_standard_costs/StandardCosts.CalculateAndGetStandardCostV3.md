@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 607-608
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 610-611
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2026.02 (KB3647993  ).
+This function is available from 2026.02 (KB3647993).
 Syntax: long StandardCosts.CalculateAndGetStandardCostV3(
 domain  tccpcc           iCalculationCode,
 domain  tcitem           iItem,
@@ -58,7 +58,7 @@ configured, the standard parts that
 are encountered in the product structure
 are recalculated.
 iCalculationCodeStandardParts
-When reading or re                                              -calculating the
+When reading or re-calculating the
 standard parts in the product structure,
 of a configured item, they are
 calculated using the given calculation

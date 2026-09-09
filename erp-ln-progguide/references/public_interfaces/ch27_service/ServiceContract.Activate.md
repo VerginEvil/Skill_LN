@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1382-1384
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1394-1396
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2023.05 (KB2285960  ).
+This function is available from 2023.05 (KB2285960).
 Syntax: long ServiceContract.Activate(
 domain  tcorno           iServiceContract,
 domain  tsctm.cchn       iServiceContractChange,
@@ -24,9 +24,9 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function makes the passed Service Contract, and/or Service
 Contract Change, active.
 Note:
--                       Public Interface ServiceContract.Activate has transaction
+- Public Interface ServiceContract.Activate has transaction
 management.
--                       Public Interface ServiceContract.ActivateV2 does not
+- Public Interface ServiceContract.ActivateV2 does not
 have transaction management.
 First general checks are executed whether activation is
 allowed or not.
@@ -49,8 +49,8 @@ and the Service Contract Change is of type Original Contract,
 both Service Contract and Service Contract Change are activated.
 When the Service Contract Change is not of type Original
 Contract, then the Service Contract Change is activated.
-Pre:                  -
-Post:   This function sets a retry              -point and will commit and/or abort
+Pre:    -
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iServiceContract
 Service Contract: Mandatory
@@ -81,12 +81,12 @@ Maintenance Sales Orders and the effective or expiry
 date of the contract line will result in an invalid
 contract on the order/call, then there are the following
 options:
--                               Unlink Contract
+- Unlink Contract
 Unlinking is done by updating the orders/calls
 by setting the coverage time to 0. The contract
 will be unlinked and coverage is recalculated
 for the cost lines.
--                               Relink Contract
+- Relink Contract
 Relinking is done by setting the coverage time
 on the orders/calls to the contract line expiry
 date, which will redetermine the applicable
@@ -97,19 +97,19 @@ When there are Calls, Service Orders and/or
 Maintenance Sales Orders present for configurations
 covered by this contract, then there are the following
 options:
--                               Establish Link
+- Establish Link
 For each contract configuration line which is
 present on a Call, Service Order (Activities),
 or Maintenance Sales Order Line, the Service
 Contract is filled.
--                               Apply Coverage
+- Apply Coverage
 Contract coverage is applied to orders and
 calls present for contract configurations.
 First the Service Contract is updated on each
 of these Calls and Orders.
 Next the contract coverage calculation is
 performed.
--                               Ignore
+- Ignore
 Nothing is updated on open Calls, Service Order
 (Activities), or Maintenance Sales Order Lines.
 (mandatory Link/Cover/Ignore)
@@ -120,6 +120,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Activation successful
-<> 0                          - Error during Activation occurred
+Return: 0       - Activation successful
+<> 0    - Error during Activation occurred
 ```

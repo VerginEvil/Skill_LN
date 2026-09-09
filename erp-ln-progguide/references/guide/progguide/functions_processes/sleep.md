@@ -10,7 +10,7 @@ Use [reactivate()](reactivate.md) to activate a sleeping process. When a child p
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `processno` |  |
+| `long` | `processno` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

@@ -28,7 +28,7 @@ The specified `soapNsURI` will be used to fill in the `xmlns:soap` namespace dec
 ## Return values
 | | |
 |---|---|
-| <> 0 | a handle to the created SOAP Message object; this SOAP Message contains the created SOAP Envelope XML document  |
+| <> 0 | a handle to the created SOAP Message object; this SOAP Message contains the created SOAP Envelope XML document |
 | 0 | in case of an error |
 
 ## Context
@@ -36,9 +36,12 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Preconditions
 The specified `soapNsURI` must be one of the following strings:
+
 - "http://schemas.xmlsoap.org/soap/envelope/" (defined as `URI_SOAP11` in `bic_soap`).
+
 - "http://www.w3.org/2003/05/soap-envelope" (defined as `URI_SOAP12` in `bic_soap`).
 
 ## Related topics
 - [SOAP client overview](overview.md)
+
 - [SOAP client synopsis](synopsis.md)

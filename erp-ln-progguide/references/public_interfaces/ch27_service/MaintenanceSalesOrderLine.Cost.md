@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1480-1481
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1494-1496
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2025.06 (KB3569267  ).
+This function is available from 2025.06 (KB3569267).
 Syntax: long MaintenanceSalesOrderLine.Cost(
 domain  tcorno           iMaintenanceSalesOrder,
 domain  tcpono           iMaintenanceSalesOrderLine,
@@ -23,9 +23,9 @@ Call ProcessingOptionSet.Create() to obtain
 iProcessingOptionSet.
 Post:   Commit/abort the transaction.
 Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iMaintenanceSalesOrder                        - Maintenance Sales Order;
+Input:  iMaintenanceSalesOrder          - Maintenance Sales Order;
 mandatory
-iMaintenanceSalesOrderLine                            - Maintenance Sales Order Line;
+iMaintenanceSalesOrderLine      - Maintenance Sales Order Line;
 mandatory
 iProcessingOptionSet
 Processing Option Set: a processing option set number
@@ -56,7 +56,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                                   - No error; however, error messages can
+Return  : 0                     - No error; however, error messages can
 have been set.
-<> 0                                          - An error occurred
+<> 0                  - An error occurred
 ```

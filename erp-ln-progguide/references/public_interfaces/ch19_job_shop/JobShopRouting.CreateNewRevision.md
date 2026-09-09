@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopRouting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 661-662
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 664-665
 
 ```baan
 DLL:   tiextrouapi
-This function is available from     2020.11 (KB2158375  ).
+This function is available from 2020.11 (KB2158375).
 Syntax: long JobShopRouting.CreateNewRevision(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -25,14 +25,14 @@ Prerequisite: 'Job Shop by Site' is 'In Preparation' or 'Active'
 Example usage:
 JobShopRouting.CreateNewRevision(
 |* Fixed arguments:
-site,                                                   --> input
-product,                                                --> input
-routing                                                 --> input
-revision                                                --> input
-new.revision                                            --> output
-exception.message,                                      --> output
-exception.id)                                           --> output
-Pre:    Caller must set retry              -point
+site,                     --> input
+product,                  --> input
+routing                   --> input
+revision                  --> input
+new.revision              --> output
+exception.message,        --> output
+exception.id)             --> output
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iSite                   Site: Mandatory
 iProduct                Product: Mandatory

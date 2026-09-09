@@ -1,7 +1,7 @@
 # stat.set.real.string()
 
 ## Syntax:
-`function void stat.set.real.string( string i.domain(14), const string i.string )`
+`function long stat.set.real.string( string i.domain(14), const string i.string )`
 
 ## Description
 This function sets the real string value of a Stat-field.

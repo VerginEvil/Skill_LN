@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 889-891
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 899-901
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2022.02 (KB2226609  ).
+This function is available from 2022.02 (KB2226609).
 Syntax: long ProjectPCS.Start360(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the session Project 360 (tipcs0320m00
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -62,15 +62,15 @@ Supported values:
 2: sort by Search Key/Project.
 3: sort by Kind Of Project/Project.
 4: sort by Calculation Group/Project.
-5: sort by Sold                                -to BP/Project.
+5: sort by Sold-to BP/Project.
 iQueryExtend            Not used.
 iProject                Project. Only used if iStartFilter
 "ShowOneProject" is used.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

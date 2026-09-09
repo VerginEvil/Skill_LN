@@ -4,4 +4,5 @@ The next sequence diagram includes messages sent from the server back to the cli
 
 ## Related topics
 - [Parallel Application Processing Overview](overview.md)
+
 - [Parallel Application Processing synopsis](synopsis.md)

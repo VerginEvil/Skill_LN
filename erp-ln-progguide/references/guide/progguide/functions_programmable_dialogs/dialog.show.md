@@ -17,14 +17,15 @@ Displays the created dialog and start interaction with the user. This function r
 ## Return values
 | | |
 |---|---|
-| END.PROGRAM | The user pressed the *OK* (or Finish) button  |
-| 0 | The user pressed the *Cancel* button  |
-| NEXT.FRM | The user pressed the *Next* button  |
-| PREV.FRM | The user pressed the *Back* button  |
+| END.PROGRAM | The user pressed the *OK* (or Finish) button |
+| 0 | The user pressed the *Cancel* button |
+| NEXT.FRM | The user pressed the *Next* button |
+| PREV.FRM | The user pressed the *Back* button |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Programmable Dialogs Example](example.md)

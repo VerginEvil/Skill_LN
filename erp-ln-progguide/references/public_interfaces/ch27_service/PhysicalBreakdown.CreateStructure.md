@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PhysicalBreakdown
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1356-1360
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1368-1371
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2025.05 (KB3567711  ).
+This function is available from 2025.05 (KB3567711).
 Syntax: long PhysicalBreakdown.CreateStructure(
 long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -41,7 +41,7 @@ UseDeliveries
 domain  tcyesno         no
 Use this option to create a physical breakdown from
 Sales (after sales). The end item (of the sales order)
-P                              -BOM is copied to a physical breakdown.
+P-BOM is copied to a physical breakdown.
 If UseDeliveries is Yes, the following options are
 applicable:
 FromInstallationGroup
@@ -57,7 +57,7 @@ domain  tcyesno         yes
 The creation of the new physical breakdown
 relations between the existing parent serialized
 items and the child items that are part of an
-As                              -built Structure, is skipped.
+As-built Structure, is skipped.
 Target
 domain  tscfg2210.link  new.breakdown
 Determines the target of the created Physical Breakdown
@@ -109,16 +109,16 @@ To Serial Number; applicable when UseDeliveries is Yes.
 DefaultSerializedItemGroup
 domain  tscfg.sigr      ""
 The Serialized Item Group to which the serialized items
-in the newly                              -created physical breakdown will belong.
+in the newly-created physical breakdown will belong.
 DefaultServiceOffice
 domain  tccwoc          ""
 The service department that will carry out service
 and maintenance activities, on the serialized items in
-the newly                              -generated physical breakdown.
+the newly-generated physical breakdown.
 DefaultOwner
 domain  tcccom.bpid     ""
 The Owner to which the serialized items
-in the newly                              -created physical breakdown will belong.
+in the newly-created physical breakdown will belong.
 SerialStatus
 domain  tscfg.cfst      actv
 The default Serialized Item Status. This field is only
@@ -181,7 +181,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                                   - No error; however, error messages can
+Return  : 0                     - No error; however, error messages can
 have been set.
-<> 0                                          - An error occurred
+<> 0                  - An error occurred
 ```

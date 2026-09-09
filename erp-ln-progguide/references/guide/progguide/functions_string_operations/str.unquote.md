@@ -38,4 +38,5 @@ result$ = str.unquote$("'hi ""there""'")    |* 'hi "there"'     hi "there"
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

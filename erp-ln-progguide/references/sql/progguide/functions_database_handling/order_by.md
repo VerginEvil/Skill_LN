@@ -1,20 +1,20 @@
 # ORDER BY clause
-The ORDER BY clause specifies a table that is ordered by the columns that are specified by the ORDER BY clause. The input table is the table specified by the [SELECT clause](select.md).
+The ORDER BY clause specifies a table that is ordered by the columns as specified by a list of one or more *<**order by item**>**s*. The input table is the table specified by the [SELECT clause](select.md).
 ORDER BY sorts the result-set by one or more columns (where sort direction defines ascending or descending order).
-ORDER BY is applied after [GROUP BY clause](group_by.md), so it operates on an aggregated set and not on the individual rows.
+ORDER BY is applied after the [GROUP BY clause](group_by.md), so it operates on an aggregated set rather than on the individual rows.
 
 ## Syntax
 ```
 
 <order by clause>
-    ::= ORDER BY <order by item> { , <order by item> }...
+    ::= ORDER BY <order by item> [ { , <order by item> }... ]
 
 <order by item>
-    ::= Column reference [ <sort direction> ]
+    ::= <column reference> [ <sort direction> ]
       | <unsigned integer> [ <sort direction> ]
 
 <unsigned integer>
-    ::= Integer constant
+    ::= <integer constant>
 
 <sort direction>
     ::= ASC
@@ -22,15 +22,15 @@ ORDER BY is applied after [GROUP BY clause](group_by.md), so it operates on an a
 ```
 
 ## Syntactical restrictions
-The *<unsigned integer>* shall not start with a minus sign ('–').
-The *<column reference>* shall not reference an array column.
-In case of a composed query, the *<column reference>* contains the mnemonic, do not include the table name.
+The *<**unsigned integer**>* shall not start with a minus sign ('–').
+The *<**column reference**>* shall not reference an array column.
+In case of a composed query, the *<**column reference**>* contains the mnemonic, do not include the table name.
 
 ## Semantics
-If *<sort direction>* is ommited, then *ASC* is implicit.
-The result table is first ordered on the first *<order by item>*. If there is a second *<order by item>*, then whenever the values for the first *<order by item>* are the same or are both NULL, then the second *<order by item>* determines the order. And so on.
-If for all *<order by item>s* the corresponding column values of two rows are the same or both NULL, then the order of the rows is undefined.
-It is implementation defined whether NULL values sort before or after any other value.
+If *<**sort direction**>* is ommited, then *ASC* is implicit.
+The result table is first ordered on the first *<**order by item**>*. If there is a second *<**order by item**>*, then whenever the values for the first *<**order by item**>* are the same or are both NULL, then the second *<**order by item**>* determines the order. And so on.
+If for all *<**order by item**>**s* the corresponding column values of two rows are the same or both NULL, then the order of the rows is [undefined](sql_glossary.md#Undefined).
+It is [implementation defined](sql_glossary.md#ImplementationDefined) whether NULL values sort before or after any other value.
 
 ## Examples
 The following example selects the columns *lastname*, *salary* and *bonus* from table *dbtst120*. The result table is ordered first on column *salary* and then on column *bonus*.
@@ -60,4 +60,5 @@ ORDER BY AVG
 
 ## Related topics
 - [SELECT clause](select.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

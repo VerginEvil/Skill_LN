@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderReject
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 807-808
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 806-807
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2020.07 (KB2135601  ).
+This function is available from 2020.07 (KB2135601).
 Syntax: long ProductionOrderReject.MoveToQuarantine(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -53,7 +53,7 @@ iWarehouseLocation      Location in iQuarantineWarehouse
 iEffectivityUnit        Effectivity Unit (optional).
 iLotCode                An existing Lot code (mandatory for
 lot controlled items)
-iNCMReport              The  non                      -conformance material report
+iNCMReport              The  non-conformance material report
 to be updated (optional)
 iTextNumber             Text number (optional) which will
 be copied into a new text and linked
@@ -75,5 +75,5 @@ information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       Reject is moved to quarantine
-<> 0                    Reject could not be moved to quarentine.
+<> 0                    Reject could not be moved to quarantine.
 ```

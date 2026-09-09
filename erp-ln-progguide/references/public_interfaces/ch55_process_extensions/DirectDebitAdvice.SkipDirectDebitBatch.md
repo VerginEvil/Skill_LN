@@ -4,15 +4,16 @@
 >
 > Group: Process Extensions for DirectDebitAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2005-2006
-
-Skips processing of a direct debit batch. This process extension is available from 2024.04 ( KB2322586 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2024-2024
 
 ```baan
+Skips processing of a direct debit batch.
+This process extension is available from 2024.04 (KB2322586).
+To implement this process extension, you can use the information below:
 Usage:        DirectDebitAdvice.SkipDirectDebitBatch can be used to skip a direct
 debit batch during Process Direct Debits(tfcmg4240m000).
 Fields that are available to be used in this Process Extension:
--               Key field of tfcmg409 - tfcmg409.btno (Direct Debit Batch)
+- Key field of tfcmg409 - tfcmg409.btno (Direct Debit Batch)
 This field can be used to read table tfcmg409 (binded)
 Pseudocode:
 Below you can find an example:
@@ -36,7 +37,3 @@ endselect
 return (false)
 }
 ```
-
-## Process Extensions for EffectivityUnit
-
-The following process extension(s) is/are available: EffectivityUnit.CheckInterchangeable

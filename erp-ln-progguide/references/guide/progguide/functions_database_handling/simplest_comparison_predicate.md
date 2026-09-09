@@ -1,14 +1,14 @@
 # Simplest comparison predicate
-The simplest comparison predicate compares two value expressions. It is used to define the semantics of the general [Comparison predicate](comparison_pred.md).
+The simplest comparison predicate compares two value expressions. It is used to define the semantics of the general [comparison predicate](comparison_pred.md).
 
 ## Syntax
 ```
 
 <simplest comparison predicate>
-    ::= Value expression <comparison operator> Value expression
+    ::= <value expression> <comparison operator> <value expression>
 
 <comparison operator>
-    ::= < | <= | = | >= | > | <> | !=
+    ::= = | <> | != | < | <= | > | >=
 ```
 
 ## Semantics
@@ -44,4 +44,5 @@ x'ab' = x'abc'
 
 ## Related topics
 - [Comparison predicate](comparison_pred.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

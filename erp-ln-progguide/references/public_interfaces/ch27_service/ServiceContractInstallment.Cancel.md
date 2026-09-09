@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractInstallment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1400-1401
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1412-1413
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.10 (KB3606613  ).
+This function is available from 2025.10 (KB3606613).
 Syntax: long ServiceContractInstallment.Cancel(
 domain  tcorno           iServiceContract,
 domain  tsctm.inst       iInstallmentNumber,

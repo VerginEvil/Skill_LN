@@ -18,8 +18,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - parameter 'http.cookiejar' must be a valid http.cookiejar object
+
 - parameter 'http.cookie' must be a valid http.cookie object
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

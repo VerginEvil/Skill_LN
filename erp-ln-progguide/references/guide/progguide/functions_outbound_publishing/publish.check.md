@@ -16,7 +16,7 @@ This function checks whether a destination (bus component) is available for publ
 | | |
 |---|---|
 | 0 | success. |
-| <> 0 | an error value (this only occurs if the functionality is unavailable in the current Adapter version)  |
+| <> 0 | an error value (this only occurs if the functionality is unavailable in the current Adapter version) |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -24,4 +24,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Outbound Publishing functions overview](overview.md)
+
 - [Outbound Publishing functions synopsis](synopsis.md)

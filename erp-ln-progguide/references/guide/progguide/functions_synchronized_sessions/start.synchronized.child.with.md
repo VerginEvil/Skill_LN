@@ -21,5 +21,7 @@ Note  The specified command is *not* reset after the next synchronized child is 
 
 ## Related help topics
 - [Synchronized sessions overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)
+
 - [Child synchronization sample program](example.md)

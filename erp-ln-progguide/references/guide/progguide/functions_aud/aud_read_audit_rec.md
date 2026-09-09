@@ -20,9 +20,7 @@ This retrieves a specified audit record from the current transaction. You can us
 | | |
 |---|---|
 | 0 | Success |
-| -1 |  Error; Possible reasons are: *seqid* does not exist *rec_no* does not exist  |
--
--
+| -1 | Error; Possible reasons are: *seqid* does not exist *rec_no* does not exist |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -30,7 +28,11 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - transaction record](macros_transaction_record.md)
+
 - [Macros - transaction dates and times](macros_transaction_dates_and_times.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

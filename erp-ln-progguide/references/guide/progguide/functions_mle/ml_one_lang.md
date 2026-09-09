@@ -21,6 +21,9 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Multi Language Data overview](overview.md)
+
 - [Multi Language Data synopsis](synopsis.md)
+
 - [Multi Language Data support code examples](examples.md)
+
 - [ml_one_lang function](../functions_database_handling/ml_one_lang_function.md)

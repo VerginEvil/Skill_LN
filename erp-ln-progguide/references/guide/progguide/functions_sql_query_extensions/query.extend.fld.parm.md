@@ -22,7 +22,7 @@ You can use this function in the section before.program.
 | -1 | Column not found |
 | -2 | Column can not be added to extend definition |
 | -3 | Wrong sql expression for column |
-| -4 | All elements of same colum-field must use the same sql expression as clause for query.extend.fld.select(), query.extend.fld.from() and query.extend.fld.where().  |
+| -4 | All elements of same colum-field must use the same sql expression as clause for query.extend.fld.select(), query.extend.fld.from() and query.extend.fld.where(). |
 | -5 | For UPDATE or DELETE is not allowed |
 | -6 | Column definition is already in use. (query.extend.select...) |
 | -11 | Qrycol not supported (application version must be at least 10.4 or tiv portingset is not 2030 or higher.) |
@@ -36,7 +36,7 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 This function is available from Enterprise Server TIV level 2370, FIELD_WITH_ELEMENT in TIV level 2420 and is only usable in LN-UI.
 Notes  Query.extend.fld.parm("column",...) must follow the other Query.extend.fld...("column",..) function(s) for the column.
 You can only use FIELD_WITH_ELEMENT with a simple sql expression in QUERY.EXTEND.FLD.SELECT().
-The folowing syntax is supported: "table.field" or "SELECT table.field FROM ... WHERE ...".
+The folowing syntax is supported: "table.field" or "SELECT table.field FROM... WHERE...".
 The column-field must be defined in the program as extern field with the maximum element. This is used for saving and needed for navigating throught rows of the view.
 
 ## Example
@@ -55,4 +55,5 @@ before.program:
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)

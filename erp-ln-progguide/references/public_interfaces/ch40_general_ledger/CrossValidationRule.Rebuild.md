@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CrossValidationRule
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1813-1813
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1833-1833
 
 ```baan
 DLL:   tfextgldapi
-This function is available from     2026.10 (KB3677891  ).
+This function is available from 2026.10 (KB3677891).
 Syntax: long CrossValidationRule.Rebuild(
 domain  tcncmp           iFinancialCompany,
 domain  tcorno           iCrossValidationRule,
@@ -20,22 +20,22 @@ Usage:        Expl:   This public interface rebuilds the given cross validation 
 Pre:    N/A
 Post:   N/A
 Input:
-iFinancialCompany                             - The financial company. (Mandatory)
-iCrossValidationRule                          - The cross validation rule. (Mandatory)
+iFinancialCompany       - The financial company. (Mandatory)
+iCrossValidationRule    - The cross validation rule. (Mandatory)
 iCrossValidationRuleVersion
--                                               The cross validation rule version.
+- The cross validation rule version.
 (Mandatory)
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - The rebuild of the given cross
+0                       - The rebuild of the given cross
 validation rule was successful.
-<> 0                                          - Error.
+<> 0                    - Error.
 ```

@@ -1,7 +1,7 @@
 # xmlBuildNamespaceList$()
 
 ## Syntax:
-`function string xmlBuildNamespaceList$( const string prefix, const string URI, [ ... ] )`
+`function string xmlBuildNamespaceList$( const string prefix, const string URI, [... ] )`
 
 ## Description
 This is a utility function that creates a string of namespace bindings, to be used for the [xmlFindFirstMatchNs()](xmlFindFirstMatchNs.md) and [xmlFindMatchNs()](xmlFindMatchNs.md) functions.
@@ -11,7 +11,7 @@ This is a utility function that creates a string of namespace bindings, to be us
 |---|---|---|
 | `const string` | `prefix` |  *prefix* is the prefix of a namespace.  |
 | `const string` | `URI` |  *URI* is the URI of a namespace.  |
-| `[ ...` | `]` |  Use optional parameters to supply more pairs of *prefix* and *URI*.  |
+| `[...` | `]` |  Use optional parameters to supply more pairs of *prefix* and *URI*.  |
 
 ## Return values
 | | |
@@ -38,5 +38,7 @@ namespaceList = "soap=""http://www.w3.org/2001/12/soap-envelope"",m=""http://www
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

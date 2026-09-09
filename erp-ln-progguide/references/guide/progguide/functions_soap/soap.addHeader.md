@@ -18,8 +18,12 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Preconditions
 - The specified `soapMessage` and `method` must both be valid handles.
-- The specified `soapMessage` must contain a valid SOAP Envelope.     Note  It is possible to add multiple Methods to a SOAP Envelope Body.
+
+- The specified `soapMessage` must contain a valid SOAP Envelope.
+
+Note  It is possible to add multiple Methods to a SOAP Envelope Body.
 
 ## Related topics
 - [SOAP client overview](overview.md)
+
 - [SOAP client synopsis](synopsis.md)

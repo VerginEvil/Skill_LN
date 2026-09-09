@@ -6,8 +6,8 @@ You can declare local variables as static variables. The value of a static varia
 |---|---|
 | Point of declaration | In the function between the brackets { }. |
 | Syntax of declaration | static <type> name |
-| Initialization |  At program start: numeric set to 0 boolean set to false strings ""  |
-| Scope (validity and time) | Can be used only within the function but they maintain their values throughout program execution.  |
+| Initialization | At program start: numeric set to 0 boolean set to false strings "" |
+| Scope (validity and time) | Can be used only within the function but they maintain their values throughout program execution. |
 
 ## Example 1
 ```
@@ -43,4 +43,5 @@ function void spool( long id, ref string line() )
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

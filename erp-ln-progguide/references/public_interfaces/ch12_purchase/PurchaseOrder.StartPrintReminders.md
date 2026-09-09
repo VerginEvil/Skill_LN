@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 449-451
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 451-453
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.01 (KB3643777  ).
+This function is available from 2026.01 (KB3643777).
 Syntax: long PurchaseOrder.StartPrintReminders(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -17,7 +17,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.:  This function starts the session Print Purchase Order
 Reminders (tdpur4403m000). Depending on the main table of the
-calling session, Non                      -Consecutive Record Selection (NCRS) is
+calling session, Non-Consecutive Record Selection (NCRS) is
 applied. Specifically, when the main table is either:
 * Purchase Orders (tdpur400), or
 * Purchase Order Lines (tdpur401),
@@ -27,12 +27,12 @@ ranges provided in the option set are applied as additional
 filters to further refine the selected records.
 Pre:    N/A
 Post:   N/A
-Input:  iStartMode                            - Not used
-iIgnoreSelectionFields                        - If true, the session is started with
-the session                                                -defaults, instead of
+Input:  iStartMode              - Not used
+iIgnoreSelectionFields  - If true, the session is started with
+the session-defaults, instead of
 filling the fields through this Public
 Interface.
-iProcessingOptionSet                          - Processing Option Set (optional).
+iProcessingOptionSet    - Processing Option Set (optional).
 If 0, the default options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -75,14 +75,14 @@ PrintRemindersByBuyFromBP         domain tcyesno        tcyesno.yes
 IgnoreOrderLinesNotYetPrinted     domain tcyesno        tcyesno.no
 PrintLinesWithUnconfirmedReceipt  domain tcyesno        tcyesno.yes
 PrintToPredefinedDevice           domain tcyesno        tcyesno.yes
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```

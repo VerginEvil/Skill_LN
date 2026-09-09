@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 211-213
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 212-213
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2023.10 (KB2303593  ).
+This function is available from 2023.10 (KB2303593).
 Syntax: long ItemPlanning.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,14 +27,14 @@ in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used. Optional.
 Standard supported values:
 1: sort by Plan Item (default)
@@ -44,15 +44,15 @@ Standard supported values:
 9: sort by Item, Planning Cluster
 iQueryExtend            A specific query to be used when zooming
 to this session.(Optional)
-iPlanItem               Plan Item                       - Optional, used when Session
+iPlanItem               Plan Item - Optional, used when Session
 Index is 1.
-iPlanLevel              Plan Level                       - Optional, used when Session
+iPlanLevel              Plan Level - Optional, used when Session
 Index is 2.
-iProject                Project                       - Optional, used when Session
+iProject                Project - Optional, used when Session
 Index is 7.
-iCluster                Cluster                       - Optional, used when Session
+iCluster                Cluster - Optional, used when Session
 Index is 8.
-iItem                   Item                       - Optional, used when Session
+iItem                   Item - Optional, used when Session
 Index is 9.
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
@@ -69,7 +69,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for PlanItem
-
-The following functions are available: PlanItem.CalculateFinishDateFromRequirementDate PlanItem.CalculateRequirementDateFromFinishDate PlanItem.Copy PlanItem.CopySourcingStrategies PlanItem.CopySupplyingRelations PlanItem.CopySupplyingStrategies PlanItem.GetHorizonDate PlanItem.GetInboundLeadTime PlanItem.GetOrderLeadTime PlanItem.GetOutboundLeadTime PlanItem.IsAggregateItem PlanItem.StartCopyPlanItemsToPlanningClusters

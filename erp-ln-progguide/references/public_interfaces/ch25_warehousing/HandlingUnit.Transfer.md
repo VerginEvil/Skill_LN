@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1057-1058
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1067-1068
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2024.09 (KB3518395  ).
+This function is available from 2024.09 (KB3518395).
 Syntax: long HandlingUnit.Transfer(
 domain  tcseri           iSeries,
 domain  tccopt           iOrderType,
@@ -24,35 +24,35 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface will support direct transfer of handling
 unit from one warehouse/location to another.
-Both intra                      - and inter warehouse transfers are supported.
+Both intra- and inter warehouse transfers are supported.
 Handling unit must have status In Stock.
 Pre:    NA
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iSeries               - Series for transfer order to be created (Optional)
-iOrderType                       - Order  type for transfer order to be created
+Input:  iSeries - Series for transfer order to be created (Optional)
+iOrderType - Order  type for transfer order to be created
 (Optional)
-iHandlingUnit                       - Handling Unit (Mandatory)
-iShipToCompany                       - Transfer To Company (Optional, current
+iHandlingUnit - Handling Unit (Mandatory)
+iShipToCompany - Transfer To Company (Optional, current
 company will used if 0)
-iShipToType                       - Transfer To Type (Mandatory, only value
+iShipToType - Transfer To Type (Mandatory, only value
 tctyps.warehouse is allowed)
-iShipToCode                       - Transfer To Code (Mandatory)
-iShipToLocation                       - Transfer To Location (Mandatory if
+iShipToCode - Transfer To Code (Mandatory)
+iShipToLocation - Transfer To Location (Mandatory if
 iShipToCode is warehouse with locations and
-iHandlingUnit contains location                               -controlled item)
-iProject                       - Project (Must be empty when project pegging is
+iHandlingUnit contains location-controlled item)
+iProject - Project (Must be empty when project pegging is
 not implemented)
-iElement                       - Project Element (Must be empty when project pegging
+iElement - Project Element (Must be empty when project pegging
 is not implemented)
-iActivity                       - Project Activity (Must be empty when project pegging
+iActivity - Project Activity (Must be empty when project pegging
 is not implemented)
-Output: oExceptionMessage               - The last message if any message is found. If
+Output: oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0               - Handling Unit has been transferred successfully
-DALHOOKERROR                       - Otherwise.
+Return: 0 - Handling Unit has been transferred successfully
+DALHOOKERROR - Otherwise.
 ```

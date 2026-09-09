@@ -62,6 +62,9 @@ function long tdsls400.create.copy()
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)
+
 - [CDF (Customer Defined Fields) handling overview](../functions_cdf/overview.md)
+
 - [CDF (Customer Defined Fields) handling synopsis](../functions_cdf/synopsis.md)

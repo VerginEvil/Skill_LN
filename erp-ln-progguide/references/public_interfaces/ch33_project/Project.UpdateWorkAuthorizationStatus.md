@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Project
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1679-1681
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1698-1700
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2026.09 (KB3668094  ).
+This function is available from 2026.09 (KB3668094).
 Syntax: long Project.UpdateWorkAuthorizationStatus(
 domain  tccprj           iProject,
 domain  tppdm.cact       iFromActivity,
@@ -29,32 +29,32 @@ Be aware that transaction management is handled within this function.
 Note : This function should be called for one project at a time.
 Pre:    Not Applicable
 Post:   Not Applicable
-Input:  iProject                              - Project. Mandatory
-iFromActivity                                 - From Activity. Optional
-iToActivity                                   - To Activity. Optional
+Input:  iProject                - Project. Mandatory
+iFromActivity           - From Activity. Optional
+iToActivity             - To Activity. Optional
 If iToActivity not filled and iFromActivity is
 filled,
 iToActivity defaults to iFromActivity.
-iFromElement                                  - From Element. Optional
-iToElement                                    - To Element. Optional
+iFromElement            - From Element. Optional
+iToElement              - To Element. Optional
 If iToElement not filled and iFromElement is
 filled,
 iToElement defaults to iFromElement.
-iFromAnyStatus                                - From Any Status (Yes/No). Mandatory
+iFromAnyStatus          - From Any Status (Yes/No). Mandatory
 If Yes, All applicable statuses are considered
 and iFromStatus is ignored.
 If No, Only activities with status equal to
 iFromStatus are selected (iFromStatus becomes
 Mandatory).
-iFromStatus                                   - From Status. Optional
-iToStatus                                     - To Status. Mandatory
+iFromStatus             - From Status. Optional
+iToStatus               - To Status. Mandatory
 Allowed values for iFromStatus, iToStatus are:
-tppdm.wast.free                                       - Free
-tppdm.wast.onhold                                     - On Hold
-tppdm.wast.released                                   - Released
-tppdm.wast.finished                                   - Finished
-tppdm.wast.closed                                     - Closed
-iProcessingOptionSet                          - Optional
+tppdm.wast.free         - Free
+tppdm.wast.onhold       - On Hold
+tppdm.wast.released     - Released
+tppdm.wast.finished     - Finished
+tppdm.wast.closed       - Closed
+iProcessingOptionSet    - Optional
 if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -88,17 +88,13 @@ UpdateBasedOnPercentageProgress     domain  tppdm.yeno  tppdm.yeno.no
 PercentageCompleted                 domain  tppdm.pera  100
 UpdateBasedOnMilestones             domain  tppdm.yeno  tppdm.yeno.no
 Output:
-oExceptionMessage                             - The error message if the return value is not
+oExceptionMessage       - The error message if the return value is not
 equal to 0. A warning message if filled and the
 return value is 0. If more than one message is
 given, these are present in the oExceptionID.
-oExceptionID                                  - An ID that refers to all error information. Use
+oExceptionID            - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0                     - Process successful
-<> 0                          - An error occurred
+Return: 0       - Process successful
+<> 0    - An error occurred
 ```
-
-## Public Interfaces for ProjectContract
-
-The following functions are available: ProjectContract.GetTotalAmountContractLines ProjectContract.StartMultiMain

@@ -9,7 +9,7 @@ This switches to another company and sets the read-only variable COMPNR to the s
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `new_compnr` |  |
+| `long` | `new_compnr` |    |
 
 ## Return values
 | | |

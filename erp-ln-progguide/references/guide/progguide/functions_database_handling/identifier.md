@@ -5,8 +5,7 @@ An identifier is a name that consists of a sequence of letters and digits.
 ```
 
 <identifier>
-    ::= <letter>[<letter> | <digit>]...
-
+    ::= <letter>[{<letter>|<digit>}...]
 
 <letter>
     ::= a | b | c | d | e | f | g | h | i | j | k | l | m

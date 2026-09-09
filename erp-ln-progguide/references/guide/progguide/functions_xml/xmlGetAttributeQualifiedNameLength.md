@@ -16,7 +16,7 @@ Get the length of the qualified name of an attribute of the specified node.
 | | |
 |---|---|
 | >= 0 | Success; The length of the qualified name. |
-| -1 | The *node* is invalid or *attributeNr* is invalid or the attribute is not in a namespace.  |
+| -1 | The *node* is invalid or *attributeNr* is invalid or the attribute is not in a namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -38,5 +38,7 @@ length = xmlGetAttributeQualifiedNameLength( xml_envelope, 1 )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

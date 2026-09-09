@@ -79,4 +79,5 @@ So memory needs to be reserved for a total of 9 characters (8 characters + a \0 
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

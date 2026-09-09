@@ -10,7 +10,7 @@ Use this to send one or more line feeds to the screen or printer. The cursor is 
 ## Arguments
 | | | |
 |---|---|---|
-| `[ long` | `num_expr ]` |  |
+| `[ long` | `num_expr ]` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplierStagePaymentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 480-481
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 482-483
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long SupplierStagePaymentLine.Release(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -21,7 +21,7 @@ If ION Workflow Document Approval is used, then the following
 applies:
 * After executing this Public Interface, the status
 update must be approved in ION Workflow Document Approval.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 This is the Purchase Order number for

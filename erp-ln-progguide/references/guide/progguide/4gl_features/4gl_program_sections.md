@@ -21,7 +21,7 @@ Use this section to program actions that must be executed at the end of the sess
 Use this section to program actions that must be executed at the end of the session, after the *on.error* section.
 
 ## after.update.db.commit:
-Use this section to program actions that must be executed immediately after a [after.commit.transaction()](../functions_dal/after.commit.transaction.md) call, if the database is updated.
+Use this section to program actions that must be executed immediately after a [commit.transaction()](../functions_db_operations/commit.transaction.md) call, if the database is updated.
 
 ## before.display.object:
 Use this section to program actions that must be executed each time the entire record is displayed.
@@ -68,5 +68,7 @@ functions:
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)
+
 - [Flow of 4GL engine](flow_of_standard_program.md)

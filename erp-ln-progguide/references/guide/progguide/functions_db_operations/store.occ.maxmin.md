@@ -22,4 +22,5 @@ Note  For performance reasons, it is preferable to use [query.extend.where()](..
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

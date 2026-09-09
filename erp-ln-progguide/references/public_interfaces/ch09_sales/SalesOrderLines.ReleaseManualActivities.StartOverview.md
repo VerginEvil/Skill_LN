@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 359-360
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 361-362
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.03 (KB3557009  ).
+This function is available from 2025.03 (KB3557009).
 Syntax: long SalesOrderLines.ReleaseManualActivities.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,10 +29,10 @@ Lines (tdsls4501m150).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -72,7 +72,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for SalesOrderLineComponent
-
-The following functions are available: SalesOrderLineComponent.Block SalesOrderLineComponent.ReleaseBlocking

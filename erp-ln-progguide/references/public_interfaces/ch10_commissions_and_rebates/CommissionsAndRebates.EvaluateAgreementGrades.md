@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CommissionsAndRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 376-380
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 378-382
 
 ```baan
 DLL:   tdextcmsapi
-This function is available from     2020.10 (KB2134632  ).
+This function is available from 2020.10 (KB2134632).
 Syntax: long CommissionsAndRebates.EvaluateAgreementGrades(
 domain  tdcms.type       iCommissionRebateType,
 domain  tdcms.prty       iAgreementSearchPriority,
@@ -74,160 +74,160 @@ Usage:        Expl.:  Function searches and applies agreements based on the sear
 priority which is used to calculate the commissions and rebates.
 Pre:    None
 Post:   None
-Input:  iCommissionRebateType                         - Type Commission or Rebate
-iAgreementSearchPriority                              - Agreement search priority
+Input:  iCommissionRebateType           - Type Commission or Rebate
+iAgreementSearchPriority        - Agreement search priority
 as defined in Commissions and
 Rebates parameters
 |**************************************************************
 |* Input arguments as defined in Commissions/Rebates Agreements
 |**************************************************************
-iAgreementItem                                        - Agreement Item
+iAgreementItem                  - Agreement Item
 iAgreementGradeByQuantityAmount
--                                                       Agreement Grade by Quantity/
+- Agreement Grade by Quantity/
 Amount
-iAgreementCurrency                                    - Agreement Currency
-iAgreementGradeUnit                                   - Agreement Grade Unit
-iGradeUnitConversionFactor                            - Conversion factor between
+iAgreementCurrency              - Agreement Currency
+iAgreementGradeUnit             - Agreement Grade Unit
+iGradeUnitConversionFactor      - Conversion factor between
 inventory unit of item and
 Commission/Rebate Agreement
 Grade Unit Only applicable
 in case Agreement Grade by
 Quantity/Amount is set to
 Quantity
-iAgreementGradeCalculation                            - Agreement Grade Calculation
+iAgreementGradeCalculation      - Agreement Grade Calculation
 Gross/Net
-iAgreementFixedAmountOn                               - Agreement Fixed Amount on
+iAgreementFixedAmountOn         - Agreement Fixed Amount on
 Grade/Total
 iAgreementCommissionRebateOver
--                                                       Agreement Commission/Rebate
+- Agreement Commission/Rebate
 Over Grade/Total
 iAgreementGrowCommissionRebateOver
--                                                       Agreement Grow Commission/
+- Agreement Grow Commission/
 Rebate Over Grade/Total
 iAgreementInvoiceDirectReserve
--                                                       Agreement Invoice/Reserve
-iAgreementDiscountCode                                - Agreement Discount Code
+- Agreement Invoice/Reserve
+iAgreementDiscountCode          - Agreement Discount Code
 iAgreementGradeUpToQuantityAmount
--                                                       Agreement Grade Upto Quantity/
+- Agreement Grade Upto Quantity/
 Amount. In case Agreement
 Grade by Quantity/Amount is
 set to 'Amount' then Agreement
 Grade is Upto Amount
 otherwise it is Upto Quantity
 iAgreementGrossProfitPercentage
--                                                       Agreement Grade Gross Profit
+- Agreement Grade Gross Profit
 Percentage
 iAgreementCommissionRebatePercentage
--                                                       Agreement Grade
+- Agreement Grade
 Commission/Rebate Percentage
-iAgreementGrowPercentage                              - Agreement Grade Growing
+iAgreementGrowPercentage        - Agreement Grade Growing
 Percentage
-iAgreementFixedAmount                                 - Agreement Grade Fixed Amount
-iAgreementMaximumLimit                                - Agreement Grade Maximum Limit
+iAgreementFixedAmount           - Agreement Grade Fixed Amount
+iAgreementMaximumLimit          - Agreement Grade Maximum Limit
 |**************************************************************
 |* Sales order (line) related arguments based on Sales Order
 |* (Line) History (tdsls451/tdsls456)
 |**************************************************************
-iSalesOrder                                   - Sales Order
-iSalesOrderLine                               - Sales Order Line
-iSalesOrderSequence                           - Sales Sequence Number, it is 0 in case
+iSalesOrder             - Sales Order
+iSalesOrderLine         - Sales Order Line
+iSalesOrderSequence     - Sales Sequence Number, it is 0 in case
 the Commission/Rebate Parameter
 'Linking of Relations On' is set to
 Sales Order
 iSalesOrderDeliverySequence
--                                               Sales Order Delivery Sequence Line
-iSalesOrderInvoiceLine                        - Sales Order Invoice Line
+- Sales Order Delivery Sequence Line
+iSalesOrderInvoiceLine  - Sales Order Invoice Line
 iSalesOrderInvoiceCompany
--                                               Sales Order Line Invoice Company
+- Sales Order Line Invoice Company
 iSalesOrderTransactionType
--                                               Sales Order Line Transaction Type
+- Sales Order Line Transaction Type
 iSalesOrderInvoiceNumber
--                                               Sales Order Line Invoice Number
-iSalesOrderInvoiceDate                        - Sales Order Line Invoice Date
-iSalesOrderOffice                             - Sales Order Line Sales Office
+- Sales Order Line Invoice Number
+iSalesOrderInvoiceDate  - Sales Order Line Invoice Date
+iSalesOrderOffice       - Sales Order Line Sales Office
 iSalesOrderFinancialDepartment
--                                               Sales Order Line Financial Department
-iSalesOrderAmount                             - Sales Order Line amount in order
+- Sales Order Line Financial Department
+iSalesOrderAmount       - Sales Order Line amount in order
 currency
-iSalesOrderCurrency                           - Sales Order Currency
-iSalesOrderQuantity                           - Sales Order Line quantity in
+iSalesOrderCurrency     - Sales Order Currency
+iSalesOrderQuantity     - Sales Order Line quantity in
 sales Order Line unit
-iSalesOrderUnit                               - Sales Order Line Unit
+iSalesOrderUnit         - Sales Order Line Unit
 iSalesOrderUnitConversionFactor
--                                               Conversion Factor Sales to Inventory
+- Conversion Factor Sales to Inventory
 Unit
-iSalesOrderRateDate                           - Sales Order Line Rate Date
-iSalesOrderRateType                           - Sales Order Line Rate Type
-iSalesOrderRate                               - Sales Order Line Rate
-iSalesOrderRateFactor                         - Sales Order Line Rate Factor
+iSalesOrderRateDate     - Sales Order Line Rate Date
+iSalesOrderRateType     - Sales Order Line Rate Type
+iSalesOrderRate         - Sales Order Line Rate
+iSalesOrderRateFactor   - Sales Order Line Rate Factor
 iSalesOrderGrossProfitPercentage
--                                               Sales Order Line Gross Profit
+- Sales Order Line Gross Profit
 percentage
 iSalesOrderAccumulatedOrderQuantity
--                                               Accumulated Sales Order (lines)
+- Accumulated Sales Order (lines)
 quantity. Sum of all quantities in
 order unit.
 iSalesOrderAccumulatedOrderAmount
--                                               Accumulated Sales Order (lines) amount
+- Accumulated Sales Order (lines) amount
 in order currency
-iRelation                                     - Relation by sales order line
-iRelationType                                 - Relation Type: Employee/Supplier
+iRelation               - Relation by sales order line
+iRelationType           - Relation Type: Employee/Supplier
 /Customer
-iRelationSequence                             - Relation sequence by order line
+iRelationSequence       - Relation sequence by order line
 iRelationCurrencyForInvoicing
--                                               Relation Currency for Invoicing
+- Relation Currency for Invoicing
 Relation/Company/N.A./Sales Order
 /Agreement
 iRelationBuyFromBusinessPartner
--                                               Relation Buy-from BP, only applicable
+- Relation Buy-from BP, only applicable
 in case the Relation type is
 'Supplier'
 iRelationSoldToBusinessPartner
--                                               Relation Buy-from BP, only applicable
+- Relation Buy-from BP, only applicable
 in case the relation type is set to
 'Customer'
 Output: oCommissionRebateInvoiceCurrency
--                                               Commissions/Rebates Invoice Currency
+- Commissions/Rebates Invoice Currency
 based on invoice currency for relation
 oCommissionRebatePercentage
--                                               Commissions/Rebates according
+- Commissions/Rebates according
 Commissions/Rebates Agreement Grades
 oCommissionRebateGrowPercentage
--                                               Commissions/Rebates Grow Percentage
+- Commissions/Rebates Grow Percentage
 according Commissions/Rebates
 Agreement Grades
 oCommissionRebateGrowAmount
--                                               Commissions/Rebates Grow Amount based
+- Commissions/Rebates Grow Amount based
 on Commissions/Rebates Agreement
 Grades Grow Percentage
 oCommissionRebateFixedAmountInOrderCurrency
--                                               Commissions/Rebates Fixed Amount
+- Commissions/Rebates Fixed Amount
 according Commissions/Rebates
 Agreement Grades
 oCommissionRebateSalesOrderAmountInOrderCurrency
--                                               Sales Order (Line) Amount in sales
+- Sales Order (Line) Amount in sales
 order line currency
 oCommissionRebateAmountInOrderCurrency
--                                               Commissions/Rebates Amount in order
+- Commissions/Rebates Amount in order
 currency based on Commissions/Rebates
 Agreement Grades Commission/Rebate
 Percentage
 oSkipCommissionRebateAgreement
--                                               True/False. Indicates that the
+- True/False. Indicates that the
 Commission/Rebate agreement grade is
 not applicable to sales order (line)
-oStopSearchIngAgreement                       - True/False. Indicates that all
+oStopSearchIngAgreement - True/False. Indicates that all
 agreement grade quantity/amounts have
 been fit
-ioInitializeStatics                           - True/False. Indicates that
+ioInitializeStatics     - True/False. Indicates that
 variables used for determining
 agreement grades need to be
 initialized.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one  message is
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

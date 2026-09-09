@@ -28,8 +28,8 @@ Parent         ::=   "parent"
 |---|---|---|
 | `string` | `pattern` |  The parameter *pattern* is a string which should conform to the following syntax: Both an element name and an attribute name can be *qualified*. The *namespaceList* is then used to bind the prefix to the corresponding namespace name (URI). The URI of the element or attribute must match the specified URI in the *namespaceList* for a successful match. Attribute values should be surrounded by double quotes. When the text inside a tag starts with a stand alone identifier (not followed by an equals sign '='), then, according to the above syntax, it is ambiguous whether it is an element name or an attribute name. In fact, it is interpreted as an element name. When an attribute name is meant, it should in this case be followed by an equals sign '='. This is not necessary for further attributes.  |
 | `const string` | `namespaceList` |  *namespaceList* is a string containing a list of prefix-URI bindings. The string must have the form <prefix>="<URI>"[,<prefix>="<URI>"...], and may be empty. The function [xmlBuildNamespaceList$()](xmlBuildNamespaceList$.md) can be used to build this list.  |
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 The return value refers to a new tree, which contains the NodeId's of the nodes which match the *pattern*. This new tree corresponds to an XML document as shown below:
@@ -46,7 +46,7 @@ In this example *idn* is the decimal string representation of a nodeId of a node
 Like any other tree of Nodes, the returned tree must be freed from memory by using xmlDelete().
 | | |
 |---|---|
-| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node.  |
+| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node. |
 | 0 | Error. |
 
 ## Context
@@ -83,5 +83,7 @@ xml_stockprice = xmlFindMatchNs( "?<x:GetStockPrice>", "x=""http://www.example.o
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

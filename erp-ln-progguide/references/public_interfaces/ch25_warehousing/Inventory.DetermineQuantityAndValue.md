@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 941-943
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 951-953
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2021.03 (KB2175297  ).
+This function is available from 2021.03 (KB2175297).
 Syntax: long Inventory.DetermineQuantityAndValue(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -61,7 +61,7 @@ The owner for which inventory and inventory value needs
 to be determined. This is mandatory to fill when
 iOwnership is Consigned or Customer Owned
 iBuyFromBusinessPartner
-The buy                              -from business partner for which inventory and
+The buy-from business partner for which inventory and
 inventory value needs to be determined. This is
 mandatory to fill when iOwnership is Consigned.
 iSpecificProject
@@ -115,8 +115,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The inventory and inventory value have been found
+Return: 0 - The inventory and inventory value have been found
 successfully.
-<> 0                       - Error. The inventory and inventory value could not be
+<> 0 - Error. The inventory and inventory value could not be
 determined.
 ```

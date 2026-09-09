@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CrossValidationRule
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1813-1815
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1833-1834
 
 ```baan
 DLL:   tfextgldapi
-This function is available from     2026.10 (KB3677891  ).
+This function is available from 2026.10 (KB3677891).
 Syntax: long CrossValidationRule.SetStatus(
 domain  tcncmp           iFinancialCompany,
 domain  tcorno           iCrossValidationRule,
@@ -21,29 +21,23 @@ cross validation rule to the specified status.
 Pre:    db.retry.point() must be set.
 Post:   abort/commit.transaction() must be done.
 Input:
-iFinancialCompany                             - The financial company. (Mandatory)
-iCrossValidationRule                          - The cross validation rule. (Mandatory)
+iFinancialCompany       - The financial company. (Mandatory)
+iCrossValidationRule    - The cross validation rule. (Mandatory)
 iCrossValidationRuleVersion
--                                               The cross validation rule version.
+- The cross validation rule version.
 (Mandatory)
-iStatus                                       - The status. (Mandatory)
+iStatus                 - The status. (Mandatory)
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - The status of a cross validation rule
+0                       - The status of a cross validation rule
 successfully set.
-<> 0                                          - Error.
+<> 0                    - Error.
 ```
-
-## Chapter 41 Public Interfaces for Fixed Assets
-
-## Public Interfaces for Asset
-
-The following functions are available: Asset.Adjust Asset.Dispose Asset.GetDefaultLedgerAccountAndDimensions Asset.StartAdjustAssets Asset.StartTransferAssets

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 262-265
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 264-266
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.06 (KB3628866  ).
+This function is available from 2026.06 (KB3628866).
 Syntax: long EngineeringBillOfMaterial.StartPrint(
 long             iStartMode,
 domain  tcitem           iEngineeringItem,
@@ -18,7 +18,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to Print Engineering BOMs
 (tiedm1410m000), the purpose of this session is to print the
-single level and multi                      -level BOM structure.
+single level and multi-level BOM structure.
 Pre:    NA
 Post:   NA
 Input:  iStartMode (Mandatory Input)
@@ -40,7 +40,7 @@ iEngineeringItem (Optional)
 Engineering Item.
 iPrintOptions (Mandatory Input)
 Print Options
-(Single level, Multi                                              -level or Summarized)
+(Single level, Multi-level or Summarized)
 iProcessingOptionSet (Optional)
 Processing Option Set.
 If 0, then user default/session default
@@ -125,7 +125,3 @@ Return:
 DALHOOKERROR
 Error. Starting Session.
 ```
-
-## Public Interfaces for EngineeringItem
-
-The following functions are available: EngineeringItem.GenerateByMBC EngineeringItem.StartDetail EngineeringItem.StartOverview

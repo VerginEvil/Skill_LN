@@ -13,8 +13,8 @@ These store a resource value of a particular type in a specified program variabl
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `variable` |  |
-| `string` | `value(40)` |  |
+| `string` | `variable` |    |
+| `string` | `value(40)` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -27,4 +27,5 @@ See [rsc.get()](rsc.get.md).
 
 ## Related topics
 - [Resource sets overview](overview.md)
+
 - [Resource sets synopsis](synopsis.md)

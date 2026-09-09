@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Dataset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2000-2001
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2019-2020
 
 ```baan
 Syntax: long dataset.end(
@@ -15,10 +15,10 @@ collections,
 rows and fields are added.
 This method is optional in the dataset formatting.
 Input:
--               i.dataset.format      - The dataset format name.
--               i.dataset.id          - ID of the dataset.
+- i.dataset.format      - The dataset format name.
+- i.dataset.id          - ID of the dataset.
 Output:
 Return:
--               0                     - OK.
--               DALHOOKERROR          - Not OK.
+- 0                     - OK.
+- DALHOOKERROR          - Not OK.
 ```

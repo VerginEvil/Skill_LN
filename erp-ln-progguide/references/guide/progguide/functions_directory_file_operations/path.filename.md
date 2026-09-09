@@ -15,7 +15,7 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 
 ## Return values
 The characters after the last directory character in path. If the last character of path is a directory or volume separator character, this method returns an empty string. If path is an empty string, this function returns an empty string as well.
-The separator character used to determine the start of the file name is ` [path.dir.separator()](path.dir.separator.md)`.
+The separator character used to determine the start of the file name is [path.dir.separator()](path.dir.separator.md).
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -51,4 +51,5 @@ path = path.filename("", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

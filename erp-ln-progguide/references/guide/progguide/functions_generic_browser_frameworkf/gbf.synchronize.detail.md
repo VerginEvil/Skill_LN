@@ -20,8 +20,13 @@ This function may only be called by the application if the GBF is part of a Tree
 
 ## Related topics
 - [Key fields Object overview](../functions_keyfields/overview.md)
+
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)

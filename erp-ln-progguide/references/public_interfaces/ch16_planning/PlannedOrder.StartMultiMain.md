@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 559-559
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 562-563
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.04 (KB2327965  ).
+This function is available from 2024.04 (KB2327965).
 Syntax: long PlannedOrder.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Usage:        Expl:   This function starts session Planned Order (cprrp1600m000)
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

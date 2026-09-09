@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1242-1243
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1252-1253
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.04 (KB2182070  ).
+This function is available from 2021.04 (KB2182070).
 Syntax: long ReceiptLine.GenerateLots(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -63,12 +63,12 @@ Generate Lot:
 |                          |    SERIAL3 LOT1    1 pcs
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-oExceptionMessage                       - The last message if any message is found. If
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error

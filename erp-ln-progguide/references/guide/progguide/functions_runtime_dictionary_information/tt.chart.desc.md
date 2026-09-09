@@ -9,7 +9,7 @@ This retrieves the name of the specified chart ( *chart*). It is returned, and o
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `chart` |  |
+| `string` | `chart` |    |
 | `[ ref string` | `desc() mb ]` |  The chart type.  |
 
 ## Return values

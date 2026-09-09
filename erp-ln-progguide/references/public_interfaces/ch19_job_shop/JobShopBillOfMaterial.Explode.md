@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 644-646
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 647-649
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2022.03 (KB2221191  ).
+This function is available from 2022.03 (KB2221191).
 Syntax: long JobShopBillOfMaterial.Explode(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -32,8 +32,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to get "exploded" Bill of Material
 information in output arrays.
 The BOM tree is searched for:
--                       direct non-phantom children of iProduct
--                       non-phantom children of phantom children (multi-level;
+- direct non-phantom children of iProduct
+- non-phantom children of phantom children (multi-level;
 maximum number of levels: iExplosionDepth)
 The found children (= materials) are added to the
 output arrays. The output arrays will have a length of 3000.
@@ -85,29 +85,29 @@ Apply defined scrap and yield to determine the quantity.
 iExplodeLowestPhantoms
 Continue exploding Phantoms when iExplosionDepth is
 reached.
-Output: oProject                      - Array of projects, must be a based array.
-oWarehouse                            - Array of warehouses, must be a based array.
-oItem                                 - Array of Items, must be a based array.
-oCustomizable                         - Array of Customizable flags, must be a based
+Output: oProject        - Array of projects, must be a based array.
+oWarehouse      - Array of warehouses, must be a based array.
+oItem           - Array of Items, must be a based array.
+oCustomizable   - Array of Customizable flags, must be a based
 array.
-oPositionNumber                       - Array of Position numbers, must be a based
+oPositionNumber - Array of Position numbers, must be a based
 array.
-oBomQuantity                          - Array of BOM Quantities, must be a based
+oBomQuantity    - Array of BOM Quantities, must be a based
 array.
 oNumberOfMaterials
--                                       The number of materials found and filled in
+- The number of materials found and filled in
 the arrays.
 oExceptionMessage
--                                       The last message if any message is
+- The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
 oExceptionID
--                                       An ID that refers to the exception
+- An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0               -     Function is executed successfully.
-<> 0                       -  An error occurred. The Job Shop Bill of Material could
+Return: 0 -     Function is executed successfully.
+<> 0 -  An error occurred. The Job Shop Bill of Material could
 not be exploded.
 ```

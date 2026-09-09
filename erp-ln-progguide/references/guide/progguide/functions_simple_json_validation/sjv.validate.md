@@ -54,11 +54,12 @@ result = sjv.validate(employee.json, employee.def)
 | | |
 |---|---|
 | 0 | The JSON is valid |
-| SJV_ERR_INVALID_ARGUMENT (20004001) | The JSON structure is not according to the given definition; e.g., a required field is missing, a field is of the wrong type, etc.  |
+| SJV_ERR_INVALID_ARGUMENT (20004001) | The JSON structure is not according to the given definition; e.g., a required field is missing, a field is of the wrong type, etc. |
 | SJV_ERR_OUT_OF_RANGE (20004002) | A JSON value is not according to the given definition; e.g., a string value is empty but must be filled |
-| SJV_ERR_INTERNAL (20005001) | The passed definition is not correct; 'internal' means that this is a programming error that must be fixed by the caller of this function.  |
-Notes
+| SJV_ERR_INTERNAL (20005001) | The passed definition is not correct; 'internal' means that this is a programming error that must be fixed by the caller of this function. |
+
 - In all error cases a DAL error message has been set.
+
 - An error code can be easily converted to HTTP status code as follows: `statuscode = (sjv.error \ 10000) / 10`. E.g. SJV_ERR_OUT_RANGE (20004001) becomes HTTP status code 400 (Bad Request) and SJV_ERR_INTERNAL becomes 500 (Internal Server Error)
 
 ## Context
@@ -66,5 +67,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)

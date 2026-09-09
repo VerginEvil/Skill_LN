@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1853-1854
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1873-1874
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetAttendanceTypeNormalTime(
 ref     domain  bpxtm.atty       oAttendanceTypeNormalTime,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -20,14 +20,14 @@ Post:
 Input:
 Output:
 oAttendanceTypeNormalTime
--                                               Attendance type Normal Time
-oExceptionMessage                             - The last message if any message is
+- Attendance type Normal Time
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read
+Return: 0                       - Data read
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemCosting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 619-621
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 622-623
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2026.02 (KB3606237  ).
+This function is available from 2026.02 (KB3606237).
 Syntax: long ItemCosting.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -24,11 +24,11 @@ Usage:        Expl:   This function starts the session Item - Costing in overvie
 mode (ticpr0107m000).
 Input:  iStartMode              Specifies the start mode for the
 session. Possible values are:
-MODAL                                               - The parent session is blocked
+MODAL - The parent session is blocked
 until the child session exits.
 The session will be started as
 a zoom session.
-MODELESS                                               - Parent and child are parallel
+MODELESS - Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -58,11 +58,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Chapter 18 Public Interfaces for Manufacturing
-
-## Master
-
-## Public Interfaces for ProductionBillOfMaterial
-
-The following functions are available: ProductionBillOfMaterial.ApproveRevision ProductionBillOfMaterial.CopyToJobShop ProductionBillOfMaterial.CreateNewRevision ProductionBillOfMaterial.ExpireRevision ProductionBillOfMaterial.Explode ProductionBillOfMaterial.GenerateProductSubcontractingModel ProductionBillOfMaterial.StartMultiMain ProductionBillOfMaterial.ValidateRevision

@@ -1,7 +1,10 @@
 # Locking
 Database inconsistencies can arise when two or more processes attempt to update or delete the same record or table. Read inconsistencies can arise when changes made during a transaction are visible to other processes before the transaction has been completed – for example, the transaction might subsequently be abandoned. To avoid such inconsistencies, Infor Enterprise Server supports the following locking mechanisms:
+
 - Record locking
+
 - Table locking
+
 - Application locking
 
 ## Record locking
@@ -36,9 +39,15 @@ An [Application locks: overview](../functions_appl/application_locks_overview.md
 
 ## Related topics
 - [Database handling overview](overview.md)
+
 - [Transaction handling](transaction_handling.md)
+
 - [Retry points](retry_points.md)
+
 - [Error handling](error_handling.md)
+
 - [Hints for using SQL](hints_for_using_sql.md)
+
 - [Hints for using db.retry.point](hints_for_using_db.retry.point.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

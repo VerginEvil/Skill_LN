@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the table is not exclusively locked action. You can either wait until the lock on table is released or you can remove the lock yourself.  |
+| This error indicates that the table is not exclusively locked action. You can either wait until the lock on table is released or you can remove the lock yourself. |
 | *Solution:* |
-| Wait until the lock on table is released or remove the lock.  |
+| Wait until the lock on table is released or remove the lock. |

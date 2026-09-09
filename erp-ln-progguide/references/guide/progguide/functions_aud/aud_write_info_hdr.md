@@ -12,7 +12,7 @@ This writes info header information to a specified info file. You can set the in
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `host_name()` |  |
+| `long` | `host_name()` |    |
 | `string` | `table_name()` |  The name of the table with which the info file is associated. This takes the form *ppmmfff*, where *pp* is the package code, *mmm* is the module code, and *fff* is the file number.  |
 | `long` | `compno` |  The company number.  |
 | `const string` | `info_hdr` |  The buffer that contains the header information to be written to the info file.  |
@@ -21,11 +21,7 @@ This writes info header information to a specified info file. You can set the in
 | | |
 |---|---|
 | > 0 | Success |
-| -1 |  Error; Possible reasons are: Host not found Table or information file does not exist Error occurred while opening information file Open file limit reached  |
--
--
--
--
+| -1 | Error; Possible reasons are: Host not found Table or information file does not exist Error occurred while opening information file Open file limit reached |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -33,6 +29,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)
+
 - [Macros - info header](macros_info_header.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for PurchaseOrderGenerate
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2184-2186
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2207-2208
 
 ```baan
 Syntax: boolean tdext.pur0002.suppress.commingling.of.purchase.order.line.during.generation(
@@ -84,9 +84,9 @@ See 'i.originating.order'.
 i.originating.sequence  Originating sequence May be filled or not.
 See 'i.originating.order'.
 i.buy.from.business.partner
-Buy                                              -from business partner.
+Buy-from business partner.
 i.ship.from.business.partner
-Ship                                              -from business partner.
+Ship-from business partner.
 i.item                  Item
 i.effectivity.unit      Effectivity Unit
 i.product.variant       Product Variant
@@ -98,7 +98,3 @@ commingling must be suppressed for the
 given input.
 false                   The standard logic for commingling applies.
 ```
-
-## Process Extensions for PurchaseOrderLine
-
-The following process extension(s) is/are available: PurchaseOrderLine.SkipPrint PurchaseOrderLine.SkipPrintPurchaseInvoice PurchaseOrderLine.SkipPrintPurchaseOrder PurchaseOrderLine.SkipPrintPurchaseOrderReminder PurchaseOrderLine.SkipPrintReceivableInvoice

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 972-974
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 982-984
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.06 (KB2327745  ).
+This function is available from 2024.06 (KB2327745).
 Syntax: long WarehouseReceipt.PrintReceipts(
 domain  whinh.shpm       iReceipt,
 domain  tcmcs.str15      iDevice,
@@ -31,8 +31,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iReceipt is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ReceiptArray
+- selection range fields (From/To)
+- ReceiptArray
 The Receipt will then be printed for the given iReceipt.
 In case option ReceiptArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
@@ -87,11 +87,11 @@ ReportNumber            domain tcmcs.long       1
 ReceiptArray            domain ttjson           0
 ReportName              domain tcmcs.str16      Empty String
 Possible values of ReportNumber are:
-1                       - Receipts
-2                       - Receipt Lines by Order
-3                       - Receipt Lines by Item
-4                       - Receipt Lines by Receipt Number
-5                       - Receipt Lines by Business Partner
+1 - Receipts
+2 - Receipt Lines by Order
+3 - Receipt Lines by Item
+4 - Receipt Lines by Receipt Number
+5 - Receipt Lines by Business Partner
 JSON Object ReceiptArray has the following structure:
 "ReceiptArray": [
 {
@@ -112,13 +112,13 @@ Json.add(ReceiptArray, Receipt)
 ReportName only needs to filled for customized reports,
 otherwise the standard report is used based on the ReportNumber.
 ReportName must start with an "r", e.g. "rwhinh341211001"
-Output: oDataProcessed                        - true:  Data Printed.
+Output: oDataProcessed          - true:  Data Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1047-1048
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1057-1058
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.01 (KB2217879  ).
+This function is available from 2022.01 (KB2217879).
 Syntax: long HandlingUnit.Receive(
 domain  whhuid           iHandlingUnit,
 domain  whinh.shpm       iReceipt,
@@ -27,25 +27,25 @@ function will allocate the memory.
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
 After the oReceiptLineArray is used, free the memory.
-Input:  iHandlingUnit                         - Mandatory
-iReceipt                                      - Receipt header on which lines must be
+Input:  iHandlingUnit           - Mandatory
+iReceipt                - Receipt header on which lines must be
 added.
 Optional, if empty a new receipt
 header will be created.
-iPackingSlip                                  - Packing Slip - Optional
-iLoad                                         - Load - Optional
-iShipment                                     - Shipment - Optional
-Output: oReceipt                              - Receipt that is created (or populated
+iPackingSlip            - Packing Slip - Optional
+iLoad                   - Load - Optional
+iShipment               - Shipment - Optional
+Output: oReceipt                - Receipt that is created (or populated
 with the iReceipt when iReceipt is
 filled)
-oNumberOfReceiptLines                         - Number of receipt lines that are
+oNumberOfReceiptLines   - Number of receipt lines that are
 created.
-oReceiptLineArray                             - Receipt lines that are created.
-oExceptionMessage                             - The last message if any message is
+oReceiptLineArray       - Receipt lines that are created.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

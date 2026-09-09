@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for QuarantineInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1204-1206
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1214-1216
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.12 (KB3623004  ).
+This function is available from 2025.12 (KB3623004).
 Syntax: long QuarantineInventory.StartDisposition(
 long             iStartMode,
 domain  tcorno           iQuarantineIdentifier,
@@ -19,17 +19,17 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This public interface starts session Quarantine Inventory
 Disposition (whwmd2272m200) in Detail Mode.
-Input:  iStartMode                            - Not used
+Input:  iStartMode              - Not used
 Session is always started in MODAL
 mode.
-iQuarantineIdentifier                         - Mandatory
-iDispositionLine                              - Optional, if 0, then all disposition
+iQuarantineIdentifier   - Mandatory
+iDispositionLine        - Optional, if 0, then all disposition
 lines will be processed.
 But will be ignored when
 DispositionLineArray or
 HandlingUnitArray of
 iProcessingOptionSet is filled.
-iHandlingUnit                                 - Optional, will be ignored when
+iHandlingUnit           - Optional, will be ignored when
 iDispositionLine is filled and when
 DispositionLineArray or
 HandlingUnitArray of
@@ -93,14 +93,14 @@ Json.add(HandlingUnitArray, HandlingUnit)
 HandlingUnit = Json.newObject()
 Json.setString(HandlingUnit, "HandlingUnit", "HU200")
 Json.add(HandlingUnitArray, HandlingUnit)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

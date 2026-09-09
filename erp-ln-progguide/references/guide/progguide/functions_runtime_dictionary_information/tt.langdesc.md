@@ -8,8 +8,8 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `language` |  |
-| `ref string` | `desc() mb` |  |
+| `string` | `language` |    |
+| `ref string` | `desc() mb` |    |
 
 ## Return values
 false error; language not found

@@ -31,6 +31,9 @@ result = str.isalpha("abc123")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)
+
 - [str.isalphanum()](str.isalphanum.md)
+
 - [str.isnumeric()](str.isnumeric.md)

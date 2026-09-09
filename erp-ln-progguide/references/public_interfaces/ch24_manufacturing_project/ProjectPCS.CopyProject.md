@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 883-884
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 893-894
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2022.06 (KB2244721  ).
+This function is available from 2022.06 (KB2244721).
 Syntax: long ProjectPCS.CopyProject(
 domain  tccprj           iSourceProject,
 domain  tccprj           iTargetProjectCode,

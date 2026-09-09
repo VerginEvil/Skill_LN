@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InventoryCommitment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 960-963
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 970-972
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2025.06 (KB3560508  ).
+This function is available from 2025.06 (KB3560508).
 Syntax: long InventoryCommitment.Generate(
 domain  whinp.corg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -39,8 +39,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iOrderNumber is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       OrderLineArray
+- selection range fields (From/To)
+- OrderLineArray
 The inventory commitments will then be generated for the given
 iOrderOrigin, iOrderNumber (and specific iOrderLine, if filled).
 In case option OrderLineArray is set then the selection
@@ -114,13 +114,11 @@ OrderLine = Json.newObject()
 Json.setNumber(OrderLine, "OrderOrigin", 20)
 Json.setString(OrderLine, "OrderNumber", "JSC000030")
 Json.setNumber(OrderLine, "OrderLine", 10)
-Json.setNumber(OrderLine, "OrderSequence", 1)
 Json.add(OrderLineArray, OrderLine)
 OrderLine = Json.newObject()
 Json.setNumber(OrderLine, "OrderOrigin", 10)
 Json.setString(OrderLine, "OrderNumber", "SLS000012")
 Json.setNumber(OrderLine, "OrderLine", 10)
-Json.setNumber(OrderLine, "OrderSequence", 1)
 Json.add(OrderLineArray, OrderLine)
 JSON Object OrderOriginPriorityArray has the following structure:
 "OrderOriginPriorityArray": [
@@ -142,8 +140,8 @@ Json.add(OrderOriginPriorityArray, OrderOrigin)
 ReportName only needs to filled for customized reports, otherwise
 the standard report is automatically used.
 ReportName must start with an "r", e.g. "rwhinp220001001"
-Output: oDataProcessed                        - true:  Inventory commitments generated
+Output: oDataProcessed          - true:  Inventory commitments generated
 false: Nothing generated.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```

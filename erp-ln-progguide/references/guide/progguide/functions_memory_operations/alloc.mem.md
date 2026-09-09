@@ -1,7 +1,7 @@
 # alloc.mem()
 
 ## Syntax:
-`function long alloc.mem( ref variable, long dimension1, [ long dimension2, ... ] )`
+`function long alloc.mem( ref variable, long dimension1, [ long dimension2,... ] )`
 
 ## Description
 This allocates memory space to the specified variable at run time. The variable can be a string or an array (of any type). It must be declared as BASED. With multi-dimensional arrays, each dimension must be initialized to 1 at declaration. Once *alloc.mem()* has allocated memory for a variable, that variable behaves in the same way as any other variable.
@@ -14,9 +14,9 @@ For backward compatibility the function alloc.mem.deprecated() is available from
 ## Arguments
 | | | |
 |---|---|---|
-| `ref` | `variable` |  |
-| `long` | `dimension1` |  |
-| `[ long` | `dimension2, ... ]` |  |
+| `ref` | `variable` |    |
+| `long` | `dimension1` |    |
+| `[ long` | `dimension2,... ]` |    |
 
 ## Return values
 0 success

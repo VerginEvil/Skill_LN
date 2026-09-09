@@ -29,4 +29,5 @@ A special constant of type enumerate or set is EMPTY. This indicates an empty se
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Constants](constants.md)

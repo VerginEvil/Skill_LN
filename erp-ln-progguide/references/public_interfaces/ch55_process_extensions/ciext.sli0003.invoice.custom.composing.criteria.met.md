@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2052-2054
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2071-2073
 
 ```baan
 Syntax: long ciext.sli0003.invoice.custom.composing.criteria.met(
@@ -31,13 +31,13 @@ extenstion will not be called again.
 If the variable is set to true then the current billable
 line will be added in the current invoice number.
 Fields that are available to be used in this Process Extension:
--                       All fields of table: Billable lines (cisli810)
--                       All fields of table: Although the Invoice is not yet
+- All fields of table: Billable lines (cisli810)
+- All fields of table: Although the Invoice is not yet
 committed, the Invoice Header (cisli305)
 fields are already available. The Invoice
 header key fields can be used to read
 other tables like Invoice Lines
-(cisli310) or Invoice Lines                                              - Additional
+(cisli310) or Invoice Lines - Additional
 Fields (cisli311).
 Note:
 1) Dal messages set in this function will be ignored by
@@ -48,9 +48,9 @@ otherwise the standard flow may be affected.
 Process.
 ----------------------------------------------------------------
 Start of Example of Implementation
-Requirement                       -   Each Packing slip should be composed separately
+Requirement -   Each Packing slip should be composed separately
 in a new invoice number.
-Solution                          -   Packing slip is not available in the invoicing
+Solution    -   Packing slip is not available in the invoicing
 method to make it one of the standard composing
 criteria. So Customer can use this process
 extension to make it one of the custom composing
@@ -58,7 +58,7 @@ criteria.
 Packing slip is available on the Billale line
 and is available in the Invoice line Additional
 Fields (cisli311).
-Pseudocode                        -
+Pseudocode  -
 Hook: Declarations
 table   tcisli305       |* Invoice Header
 table   tcisli810       |* Billable Lines
@@ -99,12 +99,12 @@ End of Example of Implementation
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.custom.composing.criteria.met               -
+Output: o.custom.composing.criteria.met -
 Determines whether current billable line
 should be composed in the current
 invoice or not.
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs during checking;
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs during checking;
 the invoice will not be composed
 together.
 ```

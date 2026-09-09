@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RequestForQuoteResponse
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 414-415
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 416-416
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2025.12 (KB3634332  ).
+This function is available from 2025.12 (KB3634332).
 Syntax: long RequestForQuoteResponse.Accept(
 domain  tcqono           iRequestForQuote,
 domain  tcpono           iRequestForQuoteLine,
@@ -18,15 +18,15 @@ long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.:  This function accepts a request for quotation response.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iRequestForQuote                      - Request for Quote (mandatory)
-iRequestForQuoteLine                          - Request for Quote Line (mandatory)
+Input:  iRequestForQuote        - Request for Quote (mandatory)
+iRequestForQuoteLine    - Request for Quote Line (mandatory)
 iRequestForQuoteResponseSequence
--                                               Request for Quote Response Sequence (optional).
+- Request for Quote Response Sequence (optional).
 The database field "tdpur106.srnb" is used here
-iRequestForQuoteBidder                        - Request for Quote Bidder (mandatory)
-iProcessingOptionSet                          - Processing Option Set (optional).
+iRequestForQuoteBidder  - Request for Quote Bidder (mandatory)
+iProcessingOptionSet    - Processing Option Set (optional).
 If 0, the default options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -41,14 +41,14 @@ NAME                                            TYPE            DEFAULT
 AcknowledgeUnacknowledgedNegotiationLine        domain tcyesno  tcyesno.yes
 Yes: An unacknowledged negotiation line is automatically acknowledged
 No:  An unacknowledged negotiation line is not automatically acknowledged
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information
-Return: 0                                     - The Request for Quote is accepted
-<> 0                                          - An error occurred
+Return: 0                       - The Request for Quote is accepted
+<> 0                    - An error occurred
 ```

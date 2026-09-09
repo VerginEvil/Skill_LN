@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1460-1461
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1475-1475
 
 ```baan
 DLL:   tsexteppapi
-This function is available from     2024.08 (KB3511976  ).
+This function is available from 2024.08 (KB3511976).
 Syntax: long ServiceQuote.GenerateQuoteLinesForMasterRouting(
 domain  tcorno           iQuote,
 domain  tcpono           iQuoteRevision,
@@ -49,6 +49,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Quote Lines generated successfully.
-<> 0                          - Error during generating of Quote Lines.
+Return: 0       - Quote Lines generated successfully.
+<> 0    - Error during generating of Quote Lines.
 ```

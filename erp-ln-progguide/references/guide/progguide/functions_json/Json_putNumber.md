@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_json>`
-`function long Json.putNumber( [long] json_array, long idx, ... value )`
+`function long Json.putNumber( [long] json_array, long idx,... value )`
 
 ## Description
 Convenience function for directly putting a 3GL long or double value at the specified index in a JSON array. The 3GL long or double value is first converted to a JSON number value, which is then put into the array.
@@ -23,8 +23,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_array' is a JSON value of type JSON_TYPE_ARRAY.
+
 - Parameter 'idx' is greater than 0 and less than or equal to the number of values in the array.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

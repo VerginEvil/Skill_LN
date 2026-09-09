@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that either no company number or an illegal company number has been specified. A valid company number is a number between 0 and 999.  |
+| This error indicates that either no company number or an illegal company number has been specified. A valid company number is a number between 0 and 999. |
 | *Solution:* |
 | Specify a valid company number. |

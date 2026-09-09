@@ -12,13 +12,13 @@ Discards the specified sequence identifier. *seqid* is the identifier returned b
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `seqid` |  |
+| `long` | `seqid` |    |
 
 ## Return values
 | | |
 |---|---|
 | 0 | success |
-| -1 | error (for example, could not close the sequence file or info file).  |
+| -1 | error (for example, could not close the sequence file or info file). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -26,5 +26,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

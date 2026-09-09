@@ -50,4 +50,5 @@ ret = ims.close(sio)
 
 ## Related topics
 - [seq.processor.push.decompressor()](seq.processor.push.decompressor.md)
+
 - [seq.processor.push.compressor()](seq.processor.push.compressor.md)

@@ -10,10 +10,10 @@ LN-UI: This adds the default icons to the commands. No secondary toolbar will be
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `form_command` |  |
+| `string` | `form_command` |    |
 | `string` | `gif_file` |  A gif file is the default. If a svg or png file is wanted, the extension should be added to the file name (e.g. "confirmed.svg")  |
-| `[ string` | `form_command ]` |  |
-| `[ string` | `gif_file ]` |  |
+| `[ string` | `form_command ]` |    |
+| `[ string` | `gif_file ]` |    |
 
 ## Return values
 > 0 success

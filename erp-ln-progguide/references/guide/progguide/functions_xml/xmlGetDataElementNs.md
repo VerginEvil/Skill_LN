@@ -19,8 +19,8 @@ Get the data of all child nodes of type XML_DATA of those child nodes of type XM
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The value of *node*. The *data* contains the data if the *node* is valid, the *namespaceOrURI* is valid, and there is a child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child. It contains the empty string otherwise.  |
-| 0 | The *node* is invalid, or the *namespaceOrURI* is invalid, or there is no child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child,  |
+| <> 0 | Success; The value of *node*. The *data* contains the data if the *node* is valid, the *namespaceOrURI* is valid, and there is a child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child. It contains the empty string otherwise. |
+| 0 | The *node* is invalid, or the *namespaceOrURI* is invalid, or there is no child XML_ELEMENT node of the *node* whose *local name* matches the specified *name* and whose URI matches the URI specified by *namespaceOrURI* with an XML_DATA node as child, |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -52,5 +52,7 @@ ret = xmlGetDataElementNs( xml_stockprice, "http://www.example.org/stock", "Stoc
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -10,7 +10,7 @@ This converts a UTC long format value to an input date string *or* an input time
 | | | |
 |---|---|---|
 | `domain ttutc` | `lvalue` |  A UTC long format value.  |
-| `const string` | `format()` |  |
+| `const string` | `format()` |    |
 
 ## Return values
 | |
@@ -22,4 +22,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

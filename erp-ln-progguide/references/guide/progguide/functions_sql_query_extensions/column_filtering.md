@@ -35,6 +35,9 @@ Note: on error evaluating the expression of a CDF, all filters of calculated CDF
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Query extensions sample program](example.md)
+
 - [quoted.string()](../functions_string_operations/quoted.string.md)

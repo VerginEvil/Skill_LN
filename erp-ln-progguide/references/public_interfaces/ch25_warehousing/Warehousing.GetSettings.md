@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Warehousing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 980-982
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 990-992
 
 ```baan
 DLL:   whextwmdapi001
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long Warehousing.GetSettings(
 domain  tcncmp           iLogisticCompany,
 domain  tcsite           iSite,
@@ -35,23 +35,23 @@ contains the most detailed value.
 output. Data is retrieved via name value pairs: specify the
 field and the field value.
 Example: when warehouse order series, step size for warehouse
-order lines and the first element of slow                      -moving percentage
+order lines and the first element of slow-moving percentage
 are needed, the function must be called as follows:
 if Warehousing.GetSettings(
 |* Fixed arguments:
-company,                                                --> input
-site,                                                   --> input
-force.read,                                             --> input
-context.is.master.data,                                 --> input
-exception.message,                                      --> output
-exception.id,                                           --> output
+company,                  --> input
+site,                     --> input
+force.read,               --> input
+context.is.master.data,   --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"wosr",                                                       --> input
-series.for.warehousing.orders,                                --> output
-"woss",                                                       --> input
-step.size.for.order.lines,                                    --> output
-"slmp(1)",                                                    --> input
-slow.moving.percentage) <> 0 then                               --> output
+"wosr",                         --> input
+series.for.warehousing.orders,  --> output
+"woss",                         --> input
+step.size.for.order.lines,      --> output
+"slmp(1)",                      --> input
+slow.moving.percentage) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
@@ -61,16 +61,16 @@ has domain tcyesno.
 The function call will look like this:
 if Warehousing.GetSettings(
 |* Fixed arguments:
-company,                                                --> input
-site,                                                   --> input
-force.read,                                             --> input
-context.is.master.data,                                 --> input
-exception.message,                                      --> output
-exception.id,                                           --> output
+company,                  --> input
+site,                     --> input
+force.read,               --> input
+context.is.master.data,   --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"psrm"                                                  --> input
-order.origin,                                           --> input
-output) <> 0 then                                       --> output
+"psrm"                    --> input
+order.origin,             --> input
+output) <> 0 then         --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
@@ -86,27 +86,27 @@ The domain of the return value is whinh.qipo.
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iSite                                         - Site: Not Mandatory
-iForceRead                                    - For future use
-iContextIsMasterData                          - True/False:
+iLogisticCompany        - Logistic Company: Mandatory
+iSite                   - Site: Not Mandatory
+iForceRead              - For future use
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 If the field mnemonic is 'psrm', the
 order origin must be passed as well.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - Error.
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - Error.
 ```

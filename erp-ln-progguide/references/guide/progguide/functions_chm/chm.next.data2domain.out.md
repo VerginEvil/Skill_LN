@@ -11,7 +11,7 @@ If the client application modifies the information and saves it to the source ta
 ## Arguments
 | | | |
 |---|---|---|
-| `ref double` | `series_value` |  |
+| `ref double` | `series_value` |    |
 
 ## Return values
 | | |
@@ -25,6 +25,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

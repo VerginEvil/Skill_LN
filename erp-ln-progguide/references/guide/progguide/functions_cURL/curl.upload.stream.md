@@ -14,7 +14,7 @@ Uploads data from a stream (a file or a memory stream) to the specified url.
 | `long` | `request.stream` |  the stream data to upload  |
 | `long` | `data.size` |  the size of the data to upload, in bytes; specify -1 to enforce sending the request in chunks  |
 | `long` | `response.stream` |  the stream (file or memory stream) to which the response of the upload must be written to  |
-| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by ` [curl.slist.append()](curl.slist.append.md)` or ` [curl.slist.append_encrypted()](curl.slist.append_encrypted.md)`. Specify 0 if no headers must be sent.  |
+| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by [curl.slist.append()](curl.slist.append.md) or [curl.slist.append_encrypted()](curl.slist.append_encrypted.md). Specify 0 if no headers must be sent.  |
 | `[ const string` | `method ]` |  optional HTTP method, specify "PUT" or "POST". "POST" is the default method.  |
 
 ## Return values
@@ -22,7 +22,7 @@ Uploads data from a stream (a file or a memory stream) to the specified url.
 |---|---|
 | 0 | Ok |
 | < 0 | Stream IO error |
-| > 0 | A cURL code; use ` [curl.strerror$()](curl.strerror$.md)` to get a descriptive message  |
+| > 0 | A cURL code; use [curl.strerror$()](curl.strerror$.md) to get a descriptive message |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -48,10 +48,12 @@ xmlrequest = xmlNewNode("Root")
 request = ims.openvba("w+")
 | write the xml tree to the request stream
 data.size = xmlWrite(request, xmlrequest)
+| rewind, so the stream pointer points to the beginning of the stream
+ims.rewind(request)
 | open a response stream buffer
 response = ims.openvba("w+)
 | upload using the HTTP POST method
-ret = curl.upload.data("http://www.example.com/upload/info.txt", request, data.size, response)
+ret = curl.upload.stream("http://www.example.com/upload/info.txt", request, data.size, response)
 if ret = 0 then
 	ims.rewind(response)
 	xmlresponse = xmlRead(response, err.msg)

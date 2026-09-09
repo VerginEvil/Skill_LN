@@ -9,7 +9,7 @@ This function returns a copy of *value$*. The runtime type of the returned value
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `value$` |  |
+| `string` | `value$` |    |
 
 ## Return values
 A copy of *value$*, with runtime type 'single byte string'.
@@ -18,5 +18,6 @@ A copy of *value$*, with runtime type 'single byte string'.
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- Inverse operation: [mb.cast$()](mb.cast.md)
+- [mb.cast$()](mb.cast.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

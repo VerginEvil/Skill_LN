@@ -7,7 +7,7 @@ Below some specific parts in the Composite child Navigation session script are s
 	     long node = xmlNewDataElement(“PATH”, serverfilePath)
 		prcm.notify("showfile:" & str$(parent), "", node)
 ```
-Composite child Document Viewer session .
+Composite child Document Viewer session.
 ```
 
 #include <bic_vwr>
@@ -36,4 +36,5 @@ function extern void vwr.bms.received(long sender.id, const string mask, const s
 
 ## Related topics
 - [Document Viewer overview](overview.md)
+
 - [Document Viewer synopsis](synopsis.md)

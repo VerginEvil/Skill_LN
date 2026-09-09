@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the user is already logged on.  |
+| This error indicates that the user is already logged on. |
 | *Solution:* |
 | Contact Infor support. |

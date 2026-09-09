@@ -2,13 +2,13 @@
 
 > Chapter: Chapter 19 Public Interfaces for Job Shop
 >
-> Group: Public Interfaces for ConfigurableStructures
+> Group: Public Interfaces for ConfigurableStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 818-819
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 821-822
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2026.10 (KB3684755  ).
+This function is available from 2026.10 (KB3684755).
 Syntax: long ConfigurableStructures.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,10 +28,10 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel sessions
+MODELESS -      Parent and child are parallel sessions
 that can be manipulated simultaneously.
 iStartFilter
 Specifies the start filter that is to be applied to the
@@ -41,7 +41,7 @@ Possible values are:
 "showCurrent":  Only Actual and New versions are
 displayed
 When empty:     "showEffective" is applied
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: sort by Product,
@@ -66,9 +66,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for
-
-## MaterialToIssueForProductionOrders
-
-The following functions are available: MaterialToIssueForProductionOrders.StartOverview

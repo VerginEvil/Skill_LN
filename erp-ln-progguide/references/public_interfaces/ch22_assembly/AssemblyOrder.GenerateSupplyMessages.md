@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AssemblyOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 851-852
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 861-862
 
 ```baan
 DLL:   tiextascapi
-This function is available from     2026.09 (KB3650665  ).
+This function is available from 2026.09 (KB3650665).
 Syntax: long AssemblyOrder.GenerateSupplyMessages(
 domain  tcorno           iAssemblyOrder,
 domain  tiasln           iAssemblyLine,
@@ -19,7 +19,7 @@ ref             boolean          oSomeOrdersProcessed,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This public interface generates Supply Messages for Late Line
-Station Orders.›¼                       This public interface mirrors the behavior of
+Station Orders.›¼• This public interface mirrors the behavior of
 the session Generate Supply Messages (tiasc8210m100).
 Pre:    There should be no pending logical transaction before calling
 this function.
@@ -56,18 +56,18 @@ PlannedStartTimeTo      domain  tiutcs          explained below
 AssemblyOrderFrom       domain  tcorno          explained below
 AssemblyOrderTo         domain  tcorno          explained below
 Default values:
-*From               -                 If the input variable field i* is given, it
+*From -                 If the input variable field i* is given, it
 will be used as the default value, otherwise it
 will be defaulted with blank.
-*To               -                   If the "*From" field is provided then "*To"
+*To -                   If the "*From" field is provided then "*To"
 field will be defaulted with "*From" field,
 otherwise the "*To" fields will be defaulted to
 their maximum domain value.
 For example:
-AssemblyOrderFrom               -     If the input variable field iAssemblyOrder is
+AssemblyOrderFrom -     If the input variable field iAssemblyOrder is
 given, it will be used as the default value,
 otherwise it will be defaulted with blank.
-AssemblyOrderTo               -       If AssemblyOrderFrom field is set, then
+AssemblyOrderTo -       If AssemblyOrderFrom field is set, then
 AssemblyOrderTo field will be the defaulted
 with AssemblyOrderFrom field, otherwise the
 AssemblyOrderTo field will be defaulted to

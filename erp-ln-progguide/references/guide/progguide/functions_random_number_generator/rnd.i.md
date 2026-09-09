@@ -11,7 +11,7 @@ Use [rnd.init()](rnd.init.md) to specify a seed value before starting the random
 ## Arguments
 | | | |
 |---|---|---|
-| `[ long` | `range ]` |  |
+| `[ long` | `range ]` |    |
 
 ## Return values
 A random number in the default or specified range.

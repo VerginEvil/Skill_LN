@@ -11,9 +11,9 @@ A special situation occurs when two arrays of strings are compared. In this situ
 ## Arguments
 | | | |
 |---|---|---|
-| `void` | `var1` |  |
-| `void` | `var2` |  |
-| `[ long` | `count ]` |  |
+| `void` | `var1` |    |
+| `void` | `var2` |    |
+| `[ long` | `count ]` |    |
 
 ## Return values
 The return values depend on the types of the variables.

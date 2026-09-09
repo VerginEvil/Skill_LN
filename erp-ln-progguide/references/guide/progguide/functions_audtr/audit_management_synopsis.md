@@ -1,5 +1,5 @@
 # Audit management synopsis
-For a good overview of the relations between the audit management functions see the Relations between the functions.
+For a good overview of the relations between the audit management functions see the [Relations between the functions](#flow).
 
 ## Include files for audit management functions
 ```
@@ -76,4 +76,5 @@ long
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management examples](audit_management_examples.md)

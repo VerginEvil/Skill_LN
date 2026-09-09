@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that a reference in the query cannot be found.  |
+| This error indicates that a reference in the query cannot be found. |
 | *Solution:* |
 | Ensure the involved reference can be found. |

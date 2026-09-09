@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1039-1041
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1049-1051
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.09 (KB3613947  ).
+This function is available from 2025.09 (KB3613947).
 Syntax: long HandlingUnit.GlobalBlock(
 domain  whinh.blre       iBlockingAction,
 domain  whinh.tran       iTransaction,
@@ -32,68 +32,68 @@ Usage:        Expl:   This public interface will (un)block all handling units wi
 the specified range.
 Pre:    db.retry.point() is set.
 Post:   commit/abort.transaction.
-Input:  iBlockingAction                       - Specifies whether to block or unblock
+Input:  iBlockingAction         - Specifies whether to block or unblock
 the handling units. (Mandatory)
 possible values are:
--                                                 whinh.blre.block
+- whinh.blre.block
 blocks the handling units
--                                                 whinh.blre.release
+- whinh.blre.release
 unblocks the handling units
-iTransaction                                  - Specifies for which transaction to
+iTransaction            - Specifies for which transaction to
 (un)block the handling units.
 (Mandatory)
 possible values are:
--                                                 whinh.tran.all
+- whinh.tran.all
 (un)blocks for all transactions
--                                                 whinh.tran.outbound
+- whinh.tran.outbound
 (un)blocks for outbound
 transactions
--                                                 whinh.tran.trans.out
+- whinh.tran.trans.out
 (un)blocks for transfer issue
 transactions
--                                                 whinh.tran.assembly
+- whinh.tran.assembly
 (un)blocks for assembly
 transactions
-iReason                                         - Reason for (un)blocking (Mandatory)
-iFromHandlingUnit                               - From range for handling unit
+iReason                   - Reason for (un)blocking (Mandatory)
+iFromHandlingUnit         - From range for handling unit
 (Optional)
-iToHandlingUnit                                 - To range for handling unit, has to
+iToHandlingUnit           - To range for handling unit, has to
 be alphabetically larger or equal to
 iFromHandlingUnit
 (Mandatory)
-iFromWarehouse                                  - From range for warehouse (Optional)
-iToWarehouse                                    - To range for warehouse, has to
+iFromWarehouse            - From range for warehouse (Optional)
+iToWarehouse              - To range for warehouse, has to
 be alphabetically larger or equal to
 iFromWarehouse (Mandatory)
-iFromOwner                                      - From range for owner (Optional)
-iToOwner                                        - To range for owner, has to
+iFromOwner                - From range for owner (Optional)
+iToOwner                  - To range for owner, has to
 be alphabetically larger or equal to
 iFromOwner (Optional)
-iFromItem                                       - From range for item (Optional)
-iToItem                                         - To range for item, has to
+iFromItem                 - From range for item (Optional)
+iToItem                   - To range for item, has to
 be alphabetically larger or equal to
 iFromItem (Optional)
-iFromAttributeSet                               - From range for Attribute Set
+iFromAttributeSet         - From range for Attribute Set
 (Optional)
-iToAttributeSet                                 - To range for Attribute Set, has to
+iToAttributeSet           - To range for Attribute Set, has to
 be alphabetically larger or equal to
 iFromAttributeSet
 (Optional)
-iPrintChanges                                   - Specifies whether to print the
+iPrintChanges             - Specifies whether to print the
 changes. (Mandatory)
 possible values are:
--                                                   tcyesno.yes
+- tcyesno.yes
 print the changes
--                                                   tcyesno.no
+- tcyesno.no
 don't print the changes
-iDevice                                         - Device (Mandatory if iPrintChanges
+iDevice                   - Device (Mandatory if iPrintChanges
 is yes)
-iReportName                                     - Report Name (Optional)
-Output: oExceptionMessage                     - The last message if any message is
+iReportName               - Report Name (Optional)
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

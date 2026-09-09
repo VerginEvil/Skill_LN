@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPRPOrders
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1723-1725
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1742-1743
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2024.07 (KB3503140  ).
+This function is available from 2024.07 (KB3503140).
 Syntax: long PlannedPRPOrders.StartGenerate(
 long             iStartMode,
 domain  tccprj           iFromProject,
@@ -20,12 +20,12 @@ Usage:        Expl    This function starts the session Generate Planned PRP Orde
 (tppss6200m000).
 Pre:    N.A
 Post:   N.A
-Input:  iStartMode                            - Not Used.
-iFromProject                                  - From Project selection field is filled with this
+Input:  iStartMode              - Not Used.
+iFromProject            - From Project selection field is filled with this
 value. Optional
-iToProject                                    - To Project selection field is filled with this
+iToProject              - To Project selection field is filled with this
 value. Optional
-iProcessingOptionSet                          - Optional
+iProcessingOptionSet    - Optional
 if 0, the default session options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -75,18 +75,14 @@ ToElement                           domain  tppdm.cspa <Maximum value>
 FromActivity                        domain  tppdm.cact <Minimum value>
 ToActivity                          domain  tppdm.cact <Maximum value>
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for PlannedPRPWarehouseOrders
-
-The following functions are available: PlannedPRPWarehouseOrders.Approve PlannedPRPWarehouseOrders.StartDetail PlannedPRPWarehouseOrders.StartOverview PlannedPRPWarehouseOrders.Transfer

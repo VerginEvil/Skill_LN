@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CommissionAgreement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 390-392
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 392-393
 
 ```baan
 DLL:   tdextcmsapi
-This function is available from     2026.08 (KB3682830  ).
+This function is available from 2026.08 (KB3682830).
 Syntax: long CommissionAgreement.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,16 +28,16 @@ Usage:        Expl.:  This function starts the Multi-Main session Commission Agr
 Input:  iStartMode              Specifies the start mode for the session
 (Mandatory).
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used.
 iQueryExtend            A specific query to be used when zooming
 to this session (Optional).
-iSoldToBusinessPartner  Sold                      -to Business Partner (Optional)
+iSoldToBusinessPartner  Sold-to Business Partner (Optional)
 iRelation               Relation (Optional)
 iChildAgreement         Child Agreement (Yes/No) (Mandatory)
 iAgreementGroup         Agreement Group (Optional)
@@ -56,9 +56,3 @@ information.
 Return: 0                       Session started.
 <> 0                    An error has occurred.
 ```
-
-## Chapter 11 Public Interfaces for Product Catalogs
-
-## Public Interfaces for Catalog
-
-The following functions are available: Catalog.StartOverview

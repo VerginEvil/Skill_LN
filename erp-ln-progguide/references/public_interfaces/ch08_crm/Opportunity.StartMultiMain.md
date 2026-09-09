@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Opportunity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 269-271
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 271-272
 
 ```baan
 DLL:   tdextsmiapi
-This function is available from     2020.06 (KB2127961  ).
+This function is available from 2020.06 (KB2127961).
 Syntax: long Opportunity.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the Multi-Main session Opportunity
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -43,9 +43,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Chapter 9 Public Interfaces for Sales
-
-## Public Interfaces for Sales
-
-The following functions are available: Sales.CalculatePlannedDeliveryDate Sales.CalculatePlannedReceiptDate Sales.GenerateRetrobilledPriceChangeAdvices Sales.GetContractSettings Sales.GetGeneralSettings Sales.GetOrderSettings Sales.GetQuoteSettings Sales.GetScheduleSettings Sales.StartProcessProFormaInvoices

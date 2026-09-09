@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1016-1018
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1026-1028
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.04 (KB3665487  ).
+This function is available from 2026.04 (KB3665487).
 Syntax: long WarehouseOrder.GenerateOutboundAdvice(
 domain  whinh.btno       iRunNumber,
 domain  whinh.oorg       iOrderOrigin,
@@ -30,23 +30,23 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 this function.
-Input:  iRunNumber                    - Run Number (Optional)
-iOrderOrigin                          - Specific order (Optional)
+Input:  iRunNumber      - Run Number (Optional)
+iOrderOrigin    - Specific order (Optional)
 iOrder
-iDirectRelease                        - Direct Release generated advice
-iCrossDock                                    - Create cross dock order for
+iDirectRelease  - Direct Release generated advice
+iCrossDock              - Create cross dock order for
 shortage (True/False)
-iAlternativeItems                             - Alternative items handling (Yes/No)
-iAdviceDespiteShortage                        - Advice despite shortage (Yes/No)
-iRecalculateExcessAtt                         - Recalculate excess ATT (Yes/No)
-iOverdeliveryAllowed                          - Overdelivery allowed (Yes/No)
+iAlternativeItems       - Alternative items handling (Yes/No)
+iAdviceDespiteShortage  - Advice despite shortage (Yes/No)
+iRecalculateExcessAtt   - Recalculate excess ATT (Yes/No)
+iOverdeliveryAllowed    - Overdelivery allowed (Yes/No)
 iStartAutomaticProcess
 iProcessingOptionSet Optional, if 0, the default options
 are applied.
 In case iOrderOrigin/iOrder are filled then the following
 options of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       OrderArray
+- selection range fields (From/To)
+- OrderArray
 In case option OrderArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
 Outbound advice will then be generated for the orders in the
@@ -80,7 +80,7 @@ ItemTo          item.t  domain  tcpono          Maximum value
 AttrSetFrom     atse.f  domain  tcatse          Minimum value
 AttrSetTo       atse.t  domain  tcatse          Maximum value
 DelDateFrom     dldt.f  domain  tcdate          Minimum value
-DelDateTo       dldt.t  domain  tcdate          Maximum value
+DelDateTo       dldt.t  domain  tcdate          UTC:Current date
 ShipTypeFrom    stty.f  domain  tctyps          Minimum value
 ShipTypeTo      stty.t  domain  tctyps          Maximum value
 ShipCodeFrom    stco.f  domain  tccshp          Minimum value
@@ -90,7 +90,7 @@ ShipAddrTo      shpt.t  domain  tccom.cadr      Maximum value
 RouteFrom       crte.f  domain  tccrte          Minimum value
 RouteTo         crte.t  domain  tccrte          Maximum value
 CarrierFrom     carr.f  domain  tccfrw          Minimum value
-CarrierTo       stty.t  domain  tccfrw          Maximum value
+CarrierTo       carr.t  domain  tccfrw          Maximum value
 SiteFrom        site.f  domain  tcsite          Minimum value
 SiteTo          site.t  domain  tcsite          Maximum value
 WarehouseFrom   cwar.f  domain  tccwar          Minimum value
@@ -118,7 +118,7 @@ OutboundOrder = Json.newObject()
 Json.setNumber(OutboundOrder, "OrderOrigin", 50)
 Json.setString(OutboundOrder, "OrderNumber", "JSC000001")
 Json.add(OutboundOrderArray, OutboundOrder)
-Output: oDataProcessed                - true:  Data Processed.
+Output: oDataProcessed  - true:  Data Processed.
 false: Nothing Selected.
 Return: 0: OK, <> 0: Error
 ```

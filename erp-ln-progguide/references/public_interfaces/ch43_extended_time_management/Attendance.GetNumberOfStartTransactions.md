@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1869-1869
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1889-1889
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetNumberOfStartTransactions(
 ref             long             oNumberOfStartTransactions,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -20,14 +20,14 @@ Post:
 Input:
 Output:
 oNumberOfStartTransactions
--                                               Number of start transactions
-oExceptionMessage                             - The last message if any message is
+- Number of start transactions
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read
+Return: 0                       - Data read
 ```

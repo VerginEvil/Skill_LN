@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for PickingMission
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2104-2105
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2127-2128
 
 ```baan
 Syntax: long whext.dll0005.picking.mission.handle.after.generate(
@@ -30,18 +30,12 @@ Picking missions are removed when o.remove.picking.mission is
 set to True or when this function returns a value <> 0.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.runnumber                   - The run number for which the picking mission
+Input:  i.runnumber     - The run number for which the picking mission
 is created
-i.warehouse                           - Warehouse
-i.picking.mission                       - Picking Mission which is generated
-i.company                             - Logistic Company of the outbound advice
-Output: o.remove.picking.mission               - Indicator if the standard should
+i.warehouse     - Warehouse
+i.picking.mission - Picking Mission which is generated
+i.company       - Logistic Company of the outbound advice
+Output: o.remove.picking.mission - Indicator if the standard should
 remove the picking mission.
 Return: 0: Success / <> 0: Error
 ```
-
-## Process Extensions for
-
-## PlannedInventoryTransaction
-
-The following process extension(s) is/are available: PlannedInventoryTransaction.SkipPrint

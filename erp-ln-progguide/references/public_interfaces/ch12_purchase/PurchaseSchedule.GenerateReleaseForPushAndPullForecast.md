@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseSchedule
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 437-438
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 439-440
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2022.06 (KB2241446  ).
+This function is available from 2022.06 (KB2241446).
 Syntax: long PurchaseSchedule.GenerateReleaseForPushAndPullForecast(
 domain  tcorno           iPurchaseSchedule,
 domain  tdstyp           iPurchaseScheduleType,
@@ -18,8 +18,8 @@ boolean          iRebuildRelease,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function will generate the purchase releases for
-Push and Pull                      -Forecast schedules.
-Pre:    Caller must set retry              -point
+Push and Pull-Forecast schedules.
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseSchedule               Purchase Schedule (Mandatory)
 iPurchaseScheduleType           Schedule Type (Mandatory)

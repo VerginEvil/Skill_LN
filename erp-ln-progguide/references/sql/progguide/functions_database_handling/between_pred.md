@@ -5,24 +5,21 @@ The BETWEEN predicate evaluates to True if the value of the first expression lie
 ```
 
 <between predicate>
-    ::= Row value constructor [NOT] BETWEEN
-           Row value constructor AND Row value constructor
+    ::= <row value constructor> [NOT] BETWEEN <row value constructor> AND <row value constructor>
 ```
 
 ## Syntactical restrictions
-No *<row value constructor>* shall contain a reference to an array column.
+No *<**row value constructor**>* shall contain a reference to an array column.
 
 ## Semantics
-The following equivalences hold:
+The following equivalences hold.
 ```
 
-expr NOT BETWEEN lower AND upper  <=>  NOT ( expr BETWEEN upper AND lower )
-```
-```
+expr NOT BETWEEN lower AND upper  ⟺  NOT ( expr BETWEEN lower AND upper )
 
-expr BETWEEN lower AND upper  <=>  expr >= lower AND expr <= upper
+expr BETWEEN lower AND upper  ⟺  lower <= expr AND expr <= upper
 ```
-For the exact semantics see [Comparison predicate](comparison_pred.md), [NOT boolean operator](not_sc.md) and [AND boolean operator](and_sc.md).
+For the exact semantics see the pages about [the comparison operators](comparison_pred.md), [the NOT operator](not_sc.md) and [the AND operator](and_sc.md).
 
 ## Examples
 The following predicate evaluates to True if *empno* is in the interval [10..20]. It evaluates to Unknown if *empno* is NULL. Otherwise, it evaluates to False.
@@ -30,7 +27,7 @@ The following predicate evaluates to True if *empno* is in the interval [10..20]
 
 empno BETWEEN 10 AND 20
 ```
-The following predicate evaluates to True if *salary* is in the interval [20000.00 .. 50000.00].
+The following predicate evaluates to True if *salary* is in the interval [20000.00.. 50000.00].
 ```
 
 { salary } BETWEEN 20000.00 AND 50000.00
@@ -43,4 +40,5 @@ The following predicate evaluates to True if *lastname* lies between 'HAAS' and 
 
 ## Related topics
 - [INRANGE predicate](inrange_pred.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

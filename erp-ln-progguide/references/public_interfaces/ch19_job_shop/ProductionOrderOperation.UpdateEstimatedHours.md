@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 806-807
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 805-806
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.08 (KB2330119  ).
+This function is available from 2024.08 (KB2330119).
 Syntax: long ProductionOrderOperation.UpdateEstimatedHours(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -45,7 +45,3 @@ information.
 Return: 0                       Estimated Hours are updated.
 <> 0                    Errors occurred.
 ```
-
-## Public Interfaces for ProductionOrderReject
-
-The following functions are available: ProductionOrderReject.MoveToQuarantine ProductionOrderReject.Scrap

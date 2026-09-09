@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StockPointTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 992-993
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1002-1003
 
 ```baan
 DLL:   whextinrapi
-This function is available from     2024.01 (KB2314707  ).
+This function is available from 2024.01 (KB2314707).
 Syntax: long StockPointTransactions.StartDetail(
 long             iStartMode,
 domain  tccwar           iWarehouse,
@@ -26,10 +26,10 @@ Stock Point Transactions (whinr1500m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Primary Key Fields:
@@ -42,14 +42,14 @@ iInventoryDate  Inventory Date (optional)
 iTransactionDate Transaction Date (mandatory)
 iSequence       Sequence (mandatory)
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

@@ -5,7 +5,7 @@ The operator * multiplies the values of two value expressions.
 ```
 
 <operator *>
-    ::= Value expression * Value expression
+    ::= <value expression> * <value expression>
 ```
 
 ## Semantics

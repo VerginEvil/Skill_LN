@@ -9,9 +9,9 @@ The stores the value of *source* in the *destination* argument. By default, the 
 ## Arguments
 | | | |
 |---|---|---|
-| `ref void` | `destination` |  |
-| `void` | `source` |  |
-| `[ long` | `count ]` |  |
+| `ref void` | `destination` |    |
+| `void` | `source` |    |
+| `[ long` | `count ]` |    |
 
 ## Return values
 0 success

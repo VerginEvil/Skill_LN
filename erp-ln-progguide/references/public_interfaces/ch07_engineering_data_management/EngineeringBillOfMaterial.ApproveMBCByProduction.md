@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 255-256
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 257-258
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.09 (KB3633088  ).
+This function is available from 2026.09 (KB3633088).
 Syntax: long EngineeringBillOfMaterial.ApproveMBCByProduction(
 domain  tcorno           iMBCNumber,
 long             iProcessingOptionSet,
@@ -40,10 +40,10 @@ PrintingDeviceErrorReport       domain tcmcs.str14      ""
 PrintingFileoutPathAndNameErrorReport
 domain tcmcs.str100     ""
 Default values:
-MBCNumberFrom                  -      If the input variable field iMBCNumber is
+MBCNumberFrom    -      If the input variable field iMBCNumber is
 given, it will be used as the default value,
 otherwise it will be defaulted with blank.
-MBCNumberTo                    -      If MBCNumberFrom field is set, then
+MBCNumberTo      -      If MBCNumberFrom field is set, then
 MBCNumberTo field will be the defaulted
 with MBCNumberFrom field or If input variable
 "MBCNumberFrom" is given, it will be used as
