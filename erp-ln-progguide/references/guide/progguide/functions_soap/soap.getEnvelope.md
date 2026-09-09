@@ -25,4 +25,5 @@ The specified `soapMessage` must be a valid handle.
 
 ## Related topics
 - [SOAP client overview](overview.md)
+
 - [SOAP client synopsis](synopsis.md)

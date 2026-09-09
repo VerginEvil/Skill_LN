@@ -17,4 +17,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Reports overview and synopsis](overview_and_synopsis.md)
+
 - [Spooling overview and synopsis](../functions_spooling/overview_and_synopsis.md)

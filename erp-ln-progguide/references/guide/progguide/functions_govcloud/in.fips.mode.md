@@ -9,7 +9,7 @@ Function to determine whether the bshell runs in FIPS-140-2 compliant mode. This
 ## Return values
 | | |
 |---|---|
-| 1 | Bshell runs in FIPS-140-2 mode. NOTE: The function may return other values for other secure modes in the future. Make sure you test for values "1" (and not just "true") when you want to test for FIPS-140-2 mode.  |
+| 1 | Bshell runs in FIPS-140-2 mode. NOTE: The function may return other values for other secure modes in the future. Make sure you test for values "1" (and not just "true") when you want to test for FIPS-140-2 mode. |
 | 0 | Bshell does not run in a secure mode. |
 
 ## Context
@@ -17,4 +17,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [GovCloud functions overview](overview.md)
+
 - [GovCloud functions synopsis](synopsis.md)

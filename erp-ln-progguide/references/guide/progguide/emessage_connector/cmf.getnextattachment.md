@@ -17,7 +17,7 @@ Gets an attachment entry in the message identified by mid and returns the identi
 | | |
 |---|---|
 | <> 0 | Attachment Identification. |
-| 0 | Attachment could not be found (most likely end of attachment list).  |
+| 0 | Attachment could not be found (most likely end of attachment list). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

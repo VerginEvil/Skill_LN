@@ -9,7 +9,7 @@ This returns the hostname of the bw client (if available)
 ## Arguments
 | | | |
 |---|---|---|
-| `ref string` | `hostname` |  |
+| `ref string` | `hostname` |    |
 
 ## Return values
 1 (TRUE) Function succeeded, hostname is filled

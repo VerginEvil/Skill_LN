@@ -4,7 +4,7 @@ The Baan 3GL programming language supports long and floating point constants. Bo
 ## Long constants
 A long constant can be specified in decimal notation or in hexadecimal notation. Only non-negative values can be specified. A preceding minus sign is not part of the constant, but is considered as a separate unary or binary minus operator.
 Notice that the concept of constants is a feature of the bic compiler. The compiler does not support long constants outside the signed 32-bit value range. The object code produced by the compiler will be executed by the bshell.
-The bshell may run in 32-bit mode or in 64-bit mode. The bic compiler does not have any special support for the 64-bit mode of the bshell. In fact the compiler produces the same code as it always produced for bshell versions which did not distinguish between 32-bit mode and 64-bit mode. Therefore, the compiler does not support long constants outside the signed 32-bit value range.
+The bshell may run in [32-bit mode](data_types.md#Long32) or in [64-bit mode](data_types.md#Long64). The bic compiler does not have any special support for the [64-bit mode](data_types.md#Long64) of the bshell. In fact the compiler produces the same code as it always produced for bshell versions which did not distinguish between [32-bit mode](data_types.md#Long32) and [64-bit mode](data_types.md#Long64). Therefore, the compiler does not support long constants outside the signed 32-bit value range.
 When using the decimal notation, the allowed value range is the non-negative signed 32-bit value range: [0 … 2^31 - 1]. When immediately preceded by a minus sign, also the value 2^31 is allowed. For example:
 ```
 
@@ -43,4 +43,5 @@ Floating point constants consist of the digits 0-9 and a decimal point. You cann
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Constants](constants.md)

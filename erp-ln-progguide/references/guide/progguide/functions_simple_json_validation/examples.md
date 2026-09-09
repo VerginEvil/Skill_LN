@@ -32,24 +32,37 @@ Suppose we have the following JSON representing an item.
 
 ## Validation rules
 Suppose the following rules apply:
+
 - The JSON document itself must be present, and it must be JSON object
+
 - 'id' is a required string, must be filled (no empty string allowed), and may only contain alphanumeric characters
+
 - 'name' is an optional, nullable string, but if present, it must be filled (no empty string allowed)
+
 - 'type' is a required string, with 3 possible values: product, generic, tool
-- 'supplier' is a required object, with the following properties:
+
 - 'name' is required and must be according to domain 'tccom.bpid'
-- 'address' is an optional, nullable object, with the following properties:
+
 - 'street' is a required string
+
 - 'number' is a required long
+
 - 'zip_code' is an optional, nullable string and may only contain alphanumeric characters
+
 - 'phone' is an optional, nullable string
+
 - 'email' is an optional, nullable string and must contain a valid email address if filled
-- 'price' is a required object, with the following properties:
+
 - 'value' is required double
+
 - 'currency' is a required string of max 3 characters and must be filled
+
 - 'packed' is a required boolean
+
 - 'home_currencies' is a required array with max 4 string elements, each of max 3 characters
+
 - 'color' is a nullable string, with 4 possible values: red, blue, green, yellow
+
 - 'active' is an optional boolean
 
 ## Validation rules in code
@@ -143,7 +156,6 @@ function extern string supplier.object.def()
         return(sjv.object(sjv.required(), supplier.fields.def()))
 }
 ```
-********
 
 ## Reusing definitions
 These definitions can be reused as follows:
@@ -161,8 +173,8 @@ result = sjv.validate(json, sjv.object(sjv.required(), sjv.fields(
    "active",          sjv.boolean()
 )))
 ```
-****
 
 ## Related topics
 - [Simple JSON Validation overview](overview.md)
+
 - [Simple JSON Validation synopsis](synopsis.md)

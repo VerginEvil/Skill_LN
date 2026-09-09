@@ -1,7 +1,7 @@
 # sec.add.table()
 
 ## Syntax:
-`function long sec.add.table( const string tablename(), ... )`
+`function long sec.add.table( const string tablename(),... )`
 
 ## Description
 Add the passed table as a secondary table to the current session. This function call is only allowed from the `before.program` section.
@@ -10,7 +10,7 @@ Add the passed table as a secondary table to the current session. This function 
 | | | |
 |---|---|---|
 | `const string` | `tablename()` |  The table name to be added.  |
-| `` | `...` |  (optional) pairs of parameters of type string which defines the mapping of maintable fields on secondary table keyfields. First string of pair: maintable field Second string of pair: secondary table field  |
+|  | `...` | (optional) pairs of parameters of type string which defines the mapping of maintable fields on secondary table keyfields. First string of pair: maintable field Second string of pair: secondary table field |
 
 ## Return values
 The `id` of the secondary table. This id must be used in subsequent calls to the functions [sec.add.set()](sec.add.set.md), [sec.get.update.status()](sec.get.update.status.md), [sec.mark.delete()](sec.mark.delete.md) and [sec.record.exists()](sec.record.exists.md).
@@ -26,4 +26,5 @@ As extension, use option Secondary Table of the Extension Modeler for non 'tx' s
 
 ## Related topics
 - [Multi Table Overview](overview.md)
+
 - [Multi Table synopsis](synopsis.md)

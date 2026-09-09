@@ -10,8 +10,8 @@ This moves the current window to a specified position (relative to the top left 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `col` |  |
-| `long` | `row` |  |
+| `long` | `col` |    |
+| `long` | `row` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

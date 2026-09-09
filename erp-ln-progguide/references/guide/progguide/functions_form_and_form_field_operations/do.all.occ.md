@@ -1,7 +1,7 @@
 # do.all.occ()
 
 ## Syntax:
-`function void do.all.occ( function_name function_name, function_name ... )`
+`function void do.all.occ( <function_name>, [ <type>... ] )`
 
 ## Description
 This executes the specified function for all occurrences on the current form. When included in the *before.choice* subsection of a *choice.update.db* section, the function is executed only for occurrences that are pending to be saved.
@@ -10,8 +10,8 @@ If the update.status has not yet been set, then do.all.occ() will first lock all
 ## Arguments
 | | | |
 |---|---|---|
-| `function_name` | `function_name` |  The name of the function that must be executed. The function must be of type void.  |
-| `function_name` | `...` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
+| `<function_name>` |  | The name of the function that must be executed. The function must be of type void. |
+| `[ <type>` | `... ]` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -49,4 +49,5 @@ function void get.old.inventory()
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

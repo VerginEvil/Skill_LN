@@ -54,8 +54,8 @@ You can specify an index as a combined field even if a combined field is not pre
 | | |
 |---|---|
 | table | is the name of the table or alias of a table |
-| _index | is a prefix to indicate that an index field is involved (a condition for this syntax is that there are no field names having this format)  |
-| Y | is the sequence number of the index defined in the data dictionary  |
+| _index | is a prefix to indicate that an index field is involved (a condition for this syntax is that there are no field names having this format) |
+| Y | is the sequence number of the index defined in the data dictionary |
 As a combined field is being used, the value must always be enclosed by '{' and '}'. For example:
 ```
 
@@ -66,8 +66,12 @@ An index's pseudo field cannot be used in the query preceded by ':'.
 
 ## Meanings of upper and lower limits
 In connection with combined fields, the combination of upper/lower limit can have two meanings (compare '>' and '#>').
+
 - Firstly, it can mean that each field of a record that meets the conditions lies between the boundaries specified. For example: `WHERE ( ppmod001.comb1 #>= {"adv", "000", "100"} AND ppmod001.comb1 #<={"zzz", "999", "200"} )` Here, {"adv", "050" "123"} meet the conditions, but the combination {"uvw", "123", "300"} does not, because of the last child field.For this construction we define the INRANGE statement. With INRANGE, the preceding example becomes: `WHERE ppmod001.comb1 INRANGE {"adv", "000","100"} AND {"zzz", "999", "200"}` With INRANGE, the boundaries indicated apply to each separate field (usual in print sessions).
-- Secondly, it can mean that all records are selected for which the combined field (regarded as one single field) lies between the boundaries indicated. For example: `WHERE ( ppmod001.comb1 >= {"adv", "000", "100"} AND ppmod001.comb1 <= {"zzz", "999", "200"} )` Here, {"uvw", "123", "300"} meets the condition as "uvw"&"123"&"300" lies between "adv"&"000"&"100" and "zzz"&"999"&"200" ('&' means concatenation).For this purpose we use a BETWEEN statement. With BETWEEN, the preceding example becomes: `WHERE ppmod001.comb1 BETWEEN {"adv", "000","100"} AND {"zzz", "999", "200"}` With BETWEEN, the fields in the combined are regarded as one field; the boundaries apply to the combined field as a whole.   If the field consists of one single element, INRANGE and BETWEEN are equivalent.
+
+- Secondly, it can mean that all records are selected for which the combined field (regarded as one single field) lies between the boundaries indicated. For example: `WHERE ( ppmod001.comb1 >= {"adv", "000", "100"} AND ppmod001.comb1 <= {"zzz", "999", "200"} )` Here, {"uvw", "123", "300"} meets the condition as "uvw"&"123"&"300" lies between "adv"&"000"&"100" and "zzz"&"999"&"200" ('&' means concatenation).For this purpose we use a BETWEEN statement. With BETWEEN, the preceding example becomes: `WHERE ppmod001.comb1 BETWEEN {"adv", "000","100"} AND {"zzz", "999", "200"}` With BETWEEN, the fields in the combined are regarded as one field; the boundaries apply to the combined field as a whole.
+
+If the field consists of one single element, INRANGE and BETWEEN are equivalent.
 
 ## Related topics
 - [Infor Enterprise Server SQL](baan_sql.md)

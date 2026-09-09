@@ -102,22 +102,24 @@ void aud_set_security( long c_sec, string info_hdr() )
 ```
 | | |
 |---|---|
-| *aud_get_version()* | This returns the current version of the info file and related sequence files.  |
-| *aud_get_tablename()* | This returns the name of the table to which the specified info file relates.  |
-| *aud_get_compno()* | This returns the company number of the table to which the info file relates.  |
-| *aud_get_status()* | This returns the value of the status field in the info header. The status field indicates whether the sequence file reuse feature is enabled or disabled.  |
-| *aud_get_from_seqno()* | This returns the starting number for sequence files related to the info file.  |
-| *aud_get_to_seqno()* | This returns the maximum sequence number for sequence files related to the info file.  |
-| *aud_get_curr_seqno()* | This returns the sequence number of the current sequence file. This is the sequence file to which new audit information will be written.  |
+| *aud_get_version()* | This returns the current version of the info file and related sequence files. |
+| *aud_get_tablename()* | This returns the name of the table to which the specified info file relates. |
+| *aud_get_compno()* | This returns the company number of the table to which the info file relates. |
+| *aud_get_status()* | This returns the value of the status field in the info header. The status field indicates whether the sequence file reuse feature is enabled or disabled. |
+| *aud_get_from_seqno()* | This returns the starting number for sequence files related to the info file. |
+| *aud_get_to_seqno()* | This returns the maximum sequence number for sequence files related to the info file. |
+| *aud_get_curr_seqno()* | This returns the sequence number of the current sequence file. This is the sequence file to which new audit information will be written. |
 | *aud_get_curr_security()* | This returns the security permissions for the info file and associated sequence files. The return value can be a combination of the following values: For example: |
-| *aud_get_max_audit_file_ size()* | This returns the maximum size (in bytes) of sequence files related to the info file.  |
-| *aud_set_status()* | This stores the value of *status* in the status field of the info header.  |
-| *aud_set_to_seqno()* | This stores the value of *to_seq* in the maximum sequence number field of the info header.  |
-| *aud_set_curr_seqno()* | This stores the value of the *c_seq* in the current sequence number field of the info header.  |
-| *aud_set_max_audit_file_ size()* | This stores the value of *m_size* in the maximum file size field of the info header.  |
-| *aud_set_security()* | This stores the value of *c_sec* in the security field of the info header. For a list of valid values, see *aud_get_curr_security()*.  |
+| *aud_get_max_audit_file_ size()* | This returns the maximum size (in bytes) of sequence files related to the info file. |
+| *aud_set_status()* | This stores the value of *status* in the status field of the info header. |
+| *aud_set_to_seqno()* | This stores the value of *to_seq* in the maximum sequence number field of the info header. |
+| *aud_set_curr_seqno()* | This stores the value of the *c_seq* in the current sequence number field of the info header. |
+| *aud_set_max_audit_file_ size()* | This stores the value of *m_size* in the maximum file size field of the info header. |
+| *aud_set_security()* | This stores the value of *c_sec* in the security field of the info header. For a list of valid values, see *aud_get_curr_security()*. |
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

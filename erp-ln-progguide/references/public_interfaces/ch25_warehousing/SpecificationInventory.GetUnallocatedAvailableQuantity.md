@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SpecificationInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 951-952
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 961-961
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2023.02 (KB2272169  ).
+This function is available from 2023.02 (KB2272169).
 Syntax: long SpecificationInventory.GetUnallocatedAvailableQuantity(
 domain  tccwar           iWarehouse,
 domain  tcitem           iItem,
@@ -28,17 +28,13 @@ oAvailableUnalocatedQuantity. When the iEffectivityUnit is
 passed as empty (zero) the same rule applies.
 Pre:    N.A.
 Post:   N.A.
-Input:  iWarehouse                            - Warehouse (Mandatory)
-iItem                                         - Item (Mandatory)
-iEffectivityUnit                              - Effectivity Unit
+Input:  iWarehouse              - Warehouse (Mandatory)
+iItem                   - Item (Mandatory)
+iEffectivityUnit        - Effectivity Unit
 Output: oUnallocatedAvailableQuantity
--                                               Unallocated available quantity
+- Unallocated available quantity
 in Inventory Unit
-oInventoryUnit                                - Inventory Unit
-Return: 0                                     - Success
-<> 0                                          - Error
+oInventoryUnit          - Inventory Unit
+Return: 0                       - Success
+<> 0                    - Error
 ```
-
-## Public Interfaces for InventoryCommitment
-
-The following functions are available: InventoryCommitment.AllowedForOrderLine InventoryCommitment.CalculateCommitmentDate InventoryCommitment.CalculateCommitmentDateV2 InventoryCommitment.Cancel InventoryCommitment.CommitInventoryToOrderLine InventoryCommitment.ConsumeFromBuffer InventoryCommitment.CreateAllocationBuffer InventoryCommitment.Generate InventoryCommitment.GetAvailableQuantityToCommit

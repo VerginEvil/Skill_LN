@@ -1,7 +1,7 @@
 # donutsegment.add.tooltipline()
 
 ## Syntax:
-`function long donuttsegment.add.tooltipline( long i.segmentid, const string i.tooltip )`
+`function long donutsegment.add.tooltipline( long i.segmentid, const string i.tooltip )`
 
 ## Description
 This function adds a tooltip line to the segment. LN UI will display each line as a separate line below each other.

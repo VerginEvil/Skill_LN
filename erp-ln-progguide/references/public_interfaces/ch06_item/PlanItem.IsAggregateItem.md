@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 220-221
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 222-222
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.07 (KB2313149  ).
+This function is available from 2024.07 (KB2313149).
 Syntax: long PlanItem.IsAggregateItem(
 domain  tcncmp           iCompany,
 domain  cpitem           iPlanItem,

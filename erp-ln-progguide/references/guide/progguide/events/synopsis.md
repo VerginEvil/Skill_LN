@@ -29,6 +29,9 @@ long
 
 ## Related topics
 - [Events overview](overview.md)
+
 - [Event types](event_types.md)
+
 - [Event array parameters](event_array_parameters.md)
+
 - [Events sample program](sample_program.md)

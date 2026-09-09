@@ -1,16 +1,15 @@
 # set.genai.commands()
 
 ## Syntax:
-`function void set.genai.commands( const string i.command, [ const string ... ] )`
+`function void set.genai.commands( const string i.command,... )`
 
 ## Description
-Tells that the command named in the argument should be represented as a GenAI option.
+Tells that the commands named in the arguments should be represented as a GenAI option.
 
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `i.command` |  Form commands are identified either by a function name or a session code.  |
-| `[ const string` | `... ]` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
+| `const string` | `i.command,...` |  Form commands are identified either by a function name or a session code.  |
 
 ## Return values
 | | |
@@ -24,4 +23,4 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 Notes  This function should be called in the "after.form.read" section
 
 ## Related topics
-- [GenAI Functionality on Form Overview](overview_and_synopsis.md)
+- [GenAI Functionality on Form](overview_and_synopsis.md)

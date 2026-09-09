@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1492-1493
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1507-1508
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long WorkOrder.GenerateSerializedItem(
 domain  tcorno           iWorkOrder,
 domain  tcpono           iLine,
@@ -25,7 +25,7 @@ Work Order Batch Repair Serial
 Work Order Outgoing Subassembly
 Work Order Material Resource Line
 When the work order is linked to a maintenance sales order part
-maintenance line, the sold                      -to business partner of the
+maintenance line, the sold-to business partner of the
 maintenance sales order will be set as owner of the serialized
 item.
 Optionally the generated serial number can be updated on the
@@ -49,10 +49,10 @@ iMaterialType
 Indicates the work order object for which a serialized
 item must be generated.
 Allowed values:
--                               Material Resource
--                               Batch Repair
--                               Outgoing Subassembly
--                               Not Applicable
+- Material Resource
+- Batch Repair
+- Outgoing Subassembly
+- Not Applicable
 (mandatory)
 iSerialNumber
 The Serial Number to be used for generating a
@@ -64,9 +64,9 @@ iUpdateSerialOnWorkOrder
 Controls if the serial number must be set on the
 work order objects based on which the serialized item is
 generated.
--                               yes: The serial number on the order/line is updated
+- yes: The serial number on the order/line is updated
 with the generated serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -77,9 +77,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated succesfull and (optionally)
+Return: 0       - Serialized Item generated succesfull and (optionally)
 updated on the work order objects.
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the work order objects failed.

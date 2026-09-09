@@ -23,4 +23,5 @@ This function is available with portingsets starting at TIV level 1200.
 
 ## Related topics
 - [Runtime dictionary information overview and synopsis](overview_and_synopsis.md)
+
 - [Tools Interface Version (TIV)](../tiv/tiv_overview.md)

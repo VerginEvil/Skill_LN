@@ -10,7 +10,7 @@ This moves the keyboard input focus to the specified object. When an object has 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `object_id` |  |
+| `long` | `object_id` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -18,5 +18,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

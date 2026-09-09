@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 744-745
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 744-744
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.05 (KB2308452  ).
+This function is available from 2024.05 (KB2308452).
 Syntax: long ProductionOrder.PrintSerialNumbersList(
 domain  tcsite           iSite,
 domain  tcorno           iProductionOrder,

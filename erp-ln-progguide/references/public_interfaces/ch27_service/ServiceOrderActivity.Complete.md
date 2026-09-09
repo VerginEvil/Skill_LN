@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1438-1441
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1452-1454
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.04 (KB2233573  ).
+This function is available from 2022.04 (KB2233573).
 Syntax: long ServiceOrderActivity.Complete(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tsmdm.acln       iActivityLine,
@@ -41,14 +41,14 @@ If return warehouse orders are created, then the system will
 at the end also process the warehouse activities which are set
 to automatic.
 Note:
--                       When an Electronic Signature is required for completing a
+- When an Electronic Signature is required for completing a
 service order and this is the last activity which
 is being set to Completed and the input argument
 iSetServiceOrderToCompleteWhenLastActivityIsCompleted is set
 to Yes, then the header will not be set to Completed,
 because the electronic signature functionality is only
 available when completing from header level.
--                       When interactive counter reading reset rules are defined for
+- When interactive counter reading reset rules are defined for
 any of the service order activities, the session for resetting
 the counters is not started when this public interface is
 used. Resetting these counters can be done using LN UI.
@@ -64,13 +64,13 @@ to Completed and
 iSetServiceOrderToCompleteWhenLastActivityIsCompleted has the
 value Yes, and the service order header could also be set to
 Completed, the status of the header is changed to Completed.
-Input:  iServiceOrder                                                         -
+Input:  iServiceOrder                                           -
 The service order.
 Mandatory input.
 iActivityLine
 The activity line number.
 Mandatory input.
-iAllowCompletingWithEmptyProblemCode                                          -
+iAllowCompletingWithEmptyProblemCode                    -
 With this input argument the user can indicate that the
 complete action should continue if the problem code
 on the activity is empty and either on the user template
@@ -79,7 +79,7 @@ result in a warning.
 Note: this situation would result in LN UI in a question
 for the user.
 Mandatory input.
-iAllowCompletingWithEmptySolutionCode                                         -
+iAllowCompletingWithEmptySolutionCode                   -
 With this input argument the user can indicate that the
 complete action should continue if the solution code
 on the activity is empty and either on the user template
@@ -88,7 +88,7 @@ result in a warning.
 Note: this situation would result in LN UI in a question
 for the user.
 Mandatory input.
-iActualRentalLocationAddress                                                  -
+iActualRentalLocationAddress                            -
 If the activity is related to Rental and the default
 return address is set to Other Address, then this will
 be the actual location address of the rental equipment.
@@ -96,20 +96,20 @@ If this address is not provided and the activity is
 related to Rental and the default return address is set
 to Other Address, an error will be returned.
 Optional input.
-iUpdateMethodForRentalPeriod                                                  -
+iUpdateMethodForRentalPeriod                            -
 If a related activity is set to Completed which is
 related to Rental, then with this indicator the user
 can indicate how the rental period should be updated
 for the related Rental Cost line (tssoc240).
 Allowed values are:
 tssoc2207.upd.copy.planned
--                                               Use Agreed Time
+- Use Agreed Time
 tssoc2207.upd.use.actual
--                                               Use Actual Time
+- Use Actual Time
 tssoc2207.upd.none
--                                               No update
+- No update
 Mandatory input.
-iSetServiceOrderToCompleteWhenLastActivityIsCompleted                         -
+iSetServiceOrderToCompleteWhenLastActivityIsCompleted   -
 Set the service order header status to Complete when
 the given service order activity line is completed
 successfully and all other service order activity lines
@@ -126,8 +126,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the service order activity
 was not changed to Completed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order activity changed to Completed.
-<> 0                          -       The status of the service order activity could
+<> 0    -       The status of the service order activity could
 not be changed to Completed.
 ```

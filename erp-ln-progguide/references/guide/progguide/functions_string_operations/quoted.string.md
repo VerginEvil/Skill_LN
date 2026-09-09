@@ -9,7 +9,7 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `expr` |  |
+| `string` | `expr` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -24,4 +24,5 @@ query.extend.where("tcibd001.item <> " & quoted.string(tibom010.mitm))        | 
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

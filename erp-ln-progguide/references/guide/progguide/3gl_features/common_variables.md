@@ -21,4 +21,5 @@ As an alternative to using common variables, you can use [import()](../functions
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Variables](variables.md)

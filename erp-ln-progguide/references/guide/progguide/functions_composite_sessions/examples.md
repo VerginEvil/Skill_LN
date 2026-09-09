@@ -47,7 +47,6 @@ after.choice:
 
 	endif
 ```
-****
 
 ## Composite Child GBF-Session
 Below some specific parts in a Composite Child GBF-Session script are shown. The code constructions which are directly related with Composite Child sessions are shown in italic
@@ -111,7 +110,6 @@ function extern long gbf.bms.received(long sender.id, const string mask(), const
 	return(GBF.DO.CONTINUE)
 }
 ```
-********
 
 ## Drag from 4GL-Session
 Below some parts of a 4GL-UI scripts are shown which are specific for the implementation of dragging records from a 4GL-multi-occurrence session.
@@ -335,4 +333,5 @@ function extern void on.drop(long from.pid, long collection, boolean copy)
 
 ## Related topics
 - [Composite Sessions overview](overview.md)
+
 - [Composite Sessions synopsis](synopsis.md)

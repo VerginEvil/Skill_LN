@@ -4,7 +4,7 @@
 `function void soap.setAction( long soapMessage, const string soapAction )`
 
 ## Description
-Sets the SOAP Action of the specified SOAP Message. This action is sent together with the the SOAP Envelope to the SOAP service.
+Sets the SOAP Action of the specified SOAP Message. This action is sent together with the SOAP Envelope to the SOAP service.
 
 ## Arguments
 | | | |
@@ -20,4 +20,5 @@ The specified `soapMessage` must be a valid handle.
 
 ## Related topics
 - [SOAP client overview](overview.md)
+
 - [SOAP client synopsis](synopsis.md)

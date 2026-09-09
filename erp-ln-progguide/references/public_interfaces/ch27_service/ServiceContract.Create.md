@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1387-1389
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1399-1401
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.06 (KB3566270  ).
+This function is available from 2025.06 (KB3566270).
 Syntax: long ServiceContract.Create(
 long             iProcessingOptionSet,
 ref     domain  tcorno           oServiceContract fixed,
@@ -162,7 +162,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                             - No error; however, error messages can have
+Return: 0               - No error; however, error messages can have
 been set.
-<> 0                                  - An error occurred
+<> 0            - An error occurred
 ```

@@ -20,4 +20,5 @@ long
 
 ## Related topics
 - [Secure Digest Functions overview](digest_overview.md)
+
 - [Secure Hash Algorithm overview](../functions_sha/sha_overview.md)

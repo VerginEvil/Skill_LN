@@ -15,11 +15,12 @@ This sets the current file position to the beginning of the file. It is equivale
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error; probably *fp* not connected.  |
+| -1 | Error; probably *fp* not connected. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

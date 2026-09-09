@@ -1,7 +1,7 @@
 # abort.io()
 
 ## Syntax:
-`function void abort.io( string mesg(14), [ ... ] )`
+`function void abort.io( string mesg(14), [... ] )`
 
 ## Description
 This cancels the current database transaction.
@@ -10,12 +10,12 @@ After this function is called, new values entered on the form remain on the form
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `mesg(14)` |  This specifies a message defined in the data dictionary. The message is displayed on screen when *abort.io()* is called. If you specify an empty string here, the 4GL engine displays a default message. The argument can contain substitution symbols such as %d or face= %s (see [sprintf$()](../functions_formatting_io/sprintf.md). The values that must be substituted are specified in the second, third, etc. arguments of the function. The number of arguments is variable.  |
-| `[` | `... ]` |  |
+| `string` | `mesg(14)` |  This specifies a message defined in the data dictionary. The message is displayed on screen when *abort.io()* is called. If you specify an empty string here, the [4GL engine](../glossary/glossary.md#fourgl_engine) displays a default message. The argument can contain substitution symbols such as %d or face= %s (see [sprintf$()](../functions_formatting_io/sprintf.md). The values that must be substituted are specified in the second, third, etc. arguments of the function. The number of arguments is variable.  |
+| `[` | `... ]` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in 4GL script types.
-Note  *abort.io()* is implicitly called by the 4GL engine when a DALHOOKERROR is returned by, for example, a [before.save.object()](../functions_dal/before.save.object.md) or [after.save.object()](../functions_dal/after.save.object.md) function call.
+Note  *abort.io()* is implicitly called by the [4GL engine](../glossary/glossary.md#fourgl_engine) when a DALHOOKERROR is returned by, for example, a [before.save.object()](../functions_dal/before.save.object.md) or [after.save.object()](../functions_dal/after.save.object.md) function call.
 
 ## Example
 ```
@@ -37,4 +37,5 @@ tiitm001.item)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

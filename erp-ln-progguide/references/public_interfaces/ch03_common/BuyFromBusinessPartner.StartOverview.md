@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BuyFromBusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 133-134
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 134-135
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2023.02 (KB2277106  ).
+This function is available from 2023.02 (KB2277106).
 Syntax: long BuyFromBusinessPartner.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Usage:        Expl:   This function starts session Buy-from Business Partners -
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -44,24 +44,20 @@ the session index will match the value of this variable.
 iQueryExtend
 Optional
 A specific query to be used when zooming to this session.
-iBuyFromBusinessPartner                       - Business Partner      Not Mandatory
-iSearchKey                                    - Search Key            Not Mandatory
-iAddress                                      - Address               Not Mandatory
+iBuyFromBusinessPartner - Business Partner      Not Mandatory
+iSearchKey              - Search Key            Not Mandatory
+iAddress                - Address               Not Mandatory
 Output: for iStartMode MODAL:
-oBuyFromBusinessPartner                               -
-Selected Buy                                                -from Business Partner
-oExceptionMessage                             - The last message if any message is
+oBuyFromBusinessPartner -
+Selected Buy-from Business Partner
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Otherwise.
+Return: 0                       - Session started
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for ShipFromBusinessPartner
-
-The following functions are available: ShipFromBusinessPartner.StartOverview

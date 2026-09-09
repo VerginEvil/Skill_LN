@@ -57,8 +57,10 @@ dal.validate.field(long mode)
     return(0)
 }
 ```
-Note that the ` [field.is.derived()](field.is.derived.md)` hook is only called in case:
+Note that the [field.is.derived()](field.is.derived.md) hook is only called in case:
+
 - the DAL is not a SUBDAL ( `SUBDAL = false`)
+
 - the DAL is running in the Data Input or Integration context (See [DAL Context](dal_context.md) for more info.
 
 ## Flow for updating the field's value
@@ -96,4 +98,5 @@ dal.get.field.state(long mode)
 
 ## Related topics
 - [DAL2 Field hooks](dal2_field_hooks.md)
+
 - [DAL2 and the 4GL Engine](dal2_4gle.md)

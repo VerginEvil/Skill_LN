@@ -20,9 +20,7 @@ This function returns the size (in bytes) of the header of a specified sequence 
 | | |
 |---|---|
 | > 0 | length of the sequence file header |
-| -1 |  Error; Possible reasons are: Error occurred while opening sequence file Open file limit reached  |
--
--
+| -1 | Error; Possible reasons are: Error occurred while opening sequence file Open file limit reached |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -31,5 +29,7 @@ Note  You can also use [aud_get_hdr_size()](aud_get_hdr_size.md) to retrieve the
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

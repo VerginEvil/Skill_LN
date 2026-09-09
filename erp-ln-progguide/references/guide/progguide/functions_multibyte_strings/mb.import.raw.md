@@ -16,15 +16,18 @@ This function converts a string from the external, native character set to the [
 ## Return values
 | | |
 |---|---|
-| >= 0 |   |
-| -1 |  An incomplete or illegal code sequence was detected in the input string value. As of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md)), the already generated output is available in the *target$* ref argument string. In earlier versions, an empty string is returned in *target$*. This return value may hide other exceptional cases. Replacement of problematic characters may have taken place (otherwise indicated by return value -3). More importantly, the *target$* ref argument string or the internal buffer may be too small to contain the already generated output (otherwise indicated by return value get.size.in.bytes( *target$*)).  |
-| -3 | At least one input character could not be converted, because no character definition is known for the specified native code point; such input characters were replaced by some replacement character, e.g by a question mark '?'.  |
+| <= get.size.in.bytes( *target$*) | The resulting number of bytes stored in the *target$* ref argument string. Notice that values get.size.in.bytes( *target$*) and 4096 also may indicate an overflow condition. |
+| get.size.in.bytes( *target$*) | This can be an indication of an overflow condition! This behavior is retained for compatibility reasons. The term *overflow* is used to indicate that some processing step was finished prematurely, because the output of that step was larger than would fit in the (intermediate) buffer that was available for the output of that step. It does *not* mean that any data was actually written outside the borders of the available buffer. If the supplied buffer is too small, the number of output bytes that fits in the supplied buffer is returned, with no clear indication of the overflow condition. In such a case, the supplied buffer may be not completely filled: when the TSS encoding of a character consists of multiple bytes that cannot all be put in the output buffer, then none of them is put there and the remaining (at most three) bytes are left undefined or (as of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md)) are set to 0. This conversion function uses a fixed size internal temporary buffer, which can overflow. As of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md), overflow of the internal buffer is also indicated by returning the value get.size.in.bytes( *target$*). Before that TIV level, such an overflow is indicated by returning the value 4096 (i.e. the size of the internal buffer). Any of the described cases of signaling an overflow may hide another exceptional case: replacement of problematic characters may have taken place (otherwise indicated by return value -3). In most cases, overflow situations can be avoided by supplying a sufficiently large output buffer. However, overflow of a fixed size internal temporary buffer can only be avoided by supplying a sufficiently short input string. |
+| 4096 | This can be an indication of an overflow condition! Before [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md), overflow of the internal buffer is signaled by returning value 4096 (i.e. the size of the internal buffer). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- A similar function, but with conversion of escape sequences to their specified TSS-characters: [mb.import$()](mb.import.md)
-- Inverse operation: [mb.export.raw()](mb.export.raw.md)
+- [mb.import$()](mb.import.md)
+
+- [mb.export.raw()](mb.export.raw.md)
+
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

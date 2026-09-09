@@ -114,4 +114,5 @@ function void sign.string(
 
 ## Related topics
 - [Digital Signatures overview](overview.md)
+
 - [Digital Signatures synopsis](synopsis.md)

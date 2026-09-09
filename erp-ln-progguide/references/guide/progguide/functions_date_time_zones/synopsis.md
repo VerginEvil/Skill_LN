@@ -42,7 +42,7 @@
 | | | |
 |---|---|---|
 | `long` | [choose.time.zone.from.list()](choose.time.zone.from.list.md) | `( )` |
-| `long` | ` [date.to.date()](date.to.date.md)` | `( long in_date, long in_time, const string in_zone(), const string out_zone(), ref long out_date, ref long out_time )` |
+| `long` | [date.to.date()](date.to.date.md) | `( long in_date, long in_time, const string in_zone(), const string out_zone(), ref long out_date, ref long out_time )` |
 | `long` | [get.time.zone()](get.time.zone.md) | `( ref string time_zone() )` |
 | `long` | [set.time.zone()](set.time.zone.md) | `( string time_zone(50) )` |
 | `boolean` | [timezone.exists()](timezone.exists.md) | `( string time_zone(50) )` |

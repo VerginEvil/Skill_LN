@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 780-781
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 780-780
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2023.09 (KB2298685  ).
+This function is available from 2023.09 (KB2298685).
 Syntax: long ProductionOrder.StartResetStatus(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,

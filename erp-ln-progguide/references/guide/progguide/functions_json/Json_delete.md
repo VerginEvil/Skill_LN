@@ -17,8 +17,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_value' is a JSON value.
+
 - Parameter 'json_value' is detached (i.e. it is not a member of a JSON object or JSON array).
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

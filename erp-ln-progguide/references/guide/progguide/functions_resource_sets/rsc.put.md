@@ -1,7 +1,7 @@
 # rsc.put()
 
 ## Syntax:
-`function void rsc.put( string package_code(2), string resource_set(16), string resource_id(16), value(40) , [ string resource_id(16), value(40) . . . ] )`
+`function void rsc.put( string package_code(2), string resource_set(16), string resource_id(16), value(40), [ string resource_id(16), value(40)... ] )`
 
 ## Description
 This updates one or more resource values in a specified resource set. You can use the following functions to convert program variables to a resource value format: [rsc.boolean(), rsc.double(), rsc.enum(), rsc.long(), rsc.string()](rsc.many.md), [rsc.boolean(), rsc.double(), rsc.enum(), rsc.long(), rsc.string()](rsc.many.md), [rsc.boolean(), rsc.double(), rsc.enum(), rsc.long(), rsc.string()](rsc.many.md), [rsc.boolean(), rsc.double(), rsc.enum(), rsc.long(), rsc.string()](rsc.many.md), and [rsc.boolean(), rsc.double(), rsc.enum(), rsc.long(), rsc.string()](rsc.many.md).
@@ -12,7 +12,7 @@ This updates one or more resource values in a specified resource set. You can us
 | `string` | `package_code(2)` |  The package code.  |
 | `string` | `resource_set(16)` |  The resource set ID.  |
 | `string` | `resource_id(16), value(40)` |  One or more name/value pairs. Each pair consists of the ID of a resource that must be updated and the new value for that resource.  |
-| `[ string` | `resource_id(16), value(40) . . . ]` |  One or more name/value pairs. Each pair consists of the ID of a resource that must be updated and the new value for that resource.  |
+| `[ string` | `resource_id(16), value(40)... ]` |  One or more name/value pairs. Each pair consists of the ID of a resource that must be updated and the new value for that resource.  |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -31,4 +31,5 @@ rsc.reload()
 
 ## Related topics
 - [Resource sets overview](overview.md)
+
 - [Resource sets synopsis](synopsis.md)

@@ -2,10 +2,10 @@
 | | |
 |---|---|
 | Title | Infor ES Connectivity SQL Language Guide |
-| Version | 10.8.12pre_sql (10.8.12pre_sql) |
-| Publication date | 2024/10/08 02:04 PM CEST |
+| Version | 2610_sql (2610_sql) |
+| Publication date | 2026/07/28 02:51 PM CEST |
 
-## Copyright © 2024 Infor
+## Copyright 2026 Infor
 
 ## Important Notices
 The material contained in this publication (including any supplementary information) constitutes and contains confidential and proprietary information of Infor.

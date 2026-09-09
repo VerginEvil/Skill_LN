@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1848-1849
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1868-1869
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetActualAttendance(
 domain  bpxtm.atty       iAttendanceType,
 domain  tcyesno          iManuallyAdded,
@@ -21,17 +21,17 @@ review and given attendance type and manually added.
 Pre:
 Post:
 Input:
-iAttendanceType                               - Attendance type
-iManuallyAdded                                - Manually added
+iAttendanceType         - Attendance type
+iManuallyAdded          - Manually added
 Output:
-oActualAttendance                             - number of hours Actual Attendance
-oExceptionMessage                             - The last message if any message is
+oActualAttendance       - number of hours Actual Attendance
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read
+Return: 0                       - Data read
 ```

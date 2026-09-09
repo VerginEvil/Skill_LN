@@ -10,7 +10,7 @@ This returns the description associated with a specific value in an enumerated d
 | | | |
 |---|---|---|
 | `string` | `domain_code(12)` |  The name of the domain. The domain must be of type enumerated.  |
-| `` | `enum_expr` |  One of the possible values of the enumerated domain.  |
+|  | `enum_expr` | One of the possible values of the enumerated domain. |
 | `[ string` | `language_code ]` |  To retrieve the description in a language other than the user language, specify the relevant language code in this argument. This is an optional argument. The default language is the language of the user. Note that the language code of the user is available in the predefined, read-only variable *language$*.  |
 
 ## Return values
@@ -36,4 +36,5 @@ descr = enum.descr$("tcyesno", active, "3")  | descr contains
 
 ## Related topics
 - [Enumerates overview and synopsis](overview_and_synopsis.md)
+
 - [Enumerate and set constants](../3gl_features/enumerate_and_set_constants.md)

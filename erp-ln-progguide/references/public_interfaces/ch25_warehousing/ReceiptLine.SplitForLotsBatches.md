@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1247-1249
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1257-1259
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.05 (KB2237101  ).
+This function is available from 2022.05 (KB2237101).
 Syntax: long ReceiptLine.SplitForLotsBatches(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -35,8 +35,8 @@ either one can be calculated based on the receipt quantity and
 the value of the other argument.
 If both Split Size and Split Number are empty, the default Size
 is determined from the Default Lot Size defined in session
-"Item                      -Warehousing" (whwmd4600m000) or
-"Items                      -Warehousing by Site" (whwmd4604m000).
+"Item-Warehousing" (whwmd4600m000) or
+"Items-Warehousing by Site" (whwmd4604m000).
 But in the end both variables are needed for executing the split
 If it is not possible to determine the Split Size and Number
 an error message will be returned.
@@ -44,9 +44,9 @@ For executing this public interface the same constraints apply
 as for the corresponding option in the Infor LN Application.
 If execution is not allowed a specified error message is returned.
 Example:
--                       Receipt Quantity = 30
--                       Consolidate Stock Points in one Receipt Line = Yes
--                       iGenerateLots = True, iSplitSize = 10, iSplitNumber = 3
+- Receipt Quantity = 30
+- Consolidate Stock Points in one Receipt Line = Yes
+- iGenerateLots = True, iSplitSize = 10, iSplitNumber = 3
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
 ---------------------------------------------------------------
@@ -54,9 +54,9 @@ Example:
 |                          |    LOT2    10 pcs
 |                          |    LOT3    10 pcs
 Example:
--                       Receipt Quantity = 30
--                       Consolidate Stock Points in one Receipt Line = No
--                       iGenerateLots = False, iSplitSize = 10, iSplitNumber = 3
+- Receipt Quantity = 30
+- Consolidate Stock Points in one Receipt Line = No
+- iGenerateLots = False, iSplitSize = 10, iSplitNumber = 3
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
 ---------------------------------------------------------------
@@ -69,32 +69,32 @@ function will allocate the memory.
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
 After the oReceiptLineArray is used, free the memory.
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-iGenerateLots                                 - - If true and the item is defined as
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+iGenerateLots           - - If true and the item is defined as
 'Lot in Inventory', lot codes will be
 generated per receipt line and/or
 stock point detail split.
-iSplitSize                                    - The lot/batch size of the split
+iSplitSize              - The lot/batch size of the split
 (optional).
 If empty, Split Size is determined via
 receipt quantity and Split Number.
 If both split size and number are empty,
 the default Size is determined from the
-Item                                              -Warehousing.
-iSplitNumber                                  - The number of lots/batches to be split
+Item-Warehousing.
+iSplitNumber            - The number of lots/batches to be split
 (optional)
 If empty, Split Number is determined via
 receipt quantity and Split Size.
-Output: oNumberOfReceiptLines                 - Number of receipt lines in array
+Output: oNumberOfReceiptLines   - Number of receipt lines in array
 after split.
-oReceiptLineArray                             - Array of created receipt lines during
+oReceiptLineArray       - Array of created receipt lines during
 splitting (excluding iReceiptLine).
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

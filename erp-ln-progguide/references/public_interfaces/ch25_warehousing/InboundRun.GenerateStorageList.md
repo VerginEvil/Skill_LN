@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundRun
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1086-1087
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1096-1096
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.11 (KB2304787  ).
+This function is available from 2023.11 (KB2304787).
 Syntax: long InboundRun.GenerateStorageList(
 domain  whinh.btno       iInboundRun,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -22,12 +22,12 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iInboundRun                           - Inbound run (Mandatory)
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iInboundRun             - Inbound run (Mandatory)
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

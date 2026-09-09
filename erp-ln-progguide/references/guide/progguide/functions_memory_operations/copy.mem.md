@@ -10,8 +10,8 @@ You can use this function to copy single variables or entire arrays. You cannot 
 ## Arguments
 | | | |
 |---|---|---|
-| `ref void` | `destination` |  |
-| `void` | `source` |  |
+| `ref void` | `destination` |    |
+| `void` | `source` |    |
 | `[ long` | `count ]` |  Optional argument for the specification of the number of array elements to be copied. Default value is the minimum of the element counts of the destination and source arguments.  |
 
 ## Context

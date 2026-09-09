@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1049-1049
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1059-1059
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2026.01 (KB3641117  ).
+This function is available from 2026.01 (KB3641117).
 Syntax: long HandlingUnit.Remove(
 domain  whhuid           iHandlingUnit,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -21,13 +21,13 @@ The iHandlingUnit can be removed if:
 equal to 'Closed'
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iHandlingUnit                 - Handling Unit which must be removed (Mandatory)
-Output: oExceptionMessage               - The last message if any message is found. If
+Input:  iHandlingUnit   - Handling Unit which must be removed (Mandatory)
+Output: oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0                     - iHandlingUnit is removed.
-<> 0                          - Error
+Return: 0       - iHandlingUnit is removed.
+<> 0    - Error
 ```

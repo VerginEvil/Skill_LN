@@ -41,4 +41,5 @@ You must declare a variable with the keyword EXTERN if that variable is used wit
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Variables](variables.md)

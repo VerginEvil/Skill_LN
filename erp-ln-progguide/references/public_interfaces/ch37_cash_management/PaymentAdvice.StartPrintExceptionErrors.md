@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PaymentAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1788-1789
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1807-1808
 
 ```baan
 DLL:   tfextcmgapi
-This function is available from     2023.11 (KB2307655  ).
+This function is available from 2023.11 (KB2307655).
 Syntax: long PaymentAdvice.StartPrintExceptionErrors(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -43,10 +43,10 @@ iPaymentBatchTo
 To Payment Batch selection field
 is filled with this value.
 iPayToBusinessPartnerFrom
-From Pay                              -to Business Partner selection field
+From Pay-to Business Partner selection field
 is filled with this value.
 iPayToBusinessPartnerTo
-To Pay                              -to Business Partner selection field
+To Pay-to Business Partner selection field
 is filled with this value.
 iCurrencyFrom
 From Currency selection field

@@ -43,4 +43,5 @@ db.delete( tdbtst120, DB.RETRY )
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

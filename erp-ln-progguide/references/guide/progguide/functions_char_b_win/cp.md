@@ -10,8 +10,8 @@ Use this to position the cursor at the specified column and row. The cursor posi
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `column` |  |
-| `long` | `row` |  |
+| `long` | `column` |    |
+| `long` | `row` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

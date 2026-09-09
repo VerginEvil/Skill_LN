@@ -11,11 +11,11 @@ This generates a scaling based on the minimum and maximum data values to be pres
 | | | |
 |---|---|---|
 | `double` | `from_value` |  Use these to specify the minimum and maximum data values to be presented by the graph.  |
-| `double` | `to_value` |  |
+| `double` | `to_value` |    |
 | `long` | `divisions` |  Use this to specify the number of divisions required. The axis will be divided into the specified number of divisions.  |
-| `double` | `factor` |  |
+| `double` | `factor` |    |
 | `ref double` | `domain_from_value` |  The function calculates and returns these values, which are the minimum and maximum values of the domain. These will be the start and end points of the axis.  |
-| `ref double` | `domain_to_value` |  |
+| `ref double` | `domain_to_value` |    |
 | `ref double` | `divisionstep` |  This returns the size of the steps that separate the divisions on the axis.  |
 
 ## Context
@@ -24,6 +24,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1476-1478
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1491-1492
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2026.05 (KB3663572  ).
+This function is available from 2026.05 (KB3663572).
 Syntax: long MaintenanceSalesOrder.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,10 +29,10 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -41,7 +41,7 @@ iSessionIndex
 Specifies the table index that is to be used. (Optional)
 Supported values:
 1: sort by Maintenance Sales Order
-2: sort by Sold                               -to Business Partner
+2: sort by Sold-to Business Partner
 3: sort by Service Office
 4: sort by Order Status
 5: sort by Order Date
@@ -82,7 +82,3 @@ functions in Exception to get all relevant information.
 Return: 0       Session started
 <> 0    An error occurred
 ```
-
-## Public Interfaces for MaintenanceSalesOrderLine
-
-The following functions are available: MaintenanceSalesOrderLine.Cancel MaintenanceSalesOrderLine.Cost MaintenanceSalesOrderLine.ItemReceipt MaintenanceSalesOrderLine.Release

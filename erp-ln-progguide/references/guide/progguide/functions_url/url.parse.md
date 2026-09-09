@@ -6,8 +6,8 @@
 
 ## Description
 Parses the specified URL-encoded string and creates a URL instance based on it.
-See e.g. https://docs.oracle.com/javase/7/docs/api/java/net/URI.html for info regarding URIs/URLs and their components.
-See also https://url.spec.whatwg.org for why we use the term URL instead of URI.
+See e.g. [https://docs.oracle.com/javase/7/docs/api/java/net/URI.html](https://docs.oracle.com/javase/7/docs/api/java/net/URI.html) for info regarding URIs/URLs and their components.
+See also [https://url.spec.whatwg.org](https://url.spec.whatwg.org) for why we use the term URL instead of URI.
 
 ## Arguments
 | | | |
@@ -54,9 +54,13 @@ A special case is the * which is used for the HTTP OPTIONS method. This URL is d
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2153 - 2199 (ES 10.5.2.1)
+
 - 2231 - 2299 (ES 10.6.1.1)
+
 - 2393 - 2399 (ES 10.7.4.1)
+
 - 2451 and above (ES 10.8.5)
 
 ## Related topics

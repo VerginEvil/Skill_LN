@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WhereUsedJobShopListOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 822-824
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 825-826
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2026.03 (KB3612917  ).
+This function is available from 2026.03 (KB3612917).
 Syntax: long WhereUsedJobShopListOfMaterial.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,18 +28,18 @@ ref     domain  tcpono           oPosition,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This Public Interfaces starts the session
-Where                      -Used Job Shop List of Materials tibom3110m100.
-Where                      -Used Job Shop List of Materials session can be used to
+Where-Used Job Shop List of Materials tibom3110m100.
+Where-Used Job Shop List of Materials session can be used to
 view where specific materials are used in the
 Job Shop Bills of Material.
 Pre:    N.A.
 Post:   N.A.
 Input:  iStartMode              Specifies the start mode for the session.
 Possible values are:
-MODAL                                               - The parent session is blocked until
+MODAL - The parent session is blocked until
 the child session exits, the session will
 be started as a zoom session.
-MODELESS                                               - Parent and child are parallel
+MODELESS - Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used
@@ -70,7 +70,3 @@ information.
 Return: 0                       Session started successfully.
 <> 0                    Errors occurred.
 ```
-
-## Public Interfaces for ProductionPlanning
-
-The following functions are available: ProductionPlanning.StartDetail ProductionPlanning.StartOverview

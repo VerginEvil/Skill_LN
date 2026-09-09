@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemCosting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 618-619
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 621-622
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2026.02 (KB3606237  ).
+This function is available from 2026.02 (KB3606237).
 Syntax: long ItemCosting.StartDetail(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -19,11 +19,11 @@ Usage:        Expl:   This function starts the session Item - Costing in detail
 mode (ticpr0107m000).
 Input:  iStartMode              Specifies the start mode for the
 session. Possible values are:
-MODAL                                               - The parent session is blocked
+MODAL - The parent session is blocked
 until the child session exits.
 The session will be started as
 a zoom session.
-MODELESS                                               - Parent and child are parallel
+MODELESS - Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iItem                   Item

@@ -4,8 +4,8 @@
 *The functions and macros listed below must not be used anymore.* Using them in BaanERP 5.0c or higher releases may result in less reliable data. Know that there is a new set of functions that you can use for retrieval of audit information. Refer to [Audit management overview](../functions_audtr/audit_management_overview.md)
 This sample program illustrates the general sequence of reading audit records in a sequence file and displaying audit field information. It also shows how to write application information to a sequence header.
 Assume that the table has the following DD:
-Field 1 : integer (2 bytes)
-Field 2 : float (4 bytes)
+Field 1: integer (2 bytes)
+Field 2: float (4 bytes)
 ```
 
 #include <bic_audlib>
@@ -66,7 +66,6 @@ for i = 1 to no_trans
 
                 | get number of records
                 no_recs = aud_get_tran_entries(tran_hdr)
-
 
                 for j = 1 to no_recs
                                 | read audit records
@@ -135,4 +134,5 @@ print_value( long type, const string values() )
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)

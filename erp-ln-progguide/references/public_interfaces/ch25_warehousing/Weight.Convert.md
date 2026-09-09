@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Weight
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1281-1281
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1291-1291
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2021.11 (KB2211532  ).
+This function is available from 2021.11 (KB2211532).
 Syntax: long Weight.Convert(
 domain  tcwght           iWeight,
 domain  tccuni           iFromWeightUnit,
@@ -20,25 +20,21 @@ Usage:        Expl:   This public interface converts a weight to a different wei
 unit.
 Pre:    N.A.
 Post:   N.A.
-Input:  iWeight                               - Weight to be convert, expressed in
+Input:  iWeight                 - Weight to be convert, expressed in
 iFromWeightUnit
-iFromWeightUnit                               - Initial weight unit to convert from
+iFromWeightUnit         - Initial weight unit to convert from
 (Mandatory)
-iToWeightUnit                                 - Desired weight unit to convert to
+iToWeightUnit           - Desired weight unit to convert to
 (Mandatory)
-Output: oConvertedWeight                      - The converted weight, expressed in
+Output: oConvertedWeight        - The converted weight, expressed in
 iToWeightUnit.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: N.A.
 ```
-
-## Public Interfaces for UnexpectedReceipt
-
-The following functions are available: UnexpectedReceipt.Create

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Dataset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2000-2000
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2019-2019
 
 ```baan
 Syntax: long dataset.collection.end(
@@ -15,11 +15,11 @@ Usage:        This method is called just after records of a (child) table are ad
 dataset.
 This method is optional in the dataset formatting.
 Input:
--               i.dataset.format      - The dataset format name.
--               i.parent.id           - Parent ID of the collection.
--               i.collection.id       - ID of the collection.
+- i.dataset.format      - The dataset format name.
+- i.parent.id           - Parent ID of the collection.
+- i.collection.id       - ID of the collection.
 Output:
 Return:
--               0                     - OK.
--               DALHOOKERROR          - Not OK.
+- 0                     - OK.
+- DALHOOKERROR          - Not OK.
 ```

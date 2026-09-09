@@ -9,7 +9,7 @@ This deallocates memory space previously allocated to the specified variable by 
 ## Arguments
 | | | |
 |---|---|---|
-| `void` | `variable` |  |
+| `void` | `variable` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

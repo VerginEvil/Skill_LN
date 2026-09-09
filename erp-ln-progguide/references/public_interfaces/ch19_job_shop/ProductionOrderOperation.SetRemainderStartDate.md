@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 802-802
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 801-802
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2021.10 (KB2212649  ).
+This function is available from 2021.10 (KB2212649).
 Syntax: long ProductionOrderOperation.SetRemainderStartDate(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -25,15 +25,15 @@ iProductionOrder        Production Order (mandatory).
 iOperation              Production Order Operation (mandatory).
 iRemainderStartDate     The Remainder Start Date for the
 Production Order Operation (mandatory).
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Remainder Start Date has been updated.
-<> 0                                          - Remainder Start Date has not been
+Return: 0                       - Remainder Start Date has been updated.
+<> 0                    - Remainder Start Date has not been
 updated.
 ```

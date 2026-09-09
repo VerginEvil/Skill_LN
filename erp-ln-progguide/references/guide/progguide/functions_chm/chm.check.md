@@ -10,7 +10,7 @@ This checks whether a specified user can access a particular chart type within a
 ## Arguments
 | | | |
 |---|---|---|
-| `sting` | `chart_manager(14)` |  |
+| `sting` | `chart_manager(14)` |    |
 | `string` | `user(14)` |  The user name.  |
 | `string` | `chart_type(16)` |  The chart type.  |
 
@@ -26,6 +26,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

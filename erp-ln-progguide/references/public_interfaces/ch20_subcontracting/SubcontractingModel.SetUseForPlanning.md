@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractingModel
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 834-835
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 844-845
 
 ```baan
 DLL:   tiextsubapi
-This function is available from     2023.04 (KB2282924  ).
+This function is available from 2023.04 (KB2282924).
 Syntax: long SubcontractingModel.SetUseForPlanning(
 domain  tcsite           iProductionSite,
 domain  tcitem           iProduct,
@@ -19,14 +19,14 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to set the Use for Planning flag for a
 Subcontracting Model.
-For all Subcontracting Model›¼À                      ™s revisions for this Product and
+For all Subcontracting Model›¼À™s revisions for this Product and
 Site, the use for Planning flag will be set.
 For all other Subcontracting Models related to this Product and
 Site, the Use for Planning flag will be cleared.
 If the resource by site concept is active, the model needs to
 be have the Available for Planning flag turned on.
 This function follows the same logic as the form command
-›¼ÀœUse for Planning›¼À                       in session Product Subcontracting List
+›¼ÀœUse for Planning›¼À• in session Product Subcontracting List
 (tisub1100m000).
 This Public Interface can only be used if the Sites concept is
 active.

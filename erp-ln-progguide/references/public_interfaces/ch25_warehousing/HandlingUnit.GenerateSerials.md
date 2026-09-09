@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1038-1039
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1048-1049
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2022.01 (KB2212523  ).
+This function is available from 2022.01 (KB2212523).
 Syntax: long HandlingUnit.GenerateSerials(
 domain  whhuid           iHandlingUnit,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -16,10 +16,10 @@ ref             long             oExceptionID )
 Usage:        Expl:   This public interface will generate serials for the handling
 unit.
 Generating serials for the handling unit is allowed when:
--                       iHandlingUnit has status Inactive, Open or Receipt Open.
--                       iHandlingUnit contains serialized item(s).
--                       iHandlingUnit does not contain serials.
--                       iHandlingUnit with a status Receipt Open is not in transit.
+- iHandlingUnit has status Inactive, Open or Receipt Open.
+- iHandlingUnit contains serialized item(s).
+- iHandlingUnit does not contain serials.
+- iHandlingUnit with a status Receipt Open is not in transit.
 If item is serialized NOT IN inventory, generated serials always
 will be stored in the entity Handling Unit Stock Point Details
 (table whwmd536) of the bottom level Handling Units.
@@ -78,14 +78,14 @@ serials will be also stored in the table Receipt Line Stock
 Point Details (whinh320).
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iHandlingUnit                 - for this handling unit the serial numbers will
+Input:  iHandlingUnit   - for this handling unit the serial numbers will
 be generated (Mandatory)
-Output: oExceptionMessage               - The last message if any message is found. If
+Output: oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0                     - Serials are generated and linked to iHandlingUnit.
-<> 0                          - Error
+Return: 0       - Serials are generated and linked to iHandlingUnit.
+<> 0    - Error
 ```

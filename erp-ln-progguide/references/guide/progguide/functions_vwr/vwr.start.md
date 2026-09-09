@@ -13,4 +13,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Document Viewer synopsis](synopsis.md)
+
 - [Document Viewer overview](overview.md)

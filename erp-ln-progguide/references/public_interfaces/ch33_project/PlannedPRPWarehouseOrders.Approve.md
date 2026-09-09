@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPRPWarehouseOrders
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1725-1726
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1744-1745
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2024.08 (KB3518771  ).
+This function is available from 2024.08 (KB3518771).
 Syntax: long PlannedPRPWarehouseOrders.Approve(
 domain  tccprj           iProject,
 domain  tcorno           iFromPlannedOrder,
@@ -21,15 +21,15 @@ PRP (Project Requirements Planning)
 warehouse orders for a single project, so that they can be
 transferred.
 This function offers similar functionality as
-session (tppss6225m000                       - Approve Planned PRP Warehouse Orders).
+session (tppss6225m000 - Approve Planned PRP Warehouse Orders).
 Note: Be aware that transaction management is handled within
 this function.
 Pre:    N.A
 Post:   N.A
-Input:  iProject                                - Project. Mandatory
-iFromPlannedOrder                               - From Planned Order. Optional
-iToPlannedOrder                                 - To Planned Order. Optional
-iProcessingOptionSet                       -
+Input:  iProject                  - Project. Mandatory
+iFromPlannedOrder         - From Planned Order. Optional
+iToPlannedOrder           - To Planned Order. Optional
+iProcessingOptionSet -
 Optional, if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -67,14 +67,14 @@ ItemInProjectTo                 domain tcitem           Maximum Value
 ItemInWarehousingFrom           domain tcitem           Minimum Value
 ItemInWarehousingTo             domain tcitem           Maximum Value
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```

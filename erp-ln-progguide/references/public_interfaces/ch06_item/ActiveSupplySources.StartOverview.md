@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ActiveSupplySource
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 238-240
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 240-241
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.10 (KB3501630  ).
+This function is available from 2024.10 (KB3501630).
 Syntax: long ActiveSupplySources.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -35,14 +35,14 @@ in overview mode (cprpd7150m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to
+iSessionIndex           Specifies the table-index that is to
 be used.
 Standard supported values:
 1: Sort by Item (default).
@@ -86,7 +86,3 @@ Return: 0                       Session started.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for PlanningBillOfCriticalMaterial
-
-The following functions are available: PlanningBillOfCriticalMaterial.Generate

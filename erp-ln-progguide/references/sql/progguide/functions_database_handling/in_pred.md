@@ -5,15 +5,15 @@ An IN predicate is True if the value of the expression on the left hand side is 
 ```
 
 <in predicate>
-    ::= Value expression [NOT] IN ( Sub query )
-      | Value expression [NOT] IN ( <in value list> )
+    ::= <value expression> [NOT] IN ( <subquery> )
+      | <value expression> [NOT] IN ( <in value list> )
 
 <in value list>
-    ::= Value expression [ { , Value expression }... ]
+    ::= <value expression> [ { , <value expression> }... ]
 ```
 
 ## Syntactical restrictions
-The degree of the *<sub query>* shall be 1.
+The [degree](sql_glossary.md#Degree) of the *<**subquery**>* shall be 1.
 Example of correct usage.
 ```
 
@@ -30,16 +30,16 @@ empno = ( SELECT * from dbtst120 )
 ```
 
 ## Semantics
-The following equivalences hold:
+The following equivalences hold.
 ```
 
-   expr NOT IN ( ... )  <=>  NOT ( expr IN ( ... ) )
-```
-```
+expr NOT IN ( ... )  ⟺  NOT ( expr IN ( ... ) )
 
-   expr IN ( v1, v2, ... )  <=>  expr = v1 OR expr = v2 OR ...
+expr IN ( v )  ⟺  expr = v
+
+expr IN ( v1, v2, ... )  ⟺  expr IN ( v1 ) OR expr IN ( v2, ... )
 ```
-For the exact semantics see [Comparison predicate](comparison_pred.md), [NOT boolean operator](not_sc.md) and [OR boolean operator](or_sc.md).
+For the exact semantics see the pages about [the comparison operators](comparison_pred.md), [the NOT operator](not_sc.md) and [the OR operator](or_sc.md).
 
 ## Examples
 The following condition is True if *empno* is either 100, 200 or 300.

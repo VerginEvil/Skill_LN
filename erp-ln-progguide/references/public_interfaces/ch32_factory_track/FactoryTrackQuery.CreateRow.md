@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FactoryTrackQuery
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1667-1668
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1686-1687
 
 ```baan
 DLL:   brextqryapi
-This function is available from     2020.09 (KB2143379  ).
+This function is available from 2020.09 (KB2143379).
 Syntax: long FactoryTrackQuery.CreateRow(
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
@@ -24,15 +24,15 @@ Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - Success
-<> 0                                          - Failure
+0                       - Success
+<> 0                    - Failure
 ```

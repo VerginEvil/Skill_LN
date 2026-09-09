@@ -1,11 +1,11 @@
-# Operator & (concatenation)
+# Operator (string concatenation)
 The operator & concatenates the (string) values of two value expressions.
 
 ## Syntax
 ```
 
 <operator &>
-    ::= Value expression & Value expression
+    ::= <value expression> & <value expression>
 ```
 
 ## Semantics

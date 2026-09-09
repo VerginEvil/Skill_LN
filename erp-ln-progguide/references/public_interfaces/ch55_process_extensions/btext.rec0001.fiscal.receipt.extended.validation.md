@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BRA.BrazilianFiscalReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1966-1969
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1985-1987
 
 ```baan
 Syntax: long btext.rec0001.fiscal.receipt.extended.validation(
@@ -118,15 +118,11 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    n.a.
 Post:   n.a.
-Input:  i.fiscal.receipt.fiscal.reference                     - Fiscal receipt fiscal
+Input:  i.fiscal.receipt.fiscal.reference       - Fiscal receipt fiscal
 reference
-i.fiscal.receipt.financial.company                            - Fiscal receipt
+i.fiscal.receipt.financial.company      - Fiscal receipt
 financial company
-i.fiscal.receipt.logistic.company                             - Fiscal receipt
+i.fiscal.receipt.logistic.company       - Fiscal receipt
 logistic company
 Output: n.a.
 ```
-
-## Process Extensions for BRA.BrazilianInvoice
-
-The following process extension(s) is/are available: BRA.BrazilianInvoice.DirectProcessCriteria BRA.BrazilianInvoice.Validate

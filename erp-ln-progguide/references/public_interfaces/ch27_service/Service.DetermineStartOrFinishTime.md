@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Service
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1326-1328
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1338-1340
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2020.04 (KB2117506  ).
+This function is available from 2020.04 (KB2117506).
 Syntax: long Service.DetermineStartOrFinishTime(
 domain  tcncmp           iLogisticCompany,
 domain  tsbsc.clst       iInstallationGroup,
@@ -26,9 +26,9 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl.   : This function determines a finish time for a given start time
 or a start time for a given finish time:
--                         When plan method is Plan Forward the start time must be
+- When plan method is Plan Forward the start time must be
 given and the finish time is calculated.
--                         When plan method is Plan Backward the finish time must be
+- When plan method is Plan Backward the finish time must be
 given and the start time is calculated.
 The calendar code and time zone used for planning are
 retrieved in the following way.
@@ -58,38 +58,38 @@ order:
 6. Company
 Pre     : None
 Post    : None
-Input   : iLogisticCompany                            - Logistic Company: Mandatory
-iInstallationGroup                                    - Installation Group:
+Input   : iLogisticCompany              - Logistic Company: Mandatory
+iInstallationGroup            - Installation Group:
 Not Mandatory
-iItem                                                 - Item: Not Mandatory
-iSerialNumber                                         - Serial Number: Not Mandatory
-iAssignedServiceEngineer                              - Assigned Service Engineer:
+iItem                         - Item: Not Mandatory
+iSerialNumber                 - Serial Number: Not Mandatory
+iAssignedServiceEngineer      - Assigned Service Engineer:
 Not Mandatory
-iPreferredServiceEngineer                             - Preferred Service Engineer:
+iPreferredServiceEngineer     - Preferred Service Engineer:
 Not Mandatory
-iServiceDepartment                                    - Service Department:
+iServiceDepartment            - Service Department:
 Not Mandatory
-iDuration                                             - Duration of Activity:
+iDuration                     - Duration of Activity:
 Not Mandatory
 The Duration is expressed in
 the Time Duration Unit from
 the General Service Parameters
-iAvailabilityType                                     - Availability Type:
+iAvailabilityType             - Availability Type:
 Not Mandatory
-iPlanMethod                                           - Planning Method (forward/
+iPlanMethod                   - Planning Method (forward/
 backward): Mandatory
-iTime                                                 - Base Time (planned start/
+iTime                         - Base Time (planned start/
 finish date): Not Mandatory
-Output  : oTime                                       - Result Time (planned start/
+Output  : oTime                         - Result Time (planned start/
 finish date)
-oExceptionMessage                                     - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - Data read
-<> 0                                                  - An error occurred
+Return: 0                               - Data read
+<> 0                            - An error occurred
 ```

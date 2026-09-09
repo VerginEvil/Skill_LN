@@ -24,7 +24,7 @@ This function is called after the form command has been executed. When called, t
 | -6 | User Comments not filled. Only applicable if User Comments is mandatory. |
 | -7 | Maximum authentication attempts exceeded. A maximum of 3 failed attempts has been exceeded. |
 | -8 | Missing Reasons. No reasons were defined for the specified Document Type. |
-| -9 | Missing Notification text. No notification text available for the specified Document Type. Only applicable if the Show Notification checkbox was checked.  |
+| -9 | Missing Notification text. No notification text available for the specified Document Type. Only applicable if the Show Notification checkbox was checked. |
 | -10 | User is not authorized to sign. |
 | -11 | Document Transaction failed. The process step, for which a signature was requested, has failed. |
 | -12 | Data Integrity Compromised. The data of the Signed Document has been tampered with. |
@@ -37,4 +37,5 @@ Note  This function stores the current state of the document by calling the func
 
 ## Related topics
 - [Electronic Signature overview](overview.md)
+
 - [Electronic Signature synopsis](synopsis.md)

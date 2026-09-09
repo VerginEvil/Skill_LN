@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 93-94
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 94-95
 
 ```baan
 DLL:   tcextmcsapi
-This function is available from     2025.01 (KB3540996  ).
+This function is available from 2025.01 (KB3540996).
 Syntax: long Common.CalculateDueDates(
 domain  tcncmp           iFinancialCompany,
 domain  tccpay           iPaymentTerms,
@@ -31,29 +31,29 @@ schedule is linked to the payment terms, the calculated dates
 are based on the payment terms details of tcmcs013.
 Pre:    The array output arguments should be declared as BASED.
 Post:   Free the allocated memory of the arrays.
-Input:  iFinancialCompany                     - Financial Company
+Input:  iFinancialCompany       - Financial Company
 This is a Mandatory field.
-iPaymentTerms                                 - Payment Terms
+iPaymentTerms           - Payment Terms
 This is a Mandatory field.
-iCalendar                                     - Calendar
-iAvailabilityType                             - Availability Type
-iInvoiceDate                                  - Invoice Date
+iCalendar               - Calendar
+iAvailabilityType       - Availability Type
+iInvoiceDate            - Invoice Date
 Default set to Current Date if passed
 empty.
-Output: oNumberOfScheduleLines                - Number of Schedule Lines
-oDueDateArray                                 - Array of Due Dates
-oFirstDiscountDateArray                       - Array of First Discount Date
-oSecondDiscountDateArray                      - Array of Second Discount Date
-oThirdDiscountDateArray                       - Array of Third Discount Date
-oErrorMessage                                 - Error Message
-oExceptionMessage                             - The last message if any message is
+Output: oNumberOfScheduleLines  - Number of Schedule Lines
+oDueDateArray           - Array of Due Dates
+oFirstDiscountDateArray - Array of First Discount Date
+oSecondDiscountDateArray- Array of Second Discount Date
+oThirdDiscountDateArray - Array of Third Discount Date
+oErrorMessage           - Error Message
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Success
-<> 0                                          - Error calculating the due dates
+Return: 0                       - Success
+<> 0                    - Error calculating the due dates
 ```

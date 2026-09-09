@@ -46,12 +46,22 @@ function read.item.data(domain tcitem i.item)
 ## Explanation
 The first time `read.item.data()` is executed, [db.store.record()](db.store.record.md) has not yet been called, therefore [db.record.changed()](db.record.changed.md) returns `true`, and the query will be executed. After the query is executed, the contents of the record buffer is stored with [db.store.record()](db.store.record.md).
 The second time this function is called, one of the following situations can occur:
+
 - The record buffers are the same, so the function returns.
-- The record buffers are not the same, the query is done again etc.  The record buffer can be changed due to:
+
+- The record buffers are not the same, the query is done again etc.
+
+The record buffer can be changed due to:
+
 - another item has been read the last time (key fields differ)
+
 - another function has read some fields of another item
-- another function has updated this item in the database  In all these cases the item will be read again. So this implementation ensures that you will always have access to the most recent data. Note however, that it is not possible to see changes made by other users.
+
+- another function has updated this item in the database
+
+In all these cases the item will be read again. So this implementation ensures that you will always have access to the most recent data. Note however, that it is not possible to see changes made by other users.
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

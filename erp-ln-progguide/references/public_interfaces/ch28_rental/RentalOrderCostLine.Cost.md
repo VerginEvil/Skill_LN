@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrderCostLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1581-1586
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1596-1600
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalOrderCostLine.Cost(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.cotp       iCostType,
@@ -40,31 +40,31 @@ either have been aborted or committed).
 Call ProcessingOptionSet.Create() to obtain
 iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iRentalOrder               -
+Input:  iRentalOrder -
 Rental Order
 Mandatory.
-iCostType                             -
+iCostType       -
 Cost Type
 Allowed values are:
-tsmdm.cotp.material                                       - To cost a material line
+tsmdm.cotp.material - To cost a material line
 from tssoc220.
-tsmdm.cotp.labor                                       - To cost a labor line from
+tsmdm.cotp.labor - To cost a labor line from
 tssoc230.
 And the following cost types are from the other costs
 tssoc240.
-tsmdm.cotp.tool                                        - To cost a line with a tool.
-tsmdm.cotp.travel                                      - To cost a travel line.
-tsmdm.cotp.subcon                                      - To cost a subcontracting line.
-tsmdm.cotp.helpdesk                                       - To cost a helpdesk line.
-tsmdm.cotp.other                                       - To cost another cost line.
-tsmdm.cotp.freight                                       - To cost a freight line.
-tsmdm.cotp.quotinv                                       - To cost the quote invoice
+tsmdm.cotp.tool  - To cost a line with a tool.
+tsmdm.cotp.travel- To cost a travel line.
+tsmdm.cotp.subcon- To cost a subcontracting line.
+tsmdm.cotp.helpdesk - To cost a helpdesk line.
+tsmdm.cotp.other - To cost another cost line.
+tsmdm.cotp.freight - To cost a freight line.
+tsmdm.cotp.quotinv - To cost the quote invoice
 line.
-tsmdm.cotp.rental                                       - To cost a rental other cost
+tsmdm.cotp.rental - To cost a rental other cost
 line.
 Mandatory.
-iCostLine                             -
-Cost Line number                               - This is the line number from
+iCostLine       -
+Cost Line number - This is the line number from
 either the material lines (tssoc220), the
 labor lines (tssoc230) or the other cost lines
 (tssoc240).
@@ -167,14 +167,14 @@ LowerMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if
-the Sites                              -concept has been activated), then this
+the Sites-concept has been activated), then this
 is the lowest margin for which it is allowed to cost the
 given Cost line.
 UpperMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if the
-Sites                              -concept has been activated), then this is the
+Sites-concept has been activated), then this is the
 highest margin for which it is allowed to cost the
 given Cost line.
 InvoiceLineStatus
@@ -188,7 +188,7 @@ tcsli.stat.not.appl
 If the status is set to tcsli.stat.not.appl then this
 will mean that the system will default it again from
 either the Service Order Parameters or from the
-settings per office, if the Sites                              -concept has been
+settings per office, if the Sites-concept has been
 activated.
 Output: oExceptionMessage
 The last message if any message is found. If more than
@@ -200,12 +200,8 @@ functions in Exception to get all relevant information.
 Note that if the return value of this function is
 unequal zero, then the status of Cost Line is not
 changed to Costed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Rental Order Cost Line changed to Costed.
-<> 0                          -       The status of the Rental Order Cost Line could
+<> 0    -       The status of the Rental Order Cost Line could
 not be changed to Costed.
 ```
-
-## Public Interfaces for RentalUsageLine
-
-The following functions are available: RentalUsageLine.Approve

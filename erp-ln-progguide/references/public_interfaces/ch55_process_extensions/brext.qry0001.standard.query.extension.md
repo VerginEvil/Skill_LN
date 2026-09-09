@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for FactoryTrackQuery
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2014-2022
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2033-2041
 
 ```baan
 Syntax: long brext.qry0001.standard.query.extension(
@@ -18,9 +18,9 @@ Usage:        Expl:   Use this method to extend standard Factory Track queries. 
 method will be called from the standard process for each query
 output row, just after it is created.
 The following scenarios are supported:
--                       Add custom elements to the query output.
--                       Remove output rows from the query output.
--                       Return an error message.
+- Add custom elements to the query output.
+- Remove output rows from the query output.
+- Return an error message.
 Public interface FactoryTrackQuery.CreateElement can be used to
 create custom elements in the current query output row.
 Public interface FactoryTrackQuery.GetElement can be used to
@@ -34,7 +34,7 @@ The following list contains the queries which are extensible.
 Queries that are not mentioned are not extensible. The tables
 that are current in the process extension, are listed next to
 query numbers. Fields of those tables can be used without
-re                      -reading the table in this process extension. This holds also
+re-reading the table in this process extension. This holds also
 for customer defined fields in those tables.
 IFTStdHUPackingQuery 1: whwmd530
 IFTStdHUPackingQuery 2:
@@ -87,6 +87,7 @@ IWMStdExtQuery 58:
 IWMStdExtQuery 59:
 IWMStdExtQuery 60:
 IWMStdExtQuery 61:
+IWMStdExtQuery 62:
 IWMStdExtQuery 100: brmcs999 (**)
 IWMStdHoursQuery 1: brtmm100
 IWMStdHoursQuery 2:
@@ -346,11 +347,11 @@ from the query output. When trying to read this output element
 by means of public interface FactoryTrackQuery.GetElement,
 the system will return an error.
 Example implementation:
--                       Add custom element "ExtAddress" to the output of IWMStdQuery
+- Add custom element "ExtAddress" to the output of IWMStdQuery
 1, which holds the address code of the warehouse.
--                       Return an error message in IWMStdQuery 2 if item signal is
+- Return an error message in IWMStdQuery 2 if item signal is
 filled.
--                       Skip units in IWMStdQuery 140 which have no description.
+- Skip units in IWMStdQuery 140 which have no description.
 #pragma used dll obrextqryapi
 #include <bic_dam>
 table   ttcmcs001       |* Units
@@ -456,18 +457,14 @@ return(0)
 Pre:    NA
 Post:   NA
 Input:
-i.query.bde                                   - The called query bde
-i.query.number                                - The called query number
-i.query.input                                 - The standard query input
-i.query.ext.input                             - The extended query input
+i.query.bde             - The called query bde
+i.query.number          - The called query number
+i.query.input           - The standard query input
+i.query.ext.input       - The extended query input
 Output:
-o.skip.row                                    - Remove the current query output row
-o.error.message                               - The error message in case of an error
+o.skip.row              - Remove the current query output row
+o.error.message         - The error message in case of an error
 Return:
-0                                             - Success
-<> 0                                          - Error
+0                       - Success
+<> 0                    - Error
 ```
-
-## Process Extensions for FreightLoadBuilding
-
-The following process extension(s) is/are available: FreightLoadBuilding.CustomBuildingConstraints

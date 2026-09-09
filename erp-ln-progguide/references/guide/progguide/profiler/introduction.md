@@ -6,7 +6,11 @@ The Call Graph Profiler does not require profiled objects in the Baan environmen
 
 ## Related topics
 - [Using the Call Graph Profiler](using.md)
+
 - [The Call Graph Profile](output.md)
+
 - [Analyzing the Call Graph Profile](analyzing.md)
+
 - [Call Graph Profiler Example](example.md)
+
 - [Call Graph Profiler Glossary](glossary.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectContractLines
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1683-1684
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1702-1703
 
 ```baan
 DLL:   tpextctmapi
-This function is available from     2024.07 (KB2329416  ).
+This function is available from 2024.07 (KB2329416).
 Syntax: long ProjectContractLines.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,10 +27,10 @@ Usage:        Expl:   This function starts the session "Contract Lines"
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used
@@ -63,7 +63,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ProjectBid
-
-The following functions are available: ProjectBid.StartMultiMain

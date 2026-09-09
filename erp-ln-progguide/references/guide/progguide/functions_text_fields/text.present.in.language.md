@@ -24,4 +24,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

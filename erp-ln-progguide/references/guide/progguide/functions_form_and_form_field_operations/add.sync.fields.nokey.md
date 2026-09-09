@@ -1,7 +1,7 @@
 # add.sync.fields.nokey()
 
 ## Syntax:
-`function void add.sync.fields.nokey( const string satelliteSessionCode, const string ... )`
+`function void add.sync.fields.nokey( const string satelliteSessionCode, const string... )`
 
 ## Description
 This function maps a variable in the multi-main table controller session to a variable in the session. Both of these variables must be declared as external.
@@ -20,7 +20,11 @@ Notes  This function can only be used in the after.form.read() section of the pr
 
 ## Related topics
 - [add.sync.fields()](add.sync.fields.md)
+
 - [add.sync.fields.once()](add.sync.fields.once.md)
+
 - [synchronize.satellite()](synchronize.satellite.md)
+
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

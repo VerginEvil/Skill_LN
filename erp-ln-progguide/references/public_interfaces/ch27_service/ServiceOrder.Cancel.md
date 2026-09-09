@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1404-1406
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1416-1418
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.04 (KB2233575  ).
+This function is available from 2022.04 (KB2233575).
 Syntax: long ServiceOrder.Cancel(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tccdis           iCancelReason fixed,
@@ -43,10 +43,10 @@ calling this function the existing database transactions should
 either have been aborted or committed).
 Post:   If warehouse procedures have been set to automatic, then these
 are executed.
-Input:  iServiceOrder                                                         -
+Input:  iServiceOrder                                           -
 The service order.
 Mandatory input.
-iCancelReason                                                            -
+iCancelReason                                           -
 The cancel reason. Note that only a reason code of
 type Cancellation which is valid on the
 iCancelLocalDate is allowed. If the cancel action is
@@ -54,12 +54,12 @@ successful then this is stored as cancel reason on
 related cancelled activities and on
 the service order header.
 Mandatory input.
-iCancelReasonText                                                            -
+iCancelReasonText                                       -
 A valid text number. If the cancel action is successful
 then it is stored as the cancel text on related
 cancelled activities and on the service order header.
 Not mandatory input.
-iCancelLocalDate                                                            -
+iCancelLocalDate                                        -
 The date which is used as date for the cancel action.
 Note that this is a local date, so it represents the
 days since year 0.  If the value 0 is given as input
@@ -68,36 +68,36 @@ date.num()). It is stored as the date of cancellation
 on related cancelled activities and on the service
 order header.
 Not mandatory input.
-iAllowCancelIfDispositionForNCRExists                                         -
+iAllowCancelIfDispositionForNCRExists                   -
 Indicator whether it is allowed for the cancel process
 to continue if the current service order is the
-disposition of a Non                              -Conformance report in Quality
+disposition of a Non-Conformance report in Quality
 Management.
 Mandatory input.
-iAllowCancelIfDispositionForFRACASExists                                      -
+iAllowCancelIfDispositionForFRACASExists                -
 Indicator whether it is allowed for the cancel process
 to continue if the current service order is the
 disposition of a FRACAS report in Quality Management.
 Mandatory input.
-iAllowCancelIfOpenAssignmentExists                                            -
+iAllowCancelIfOpenAssignmentExists                      -
 Indicator whether it is allowed for the cancel process
 to continue if related to the current service order,
 open assignments exist (tssoc205).
 Mandatory input.
-iSetRelatedCallToSolved                                                       -
+iSetRelatedCallToSolved                                 -
 If this indicator is set to Yes and the current
 service order originates from a Call and the
 cancellation succeeds, the related Call will be set to
 the status Solved.
 Mandatory input.
-iNewPlannedActivityStatus                                                     -
+iNewPlannedActivityStatus                               -
 If the current service order originates from a Planned
 Activity (tsspc200), this will be the status to which
 the related planned activity will be set back.
 Allowed values are tsspc.stat.free, tsspc.stat.released
 and tsspc.stat.canceled.
 Mandatory input.
-iCancelPurchaseOrders                                                         -
+iCancelPurchaseOrders                                   -
 If this indicator is set to Yes, then Procurement will
 try to Delete/Cancel (first delete and if that is no
 longer allowed cancel) related purchase orders when that
@@ -114,8 +114,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the service order was not
 changed to Cancelled.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order changed to Cancelled.
-<> 0                          -       The status of the service order could not be
+<> 0    -       The status of the service order could not be
 changed to Cancelled.
 ```

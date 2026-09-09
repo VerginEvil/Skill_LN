@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1406-1407
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1418-1419
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2021.12 (KB2216885  ).
+This function is available from 2021.12 (KB2216885).
 Syntax: long ServiceOrder.CheckAllMaterialLinesHaveBeenReceivedAndIssued(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tsmdm.acln       iActivityLine,
@@ -29,7 +29,7 @@ activity line number.
 If the subsequent delivery quantity also has to be taken into
 account, then set the iCheckSubsequentDeliveryQuantity to
 True else to False. The subsequent delivery quantity is
-used for all the From                      -Warehouse kind of flows, so it concerns
+used for all the From-Warehouse kind of flows, so it concerns
 issues.
 Normally you also would want to check the subsequent delivery
 quantity, so fill this input boolean with True.
@@ -38,37 +38,37 @@ when during the costing process the user indicates that
 the subsequent quantity will be removed automatically.
 If that is the normal way of working, then you can indicate
 that the subsequent quantity should not be taken into account
-when checking if everthing has been issued.
-If also the non                      -consumed lines have to be taken into account,
+when checking if everything has been issued.
+If also the non-consumed lines have to be taken into account,
 then set the iCheckNonConsumed to True else to False.
-If a to                      -warehouse line is linked (related line number is filled),
-with a from                      -warehouse line, then, if the iCheckNonConsumed
+If a to-warehouse line is linked (related line number is filled),
+with a from-warehouse line, then, if the iCheckNonConsumed
 is set to True, this function will also check whether the
-receipt for this non                      -consumed line has been executed.
+receipt for this non-consumed line has been executed.
 Pre:    N.A.
 Post:   N.A.
-Input:  iServiceOrder                                         - The service order.
+Input:  iServiceOrder                           - The service order.
 This is mandatory input and the service order should
 exist.
-iActivityLine                                                 - The activity line
+iActivityLine                           - The activity line
 number. If a value of 0 is specified, then this function
 will check all material lines (tssoc220) related to
 the iServiceOrder. If a value <> 0 is specified, then
 this service order activity has to exist and only the
 material lines linked to this specific activity line
 are checked.
-iCheckSubsequentDeliveryQuantity                              - If set to True, then
+iCheckSubsequentDeliveryQuantity        - If set to True, then
 for material lines with a delivery type which are
 dealing with an issue the system will also check if the
 subsequent delivery quantity (tssoc220.qtsd) has been
 issued.
-iCheckNonConsumed                                             - If a To Warehouse
+iCheckNonConsumed                       - If a To Warehouse
 material line is linked with the related line
 number field to a From Warehouse line, and this
 input boolean is set to True, then the system will
-also check that these non                              -consumed material lines have
+also check that these non-consumed material lines have
 been received.
-Output: oAllMaterialLinesHaveBeenReceivedAndIssued                    -
+Output: oAllMaterialLinesHaveBeenReceivedAndIssued      -
 If True is returned, then all material lines linked
 to the service order or service order activity have
 been received and issued.
@@ -94,9 +94,9 @@ unequal zero, then we are dealing with an error
 situation.
 If the return value = 0 (so not an error), but the
 oAllMaterialLinesHaveBeenReceivedAndIssued is False,
-then this contains all the usefull information for the
+then this contains all the useful information for the
 first material line for which not everything has been
 received/issued.
-Return: 0                     -       No Error.
-<> 0                          -       Error.
+Return: 0       -       No Error.
+<> 0    -       Error.
 ```

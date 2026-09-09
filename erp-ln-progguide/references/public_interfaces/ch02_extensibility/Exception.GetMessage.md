@@ -4,7 +4,7 @@
 >
 > Group: Public Interfaces for Exception
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 80-81
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 81-82
 
 ```baan
 DLL:   tcextextapi
@@ -17,11 +17,11 @@ the XML identified by iExceptionID for a certain index.
 Pre:    iExceptionID should refer to an Exception.
 Post:   None
 Input:
-iExceptionID                          - the exception id.
-iMessageIndex                         - the index for the message to be returned.
+iExceptionID    - the exception id.
+iMessageIndex   - the index for the message to be returned.
 iMessageIndex should be greater than zero and
 less than the number of messages.
 Output:
-oMessageDescription                       - The found message.
+oMessageDescription - The found message.
 Return: None
 ```

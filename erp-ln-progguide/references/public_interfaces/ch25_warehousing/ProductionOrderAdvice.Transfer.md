@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1298-1300
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1308-1309
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2025.08 (KB3613660  ).
+This function is available from 2025.08 (KB3613660).
 Syntax: long ProductionOrderAdvice.Transfer(
 domain  tcpdno           iProductionOrderAdvice,
 domain  tcseri           iOrderSeries,
@@ -29,12 +29,12 @@ when the advice is transferred to a
 production order. If empty the default
 order series will be used. (optional)
 iReleaseOrder           Allowed values:         (optional)
-Yes                                               - automatically release production
+Yes - automatically release production
 order which was created for the selected
 production order advice;
-No (default value)                                               - do not release
+No (default value) - do not release
 production order automatically;
-Default                                               - the default setting is taken
+Default - the default setting is taken
 from the Automatically Release
 Production Orders check box in the
 Item Data by Warehouse (whwmd2510m000)
@@ -46,9 +46,5 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Returs: 0               -> successful
+Returs: 0 -> successful
 ```
-
-## Public Interfaces for ProductionOrder
-
-The following functions are available: ProductionOrder.GenerateHandlingUnitForLineSideLabeling ProductionOrder.GenerateHandlingUnitForLineSideLabelingV2

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1164-1164
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1174-1174
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.11 (KB2211254  ).
+This function is available from 2021.11 (KB2211254).
 Syntax: long ShipmentLine.MoveToLoad(
 domain  whinh.shpm       iShipment,
 domain  tcpono           iShipmentLine,
@@ -29,18 +29,18 @@ New shipment will be generated and returned to the calling
 function.
 Pre:    db.retry.point()
 Post:   abort/commit transactions.
-Input:  iShipment                             - Shipment; Mandatory
-iShipmentLine                                 - Shipment Line; Mandatory
-iDestinationLoad                              - Destination Load; Mandatory
-iReason                                       - Compose Reason; Mandatory if
+Input:  iShipment               - Shipment; Mandatory
+iShipmentLine           - Shipment Line; Mandatory
+iDestinationLoad        - Destination Load; Mandatory
+iReason                 - Compose Reason; Mandatory if
 destination Load is planned by FM.
-iAcceptWarnings                               - Accept warnings; Mandatory
-Output: oDestinationShipment                  - Generated shipment
-oExceptionMessage                             - The last message if any message is
+iAcceptWarnings         - Accept warnings; Mandatory
+Output: oDestinationShipment    - Generated shipment
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

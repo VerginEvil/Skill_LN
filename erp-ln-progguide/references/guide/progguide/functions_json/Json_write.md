@@ -9,10 +9,6 @@ Writes a JSON value to a stream as JSON text. This can be an already opened file
 By default, the JSON text is converted to UTF-8 and the output is written in compact mode (ie. no whitespace is added between JSON tokens).
 
 ## Arguments
--
--
--
--
 | | | |
 |---|---|---|
 | `long` | `json_value` |  A JSON value.  |
@@ -32,4 +28,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

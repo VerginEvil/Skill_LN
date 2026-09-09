@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 350-352
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 352-354
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.06 (KB3566686  ).
+This function is available from 2025.06 (KB3566686).
 Syntax: long SalesOrderLine.LinkContract(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -33,14 +33,14 @@ If a change request is initiated by the Public Interface and no contract
 is found or the found contract is the same as on the sales order line,
 the initiated change request is canceled, because nothing is changed.
 Linking of contract to sales order line depends on the setup.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales order (mandatory)
-iSalesOrderLine                               - Sales order line (mandatory)
-iSalesOrderLineSequence                       - Sales order line sequence
-iSimulate                                     - Indicates if contract linking should be
+Input:  iSalesOrder             - Sales order (mandatory)
+iSalesOrderLine         - Sales order line (mandatory)
+iSalesOrderLineSequence - Sales order line sequence
+iSimulate               - Indicates if contract linking should be
 simulated or really done if possible.
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -81,17 +81,17 @@ approved and processed automatically.
 No:  Approval and processing of the
 change request (if any) is not done
 automatically.
-Output: oContract                             - Linked contract, if applicable
-oContractLine                                 - Linked contract line, if applicable
-oContractSalesOffice                          - Linked contract office, if applicable
-oExceptionMessage                             - The last message if any message is
+Output: oContract               - Linked contract, if applicable
+oContractLine           - Linked contract line, if applicable
+oContractSalesOffice    - Linked contract office, if applicable
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error
-<> 0                                          - Error occurred
+Return: 0                       - No error
+<> 0                    - Error occurred
 ```

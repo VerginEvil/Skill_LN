@@ -10,8 +10,8 @@ This stores the coordinates of the current cursor position in the *x* and *y* ar
 ## Arguments
 | | | |
 |---|---|---|
-| `ref long` | `x` |  |
-| `ref long` | `y` |  |
+| `ref long` | `x` |    |
+| `ref long` | `y` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

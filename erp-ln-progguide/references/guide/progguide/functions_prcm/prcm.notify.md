@@ -16,9 +16,11 @@ It is also possible to pass some data to the observer processes in the form of a
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
-Note  Do not call [prcm.notify()](prcm.notify.md) for the maintable in the *after.update.db.commit* section or the [after.commit.transaction()](../functions_dal/after.commit.transaction.md) hook of the DAL of the maintable, as this interferes with the automatic notification of the 4GL engine.
+Note  Do not call [prcm.notify()](prcm.notify.md) for the maintable in the *after.update.db.commit* section or the [after.commit.transaction()](../functions_dal/after.commit.transaction.md) hook of the DAL of the maintable, as this interferes with the automatic notification of the [4GL engine](../glossary/glossary.md#fourgl_engine).
 
 ## Related topics
 - [Process Change Manager overview](overview.md)
+
 - [Process Change Manager synopsis](synopsis.md)
+
 - [Process Change Manager Code Examples](examples.md)

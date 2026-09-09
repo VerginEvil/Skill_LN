@@ -39,5 +39,5 @@ function void main()
 	ret=rsa.verify.signature(public_key_file,DIGEST_SHA256,digest,signature);
 }
 ```
-Notes
+
 - This function is available in all TIV conditionally with the USE_RSA_ENCRYPT_FUNCTION compiler flag. The compiler flag can be defined as -D USE_RSA_ENCRYPT_FUNCTION.

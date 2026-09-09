@@ -4,8 +4,8 @@
 `function boolean curl.slist.iterate( long listId, ref long IterId, ref string value )`
 
 ## Description
-curl.slist.iterate() is used to iterate and retrieve the values from cURL's list. It can be used on the list returned by ` [curl.slist.append()](curl.slist.append.md)` or ` [curl.slist.append_encrypted()](curl.slist.append_encrypted.md)`; and `curl.getinfo.cookielist()` functions.
-When the list is freed using [curl.slist.free.all()](curl.slist.free.all.md). ,all iterators are invalidated.
+curl.slist.iterate() is used to iterate and retrieve the values from cURL's list. It can be used on the list returned by [curl.slist.append()](curl.slist.append.md) or [curl.slist.append_encrypted()](curl.slist.append_encrypted.md); and `curl.getinfo.cookielist()` functions.
+When the list is freed using [curl.slist.free.all()](curl.slist.free.all.md).,all iterators are invalidated.
 
 ## Arguments
 | | | |

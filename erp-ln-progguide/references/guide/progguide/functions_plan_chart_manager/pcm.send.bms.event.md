@@ -66,9 +66,9 @@ before.choice:
         pcm.send.bms.event(0, event.bucket)
 ```
 
-## Example
-
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)
+
 - [Plan Chart Manager: example](example.md)

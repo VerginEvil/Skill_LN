@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedCostPegTransfers
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 583-584
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 587-588
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.07 (KB3501669  ).
+This function is available from 2024.07 (KB3501669).
 Syntax: long PlannedCostPegTransfers.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -24,14 +24,14 @@ Usage:        Expl:   This function starts the overview session
 Planned Cost Peg Transfers (cprrp0130m000).
 Input:  iStartMode              Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to
+iSessionIndex           Specifies the table-index that is to
 be used.
 Standard supported values:
 1: sort by Scenario, Transfer.
@@ -52,7 +52,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for PlannedPurchaseOrder
-
-The following functions are available: PlannedPurchaseOrder.Transfer

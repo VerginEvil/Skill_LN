@@ -15,12 +15,14 @@ Users can use the mouse or keyboard keys to navigate through a tree control and 
 To move to an item with the mouse, click on the item. To activate an item, and to expand and collapse a node, double-click on it.
 
 ## Keyboard actions
-Move between items *A single item at a time* UP ARROW, DOWN ARROW
-*One scroll page at a time* Pg Up, Pg Dn
-*To first and last items* HOME, END
-*To move to next item whose label begins with a particular character* Press key correspoding to the character
-Expand/collapse nodes RIGHT ARROW, LEFT ARROW
-Activate a leaf ENTER
+| | | |
+|---|---|---|
+| Move between items | *A single item at a time* | <Arrow Up>, <Arrow Down> |
+|  | *One scroll page at a time* | <PageUp>, <PageDown> |
+|  | *To first and last items* | <Home>, <End> |
+|  | *To next item whose label begins with a particular character* | Press key corresponding to the character |
+| Expand/collapse nodes |  | <Arrow Right>, <Arrow Left> |
+| Activate a leaf |  | <Enter> |
 All the above mouse and keyboard actions generate an EVTTREESELECT event (see [Event types](../events/event_types.md)). Pressing any key other than those mentioned above generates an EVTKEYPRESS event.
 
 ## Events
@@ -32,25 +34,43 @@ EVTSETFOCUS
 EVTHELP
 
 ## Attributes
-**
-**
-**
 | | | |
 |---|---|---|
-|  DsNcommandList (long array)  | [CS] |  Use this to set the state of tree control items and to remove tree items. The array contains one or more entries in the following format:  |
-|  DsNeventMask (long)  | [CSG] |  Specifies the events that the object can generate. See [select.event.input()](../events/select.event.input.md) for a list of possible masks.  |
-|  DsNeventReasonMask (long)  | [CSG] |  The EVTTREESELECT event can be generated when a tree item is activated, expanded, collapsed, or selected. The DsNeventReasonMask attribute specifies for which of these actions or reasons the event is generated. If a particular reason is not set in this attribute, then an event is not generated for that reason. Possible values are: EVTTREEREASONACTIVATEMASK EVTTREEREASONEXPANDMASK EVTTREEREASONCOLLAPSEMASK EVTTREEREASONSELECTMASK Use the bitwise OR operator to combine some or all of these flags.  |
-|  DsNheight (long)  | [CSG] | The height of the scroll view window, in pixels. When the tree is longer than the window, a vertical scroll bar is automatically enabled.  |
-|  DsNmode (long)  | [CSG] |  The tree mode. Possible values are:  |
-|  DsNobjectType (long)  | [G] | The object type. |
-|  DsNparent (long)  | [G] | The ID of the parent object. |
-| DsNselectedId | [CSG] | Specifies the ID of the currently selected tree item.  |
-|  DsNsetState (long)  | [CS] | The state of the object. See [DsCmwindow](dscmwindow.md).  |
-|  DsNtemplate (long)  | [CS] | The ID of a [DsCtemplate](dsctemplate.md) that defines a set of attributes to be applied to the object.  |
-| DsNtreeData | [CS] |  This contains the tree data. The data consists of the following information: *A header containing the following fields:*  |
-|  DsNwidth (long)  | [CSG] | The width of the scroll view window, in pixels. When the tree is wider than the window, a horizonotal scroll bar is automatically enabled.  |
-|  DsNx (long)  | [CSG] | The x-coordinate of the object's outer left edge, in pixels, relative to the inner left edge of its parent.  |
-|  DsNy (long)  | [CSG] | The y-coordinate of the object's outer top edge, in pixels, relative to the inner top edge of its parent.  |
+| long | The ID of a tree node or leaf |  |
+| long | The state of the specified node or leaf: |  |
+|  | DSTREEEXPAND | Expands the node by one level |
+|  | DSTREECOLLAPSE | Collapses the node if it is expanded |
+|  | DSTREEREMOVE | Removes the item(if it is a node, all its children are also removed) |
+|  | DSTREEEXPANDALL | Expands the node and all its children |
+| | |
+|---|---|
+| DSOPENAGAIN | When reopening node, restore previous state. |
+| DSOPENNONE | When reopening node, collapse all subnodes. |
+| | |
+|---|---|
+| long | Version number (currently always 1). |
+| long | Number of image sets used by the tree images. |
+| long | Number of items in the tree. |
+*Zero or more entries specifying the image sets used by the tree items.*
+Normally, tree items of the same type use the same icon. This icon can have a different appearance in different situations – for example, when the item is selected, not selected, expanded, collapsed, and so on. An image set is the set of such images for a particular type of item.
+For example, on the contents page of a Windows help file, the following icons represent a collapsed book and an expanded book respectively.
+The two icons represent the image set for book-type items.
+An image set entry contains the following fields:
+| | |
+|---|---|
+| short | The image set ID |
+| long | The ID of the image for items not selected and not expanded |
+| long | The ID of the image for items selected but not expanded. If this is 0, the default is the ID of the image for images not selected and not expanded. |
+| long | The ID of the image for nodes expanded but not selected. If this is 0, the default is the ID of the image for items not selected and not expanded. This is relevant only ot node items. |
+| long | The ID of the image for nodes selected and expanded. If this is 0, the default is the ID of the image for items selected but not expanded. This is relevant only to node items. |
+*Zero or more item entries containing the following fields:* byte The item type. Possible values are:
+| | |
+|---|---|
+| 0 | leaf |
+| 1 | node |
+| 2 | sibling leaf |
+| 3 | sibling node |
+When changing the property of a tree item with *change.object()*, you must specify the full data for that item in the DsNtreeData attribute. In the case of a node, it is not necessary to redefine the node's children.
 
 ## Examples
 The following is an example of DsNtreeData data used to create a new tree control:
@@ -60,20 +80,20 @@ The following is an example of DsNtreeData data used to create a new tree contro
 ## DsNtreeData header
 | | | |
 |---|---|---|
-| Version | Count (image sets)  | Count (nodes)  |
+| Version | Count (image sets) | Count (nodes) |
 | 1 | 2 | 9 |
 
 ## DsNtreeData image set entries
 | | | | | |
 |---|---|---|---|---|
-| Image set ID |  Image ID (not selected, not expanded  |  Image ID (selected, not expanded)  |  Image ID (not selected, expanded)  |  Image ID (selected, expanded)  |
+| Image set ID | Image ID (not selected, not expanded | Image ID (selected, not expanded) | Image ID (not selected, expanded) | Image ID (selected, expanded) |
 | ID_FOLDER_SET | ID_FOLDER_1 | 0 | ID_FOLDER_2 | 0 |
 | ID_SESSION_SET | ID_SESSION_1 | ID_SESSION_2 | 0 | 0 |
 
 ## DsNtreeData item entries
 | | | | | |
 |---|---|---|---|---|
-| Type | Text | Image set ID | ID | Parent ID  |
+| Type | Text | Image set ID | ID | Parent ID |
 | 1 | root | ID_FOLDER_SET | 1 | 0 |
 | 0 | leaf1 | ID_SESSION_SET | 2 | 1 |
 | 0 | leaf2 | ID_SESSION_SET | 6 | 1 |
@@ -86,5 +106,7 @@ The following is an example of DsNtreeData data used to create a new tree contro
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

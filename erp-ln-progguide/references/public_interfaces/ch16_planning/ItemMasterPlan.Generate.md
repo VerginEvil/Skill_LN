@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemMasterPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 538-539
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 542-543
 
 ```baan
 DLL:   cpextrmpapi
-This function is available from     2024.05 (KB2309900  ).
+This function is available from 2024.05 (KB2309900).
 Syntax: long ItemMasterPlan.Generate(
 domain  cpcom.plnc       iScenario,
 domain  cpitem           iPlanItem,

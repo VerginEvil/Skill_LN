@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1010-1011
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1020-1021
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.08 (KB3683531  ).
+This function is available from 2026.08 (KB3683531).
 Syntax: long WarehouseOrder.Activate(
 domain  whinh.oorg       iWarehouseOrderOrigin,
 domain  tcorno           iWarehouseOrder,
@@ -31,12 +31,12 @@ iWarehouseOrder
 Order number to be activated. This is mandatory to fill.
 iWarehouseOrderSet
 Order set to be activated. This is mandatory to fill.
-Output: oExceptionMessage               - The last message if any message is found. If
+Output: oExceptionMessage - The last message if any message is found. If
 more than one message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0               - Warehouse Order has been activated successfully
-<> 0                       - Error.
+Return: 0 - Warehouse Order has been activated successfully
+<> 0 - Error.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1485-1487
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1500-1501
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2025.09 (KB3610861  ).
+This function is available from 2025.09 (KB3610861).
 Syntax: long WorkOrder.Close(
 domain  tcorno           iWorkOrder,
 long             iProcessingOptionSet,
@@ -46,10 +46,10 @@ are closed.
 ActionForNonExecutedInspections
 domain  tscfg.upd.ista  tscfg.upd.ista.cancel
 If this option is set to 'Change Status', the status of
-every non                              -executed inspection is set to 'Not Measured'.
+every non-executed inspection is set to 'Not Measured'.
 If this option is set to 'Delete Inspections', every
-non                              -executed inspection is deleted.
-If this option is set to 'Cancel', and non                              -executed
+non-executed inspection is deleted.
+If this option is set to 'Cancel', and non-executed
 inspections are present, then closing the Work Order is
 canceled.
 Output: oExceptionMessage       The last message if any message is

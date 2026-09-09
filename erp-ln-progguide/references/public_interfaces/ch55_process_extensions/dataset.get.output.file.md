@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Dataset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2001-2002
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2020-2020
 
 ```baan
 Syntax: long dataset.get.output.file(
@@ -19,10 +19,10 @@ dataset.get.output.string() or dataset.get.output.file() must be used to retriev
 the
 datast output.
 Input:
--               i.dataset.format      - The dataset format name.
--               i.output.file         - The file the dataset output must be written to.
+- i.dataset.format      - The dataset format name.
+- i.output.file         - The file the dataset output must be written to.
 Output:
 Return:
--               0                     - OK.
--               DALHOOKERROR          - Not OK.
+- 0                     - OK.
+- DALHOOKERROR          - Not OK.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PriceBookLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 527-529
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 529-531
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2022.08 (KB2255812  ).
+This function is available from 2022.08 (KB2255812).
 Syntax: long PriceBookLines.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -41,10 +41,10 @@ Usage:        Expl:   This function starts the session Price Book Lines Overview
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -53,14 +53,14 @@ started session.
 Possible values are:
 "byPriceBook":
 Data is displayed by price book.
-The session will be started on table                                      -index 1
+The session will be started on table-index 1
 view fields: Price Book
 "byItem":
 Data is displayed by item.
-The session will be started on table                                      -index 2
+The session will be started on table-index 2
 view fields: Item
 iSessionIndex
-Specifies the table                              -index that is to be used. Please
+Specifies the table-index that is to be used. Please
 be aware that the iStartFilter will overrule the index
 passed in this argument. So when not using a startfilter
 the index will match the value of this variable.
@@ -68,19 +68,19 @@ iQueryExtend
 A specific query to be used when zooming to this session.
 iPriceBook
 Price Book
-Mandatory if iStartMode is MODELESS and session                              -index 1
+Mandatory if iStartMode is MODELESS and session-index 1
 or 3 is used. (Note that session index 1 will
 automatically be used if iStartFilter equals "byPriceBook")
 iItem
 Item
-Mandatory if iStartMode is MODELESS and session                              -index 2
+Mandatory if iStartMode is MODELESS and session-index 2
 is used. (Note that session index 2 will automatically
 be used if iStartFilter equals "byItem")
 iBuyFromBusinessPartner
-Buy                              -From Business Partner
+Buy-From Business Partner
 Not mandatory.
 iShipFromBusinessPartner
-Ship                              -From Business Partner
+Ship-From Business Partner
 Not mandatory.
 iCurrency
 The price book currency
@@ -98,7 +98,7 @@ Allowed values
 * empty
 * Not Applicable
 * Buying
-Used for all non                                      -subcontracting purchasing scenarios
+Used for all non-subcontracting purchasing scenarios
 * Item Subcontracting
 Used for item subcontracting
 * Operation Subcontracting
@@ -116,10 +116,10 @@ Output: for iStartMode MODAL:
 oPriceBook      The selected Price Book
 oItem           Item of the selected Price Book Line
 oBuyFromBusinessPartner
-Buy                                              -From Business Partner of the selected
+Buy-From Business Partner of the selected
 Price Book Line
 oShipFromBusinessPartner
-Ship                                              -From Business Partner of the selected
+Ship-From Business Partner of the selected
 Price Book Line
 oCurrency       Currency of the selected Price Book Line
 oQuantityUnit   Quantity Unit of the selected
@@ -140,10 +140,6 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for SalesPriceMatrices
-
-The following functions are available: SalesPriceMatrices.StartOverview

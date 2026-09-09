@@ -25,4 +25,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

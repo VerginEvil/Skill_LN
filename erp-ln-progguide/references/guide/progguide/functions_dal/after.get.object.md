@@ -12,16 +12,16 @@ DAL_GET_LAST DAL_FIND DAL_GET_CURR
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `direction` |  |
+| `long` | `direction` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in DAL script types.
 
 ## Return value
 The hook returns 0 if reading of the record is permitted. If the hook returns a negative value (DALHOOKERROR), the object is skipped.
-Notes  This hook is only executed in case the 4GL engine reads data from the maintable. It is *not* executed when you do [dal.new()](../functions_db_operations/dal.new.md), [dal.update()](../functions_db_operations/dal.update.md) or [dal.destroy()](../functions_db_operations/dal.destroy.md).
+Notes  This hook is only executed in case the [4GL engine](../glossary/glossary.md#fourgl_engine) reads data from the maintable. It is *not* executed when you do [dal.new()](../functions_db_operations/dal.new.md), [dal.update()](../functions_db_operations/dal.update.md) or [dal.destroy()](../functions_db_operations/dal.destroy.md).
 It is preferable to use a [Query extensions](query_extensions.md) in the *before.program* section of the UI script instead of this hook. So, only use this hook if a query extension is not possible.
-The 4GL engine ignores messages set in this hook.
+The [4GL engine](../glossary/glossary.md#fourgl_engine) ignores messages set in this hook.
 
 ## Example
 ```
@@ -69,5 +69,7 @@ before.program:
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

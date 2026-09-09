@@ -20,4 +20,5 @@ Note  This function should only be used in the choice.create.job sections
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

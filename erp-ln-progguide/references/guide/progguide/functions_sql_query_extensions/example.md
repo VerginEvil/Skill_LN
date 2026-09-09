@@ -61,5 +61,7 @@ before.program:
 
 ## Related topics
 - [SQL query extensions overview](overview.md)
+
 - [SQL query extensions synopsis](synopsis.md)
+
 - [Column filtering](column_filtering.md)

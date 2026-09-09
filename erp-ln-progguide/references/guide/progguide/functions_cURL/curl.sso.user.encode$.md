@@ -20,4 +20,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [cURL handling overview](overview.md)
+
 - [curl.escape.encode$()](curl.escape.encode$.md)

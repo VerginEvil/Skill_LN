@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 104-105
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 105-105
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2022.01 (KB2221361  ).
+This function is available from 2022.01 (KB2221361).
 Syntax: long Common.ConvertTime(
 domain  tccuni           iFromUnit,
 domain  tcqst1           iFromTime,
@@ -21,18 +21,18 @@ a time specified in another unit.
 Rounding will not be done. Common.RoundQuantity can be used for
 rounding.
 Post:   None
-Input:  iFromUnit                             - From Unit: Mandatory
-iFromTime                                     - From Time
-iToUnit                                       - To Unit: Mandatory
-Output: oToTime                               - To Time
-oExceptionMessage                             - The last message if any message is
+Input:  iFromUnit               - From Unit: Mandatory
+iFromTime               - From Time
+iToUnit                 - To Unit: Mandatory
+Output: oToTime                 - To Time
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                             - Time is converted.
-<> 0                                  - Otherwise.
+Return: 0               - Time is converted.
+<> 0            - Otherwise.
 ```

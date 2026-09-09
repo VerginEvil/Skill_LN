@@ -37,6 +37,9 @@ bms_id = bms.send( "", event, "calculator", 0 )
 
 ## Related topics
 - [Events overview](../events/overview.md)
+
 - [Interprocess communication (OS level) overview](../functions_interprocess_communication_os_level/overview.md)
+
 - [Interprocess communication (bshell) overview](overview.md)
+
 - [Interprocess communication (bshell) synopsis](synopsis.md)

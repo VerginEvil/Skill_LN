@@ -7,13 +7,22 @@
 ## Description
 Saves the contents of an http.cookiejar object in a file. The contents of this file is overwritten.
 The cookies are stored in Netscape format, in which each cookie is a string consisting of the following 7 parts, separated by tabs:
+
 - domain
+
 - subdomains (TRUE/FALSE)
+
 - path
+
 - secure (TRUE/FALSE)
+
 - expires
+
 - name
-- value (can be empty)  See https://curl.se/docs/http-cookies.html for more info.
+
+- value (can be empty)
+
+See [https://curl.se/docs/http-cookies.html](https://curl.se/docs/http-cookies.html) for more info.
 
 ## Arguments
 | | | |
@@ -35,4 +44,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

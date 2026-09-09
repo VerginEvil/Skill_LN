@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemBySiteAndOffice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 193-195
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 194-195
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2025.12 (KB3638446  ).
+This function is available from 2025.12 (KB3638446).
 Syntax: long ItemBySiteAndOffice.StartCreate(
 long             iStartMode,
 domain  tckitm           iItemTypeFrom,
@@ -67,18 +67,14 @@ Simulate                        domain tcyesno          tcyesno.yes
 PrintReport                     domain tcyesno          tcyesno.yes
 PrintErrorsOnly                 domain tcyesno          tcyesno.no
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for ItemCodeSystem
-
-The following functions are available: ItemCodeSystem.StartOverview

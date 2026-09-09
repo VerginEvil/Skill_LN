@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Asset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1821-1824
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1841-1843
 
 ```baan
 DLL:   tfextfamapi
-This function is available from     2024.07 (KB2327954  ).
+This function is available from 2024.07 (KB2327954).
 Syntax: long Asset.StartTransferAssets(
 domain  tffam.mcod       iAssetNumber,
 domain  tffam.mcod       iAssetExtension,
@@ -17,11 +17,11 @@ long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function starts session 'Transfer Assets' (tffam8211m000).
-Input:  iAssetNumber                          - Asset Number: Mandatory
-iAssetExtension                               - Asset Extension: Mandatory
-iStartMode                                    - Specifies the start mode for the
+Input:  iAssetNumber            - Asset Number: Mandatory
+iAssetExtension         - Asset Extension: Mandatory
+iStartMode              - Specifies the start mode for the
 session. Not used.
-iProcessingOptionSet                          - Optional, if 0, the session is started
+iProcessingOptionSet    - Optional, if 0, the session is started
 with regular defaulting logic (user
 defaults or session defaults), except
 selection ranges for Asset Number and
@@ -102,18 +102,14 @@ TargetCategory                  domain  tffam.code      minimum value
 TargetSubcategory               domain  tffam.code      minimum value
 CopyGroup                       domain  tcyesno         tcyesno.yes
 TargetGroup                     domain  tffam.code      minimum value
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for AssetBook
-
-The following functions are available: AssetBook.CalculateRemainingDepreciationLife

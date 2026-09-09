@@ -26,7 +26,7 @@
 | double | [sin()](sin.md) | `( double x )` |
 | double | [sinh()](sinh.md) | `( double x )` |
 | double | [sqrt()](sqrt.md) | `( double x )` |
-| void | [table.round()](table.round.md) | `( [field, field, ..., "table", "table", ...] )` |
+| void | [table.round()](table.round.md) | `( [field, field,..., "table", "table",...] )` |
 | double | [tan()](tan.md) | `( double x )` |
 | double | [tanh()](tanh.md) | `( double x )` |
 

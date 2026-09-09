@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 172-173
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 173-174
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2019.03 (KB2043720  ).
+This function is available from 2019.03 (KB2043720).
 Syntax: long Item.GetOrderingData(
 domain  tcncmp           iLogisticCompany,
 domain  tcitem           iItem,
@@ -31,40 +31,40 @@ Example: when item ordering warehouse and order interval are
 needed, the function must be called as follows:
 if Item.GetOrderingData(
 |* Fixed arguments:
-company,                                                            --    > input
-item,                                                            --       > input
-site,                                                            --       > input
-force.read,                                                            -- > input
-exception.message,                                                      --> output
-exception.id,                                                           --> output
+company,                  --> input
+item,                     --> input
+site,                     --> input
+force.read,               --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"cwar",                                                            --     > input
-warehouse,                                                            --  > output
-"oint",                                                            --     > input
-order.interval) <> 0 then                                               --> output
+"cwar",                   --> input
+warehouse,                --> output
+"oint",                   --> input
+order.interval) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iItem                         -               - Item: Mandatory
-iSite                         -               - Site: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iItem   -               - Item: Mandatory
+iSite   -               - Site: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read.
-<> 0                                          - Otherwise.
+...                     - The value of the required field.
+Return: 0                       - Data read.
+<> 0                    - Otherwise.
 ```

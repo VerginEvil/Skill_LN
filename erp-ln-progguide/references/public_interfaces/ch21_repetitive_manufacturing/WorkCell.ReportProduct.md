@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkCell
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 841-842
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 851-851
 
 ```baan
 DLL:   tiextrptapi
-This function is available from     2024.01 (KB2299664  ).
+This function is available from 2024.01 (KB2299664).
 Syntax: long WorkCell.ReportProduct(
 domain  tcsite           iSite,
 domain  tccwoc           iWorkCell,

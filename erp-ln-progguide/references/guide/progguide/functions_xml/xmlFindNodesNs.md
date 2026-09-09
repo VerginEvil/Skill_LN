@@ -30,8 +30,8 @@ In this example *idn* is the decimal string representation of a nodeId of a node
 Like any other tree of Nodes, the returned tree must be freed from memory by using xmlDelete().
 | | |
 |---|---|
-| <> 0 | Success; The new tree containing the references to the matching nodes. In case no match is found the tree consists of a single node.  |
-| 0 | Error; either the *namespaceOrURI* is invalid, or the *node* is invalid.  |
+| <> 0 | Success; The new tree containing the references to the matching nodes. In case no match is found the tree consists of a single node. |
+| 0 | Error; either the *namespaceOrURI* is invalid, or the *node* is invalid. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -67,5 +67,7 @@ xml_stockprice = xmlFindNodesNs( xml_envelope, "http://www.example.org/stock", "
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

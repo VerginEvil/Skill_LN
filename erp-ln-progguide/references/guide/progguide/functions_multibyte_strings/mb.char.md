@@ -15,11 +15,11 @@ This function tests whether a specified code point represents a single-byte char
 | | | |
 |---|---|---|
 | Return value | Code point range | Description |
-| 2 | [0x9b000000 … 0x9bffffff] | The supplied value is the code point of a multibyte [TSS](../misc/tss.md) character.  |
-| 1 | [1 … 0xff] | The supplied value is the code point of a non-zero single-byte [TSS](../misc/tss.md) character.  |
+| 2 | [0x9b000000 … 0x9bffffff] | The supplied value is the code point of a multibyte [TSS](../misc/tss.md) character. |
+| 1 | [1 … 0xff] | The supplied value is the code point of a non-zero single-byte [TSS](../misc/tss.md) character. |
 | 0 | 0 | The supplied value is zero. |
-| [0x100 … 0x9affffff] | The supplied value is not the code point of any [TSS](../misc/tss.md) character, but may indicate some non-character key (for example, a function key).  |  |
-| [0x9c000000 … 0xffffffff] | The supplied value is not expected and is assessed as ‘not the code point of any [TSS](../misc/tss.md) character’. In earlier versions of the bshell (before [bshell TIV](../tiv/tiv_overview.md) [level 2340](../tiv/tiv_2340.md)), the supplied value is assessed as the code point of a multibyte [TSS](../misc/tss.md) character (return value 2).  |  |
+| [0x100 … 0x9affffff] | The supplied value is not the code point of any [TSS](../misc/tss.md) character, but may indicate some non-character key (for example, a function key). |  |
+| [0x9c000000 … 0xffffffff] | The supplied value is not expected and is assessed as ‘not the code point of any [TSS](../misc/tss.md) character’. In earlier versions of the bshell (before [bshell TIV](../tiv/tiv_overview.md) [level 2340](../tiv/tiv_2340.md)), the supplied value is assessed as the code point of a multibyte [TSS](../misc/tss.md) character (return value 2). |  |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

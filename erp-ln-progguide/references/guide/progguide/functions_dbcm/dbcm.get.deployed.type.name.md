@@ -17,8 +17,8 @@ Returns the object type to which the given table belongs and that is deployed fo
 | | |
 |---|---|
 | 0 | In case of success. |
-| -1 | In case of an error; variable *e* contains the error code. See [Database Change Management (DBCM) error codes](error_codes.md) for more information about the error codes and their meaning.  |
-| 1 | The given table occurs in more than one object type (ie. the table is a shared table); an example of this may be table tcibd420.  |
+| -1 | In case of an error; variable *e* contains the error code. See [Database Change Management (DBCM) error codes](error_codes.md) for more information about the error codes and their meaning. |
+| 1 | The given table occurs in more than one object type (ie. the table is a shared table); an example of this may be table tcibd420. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2470.
@@ -26,4 +26,5 @@ Availability  This function is available from bshell TIV 2470 (Porting set 9.4h)
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

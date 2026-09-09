@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1589-1591
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1605-1607
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2024.12 (KB3529255  ).
+This function is available from 2024.12 (KB3529255).
 Syntax: long Invoice.ComposePrintPostInvoices(
 domain  tcncmp           iSalesInvoiceCompany,
 domain  cisli.rbrs       iRecurringInvoicingBatch,
@@ -31,32 +31,32 @@ Usage:        Expl:   This public interface is used to execute compose/print/pos
 process for the given invoicing batches.
 Pre:    No open database transaction.
 Post:   Not Applicable
-Input:  iSalesInvoiceCompany                  - Company of the Sales Invoice
+Input:  iSalesInvoiceCompany    - Company of the Sales Invoice
 This is a Mandatory field.
-iRecurringInvoicingBatch                      - Recurring Invoicing Batch
-iCutoffDate                                   - Cut-off Date
-iTypeOfInvoice                                - Type of Invoice
+iRecurringInvoicingBatch- Recurring Invoicing Batch
+iCutoffDate             - Cut-off Date
+iTypeOfInvoice          - Type of Invoice
 This is a Mandatory field.
 Possible values : Standard      tcsli.tinv.standard
 : Pro Forma     tcsli.tinv.pro.forma
 : Customs       tcsli.tinv.customs
 : Consignment   tcsli.tinv.consignment
-iInvoicingBatchFrom                           - Invoicing Batch From
-iInvoicingBatchTo                             - Invoicing Batch To
-iUseNextOpenPeriod                            - Use Next Open Periods.
+iInvoicingBatchFrom     - Invoicing Batch From
+iInvoicingBatchTo       - Invoicing Batch To
+iUseNextOpenPeriod      - Use Next Open Periods.
 This is only applicable for Invoice
 Date and Post Transaction Entry Date.
-Possible Values : True                               - If the period is closed for the
+Possible Values : True - If the period is closed for the
 given Invoice Date or Post
 Transaction Entry Date then
 the next open period will be
 assigned.
-false                                                 - If the period is closed for the
+false - If the period is closed for the
 given Invoice Date or Post
 Transaction Entry Date then
 the process will stop and
 error message will be given.
-iProcessingOptionSet                          - Processing Option Set
+iProcessingOptionSet    - Processing Option Set
 This is a Mandatory field.
 A Processing Option Set can be
 created via a call to
@@ -90,27 +90,27 @@ invoicePrintSequence                    domain cisli.psco       ""
 invoicePrintDevice                      domain cisli.devc       ""
 invoicePostingDevice                    domain cisli.devc       ""
 invoiceExceptionsDevice                 domain cisli.devc       ""
-Output: oNumberOfInvoicingBatchesComposed               -
+Output: oNumberOfInvoicingBatchesComposed -
 Number of invoicing batch composed.
-oNumberOfInvoicingBatchesDecomposed                       -
+oNumberOfInvoicingBatchesDecomposed -
 Number of invoicing batch decomposed.
-oNumberOfInvoicingBatchesSubmitted                       -
+oNumberOfInvoicingBatchesSubmitted -
 Number of invoicing batch submitted.
-oNumberOfInvoicingBatchesSubmittedToExternalSystem                       -
+oNumberOfInvoicingBatchesSubmittedToExternalSystem -
 Number of invoicing batch submitted to
 external system.
-oNumberOfInvoicingBatchesPrinted                       -
+oNumberOfInvoicingBatchesPrinted -
 Number of invoicing batch printed.
-oNumberOfInvoicingBatchesPosted                       -
+oNumberOfInvoicingBatchesPosted -
 Number of invoicing batch posted
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     -
-<> 0                                          - Error
+Return: 0                       -
+<> 0                    - Error
 ```

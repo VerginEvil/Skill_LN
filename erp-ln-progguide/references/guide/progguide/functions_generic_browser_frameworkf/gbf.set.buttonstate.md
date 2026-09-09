@@ -13,8 +13,8 @@ This function regulates the state of the standard buttons. This function can onl
 | GBF.BUTTON.DELETE | Delete the current selected object(s) |
 | GBF.BUTTON.GRP.NEW | Insert a new group object |
 | GBF.BUTTON.INSERT | Insert a new object |
-| GBF.BUTTON.PASTE | Paste the contents of the cut/copy buffers into the current selected object  |
-| GBF.BUTTON.TEXT | Start the text editor for the current selected object(s)  |
+| GBF.BUTTON.PASTE | Paste the contents of the cut/copy buffers into the current selected object |
+| GBF.BUTTON.TEXT | Start the text editor for the current selected object(s) |
 | GBF.BUTTON.UNDO | Undo the last operation |
 
 ## Arguments
@@ -28,18 +28,25 @@ This function regulates the state of the standard buttons. This function can onl
 |---|---|
 | 0 | Success |
 | GBF.NO.BUTTON | The requested button does not exist |
-| GBF.ILL.BUTTON | The given button is illegal or not supported yet  |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.BUTTON | The given button is illegal or not supported yet |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

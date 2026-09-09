@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentNotice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1005-1006
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1015-1015
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.04 (KB2115522  ).
+This function is available from 2020.04 (KB2115522).
 Syntax: long ShipmentNotice.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,11 +23,11 @@ Shipment Notices (whinh3600m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -37,14 +37,14 @@ Specifies the session index that is to be used.
 iQueryExtend
 iShipFromBusinessPartner
 iShipment
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1295-1296
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1305-1306
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2023.01 (KB2271572  ).
+This function is available from 2023.01 (KB2271572).
 Syntax: long PurchaseOrderAdvice.Transfer(
 domain  tcorno           iPurchaseOrderAdvice,
 domain  tcseri           iOrderSeries,
@@ -21,7 +21,7 @@ ref     domain  tcpur.otyp       oOrderType,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface will transfer a purchase advice to a
-purchase order or purchase schedule. This depends on the set                      -up
+purchase order or purchase schedule. This depends on the set-up
 in the purchase module.
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
@@ -63,10 +63,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The purchase order advice has been transferred successfully.
-<> 0                       - Error. The purchase order advice could not be transferred.
+Return: 0 - The purchase order advice has been transferred successfully.
+<> 0 - Error. The purchase order advice could not be transferred.
 ```
-
-## Public Interfaces for ProductionOrderAdvice
-
-The following functions are available: ProductionOrderAdvice.StartDetail ProductionOrderAdvice.StartOverview ProductionOrderAdvice.Transfer

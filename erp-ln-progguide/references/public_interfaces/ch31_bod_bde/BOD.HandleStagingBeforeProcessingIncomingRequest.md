@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1655-1656
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1674-1675
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.03 (KB2040021  ).
+This function is available from 2019.03 (KB2040021).
 Syntax: long BOD.HandleStagingBeforeProcessingIncomingRequest(
 domain  tcbod.name       iNoun,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -23,17 +23,17 @@ Pre:    NA
 Post:   After the incoming BOD is processed, function
 BOD.HandleStagingAfterProcessingIncomingRequest()
 must be called
-Input:  iNoun                                 - The noun of the incoming request
+Input:  iNoun                   - The noun of the incoming request
 e.g. "PurchaseOrderBOD"
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Parameter that enables the staging
+Return: 0                       - Parameter that enables the staging
 is set.
-<> 0                                          - Otherwise.
+<> 0                    - Otherwise.
 ```

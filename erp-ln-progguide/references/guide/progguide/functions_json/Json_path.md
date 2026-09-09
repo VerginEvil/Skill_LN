@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_json>`
-`function long Json.path( long json_value, string|long ... )`
+`function long Json.path( long json_value, string|long... )`
 
 ## Description
 Returns the JSON value in a JSON object or array, which is located at the specified path. The parameters passed to this function determine the path that is chosen to locate the JSON value. Example:
@@ -42,8 +42,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_value' is a JSON value of type JSON_TYPE_OBJECT or JSON_TYPE_ARRAY.
+
 - The combined parameters are a valid path in the JSON object or array.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

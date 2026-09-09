@@ -6,7 +6,7 @@ Variables declared within a function block are local variables. They are accessi
 |---|---|
 | Point of declaration | In the function between the brackets { }. |
 | Syntax of declaration | <type> name |
-| Initialization | The value of local variables is undefined with each function call. Local variables must always be initialized in the function.  |
+| Initialization | The value of local variables is undefined with each function call. Local variables must always be initialized in the function. |
 | Scope (validity and time) | Only within and during function execution. |
 
 ## Example
@@ -24,4 +24,5 @@ function void test()
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

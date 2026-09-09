@@ -1,7 +1,7 @@
 # at.base()
 
 ## Syntax:
-`function long at.base( long process_id, string basic_variable_name, void unused, [ long position, ... ], <ref|const> <type> based_variable, [ long length, ... ] )`
+`function long at.base( long process_id, string basic_variable_name, void unused, [ long position,... ], <ref|const> <type> based_variable, [ long length,... ] )`
 
 ## Description
 Use this function to base one variable (the *based_variable*) on an external variable in another process (the *basic_variable*). The two variables then use the same memory area.
@@ -12,9 +12,9 @@ Use this function to base one variable (the *based_variable*) on an external var
 | `long` | `process_id` |  The ID of the process in which the *basic_variable*) is declared. This process must be started before the current process and must be ended after the current process.  |
 | `string` | `basic_variable_name` |  The name of the external *basic_variable* on which the *based_variable* is to be based. The *basic_variable* must be declared as EXTERN. The *basic_variable* must have the same type as the *based_variable*. If the *basic_variable* is declared as CONST, then the *based_variable* must also be declared as CONST.  |
 | `void` | `unused` |  This argument is unused. The [bic compiler](../3gl_features/compiler.md) generates a warning about this argument, but the warning is suppressed by default. Use compiler option -W8 to switch it on.  |
-| `[ long` | `position, ... ]` |  Optional additional *position* arguments, which specify the start position of the *based_variable* in the corresponding dimension of the *basic_variable*. The default start position is 1.  |
+| `[ long` | `position,... ]` |  Optional additional *position* arguments, which specify the start position of the *based_variable* in the corresponding dimension of the *basic_variable*. The default start position is 1.  |
 | `<ref|const> <type>` | `based_variable` |  The variable which will be based on the *basic_variable*. The *based_variable* must have the same type as the *basic_variable*. The *based_variable* must be declared as BASED. If the *basic_variable* is declared as CONST, then the *based_variable* must also be declared as CONST.  |
-| `[ long` | `length, ... ]` |  Optional additional *length* arguments, which specify the length of the *based_variable* in the corresponding dimension. The length plus the start position must not exceed the length reserved for the *basic_variable*. If you pass value -1 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_variable* from the specified start position to the end position. If you pass value 0 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_variable* from the specified start position for the declared length of the *based_variable*.  |
+| `[ long` | `length,... ]` |  Optional additional *length* arguments, which specify the length of the *based_variable* in the corresponding dimension. The length plus the start position must not exceed the length reserved for the *basic_variable*. If you pass value -1 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_variable* from the specified start position to the end position. If you pass value 0 for a specific *length* argument, the *based_variable* uses the memory space of the *basic_variable* from the specified start position for the declared length of the *based_variable*.  |
 
 ## Return values
 | | |

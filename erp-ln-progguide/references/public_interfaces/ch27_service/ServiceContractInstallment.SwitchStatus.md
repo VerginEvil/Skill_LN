@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractInstallment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1401-1402
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1413-1414
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.06 (KB3597586  ).
+This function is available from 2025.06 (KB3597586).
 Syntax: long ServiceContractInstallment.SwitchStatus(
 domain  tcorno           iServiceContract,
 domain  tsctm.inst       iInstallmentNumber,

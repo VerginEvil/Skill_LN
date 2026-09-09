@@ -34,4 +34,5 @@ seq.open.local("C:\Program Files\Test.txt", "rt", false)
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for TransferOrderPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2283-2284
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2311-2312
 
 ```baan
 Syntax: long cpext.pat0001.get.customer.defined.transfer.sequence(
@@ -33,14 +33,14 @@ return(0)
 If this function returns an empty string in o.order.by.string,
 then LN will use the standard order by clause.
 The standard order by clauses vary per order type:
--                       Planned Production Order
+- Planned Production Order
 " order by
 cppat010.idnr,
 cppat010.plnc,
 cppat010.tort,
 cppat010.orno,
 cppat010.pono "
--                       Planned Purchase Order,
+- Planned Purchase Order,
 " order by
 cppat010.suno,
 cprrp100.cplb,
@@ -48,14 +48,14 @@ cprrp100.buyr,
 cppat010.item,
 cppat010.stdt,
 cppat010.orno "
--                       Planned Subcontracting Order:
+- Planned Subcontracting Order:
 " order by
 cppat010.suno,
 cprrp100.cplb,
 cppat010.item,
 cppat010.stdt,
 cppat010.orno "
--                       Planned Distribution Order
+- Planned Distribution Order
 " order by
 cprrp100.susi,
 cppat010.item,
@@ -63,17 +63,13 @@ cppat010.stdt,
 cppat010.orno "
 Pre:    NA
 Post:   NA
-Input:  i.order.type                          - The following order types are handled:
+Input:  i.order.type            - The following order types are handled:
 tckoor.cp.sfc
 tckoor.cp.pur,
 tckoor.cp.ipl,
 tckoor.cp.sub
 In case of other order types, LN will
 use the standard order by clause.
-Output: o.order.by.string                     - Maximum string length is 500.
+Output: o.order.by.string       - Maximum string length is 500.
 Return: 0
 ```
-
-## Process Extensions for TUR.eTransport
-
-The following process extension(s) is/are available: TUR.eTransport.GetData

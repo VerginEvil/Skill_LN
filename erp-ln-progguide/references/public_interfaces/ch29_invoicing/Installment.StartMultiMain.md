@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Installment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1601-1603
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1620-1621
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2026.06 (KB3674854  ).
+This function is available from 2026.06 (KB3674854).
 Syntax: long Installment.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -24,10 +24,10 @@ Usage:        Expl: This function starts session Installments (cisli8620m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -43,20 +43,20 @@ the session index will match the value of this variable.
 iQueryExtend
 A specific query to be used when zooming to this session.
 Primary Key Fields:
-iSourceCompany                                - Source Company
-iSourceType                                   - Source Type
-iOrderNumber                                  - Order Number
-iOrderReference                               - Order Reference
+iSourceCompany  - Source Company
+iSourceType     - Source Type
+iOrderNumber    - Order Number
+iOrderReference - Order Reference
 Output:
-oExceptionMessage                             - The last message if the return
+oExceptionMessage       - The last message if the return
 value is not equal to 0.
 If more than one  message is
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to all error
+oExceptionID            - An ID that refers to all error
 information. Use the functions in
 Exception to get all relevant
 information.
-Return  0                                     - Session started
-DALHOOKERROR                                  - Otherwise.
+Return  0                       - Session started
+DALHOOKERROR            - Otherwise.
 ```

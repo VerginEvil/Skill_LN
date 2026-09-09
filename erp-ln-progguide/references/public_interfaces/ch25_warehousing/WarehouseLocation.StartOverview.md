@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseLocation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 997-999
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1007-1008
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2024.07 (KB3502697  ).
+This function is available from 2024.07 (KB3502697).
 Syntax: long WarehouseLocation.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Usage:        Expl:   This function starts the overview session Warehouse Locati
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -76,16 +76,16 @@ MODELESS and started in MULTI_OCC mode.
 iLocation
 Optional
 Output: for iStartMode MODAL:
-oWarehouse                                    - Selected Warehouse.
-oLocation                                     - Selected Location.
-oExceptionMessage                             - The last message if any message is
+oWarehouse              - Selected Warehouse.
+oLocation               - Selected Location.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

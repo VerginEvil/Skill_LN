@@ -9,12 +9,12 @@ This redraws the entire screen. The *mode* argument can have one of the followin
 | | |
 |---|---|
 | 0 | All windows are refreshed. |
-| 1 | The screen is cleared and all windows are rebuilt.  |
+| 1 | The screen is cleared and all windows are rebuilt. |
 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `mode` |  |
+| `long` | `mode` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

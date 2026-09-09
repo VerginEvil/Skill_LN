@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2134-2136
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2157-2159
 
 ```baan
 Syntax: long tiext.sfc0001.print.custom.report(
@@ -77,15 +77,15 @@ Pre:    Determine if the custom report must be printed using
 tiext.sfc0001.check.print.condition().
 Post:   Update the print status using
 tiext.sfc0001.update.print.status().
-Input:  i.report.group                        - The report group that will be printed.
-i.spooler.device                              - The spooler device that the report is
+Input:  i.report.group          - The report group that will be printed.
+i.spooler.device        - The spooler device that the report is
 to be printed to.
-i.lfn.custom.spool                            - The logical Spool File for the spooler
+i.lfn.custom.spool      - The logical Spool File for the spooler
 device opened for the custom report.
-Output: o.lfn.custom.brpfile                  - The logical Baan report File opened
+Output: o.lfn.custom.brpfile    - The logical Baan report File opened
 for the custom report.
-o.message                                     - message, multibyte - max 300 characters
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+o.message               - message, multibyte - max 300 characters
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

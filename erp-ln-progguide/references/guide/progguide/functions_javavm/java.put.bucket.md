@@ -29,4 +29,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Java VM integration - Infor Enterprise Server 3GL](overview.md)
+
 - [java.get.bucket](java.get.bucket.md)

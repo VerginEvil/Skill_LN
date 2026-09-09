@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrderMaterialCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1504-1505
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1518-1519
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2023.04 (KB2281710  ).
+This function is available from 2023.04 (KB2281710).
 Syntax: long WorkOrderMaterialCosts.ProcessReturnDeliveries(
 domain  tcorno           iWorkOrder,
 domain  tcpono           iMaterialLine,
@@ -28,22 +28,16 @@ calling this function the existing database transactions should
 either have been aborted or committed).
 Post:   If warehouse procedures have been set to automatic, then these
 are executed.
-Input:  iWorkOrder                    - Work Order: Mandatory
-iMaterialLine                         - Work Order Material Line: Mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iWorkOrder      - Work Order: Mandatory
+iMaterialLine   - Work Order Material Line: Mandatory
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```
-
-## Public Interfaces for
-
-## WorkOrderOutgoingSubassembly
-
-The following functions are available: WorkOrderOutgoingSubassembly.Confirm

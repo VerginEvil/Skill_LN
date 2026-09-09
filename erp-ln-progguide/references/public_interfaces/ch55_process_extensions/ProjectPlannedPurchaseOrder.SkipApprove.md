@@ -4,23 +4,25 @@
 >
 > Group: Process Extensions for ProjectPlannedPurchaseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2163-2164
-
-Skips Planned Purchase Orders in Project for Material, Equipment and Subcontracting when Approving. This process extension is available from 2019.09 ( KB2076283 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2186-2187
 
 ```baan
+Skips Planned Purchase Orders in Project for Material, Equipment and Subcontracting when
+Approving.
+This process extension is available from 2019.09 (KB2076283).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension ProjectPlannedPurchaseOrder.SkipApprove can be used
 to skip Planned Purchase Orders in Project for cost types Material,
 Equipment and Subcontracting when Approving.
 Sessions where this Process Extension can be implemented:
--               Approve Planned PRP Purchase Orders (tppss6220m000)
+- Approve Planned PRP Purchase Orders (tppss6220m000)
 Fields that are available to be used in this Process Extension:
--               All fields of table: Planned PRP Purchase Orders - Material (tppss610)
--               All fields of table: Planned PRP Purchase Orders - Equipment (tppss611)
--               All fields of table: Planned PRP Purchase Orders - Subcontracting (tppss612)
+- All fields of table: Planned PRP Purchase Orders - Material (tppss610)
+- All fields of table: Planned PRP Purchase Orders - Equipment (tppss611)
+- All fields of table: Planned PRP Purchase Orders - Subcontracting (tppss612)
 External variables that are available to be used in this Process
 Extension:
--               proc_ext_cost_type [ type: string(20) ]
+- proc_ext_cost_type [ type: string(20) ]
 Note: tables and external variables must also be declared in the
 Process Extension.
 Pseudocode
@@ -28,9 +30,9 @@ The session Approve Planned PRP Purchase Orders can approve planned
 orders for 3 cost types: Material, Equipment and Subcontracting. Each
 cost type has its own table, so the process extension must be applied
 on these 3 tables. Available table fields per cost type:
--               Material       - tppss610 (variable proc_ext_cost_type = "material")
--               Equipment      - tppss611 (variable proc_ext_cost_type = "equipment")
--               Subcontracting - tppss612 (variable proc_ext_cost_type = "subcontracting")
+- Material       - tppss610 (variable proc_ext_cost_type = "material")
+- Equipment      - tppss611 (variable proc_ext_cost_type = "equipment")
+- Subcontracting - tppss612 (variable proc_ext_cost_type = "subcontracting")
 Below you can find an example how to handle the conditions per cost
 type.
 Hook: Declarations
@@ -63,9 +65,3 @@ endcase
 return (false)
 }
 ```
-
-## Process Extensions for
-
-## ProjectPlannedWarehouseOrder
-
-The following process extension(s) is/are available: ProjectPlannedWarehouseOrder.SkipApprove

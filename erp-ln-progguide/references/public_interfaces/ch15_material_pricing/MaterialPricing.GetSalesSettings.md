@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaterialPricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 534-537
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 536-538
 
 ```baan
 DLL:   tcextmprapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long MaterialPricing.GetSalesSettings(
 domain  tcncmp           iLogisticCompany,
 domain  tccwoc           iSalesOffice,
@@ -36,51 +36,45 @@ Example: when search date and material pricing in sales
 are needed, the function must be called as follows:
 if MaterialPricing.GetSalesSettings(
 |* Fixed arguments:
-company,                                                --> input
-site,                                                   --> input
-purchase office,                                        --> input
-force.read,                                             --> input
-context is master data                                  --> input
-exception.message,                                      --> output
-exception.id,                                           --> output
+company,                  --> input
+site,                     --> input
+purchase office,          --> input
+force.read,               --> input
+context is master data    --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"sdts",                                                 --> input
-search.date,                                            --> output
-"mprs",                                                 --> input
-material.pricing.in.sales) <> 0 then                               --> output
+"sdts",                   --> input
+search.date,              --> output
+"mprs",                   --> input
+material.pricing.in.sales) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iSalesOffice                                  - Sales Office: Not Mandatory
-iSite                                         - Site: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iSalesOffice            - Sales Office: Not Mandatory
+iSite                   - Site: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information
-iContextIsMasterData                          - True/False:
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - Otherwise.
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - Otherwise.
 ```
-
-## Chapter 16 Public Interfaces for Planning
-
-## Public Interfaces for PlanItem
-
-The following functions are available: PlanItem.StartATPHandling

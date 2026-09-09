@@ -23,13 +23,13 @@ When the function succeeds, the return code is 0. Otherwise, an error code is re
 | | |
 |---|---|
 | 0 | Success |
-| -1 | Curl Escape Encoding error. One of the strings that need to be encoded are invalid TSS strings.  |
-| -2 | Invalid Json handle. Either the protocol_parameters or the form_parameters did not refer to a valid, properly formatted Json structure. The log will have more details.  |
-| -4 | One of the values given in the Json parameter blocks is not of type 'string'. The log will have more details.  |
-| -5 | HMAC algorithm failure for method X. The given HMAC method is supported, but the internal function failed. The log will have more details.  |
-| -6 | Invalid digest X. The values passed for the oauth_signature_method is not one of the supported values. See log.  |
-| -7 | BaanGenericDecrypt decrypt failure. One of the encrypted passwords could not be decrypted using the standard functions.  |
-| -100 | Other failure. Something unexpected happened, the log may show more details.  |
+| -1 | Curl Escape Encoding error. One of the strings that need to be encoded are invalid TSS strings. |
+| -2 | Invalid Json handle. Either the protocol_parameters or the form_parameters did not refer to a valid, properly formatted Json structure. The log will have more details. |
+| -4 | One of the values given in the Json parameter blocks is not of type 'string'. The log will have more details. |
+| -5 | HMAC algorithm failure for method X. The given HMAC method is supported, but the internal function failed. The log will have more details. |
+| -6 | Invalid digest X. The values passed for the oauth_signature_method is not one of the supported values. See log. |
+| -7 | BaanGenericDecrypt decrypt failure. One of the encrypted passwords could not be decrypted using the standard functions. |
+| -100 | Other failure. Something unexpected happened, the log may show more details. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2370.
@@ -89,4 +89,5 @@ function main ()
 
 ## Related topics
 - [Security Functions overview](security_overview.md)
+
 - [Secure Functions synopsis](security_synopsis.md)

@@ -5,7 +5,7 @@
 
 ## Description
 This isn't the actual function. This help topic lists all curl.getinfo functions.
-See curl website for more information on these functions
+See [curl website](https://curl.se/) for more information on these functions
 ```
 
 	double	curl.getinfo.connect_time()
@@ -46,4 +46,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [cURL handling overview](overview.md)
-- cURL website
+
+- [cURL website](https://curl.se/)

@@ -21,13 +21,14 @@
 |---|---|
 | 0 | File copy success. |
 | 1 | Error. File copy canceled by the user. |
-| < 0 | Error. Source file not copied to the destination file.  |
+| < 0 | Error. Source file not copied to the destination file. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 This function is marked as 'untrusted' and can therefore not be used in custom objects in a cloud-ready environment. See section about [managed execution](../misc/managed_execution.md) for more information.
-Notes
+
 - In order to use a progress indicator, you must first create it with [create.progress.indicator()](../functions_progress_indicators/create.progress.indicator.md). When you want the progress indicator to start with another value then 0, you must use [change.progress.indicator()](../functions_progress_indicators/change.progress.indicator.md) to change its initial value. If you specify the PROGRESS.STOP and/or PROGRESS.CANCEL modes when creating the indicator, the user can stop or cancel the copy operation before it has completed. In both cases, the destination file is deleted.
+
 - This function is not supported in LN UI. See the [Implementing LN UI support](../webtop/htmlui_adoption.md) for more information.
 
 ## Example
@@ -42,4 +43,5 @@ client2server
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

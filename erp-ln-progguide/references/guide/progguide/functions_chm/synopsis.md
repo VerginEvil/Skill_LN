@@ -195,5 +195,7 @@ long
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

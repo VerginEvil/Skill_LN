@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 796-799
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 796-798
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2021.04 (KB2178236  ).
+This function is available from 2021.04 (KB2178236).
 Syntax: long ProductionOrderOperation.ReportProduct(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -41,9 +41,9 @@ handling of the associated warehousing orders (if needed).
 4. Process the automatic activities on generated
 warehousing orders related to the end item receipt (if needed).
 This transaction will only be executed if:
--                          the previous actions are successfully completed and
+- the previous actions are successfully completed and
 committed(!), and
--                          several other detailed functional conditions are met (e.g.
+- several other detailed functional conditions are met (e.g.
 the operation is the last operation, the end item has the
 direct receipt setting, etc).
 If the main item of the production order requires backflushing,

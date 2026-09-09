@@ -12,9 +12,9 @@ This reads a specified text and stores it in a temporary file. If this file alre
 | `string` | `text_field` |  The name of the text field that must be read. See [Text fields overview](overview.md). If the text number of the specified field is 0, a subprocess is started, which lists the texts associated with the current company and enables the user to select the text to be read. If no text is found, or if you abort the subprocess, *text_field* returns 0. Otherwise, it returns the text number of the retrieved text.  |
 | `string` | `lang` |  The language for which the text must be retrieved.  |
 | `string` | `kw1` |  These return the key words associated with the specified text.  |
-| `string` | `kw2` |  |
-| `string` | `kw3` |  |
-| `string` | `kw4` |  |
+| `string` | `kw2` |    |
+| `string` | `kw3` |    |
+| `string` | `kw4` |    |
 | `ref string` | `tgroup` |  This returns the name of the text group to which the text is assigned.  |
 | `ref string` | `edit_opt` |  This returns the default window type for the text.  |
 | `string` | `tmp_file` |  The name of the file in which the text must be stored. If this is an empty string, no text is retrieved and the function returns 0.  |
@@ -31,4 +31,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

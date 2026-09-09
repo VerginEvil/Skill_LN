@@ -1,7 +1,7 @@
 # URL Functions Overview
 
 ## Overview
-You can use these functions to parse, construct, encode and decode URL strings and their components, according to RFC 3986.
+You can use these functions to parse, construct, encode and decode URL strings and their components, according to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986).
 
 ## URL encoding/decoding functions
 | | | |

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOffice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 286-287
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 288-289
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SalesOffices.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,16 +23,16 @@ Usage:        Expl:   This function starts the session Sales Offices in overview
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the table                              -index that is to be used. Optional.
+Specifies the table-index that is to be used. Optional.
 Supported values:
 1: sort by Sales Office (default)
 iQueryExtend
@@ -53,7 +53,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for SalesQuote
-
-The following functions are available: SalesQuote.Approve SalesQuote.Copy SalesQuote.Print SalesQuote.Process SalesQuote.StartMultiMain SalesQuotes.StartOverview

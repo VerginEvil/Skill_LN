@@ -12,7 +12,7 @@ Use this to check whether the client database layer has returned to a retry poin
 | 0 | Retry point defined but not returned to. |
 | > 0 | System returned to retry point. |
 | -1 | No Retry point defined |
-| -2 | Stack Error (Programming error in script. A db.retry.point() was done at a deeper stack level)  |
+| -2 | Stack Error (Programming error in script. A db.retry.point() was done at a deeper stack level) |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -36,4 +36,5 @@ endif
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

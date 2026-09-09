@@ -5,7 +5,7 @@
 `function void vwr.bms.received( long sender.id, const string mask(), const string mss(), long length )`
 
 ## Description
-This is the callback function which must be defined in the 3GL script. This function will be called by the Document Viewer when a BMS message is received which is not internally known by the Document Viewer library. This can be used to receive PRCM messages. While in this callback function, the script can call functions like : prcm.bms.is.notification() and prcm.get.data().
+This is the callback function which must be defined in the 3GL script. This function will be called by the Document Viewer when a BMS message is received which is not internally known by the Document Viewer library. This can be used to receive PRCM messages. While in this callback function, the script can call functions like: prcm.bms.is.notification() and prcm.get.data().
 
 ## Arguments
 | | | |
@@ -21,4 +21,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Document Viewer synopsis](synopsis.md)
+
 - [Document Viewer overview](overview.md)

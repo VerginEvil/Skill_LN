@@ -29,4 +29,5 @@ Note  This function is available from [Tools Interface Version (TIV)](../tiv/tiv
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [plcm.get.resource.unavailability](plcm_get_resource_unavailability.md)

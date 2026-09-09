@@ -9,7 +9,7 @@ This function tests whether the supplied string is the textual representation of
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str_expr` |  |
+| `string` | `str_expr` |    |
 
 ## Return values
 TRUE string contains the textual representation of an integer value
@@ -30,4 +30,5 @@ endif
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

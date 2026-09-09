@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkCell
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 842-843
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 852-852
 
 ```baan
 DLL:   tiextrptapi
-This function is available from     2024.01 (KB2299664  ).
+This function is available from 2024.01 (KB2299664).
 Syntax: long WorkCell.SendToInventory(
 domain  tcsite           iSite,
 domain  tccwoc           iWorkCell,
@@ -45,9 +45,3 @@ Return: 0                       The reported quantities and / or
 status change is processed successfully.
 <> 0                    Errors occurred.
 ```
-
-## Chapter 22 Public Interfaces for Assembly
-
-## Public Interfaces for Assembly
-
-The following functions are available: Assembly.CalculatePartRequirements Assembly.GetSettings Assembly.UpdateSegmentSchedules

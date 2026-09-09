@@ -15,7 +15,7 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 
 ## Return values
 The extension of the specified path (including the period "."), or an empty string. If path is an empty string, or if path does not have extension information, this function returns an empty string.
-The extension of path is obtained by searching path for a period (.), starting with the last character in path and continuing toward the start of path. If a period is found before a ` [path.dir.separator()](path.dir.separator.md)` character, the returned string contains the period and the characters after it; otherwise, an empty string is returned.
+The extension of path is obtained by searching path for a period (.), starting with the last character in path and continuing toward the start of path. If a period is found before a [path.dir.separator()](path.dir.separator.md) character, the returned string contains the period and the characters after it; otherwise, an empty string is returned.
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -54,4 +54,5 @@ ext = path.extension("c:\temp\testdir\test", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

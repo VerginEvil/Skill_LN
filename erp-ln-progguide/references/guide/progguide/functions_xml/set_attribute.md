@@ -16,7 +16,7 @@ Set an attribute of an XML_ELEMENT or XML_DTD node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; Value of parameter *node* when successful  |
+| <> 0 | Success; Value of parameter *node* when successful |
 | 0 | Error. |
 
 ## Context
@@ -24,4 +24,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

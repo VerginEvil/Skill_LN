@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1543-1544
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1558-1559
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalOrder.Complete(
 domain  tcorno           iRentalOrder fixed,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -34,11 +34,11 @@ If return warehouse orders are created, then the system will
 at the end also process the warehouse activities which are set
 to automatic.
 Note:
--                       When an Electronic Signature is required for completing a
+- When an Electronic Signature is required for completing a
 Rental Order, this public interface can only be used when
 called in an LN UI component. Only in that case the
 signature request dialog can be started.
--                       When interactive counter reading reset rules are defined for
+- When interactive counter reading reset rules are defined for
 any of the Rental Order activities, the session for resetting
 the counters is not started when this public interface is
 used. Resetting these counters can be done using LN UI.
@@ -49,7 +49,7 @@ Post:   If the order gets blocked, the blocking flag is set on header
 level.
 If return warehouse orders are created and warehouse activities
 have been set to Automatic, these are executed.
-Input:  iRentalOrder                                                          -
+Input:  iRentalOrder                                            -
 Rental Order.
 Mandatory.
 Output: oExceptionMessage
@@ -63,8 +63,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the Rental Order was not
 changed to Completed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Rental Order changed to Completed.
-<> 0                          -       The status of the Rental Order could not be
+<> 0    -       The status of the Rental Order could not be
 changed to Completed.
 ```

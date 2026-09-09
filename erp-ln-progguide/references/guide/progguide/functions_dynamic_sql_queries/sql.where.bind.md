@@ -37,4 +37,5 @@ sql.where.bind(sql_id, 1, city)
 
 ## Related topics
 - [Dynamic SQL queries overview](overview.md)
+
 - [Dynamic SQL queries synopsis](synopsis.md)

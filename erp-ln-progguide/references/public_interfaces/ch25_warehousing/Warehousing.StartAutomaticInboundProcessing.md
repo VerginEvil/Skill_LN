@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Warehousing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 982-983
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 992-993
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.03 (KB3541337  ).
+This function is available from 2025.03 (KB3541337).
 Syntax: long Warehousing.StartAutomaticInboundProcessing(
 ref             boolean          oNotificationsFound,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -26,13 +26,13 @@ this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
 Input:  N.a.
-Output: oNotificationsFound                   - Inbound Notifications to be processed
+Output: oNotificationsFound     - Inbound Notifications to be processed
 are found.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

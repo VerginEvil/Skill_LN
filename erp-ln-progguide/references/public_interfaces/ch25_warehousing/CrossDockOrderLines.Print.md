@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CrossDockOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1303-1306
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1315-1317
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.09 (KB3513678  ).
+This function is available from 2024.09 (KB3513678).
 Syntax: long CrossDockOrderLines.Print(
 domain  tcorno           iCrossDockOrder,
 domain  tcpono           iCrossDockOrderLine,
@@ -34,17 +34,17 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iCrossDockOrder is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       CrossDockOrderLineArray
-The cross                      -dock order lines will then be printed for the given
+- selection range fields (From/To)
+- CrossDockOrderLineArray
+The cross-dock order lines will then be printed for the given
 iCrossDockOrder (and specific iCrossDockOrderLine, if filled).
 In case option CrossDockOrderLineArray is set then the selection
 range fields (From/To) of the iProcessingOptionSet will be
 ignored.
-The cross                      -dock order lines will then be printed for the
-cross                      -dock order lines in the array.
+The cross-dock order lines will then be printed for the
+cross-dock order lines in the array.
 Processing Options have a direct relationship with the form fields
-on session Print Cross              -dock Order Lines (whinh6410m000) and are not
+on session Print Cross-dock Order Lines (whinh6410m000) and are not
 explained in further detail here.
 Please refer to the session help for additional information.
 Processing Options that are set while a required Implemented Software
@@ -89,7 +89,7 @@ ReportNumber                    domain tcmcs.long       1
 CrossDockOrderLineArray         domain ttjson           0
 ReportName                      domain tcmcs.str16      Empty String
 Possible values of ReportNumber are:
-1                       - By Cross-dock Line
+1 - By Cross-dock Line
 JSON Object CrossDockOrderLineArray has the following structure:
 "CrossDockOrderLineArray": [
 {
@@ -114,19 +114,15 @@ Json.add(CrossDockOrderLineArray, CrossDockOrderLine)
 ReportName only needs to filled for customized reports,
 otherwise the standard report is used based on the ReportNumber.
 ReportName must start with an "r", e.g. "rwhinh641001001"
-Output: oDataProcessed                        - true:  Data Printed.
+Output: oDataProcessed          - true:  Data Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error
 ```
-
-## Public Interfaces for Run
-
-The following functions are available: Run.DetermineNumber

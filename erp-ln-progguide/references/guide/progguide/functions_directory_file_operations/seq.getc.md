@@ -9,11 +9,12 @@ This returns the next character from a specified file. *fp* is the file pointer 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `fp` |  fp is the file pointer returned by seq.open() when the file was opened. .  |
+| `long` | `fp` |  fp is the file pointer returned by seq.open() when the file was opened..  |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

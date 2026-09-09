@@ -12,17 +12,22 @@ void aud_get_rec_app_info( string appinfo(4),
 
 string aud_get_rec_op_type( string rec_buff() )
 ```
+| | |
+|---|---|
+| I | insert record |
+| D | delete record |
+| U | update record |
+| L | clear table |
+| R | drop table |
+| C | create table |
 ```
 
 long aud_get_rec_seqno( string rec_buff() )
 ```
-| | |
-|---|---|
-| *aud_get_rec_app_info()* | This reads the application-specific information of the record into *appinfo*.  |
-| *aud_get_rec_op_type()* | This returns the type of action of the record. Possible values are:  |
-| *aud_get_rec_seqno()* | This retrieves the sequence number of the record within the transaction.  |
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

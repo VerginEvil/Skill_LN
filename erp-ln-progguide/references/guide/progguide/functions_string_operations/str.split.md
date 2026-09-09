@@ -6,9 +6,11 @@
 ## Description
 Splits a string into an array of strings by separating the string into substrings, using a specified separator string to determine where to make each split.
 The `parts` string array will be resized as required. In order to be able to resize `parts`, the variable passed must be declared as a based string array.
-The found substrings are stored in the `parts` string array in such a way, that any trailing spaces are preserved. This reduces the need to use ` [strip$()](strip.md)` on the elements of the string array.
+The found substrings are stored in the `parts` string array in such a way, that any trailing spaces are preserved. This reduces the need to use [strip$()](strip.md) on the elements of the string array.
 If `separator$` is an empty string, `string$` is split into characters. In that case the following limitations apply:
+
 - if `string$` is a multibyte string containing multibyte characters, and `parts` is a single-byte string array, multibyte characters will not be copied. Instead, an empty string is stored in `parts`.
+
 - if `string$` is a single-byte string containing high ASCII characters, and `parts` is a multibyte string array, high ASCII characters will not be copied. Instead, an empty string is stored in `parts`.
 
 ## Arguments
@@ -86,4 +88,5 @@ num.parts = str.split(source, "", 10, parts)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

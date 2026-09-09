@@ -13,7 +13,7 @@ Retrieves the details of an address entry specified by entry_id. Entry_id is obt
 | `long` | `entry_id` |  The address list entry identification.  |
 | `ref string` | `category` |  The recipient category.  |
 | `ref string` | `key` |  The recipient key.  |
-| `ref string` | `role` |  |
+| `ref string` | `role` |    |
 | `ref string` | `name` |  The recipient name.  |
 | `ref string` | `address` |  The recipient address.  |
 | `ref string` | `addresstype` |  The recipient addresstype.  |
@@ -23,7 +23,7 @@ Retrieves the details of an address entry specified by entry_id. Entry_id is obt
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error retrieving details (most probably invalid address entry id).  |
+| -1 | Error retrieving details (most probably invalid address entry id). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -31,5 +31,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1641-1642
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1660-1661
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2023.05 (KB2292786  ).
+This function is available from 2023.05 (KB2292786).
 Syntax: long BOD.CreateNoteNode(
 domain  tctxtn           iTextNumber,
 domain  tcmcs.str50      iNoteType,
@@ -35,25 +35,25 @@ Pre:    The ioXmlNode array must be intialized as based before the
 function call:
 long    ioXmlNode(1)    based
 Post:   NA
-Input:  iTextNumber                           - Text number. Mandatory.
-iNoteType                                     - Value for the type attribute in the
+Input:  iTextNumber             - Text number. Mandatory.
+iNoteType               - Value for the type attribute in the
 generated Note nodes. This is mandatory
 if the function is called multiple
 times for the same ioXmlNode array.
 Otherwise, optional.
-ioXmlNode                                     - Existing Notes array; new nodes will
+ioXmlNode               - Existing Notes array; new nodes will
 be appended.
-ioSize                                        - Size of existing ioXmlNode array.
-Output: ioXmlNode                             - Result with Note nodes.
-ioSize                                        - Size of ioXmlNode array.
-oExceptionMessage                             - The last message if any message is
+ioSize                  - Size of existing ioXmlNode array.
+Output: ioXmlNode               - Result with Note nodes.
+ioSize                  - Size of ioXmlNode array.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Error occurred.
+Return: 0                       - OK.
+<> 0                    - Error occurred.
 ```

@@ -9,8 +9,8 @@ This computes the value of *x* raised to the power of *y*. If *x* is zero, *y* m
 ## Arguments
 | | | |
 |---|---|---|
-| `double` | `x` |  |
-| `double` | `y` |  |
+| `double` | `x` |    |
+| `double` | `y` |    |
 
 ## Return values
 The value of x to the power of y. If y is zero, the return value is always 1.0
@@ -24,4 +24,5 @@ If *y* is zero, the return value is always 1.0.
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

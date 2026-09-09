@@ -7,7 +7,7 @@
 ## Description
 Use this function to iterate all query parameters of a query_params instance.
 Initialize the `iterator` argument to 0 to start the iteration. On return the `iterator` argument is updated. For each query parameter the name and the values are returned. The values of a query parameter are returned as strings in an array.
-Typically this function is used in a `while ... endwhile` loop:
+Typically this function is used in a `while... endwhile` loop:
 ```
 
 iterator = 0
@@ -78,9 +78,13 @@ free.mem(values)
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2153 - 2199 (ES 10.5.2.1)
+
 - 2231 - 2299 (ES 10.6.1.1)
+
 - 2393 - 2399 (ES 10.7.4.1)
+
 - 2451 and above (ES 10.8.5)
 
 ## Related topics

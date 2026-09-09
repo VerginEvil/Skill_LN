@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Dataset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1999-2000
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2018-2018
 
 ```baan
 Syntax: long dataset.clear(
@@ -13,9 +13,9 @@ Usage:        This method offers the possibility to clear the response of the la
 dataset.read()
 function call.
 Input:
--               i.dataset.format      - The dataset format name.
+- i.dataset.format      - The dataset format name.
 Output:
 Return:
--               0                     - OK.
--               <> 0                  - Failure.
+- 0                     - OK.
+- <> 0                  - Failure.
 ```

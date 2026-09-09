@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 754-754
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 753-754
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.07 (KB3567400  ).
+This function is available from 2025.07 (KB3567400).
 Syntax: long ProductionOrder.RemoveHandlingUnit(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

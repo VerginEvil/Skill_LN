@@ -10,14 +10,14 @@ The data read is stored via session ttadv4589m000
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `package(2)` |  |
-| `string` | `application.id(30) Application Identifier see ttadv4589m000` |  |
+| `string` | `package(2)` |    |
+| `string` | `application.id(30) Application Identifier see ttadv4589m000` |    |
 
 ## Return values
 | | |
 |---|---|
 | Company number | Success. |
-| -1 | Company not found for the package application ID.  |
+| -1 | Company not found for the package application ID. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.

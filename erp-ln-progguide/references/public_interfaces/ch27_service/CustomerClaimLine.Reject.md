@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaimLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1531-1533
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1546-1547
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2023.06 (KB2288749  ).
+This function is available from 2023.06 (KB2288749).
 Syntax: long CustomerClaimLine.Reject(
 domain  tcorno           iCustomerClaim,
 domain  tcpono           iClaimLine,
@@ -28,8 +28,8 @@ session Reject Customer Claim (tscmm1220m000).
 On rejecting the last claim line, the header status can be
 set to Rejected as well. This behavior can be controlled with
 the use of argument iUpdateHeaderStatus.
-Pre:                  -
-Post:   This function sets a retry              -point and will commit and/or abort
+Pre:    -
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iCustomerClaim
 Customer Claim: Mandatory
@@ -71,10 +71,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                           - No error
-<> 0                                  - An error occurred
+Return  : 0             - No error
+<> 0          - An error occurred
 ```
-
-## Public Interfaces for SupplierClaim
-
-The following functions are available: SupplierClaim.GenerateSerializedItem SupplierClaim.SetRMAReceived

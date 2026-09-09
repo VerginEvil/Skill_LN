@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrderOutgoingSubassembly
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1505-1506
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1519-1520
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2026.06 (KB3671833  ).
+This function is available from 2026.06 (KB3671833).
 Syntax: long WorkOrderOutgoingSubassembly.Confirm(
 domain  tcorno           iWorkOrder,
 domain  tcpono           iSubassemblyLine,
@@ -49,12 +49,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Subassembly was confirmed successfully
-<> 0                          - Error during confirming the Outgoing Subassembly
+Return: 0       - Subassembly was confirmed successfully
+<> 0    - Error during confirming the Outgoing Subassembly
 ```
-
-## Public Interfaces for
-
-## WorkOrderIncomingSubassembly
-
-The following functions are available: WorkOrderIncomingSubassembly.Confirm

@@ -22,7 +22,9 @@
 ## S3 object functions
 | | | |
 |---|---|---|
+| `long` | [s3.object.modification.date](s3.object.modification.date.md) | `( const string s3.path$ )` |
 | `long` | [s3.object.size](s3.object.size.md) | `( const string s3.path$ )` |
+| `long` | [s3.object.stat](s3.object.stat.md) | `( const string s3.path$, ref long size, [ ref long modification.date ] )` |
 | `long` | [s3.open.object](s3.open.object.md) | `( const string s3.path$, string mode$(1), [ long bufsz ] )` |
 | `long` | [s3.put.object](s3.put.object.md) | `( const string s3.path$, const string bytes$, long num.bytes, [ long compress.method ] )` |
 | `long` | [s3.get.object](s3.get.object.md) | `( const string s3.path$, ref string bytes$, long num.bytes, [ long compress.method ] )` |

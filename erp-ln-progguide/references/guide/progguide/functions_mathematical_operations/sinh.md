@@ -9,7 +9,7 @@ This computes the hyperbolic sine of *x*.
 ## Arguments
 | | | |
 |---|---|---|
-| `double` | `x` |  |
+| `double` | `x` |    |
 
 ## Return values
 The hyperbolic sine of *x*.
@@ -19,4 +19,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

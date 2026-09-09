@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 711-712
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 710-711
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.10 (KB3548527  ).
+This function is available from 2025.10 (KB3548527).
 Syntax: long ProductionOrder.CompressAutomatedQueueTime(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -27,10 +27,10 @@ date or start date. Queue time compression is supported for
 forward planning methods as well as for backward planning
 methods.
 Compress time can be adjusted using the following options:
--                       Target Start Date and Target Finish Date
--                       Queue Compression Method
--                       Targeted Compression Percentage
--                       Include Operations at Critical Work Center
+- Target Start Date and Target Finish Date
+- Queue Compression Method
+- Targeted Compression Percentage
+- Include Operations at Critical Work Center
 Pre:    Retry point must be set.
 Post:   Commit or abort the transaction.
 Input:  iSite                   Site (Mandatory when the Site concept
@@ -40,8 +40,8 @@ in iSite).
 iQueueCompressionMethod
 Queue Compression Method.
 Possible values are:
-Best Fit                                               - tisfc.stcm.best.fit (default),
-Targeted Percent                                               -tisfc.stcm.target.perc.
+Best Fit - tisfc.stcm.best.fit (default),
+Targeted Percent -tisfc.stcm.target.perc.
 iTargetStartDate        Target Start Date.
 iTargetFinishDate       Target Finish Date.
 iTargetedCompressionPercentage

@@ -6,34 +6,22 @@ The search condition is used to restrict a row set to those rows that fulfill th
 ```
 
 <search condition>
-    ::= <search condition> AND <search condition>
-    | <search condition> OR <search condition>
-    | NOT <search condition>
-    | ( <search condition> )
-    | <comparison predicate>
-    | <row value constructor> [NOT] BETWEEN <row value constructor> AND <row value constructor>
-    | <row value constructor> [NOT] INRANGE <row value constructor> AND <row value constructor>
-    | <value expression> IS NULL predicate
-    | <like predicate>
-    | <in predicate>
-    | EXISTS ( <sub query> )
-```
-```
-
-    | <refers to predicate>
-    | <_compnr predicate>
-```
-```
-
-<row value constructor>
-    ::= <value expression>
-      | { <value expression> [ { , <value expression> }... ] }
+    ::= <comparison predicate>
+      | <between predicate>
+      | <inrange predicate>
+      | <is null predicate>
+      | <like predicate>
+      | <in predicate>
+      | <exists predicate>
+      | <refers to predicate>
+      | <_compnr predicate>
+      | <search condition> AND <search condition>
+      | <search condition> OR <search condition>
+      | NOT <search condition>
+      | ( <search condition> )
 ```
 
 ## Syntactical restrictions
-
-## sub query
-The sub query shall be of degree 1.
 
 ## _compnr predicate
 If a search condition is of the form "SC1 OR SC2" or "NOT SC" then it shall not contain a _compnr predicate, unless there is an intervening subquery.
@@ -53,8 +41,7 @@ _compnr = 0 AND empno = 10
 ```
 ```
 
-empno = 10 OR EXISTS (
-    SELECT * FROM dbtst190 WHERE _compnr = 0 )
+empno = 10 OR EXISTS( SELECT * FROM dbtst190 WHERE _compnr = 0 )
 ```
 
 ## REFERS TO predicate
@@ -75,8 +62,7 @@ _compnr = 0 AND a.empno REFERS TO b
 ```
 ```
 
-empno = 10 OR EXISTS (
-    SELECT * FROM dbtst190 a, dbtst120 b WHERE a.empno REFERS TO b )
+empno = 10 OR EXISTS( SELECT * FROM dbtst190 a, dbtst120 b WHERE a.empno REFERS TO b )
 ```
 
 ## Examples
@@ -88,8 +74,7 @@ empno = 10 OR EXISTS (
 *Example 2*: The following search condition is True if the employees salary is larger than 10000 and there does not exist another employee with a larger salary.
 ```
 
-{ emp.salary > 10000 }
-    AND NOT EXISTS( SELECT * FROM dbtst120 where salary > emp.salary )
+{ emp.salary > 10000 } AND NOT EXISTS( SELECT * FROM dbtst120 WHERE salary > emp.salary )
 ```
 
 ## Related topics

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ConfigurableItemGenericBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 695-696
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 694-695
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2022.08 (KB2253191  ).
+This function is available from 2022.08 (KB2253191).
 Syntax: long ConfigurableItemGenericBillOfMaterial.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Usage:        Expl:   This Public Interface starts session Generic Bill of Mater
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -42,21 +42,15 @@ Output:
 Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
 been selected.
--                        oItem                - Configurable Item.
-oExceptionMessage                             - The last message if any message is
+- oItem                - Configurable Item.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for
-
-## ConfigurableItemGenericPriceLists
-
-The following functions are available: ConfigurableItemGenericPriceLists.StartOverview

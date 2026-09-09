@@ -1,7 +1,6 @@
 # Chart manager example
 ```
 
-
 #define CHART.NAME                   "RESULT"
 #define CHART.APPLICATION            "ttchmtest"
 
@@ -48,7 +47,6 @@ function void send.chart.data( )
                 chm.set.in("Categories", no_2, "Qrtr II")
                 chm.set.in("Categories", no_3, "Qrtr III")
                 chm.set.in("Categories", no_4, "Qrtr IV")
-
 
                 | Domain definitions
                 chm.domain.in(CHM_SERIES_DOMAIN, CHM_SET,
@@ -111,7 +109,6 @@ chart.data(serv, catv) = data
                               serv, catv, datn, data, footnote_no)
                                                 endwhile
 
-
 put.data.in.table(chart.data()) | user defined
                                                 break
                                 endcase
@@ -121,5 +118,7 @@ put.data.in.table(chart.data()) | user defined
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)

@@ -5,34 +5,29 @@ A SELECT statement retrieves a row set (or derived table) from the database. The
 ```
 
 <select statement>
-    ::= Query expression
-                 [ Query hints overview ... ]
-        [ ORDER BY clause
-          [ WITH RETRY [REPEAT LAST ROW] ] ]
-        [ SET specification ]
-        [ Query hints overview ... ]
+    ::= <query expression>
+        [ <hint clause> ... ]
+        [ <order by clause> ]
+        [ <set specification> ]
+        [ <hint clause> ... ]
 ```
 
 ## Informal syntax
 ```
 
-         SELECT clause <select list>
-FROM clause <from list>
-[ WHERE clause Search condition ]
-[ GROUP BY clause <group list>
-  [ HAVING clause Search condition ] ]
-[ Query hints overview ... ]
-[ UNION operator 
-SELECT clause <select list>
-FROM clause <from list>
-  [ WHERE clause Search condition ]
-  [ GROUP BY clause <group list>
-    [ HAVING clause Search condition ] ]
-  [ Query hints overview ... ]
-] ...
-[ ORDER BY clause <order by list> [ WITH RETRY [REPEAT LAST ROW] ]]
-[ SET specification ]
-[ Query hints overview ... ]
+<select clause> <from clause>
+[ <where clause> ]
+[ <group by clause> [ <having clause> ] ]
+[ <hint clause> ... ]
+[ { UNION [ALL] <select clause> <from clause>
+                [ <where clause> ]
+                [ <group by clause> [ <having clause> ] ]
+                [ <hint clause> ... ]
+  }...
+]
+[ <order by clause> ]
+[ <set specification> ]
+[ <hint clause> ... ]
 ```
 For full details of any of the above clauses of the SELECT statement, simply click on the relevant clause.
 
@@ -57,10 +52,10 @@ The following SELECT statement selects for each education level the salary and f
 SELECT max_salary_by_edlevel.edlevel, salary, firstnme
 FROM ( SELECT edlevel, MAX( salary ) AS max_salary
        FROM dbtst120
-       GROUP BY edlevel ) max_salary_by_edlevel
-     INNER JOIN
-       dbtst120 AS employees
-     ON max_salary_by_edlevel.max_salary = employees.salary
+       GROUP BY edlevel
+     ) max_salary_by_edlevel
+INNER JOIN dbtst120 AS employees
+ON max_salary_by_edlevel.max_salary = employees.salary
 ```
 
 ## Related topics

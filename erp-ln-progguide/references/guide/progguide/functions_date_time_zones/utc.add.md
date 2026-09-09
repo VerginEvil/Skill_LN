@@ -4,33 +4,35 @@
 `function long utc.add( long i.utc, long year, long month, long day, long hour, long minute, long second, long o.utc )`
 
 ## Description
-This adds years, months, days, hours, minutes, seconds to the input UTC value and makes corrections if necessary.
+This adds years, months, days, hours, minutes, seconds to the input [UTC](overview.md#utc) value and makes corrections if necessary.
 It processes the parameters from bigger to smaller units:
+
 - First adds only years and the date is corrected (if started from a leap year)
+
 - Than the months are added and the date is corrected to an existing one.
+
 - The addition of days follow, and the result is so far the same hour, minutes, as it was in the beginning in the actual time-zone.
+
 - Finally the hours, minutes, seconds are added.
 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `i.utc` |  |
-| `long` | `year` |  |
-| `long` | `month` |  |
-| `long` | `day` |  |
-| `long` | `hour` |  |
-| `long` | `minute` |  |
-| `long` | `second` |  |
-| `long` | `o.utc` |  |
+| `long` | `i.utc` |    |
+| `long` | `year` |    |
+| `long` | `month` |    |
+| `long` | `day` |    |
+| `long` | `hour` |    |
+| `long` | `minute` |    |
+| `long` | `second` |    |
+| `long` | `o.utc` |    |
 
 ## Return values
 | | |
 |---|---|
 | 0 | Success. |
 | 1 | Best guess. |
-| 2 |  Failure. For example: Any intermediate result involves a date before the year 1 or past the year 9999. Any intermediate result or the final result of the addition is negative or greater than the maximum value 2^( BitCountOfLong-1) - 1 of the signed BitCountOfLong-bit range.  |
--
--
+| 2 | Failure. For example: Any intermediate result involves a date before the year 1 or past the year 9999. Any intermediate result or the final result of the addition is negative or greater than the maximum value 2^( [BitCountOfLong](../3gl_features/data_types.md#BitCountOfLong)-1) - 1 of the signed [BitCountOfLong](../3gl_features/data_types.md#BitCountOfLong)-bit range. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -63,4 +65,5 @@ The result in timezone "Europe/Amsterdam" is: ou_utc=951811200, res = 1 (that is
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplyStrategy
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 235-237
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 237-238
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.07 (KB2329980  ).
+This function is available from 2024.07 (KB2329980).
 Syntax: long SupplyStrategy.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -35,14 +35,14 @@ mode (cprpd7120m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to
+iSessionIndex           Specifies the table-index that is to
 be used.
 Standard supported values:
 1: sort by Scenario, Level, Planning
@@ -83,7 +83,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ActiveSuppliersByPlanItem
-
-The following functions are available: ActiveSuppliersByPlanItem.StartOverview

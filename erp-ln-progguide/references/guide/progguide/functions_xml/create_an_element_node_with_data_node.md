@@ -16,7 +16,7 @@ Create a new XML_ELEMENT node and new XML_DATA node. The XML_DATA node is the fi
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the new XML_ELEMENT node when successful.  |
+| <> 0 | Success; A reference to the new XML_ELEMENT node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -24,4 +24,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

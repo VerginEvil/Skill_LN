@@ -10,7 +10,7 @@ You can pass arguments to the program by activating it with the [activate()](act
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Return values
 The specified argument as a string. Or an empty string (“”) if the argument does not exist.

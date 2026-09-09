@@ -9,7 +9,7 @@ This computes the cosine of *x*, in radians. The *x* argument can be a long or a
 ## Arguments
 | | | |
 |---|---|---|
-| `double` | `x` |  |
+| `double` | `x` |    |
 
 ## Return values
 The cosine of *x*.
@@ -19,4 +19,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

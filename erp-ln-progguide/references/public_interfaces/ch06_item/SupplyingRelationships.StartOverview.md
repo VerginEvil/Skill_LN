@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplyingRelationship
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 225-226
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 226-227
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.07 (KB2329978  ).
+This function is available from 2024.07 (KB2329978).
 Syntax: long SupplyingRelationships.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -34,14 +34,14 @@ Usage:        Expl:   This function starts the session Supplying Relationships
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used. Optional.
 Standard supported values:
 1: sort by Plan Level, Receiving Item,
@@ -77,7 +77,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ItemSupplyingRelationship
-
-The following functions are available: ItemSupplyingRelationships.StartDetail ItemSupplyingRelationships.StartOverview

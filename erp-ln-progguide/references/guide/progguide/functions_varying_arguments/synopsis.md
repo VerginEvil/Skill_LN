@@ -54,4 +54,5 @@ long
 
 ## Related topics
 - [Functions with variable number of arguments: overview](overview.md)
+
 - [Functions with variable number of arguments: sample program](example.md)

@@ -51,5 +51,7 @@ After a company switch, _compnr will be set to -1 in the record buffers. This me
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)
+
 - [Storing, restoring record buffers - Examples](store.restore.examples.md)

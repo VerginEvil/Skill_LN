@@ -16,8 +16,8 @@ Get the qualified name of an attribute of the specified node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The value of *node*. The *name* contains the qualified name if the *node* is valid, the *attributeNr* is valid and the attribute is in a namespace. It contains the empty string otherwise.  |
-| 0 | The *node* is invalid, the *attributeNr* is invalid or the namespace of the namespace is invalid or the *default* namespace.  |
+| <> 0 | Success; The value of *node*. The *name* contains the qualified name if the *node* is valid, the *attributeNr* is valid and the attribute is in a namespace. It contains the empty string otherwise. |
+| 0 | The *node* is invalid, the *attributeNr* is invalid or the namespace of the namespace is invalid or the *default* namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -41,5 +41,7 @@ ret = xmlGetAttributeQualifiedName( xml_envelope, 1, qname )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -17,8 +17,6 @@ When a multibyte part is found in a single-byte source, the start position yield
 | `string` | `source` |  The string to search in.  |
 | `string` | `part` |  The part to search.  |
 | `[ long` | `offset ]` |  Optional search starting position; when not specified the search starts at position 1. Note that: If `offset <= 1`, then searching start at position 1. If `offset > len(source)`, then 0 is returned.  |
--
--
 
 ## Return values
 The start position of the substring in the string. Or 0 if the substring is not found.
@@ -28,7 +26,11 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)
+
 - [str_rpos()](str_rpos.md)
+
 - [pos()](pos.md)
+
 - [rpos()](rpos.md)

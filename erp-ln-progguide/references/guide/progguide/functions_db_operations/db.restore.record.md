@@ -39,5 +39,7 @@ db.restore.record(twhinh200)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)
+
 - [Storing, restoring record buffers - Examples](store.restore.examples.md)

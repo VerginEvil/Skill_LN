@@ -1,11 +1,11 @@
 # Enumerate constant
-The enumerate constant specifies the value of an enumeration type, as defined in the data dictionary.
+An enumerate constant specifies the value of an enumeration type, as defined in the data dictionary.
 
 ## Syntax
 ```
 
 <enumerate constant>
-    ::= Identifier
+    ::= <identifier>
 ```
 
 ## Semantics

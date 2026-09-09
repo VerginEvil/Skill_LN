@@ -23,8 +23,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Postconditions
 - The passed JSON value is detached from its parent.
+
 - The parent JSON value's member is assigned the JSON null value.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

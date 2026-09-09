@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectInstallments
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1737-1738
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1756-1757
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.08 (KB3501648  ).
+This function is available from 2024.08 (KB3501648).
 Syntax: long ProjectInstallments.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,13 +26,13 @@ mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
-iStartFilter                       -
+iStartFilter -
 Not Used.
 iSessionIndex
 Specifies the session index that is to be used. Please be
@@ -43,32 +43,26 @@ Allowed values:
 1: sort by Contract, Contract Line
 2: sort by Approved for Invoicing
 3: sort by Project
-iQueryExtend                       -
+iQueryExtend -
 A specific query to be used when zooming to this session.
-iContract                       - Contract. Optional
-iContractLine                       -
+iContract - Contract. Optional
+iContractLine -
 Contract Line. Optional
-iProject                       -
+iProject -
 Project code linked to the Contract Line and Installment. Optional
-iApprovedForInvoicing                       -
+iApprovedForInvoicing -
 Approved for Invoicing. (Yes/No) Optional
 Output: For i.start.mode MODAL and i.single.multi.occurence = MULTI_OCC:
-oInstallment                                  - Installment number of selected
+oInstallment            - Installment number of selected
 record.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for
-
-## ProjectAdvanceInstallmentSettlementMapping
-
-The following functions are available: ProjectAdvanceInstallmentSettlementMapping.StartOverview

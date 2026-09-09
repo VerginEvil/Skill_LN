@@ -15,8 +15,8 @@ This skips *nrbytes* bytes, relative to the current file position, in a file rep
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success. Returns new position in bytes from the beginning of the file.  |
-| < 0 | Error; probably *fp* not connected. Current file position is not changed.  |
+| >= 0 | Success. Returns new position in bytes from the beginning of the file. |
+| < 0 | Error; probably *fp* not connected. Current file position is not changed. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -24,4 +24,5 @@ Notes  It is undefined whether or not seq.skip() past end-of-file succeeds or fa
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

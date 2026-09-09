@@ -14,15 +14,15 @@ A DsCbarMenu object can generate the following event type:
 ## Attributes
 | | | | |
 |---|---|---|---|
-|  DsNcommandList (long array)  | [CS] |  Use this to set the state of menu items and to remove menu items. The array contains one or more index/attribute pairs. The index is an index into the list created by DsNmenuData. The menu entry identified by each index (1-based) is set to the associated attribute value. Possible attribute values are: DSMENUNORMAL DSMENUDISABLED DSMENUCHECKED DSMENUREMOVE DSMENURADIOBUTTON You can modify or remove multiple menu items with a single *change.object()* call.  |  |
-|  DsNeventMask (long)  | [CSG] | Specifies the events that the object can generate. See [select.event.input()](../events/select.event.input.md) for a list of possible masks.  |  |
-|  DsNfunction (long)  | [CS] |  Specifies whether menu items are to be added before or after the point specified by DsNrefCommand. Possible values are: DSMENUINSERT (default) DSMENUAPPEND  |  |
-|  DsNmenuData (void)  | [CSG] |  This contains the menu data in binary format. The data includes the structure of the menu, menu item names, shortcut and access keys, and the state and ID (return value) of menu items. The data must start with a header containing the following fields: long Version number (currently always 1). long Number of entries to follow. This is followed by multiple entries in the following format: long Menu hierarchy level. long Unique command identifier. Separators must always be assigned an ID of -1; cascaded menu entries must always be assigned an ID of 0. string Null terminated name string (mb). long State of menu items – possible values are: DSMENUNORMAL DSMENUDISABLED DSMENUCHECKED DSMENUREMOVE DSMENURADIOBUTTON You can use DsNmenuData to create a new menu and also to add items to existing menus.  |  |
-|  DsNobjectType (long)  | [G] | The object type. |  |
-|  DsNparent (long)  | [G] | The ID of the parent object. |  |
-|  DsNrefCommand (long)  | [S] | This contains the index (1-based offset) of the menu position where menu items are to be added or inserted.  |  |
-|  DsNsetState (long)  | [CS] | The state of the object. See [DsCmwindow](dscmwindow.md).  |  |
-|  DsNtemplate (long)  | [CS] | The ID of a [DsCtemplate](dsctemplate.md) that defines a set of attributes to be applied to the object.  |  |
+| DsNcommandList (long array) | [CS] | Use this to set the state of menu items and to remove menu items. The array contains one or more index/attribute pairs. The index is an index into the list created by DsNmenuData. The menu entry identified by each index (1-based) is set to the associated attribute value. Possible attribute values are: DSMENUNORMAL DSMENUDISABLED DSMENUCHECKED DSMENUREMOVE DSMENURADIOBUTTON You can modify or remove multiple menu items with a single *change.object()* call. |  |
+| DsNeventMask (long) | [CSG] | Specifies the events that the object can generate. See [select.event.input()](../events/select.event.input.md) for a list of possible masks. |  |
+| DsNfunction (long) | [CS] | Specifies whether menu items are to be added before or after the point specified by DsNrefCommand. Possible values are: DSMENUINSERT (default) DSMENUAPPEND |  |
+| DsNmenuData (void) | [CSG] | This contains the menu data in binary format. The data includes the structure of the menu, menu item names, shortcut and access keys, and the state and ID (return value) of menu items. The data must start with a header containing the following fields: long Version number (currently always 1). long Number of entries to follow. This is followed by multiple entries in the following format: long Menu hierarchy level. long Unique command identifier. Separators must always be assigned an ID of -1; cascaded menu entries must always be assigned an ID of 0. string Null terminated name string (mb). long State of menu items – possible values are: DSMENUNORMAL DSMENUDISABLED DSMENUCHECKED DSMENUREMOVE DSMENURADIOBUTTON You can use DsNmenuData to create a new menu and also to add items to existing menus. |  |
+| DsNobjectType (long) | [G] | The object type. |  |
+| DsNparent (long) | [G] | The ID of the parent object. |  |
+| DsNrefCommand (long) | [S] | This contains the index (1-based offset) of the menu position where menu items are to be added or inserted. |  |
+| DsNsetState (long) | [CS] | The state of the object. See [DsCmwindow](dscmwindow.md). |  |
+| DsNtemplate (long) | [CS] | The ID of a [DsCtemplate](dsctemplate.md) that defines a set of attributes to be applied to the object. |  |
 
 ## Examples
 The following is an example of DsNmenuData data used to create a new menu:
@@ -73,5 +73,7 @@ change.object(barmenu.id, DsNcommandList, commandlist, 4)
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

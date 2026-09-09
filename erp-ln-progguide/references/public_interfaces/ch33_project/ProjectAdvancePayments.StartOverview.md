@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectAdvancePayments
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1735-1737
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1754-1755
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.08 (KB3501208  ).
+This function is available from 2024.08 (KB3501208).
 Syntax: long ProjectAdvancePayments.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,11 +26,11 @@ Advance Payments(tppin4110m000) in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -55,19 +55,15 @@ Project code linked to the Advance Payment request. Optional
 iApprovedForInvoicing
 Approved for Invoicing. (Yes/No) Optional
 Output: for iStartMode MODAL :
-oAdvancePayment                               - The selected Advance Payment.
-oExceptionMessage                             - The last message if any message is
+oAdvancePayment - The selected Advance Payment.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectInstallments
-
-The following functions are available: ProjectInstallments.StartOverview

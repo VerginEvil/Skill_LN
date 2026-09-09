@@ -1,4 +1,4 @@
-# GenAI Functionality on Form Overview
+# GenAI Functionality on Form
 
 ## Synopsis
 ```
@@ -15,11 +15,19 @@ void
 ```
 ```
 
+void
+```
+```
+
 long
 ```
 | | | |
 |---|---|---|
-|  | [set.genai.commands()](set.genai.commands.md) | `( command [, command]... )` |
-|  | [session.set.genai()](session.set.genai.md) | `()` |
+|  | [fieldbutton.align.left()](fieldbutton.align.left.md) | `( const string command )` |
+|  | [genai.processing.start()](genai.processing.start.md) | `()` |
 |  | [genai.processing.ready()](genai.processing.ready.md) | `()` |
-|  | [fieldbutton.align.left()](fieldbutton.align.left.md) | `( command )` |
+| `long` | [session.set.genai.icon()](session.set.genai.icon.md) | `( const string i.genai.icon )` |
+|  | [session.set.genai()](session.set.genai.md) | `( [boolean i.show.as.ai.dialog] )` |
+| `long` | [set.genai.command.icon()](set.genai.command.icon.md) | `( const string i.command, const string i.genai.icon )` |
+| `long` | [set.genai.field()](set.genai.field.md) | `( const string i.form.field )` |
+|  | [set.genai.commands()](set.genai.commands.md) | `( const string i.command [, const string i.command]... )` |

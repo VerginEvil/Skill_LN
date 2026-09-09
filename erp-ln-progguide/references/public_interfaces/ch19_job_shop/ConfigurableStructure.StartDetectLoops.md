@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ConfigurableStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 690-691
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 817-818
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2026.10 (KB3684752  ).
+This function is available from 2026.10 (KB3684752).
 Syntax: long ConfigurableStructure.StartDetectLoops(
 long             iStartMode,
 domain  tcitem           iProduct,
@@ -24,16 +24,16 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session (Mandatory).
 Possible values are:
-MODAL                               -
+MODAL -
 The parent session is blocked until the
 child session exits. The session will be started
 as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel sessions that
 can be manipulated simultaneously, even if the
 session is a Dialog.
-iProduct                                      - Product.
-iProcessingOptionSet                          - Processing Option Set.
+iProduct                - Product.
+iProcessingOptionSet    - Processing Option Set.
 If 0, then user default/session default
 values are applied. A Processing Option
 Set can be created via a call to
@@ -54,14 +54,14 @@ StopAtFirstLoop                 domain tcyesno          empty.
 PrintVerifiedStructures         domain tcyesno          empty.
 AgainstDate is only applicable when CheckForLoopsAgainstDate is
 tcyesno.yes
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```

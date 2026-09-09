@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1432-1433
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1446-1446
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long ServiceOrder.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the Multi-Main session Service Order
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.

@@ -24,4 +24,5 @@ void
 
 ## Related topics
 - [Variables (checking changes) overview](overview.md)
+
 - [Variables (checking changes): sample program](example.md)

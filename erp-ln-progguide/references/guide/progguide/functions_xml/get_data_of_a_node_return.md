@@ -16,7 +16,7 @@ Get the data of a node. When *node* is of type XML_DATA or XML_PI, only the data
 ## Return values
 | | |
 |---|---|
-|  | A temporary multibyte string with the data of the specified node.  |
+|  | A temporary multibyte string with the data of the specified node. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -30,4 +30,5 @@ long	xmlAllocData( ref string basedString(), long node, [ const string default.v
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

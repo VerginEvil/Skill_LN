@@ -50,5 +50,7 @@ on.choice:
 
 ## Related topics
 - [Process Change Manager overview](overview.md)
+
 - [Process Change Manager synopsis](synopsis.md)
+
 - [Process Change Manager Code Examples](examples.md)

@@ -7,14 +7,23 @@
 ## Description
 Returns a URL-encoded string representation of the specified URL instance.
 The function does the following:
+
 - start with an empty buffer
+
 - if the URL has a scheme, it is appended to the buffer and a `:` is added
+
 - if the URL has a user info part or a host part or a port, `//` is appended
+
 - if the URL has user info, it is appended and `@` is added
+
 - if the URL has a host, it is appended
+
 - if the URL has a port, `:` is appended and the port is added
+
 - if the URL has a path, it is appended
+
 - if the URL has a query, `?` is appended and the query is added
+
 - if the URL has a fragment, `#` is appended and the fragment is added
 
 ## Arguments
@@ -54,9 +63,13 @@ url.delete(url_instance)
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2153 - 2199 (ES 10.5.2.1)
+
 - 2231 - 2299 (ES 10.6.1.1)
+
 - 2393 - 2399 (ES 10.7.4.1)
+
 - 2451 and above (ES 10.8.5)
 
 ## Related topics

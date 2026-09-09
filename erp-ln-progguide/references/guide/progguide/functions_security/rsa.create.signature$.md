@@ -40,6 +40,7 @@ function void main()
 	sign = rsa.create.signature$(msg, PRIV_KEY, signlen, errmsg)
 }
 ```
-Notes
+
 - The shown private key in this example is not a valid key.
+
 - The length of the output signature is fixed for any *msg* and a given private key. The length of the signature may change if a different (type of) private key is used.

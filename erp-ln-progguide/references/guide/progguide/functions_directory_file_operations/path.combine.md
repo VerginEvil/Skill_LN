@@ -1,7 +1,7 @@
 # path.combine()
 
 ## Syntax:
-`function string path.combine( const string path, ..., long os.type )`
+`function string path.combine( const string path,..., long os.type )`
 
 ## Description
 Combines one ore more strings into a path.
@@ -11,15 +11,18 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 | | | |
 |---|---|---|
 | `const string` | `path` |  a path part  |
-| `` | `...` |  optional path parts  |
+|  | `...` | optional path parts |
 | `long` | `os.type` |  when specified, the path is interpreted according to the given OS type; specify one of the following values: `OS_WINDOWS_NT`, `OS_UNIX`. Note: this must be the last argument.  |
 
 ## Return values
 The combined paths.
-note that:
+
 - If one of the subsequent paths is an absolute path, then the combine operation resets starting with that absolute path, discarding all previous combined paths.
+
 - Zero-length strings are omitted from the combined path.
+
 - The parameters are not parsed if they have white space.
+
 - Not all invalid characters for directory and file names are interpreted as unacceptable by the `path.combine` function, because you can use these characters for search wildcard characters. For example, while `path.combine("c:\", "*.txt")` might be invalid if you were to create a file from it, it is valid as a search string. It is therefore successfully interpreted by the `path.combine` function.
 
 ## Context
@@ -49,4 +52,5 @@ path = path.combine("", "")
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

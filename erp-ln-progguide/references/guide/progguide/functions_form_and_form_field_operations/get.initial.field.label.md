@@ -35,5 +35,7 @@ label1, label2, label3 )
 
 ## Related topics
 - [get.current.field.label()](get.current.field.label.md)
+
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

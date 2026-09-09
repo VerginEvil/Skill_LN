@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseItemRentalInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 967-969
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 977-978
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2025.10 (KB3619637  ).
+This function is available from 2025.10 (KB3619637).
 Syntax: long WarehouseItemRentalInventory.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Rental Inventory (whwmd2515m200).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -57,20 +57,16 @@ iItem
 Mandatory when iStartFilter "byItem" is used or
 iSessionIndex = 2 and iStartMode is MODELESS.
 Output: for iStartMode MODAL:
-oWarehouse                                    - Warehouse of selected inventory.
-oItem                                         - Item of selected inventory.
-oExceptionMessage                             - The last message if any message is
+oWarehouse              - Warehouse of selected inventory.
+oItem                   - Item of selected inventory.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for WarehouseItemInventory
-
-The following functions are available: WarehouseItemInventory.StartDetail WarehouseItemInventory.StartMultiMain WarehouseItemInventory.StartOverview

@@ -8,9 +8,9 @@ Retrieves the status of a field in a database action (insert, update or delete).
 The status can be one of the following values:
 | | |
 |---|---|
-| X |  Not available (insert, update or delete) This either means the field does not exist, or it was not logged because this was specified in the data model, or (in case of an update) it was not logged because it has not changed  |
-| Y (changed) | Depending on Action Type: old value available (delete), new value available (insert), both old and new value available, value has changed (update)  |
-| N (not changed) | Value has not changed, yet both old and new values are available (update).  |
+| X | Not available (insert, update or delete) This either means the field does not exist, or it was not logged because this was specified in the data model, or (in case of an update) it was not logged because it has not changed |
+| Y (changed) | Depending on Action Type: old value available (delete), new value available (insert), both old and new value available, value has changed (update) |
+| N (not changed) | Value has not changed, yet both old and new values are available (update). |
 The following table shows the status in all cases that might occur:
 | | | | | |
 |---|---|---|---|---|
@@ -44,5 +44,7 @@ During the last aud.get.next.action for this selection, an *action.type* must ha
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

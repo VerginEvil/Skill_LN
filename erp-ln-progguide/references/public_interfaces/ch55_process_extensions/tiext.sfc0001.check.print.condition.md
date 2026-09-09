@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2133-2134
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2156-2157
 
 ```baan
 Syntax: long tiext.sfc0001.check.print.condition(
@@ -21,9 +21,9 @@ printed.
 The tisfc001 record for the Production Order to be printed has
 been made current.
 Implementation example:
-Create a custom tx                      -table (example txext001) with an index of the
+Create a custom tx-table (example txext001) with an index of the
 production order and the report group. Add a field
-(ex. txext001.stat) in the created tx                      -table for the print status
+(ex. txext001.stat) in the created tx-table for the print status
 with domain tisfc.pdst.
 Write the function as follows:
 function extern long tiext.sfc0001.check.print.condition(
@@ -73,19 +73,19 @@ Pre:    The custom reports must be registered using
 tiext.sfc0001.registrate.custom.reports().
 Post:   Print the custom reports using
 tiext.sfc0001.print.custom.report()
-Input:  i.report.group                        - The report group of the custom report
-i.print.originals                             - Print Option: original reports must be
+Input:  i.report.group          - The report group of the custom report
+i.print.originals       - Print Option: original reports must be
 printed.
-i.print.duplicates                            - Print Option: duplicate reports must
+i.print.duplicates      - Print Option: duplicate reports must
 be printed.
-i.print.modified                              - Print Option: modified reports must be
+i.print.modified        - Print Option: modified reports must be
 printed.
-Output: o.print.report                        - If true, the custom report should be
+Output: o.print.report          - If true, the custom report should be
 printed.
 If false, the custom report should
 not be printed.
-o.message                                     - message, multibyte - max 300 characters
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+o.message               - message, multibyte - max 300 characters
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

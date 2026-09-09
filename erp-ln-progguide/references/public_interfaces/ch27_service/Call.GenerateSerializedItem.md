@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1364-1365
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1376-1377
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long Call.GenerateSerializedItem(
 domain  tcorno           iCall,
 domain  tcibd.sern       iSerialNumber,
@@ -20,7 +20,7 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function generates a serialized item based on the data of
 the given Call.
 A new serial will be generated for the item defined on the call.
-The sold                      -to business partner defined on the call will be set as
+The sold-to business partner defined on the call will be set as
 owner of the serialized item.
 Optionally the generated serialized item can be linked to the
 installation group defined on the call.
@@ -57,9 +57,9 @@ value of iLinkToInstallationGroup will be ignored.
 iUpdateSerialNumberOnCall
 Controls if the serial number must be set on the
 Call based on which the serialized item is generated.
--                               yes: The serial number on the call is updated with
+- yes: The serial number on the call is updated with
 the generated serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -70,9 +70,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated successful and
+Return: 0       - Serialized Item generated successful and
 updated on the Call (optionally).
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the Call failed.

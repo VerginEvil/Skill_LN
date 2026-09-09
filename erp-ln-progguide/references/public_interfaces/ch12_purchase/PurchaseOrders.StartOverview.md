@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 451-452
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 453-454
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2024.06 (KB3501666  ).
+This function is available from 2024.06 (KB3501666).
 Syntax: long PurchaseOrders.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -36,18 +36,18 @@ iStartFilter            Start filter (Not used).
 iSessionIndex           Session index
 Possible values are:
 1               Purchase Order (default)
-2               Buy                              -from Business Partner
-3               Buy                              -from Business Partner Order
+2               Buy-from Business Partner
+3               Buy-from Business Partner Order
 4               Buyer
 5               Purchase Office
 iQueryExtend            A specific query to be used when zooming
 to this session (Optional).
 iOrder                  Purchase Order (Optional).
-iBuyFromBusinessPartner Buy                      -from Business Partner (Mandatory if
+iBuyFromBusinessPartner Buy-from Business Partner (Mandatory if
 iStartMode is MODELESS and iSessionIndex
 is 2).
 iBuyFromBusinessPartnerOrder
-Buy                                              -from Business Partner Order (Optional).
+Buy-from Business Partner Order (Optional).
 iPurchaseOffice         Purchase Office (Mandatory if iStartMode
 is MODELESS and iSessionIndex is 4).
 iBuyer                  Buyer (Optional).
@@ -65,7 +65,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PurchaseOrderLine
-
-The following functions are available: PurchaseOrderLine.Approve PurchaseOrderLine.CalculatePlannedReceiptDate PurchaseOrderLine.Cancel PurchaseOrderLine.ConfirmPotentialBackorder PurchaseOrderLine.Generate PurchaseOrderLine.GetCurrentActivity PurchaseOrderLine.RecalculatePriceAndDiscounts PurchaseOrderLine.ReleaseToWarehousing PurchaseOrderLine.Split PurchaseOrderLines.StartOverview

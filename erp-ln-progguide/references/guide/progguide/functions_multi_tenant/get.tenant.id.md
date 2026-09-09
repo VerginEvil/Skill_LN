@@ -17,4 +17,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Multi Tenant functions overview](overview.md)
+
 - [Multi Tenant functions synopsis](synopsis.md)

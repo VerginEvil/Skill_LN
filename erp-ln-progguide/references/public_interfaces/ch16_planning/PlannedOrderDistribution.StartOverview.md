@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrderDistribution
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 579-581
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 583-584
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.06 (KB2329991  ).
+This function is available from 2024.06 (KB2329991).
 Syntax: long PlannedOrderDistribution.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -30,14 +30,14 @@ overview mode (cprrp1105m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to
+iSessionIndex           Specifies the table-index that is to
 be used.
 Standard supported values:
 1: sort by Scenario, Order Type,
@@ -67,7 +67,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for PlannedDistributionOrder
-
-The following functions are available: PlannedDistributionOrder.TransferToPurchaseOrder PlannedDistributionOrder.TransferToWarehouseOrder

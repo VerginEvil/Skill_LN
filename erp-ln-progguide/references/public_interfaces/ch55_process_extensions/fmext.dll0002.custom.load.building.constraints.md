@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for FreightLoadBuilding
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2023-2024
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2042-2043
 
 ```baan
 Syntax: long fmext.dll0002.custom.load.building.constraints(
@@ -46,15 +46,11 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.found.load                          - Load that is found during load
+Input:  i.found.load            - Load that is found during load
 building
-i.freight.order                               - Freight Order
-i.freight.order.line                          - Freight Order Line
-Output: o.use.found.load                              - Indicator if the found load should
+i.freight.order         - Freight Order
+i.freight.order.line    - Freight Order Line
+Output: o.use.found.load                - Indicator if the found load should
 be used (true/false)
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for FreightShipmentBuilding
-
-The following process extension(s) is/are available: FreightShipmentBuilding.CustomBuildingConstraints

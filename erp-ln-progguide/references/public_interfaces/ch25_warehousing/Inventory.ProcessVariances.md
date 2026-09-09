@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 949-950
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 959-959
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2026.07 (KB3665122  ).
+This function is available from 2026.07 (KB3665122).
 Syntax: long Inventory.ProcessVariances(
 domain  tckoor           iKindOfOrder,
 domain  tcorno           iOrder,
@@ -27,7 +27,7 @@ Otherwise there should be no pending logical transaction before
 calling this function.
 Post:   If iWithCommit is false commit.transaction() or
 abort.transaction() must be done.
-If true                       - no need to commit or abort the process, that is handled
+If true - no need to commit or abort the process, that is handled
 within the function.
 Input:  iKindOfOrder
 The kind of order for which variances need to be
@@ -59,6 +59,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The variances have been processed successfully.
-<> 0                       - Error. The variances could not be processed.
+Return: 0 - The variances have been processed successfully.
+<> 0 - Error. The variances could not be processed.
 ```

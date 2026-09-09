@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 469-470
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 471-472
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2022.06 (KB2233502  ).
+This function is available from 2022.06 (KB2233502).
 Syntax: long PurchaseOrderReceipt.StartDetail(
 long             iStartMode,
 domain  tcorno           iPurchaseOrder,
@@ -22,19 +22,19 @@ Usage:        Expl:   This function starts the detail session Purchase Receipts
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
-MODAL+START.WITH.ADD.SET                               -
-Session is started in Add                                              -mode, so a new
+MODAL+START.WITH.ADD.SET -
+Session is started in Add-mode, so a new
 receipt can be entered directly.
 The parent session is blocked until the
 child session exits.
-MODELESS+START.WITH.ADD.SET                               -
-Session is started in Add                                              -mode, so a new
+MODELESS+START.WITH.ADD.SET -
+Session is started in Add-mode, so a new
 receipt can be entered directly.
 Parent and child are parallel sessions
 that can be manipulated simultaneously.
@@ -44,8 +44,8 @@ iOrderLineSequence      Purchase Sequence number
 Note that the given purchase order line
 must exist.
 iReceiptSequence        Purchase Order Line Receipt Sequence
-Unless the session is started in Add                                              -mode,
-the given receipt                                              -sequence is mandatory
+Unless the session is started in Add-mode,
+the given receipt-sequence is mandatory
 and must exist.
 Output:
 oExceptionMessage       The last message if any message is
@@ -59,7 +59,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PurchasePayableReceipt
-
-The following functions are available: PurchasePayableReceipt.ChangePriceAndDiscountAfterReceipt

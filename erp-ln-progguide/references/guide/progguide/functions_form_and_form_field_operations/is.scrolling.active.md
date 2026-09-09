@@ -31,10 +31,14 @@ before.choice:
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2395 - 2399 (ES 10.7.4.1)
+
 - 2481 - 2489 (ES 10.8.8)
+
 - 2490 and above (ES 10.8.9)
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

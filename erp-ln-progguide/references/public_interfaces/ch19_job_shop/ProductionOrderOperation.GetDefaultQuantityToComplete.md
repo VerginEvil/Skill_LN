@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 791-792
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 791-791
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.11 (KB3564185  ).
+This function is available from 2025.11 (KB3564185).
 Syntax: long ProductionOrderOperation.GetDefaultQuantityToComplete(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -23,7 +23,7 @@ Input:  iSite                   Site.
 iProductionOrder        Production Order (mandatory).
 iOperation              Operation(mandatory).
 iQuantityOfSemiFinished The default quantity to complete of the
-semi                                              -finished product will be returned.
+semi-finished product will be returned.
 Default value false.
 Output:
 oDefaultQuantityToComplete

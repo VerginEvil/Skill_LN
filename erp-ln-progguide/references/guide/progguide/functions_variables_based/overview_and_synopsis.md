@@ -18,5 +18,5 @@ long
 ```
 | | | |
 |---|---|---|
-|  | [at.base](at.base1.md) | `(<ref|const> <type> basic_value [, long position, ...], <ref|const> <type> based_variable [, long length, ...])` |
-|  | [at.base](at.base2.md) | `(long process_id, string basic_variable_name, void unused [, long position, ...], <ref|const> <type> based_variable [, long length, ...])` |
+|  | [at.base](at.base1.md) | `(<ref|const> <type> basic_value [, long position,...], <ref|const> <type> based_variable [, long length,...])` |
+|  | [at.base](at.base2.md) | `(long process_id, string basic_variable_name, void unused [, long position,...], <ref|const> <type> based_variable [, long length,...])` |

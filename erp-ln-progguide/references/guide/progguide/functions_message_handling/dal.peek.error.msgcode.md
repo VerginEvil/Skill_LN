@@ -9,7 +9,7 @@ This retrieves the message code from the message buffer at position *n*. The mes
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `n` |  |
+| `long` | `n` |    |
 
 ## Return values
 The message code.

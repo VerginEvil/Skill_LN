@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchasePayableReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 470-473
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 472-474
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2020.12 (KB2161926  ).
+This function is available from 2020.12 (KB2161926).
 Syntax: long PurchasePayableReceipt.ChangePriceAndDiscountAfterReceipt(
 long             iObjectType,
 domain  tcorno           iPurchaseOrderOrSchedule,
@@ -40,7 +40,7 @@ ION, then updating is not allowed.
 Payable receipt lines are only updated if the invoicing
 status is free.
 Price changes must be possible (meaning that e.g. price is not
-read                      -only (yet))
+read-only (yet))
 When a contract is linked and prices and/or discounts are
 changed the contract will be unlinked depending on the
 'Always Use Contract Price and Discount' setting.
@@ -65,76 +65,70 @@ Order, then the following applies:
 'iApproveAndProcessChangeRequestAutomatically',
 Approving and Processing of the Change Request will be
 done automatically or not.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iObjectType                                   - Object Type;
+Input:  iObjectType                     - Object Type;
 Possible values:
 1: Purchase Order
 2: Purchase Schedule;
 (Mandatory)
-iPurchaseOrderOrSchedule                              - Purchase Order or
+iPurchaseOrderOrSchedule        - Purchase Order or
 Schedule Number;
 (Mandatory)
-iLine                                                 - Order or Schedule Line;
+iLine                           - Order or Schedule Line;
 (Mandatory)
-iLineSequence                                         - Line Sequence
-iReceiptSequence                                      - Receipt Sequence
-iPayableReceiptSequence                               - Payable Receipt Sequence;
+iLineSequence                   - Line Sequence
+iReceiptSequence                - Receipt Sequence
+iPayableReceiptSequence         - Payable Receipt Sequence;
 (Mandatory)
-iAllowPriceChangeInvoicedLines                        - True: Allow price changes on
+iAllowPriceChangeInvoicedLines  - True: Allow price changes on
 invoiced lines.
 False: Price changes are not
 not allowed on invoiced lines. Line will be skipped.
-iApplyPriceAndDiscountsToOtherPayableReceipts                         -
+iApplyPriceAndDiscountsToOtherPayableReceipts   -
 Yes: Other Payable Receipt of the same
 Line / Line Sequence will be updated with
 Price and Discounts.
 No: Other Payable Receipt of the same
 Line / Line Sequence will not be updated.
-iApplyPriceStageToOtherPayableReceipts                        -
+iApplyPriceStageToOtherPayableReceipts  -
 Yes: Other Payable Receipt of the same
 Line / Line Sequence will be updated with
 Price Stage.
 No: Other Payable Receipt of the same
 Line / Line Sequence will not be updated.
-iUpdatePriceInItemPurchase                            -
+iUpdatePriceInItemPurchase      -
 Yes: Price in Item Purchase will be updated.
 No: Price is not updated
-iUpdatePriceInItemPurchaseBySite                              -
+iUpdatePriceInItemPurchaseBySite        -
 Yes: Price in Item Purchase by Site will be updated.
 No: Price is not updated
-iApproveAndProcessChangeRequestAutomatically                          -
+iApproveAndProcessChangeRequestAutomatically    -
 Yes: The created change request will be approved and
 processed automatically.
 No: Approval and processing of the change request
 (if any) are not done automatically.
-iPrice                                                - Price
+iPrice                          - Price
 (In order Currency)
-iPriceStage                                           - Price Stage
-iDiscountPercentage                                   - Discount Percentage;
+iPriceStage                     - Price Stage
+iDiscountPercentage             - Discount Percentage;
 Array of 11 elements
-iDiscountAmount                                       - Discount Amount;
+iDiscountAmount                 - Discount Amount;
 Array of 11 elements
 (In order Currency)
-iDiscountMethod                                       - Discount Method;
+iDiscountMethod                 - Discount Method;
 Array of 11 elements
-iDiscountCode                                         - Discount Code;
+iDiscountCode                   - Discount Code;
 Array of 11 elements
-iPayableAmount                                        - Payable Amount;
-Output: oExceptionMessage                     - The last message if any message is
+iPayableAmount                  - Payable Amount;
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Price and Discounts are updated.
-<> 0                                          - An error occurred
+Return: 0                       - Price and Discounts are updated.
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for
-
-## PurchaseOrderMaterialSupplyLine
-
-The following functions are available: PurchaseOrderMaterialSupplyLine.CreateForItemSubcontracting PurchaseOrderMaterialSupplyLine.DeleteSupplyOrder PurchaseOrderMaterialSupplyLine.GenerateSupplyOrder PurchaseOrderMaterialSupplyLines.StartOverview

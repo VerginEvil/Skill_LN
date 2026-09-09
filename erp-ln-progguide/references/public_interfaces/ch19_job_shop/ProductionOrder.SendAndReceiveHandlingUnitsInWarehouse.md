@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 770-770
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 769-770
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2026.06 (KB3624546  ).
+This function is available from 2026.06 (KB3624546).
 Syntax: long ProductionOrder.SendAndReceiveHandlingUnitsInWarehouse(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

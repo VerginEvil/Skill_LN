@@ -10,7 +10,7 @@ If output from different reports is sent to one spool file, you can manage the o
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `brp_id` |  |
+| `long` | `brp_id` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -20,4 +20,5 @@ See [brp.open()](brp.open.md).
 
 ## Related topics
 - [Reports overview and synopsis](overview_and_synopsis.md)
+
 - [Spooling overview and synopsis](../functions_spooling/overview_and_synopsis.md)

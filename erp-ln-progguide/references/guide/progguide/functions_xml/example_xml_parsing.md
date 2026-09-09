@@ -73,5 +73,7 @@ function parse()
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [Example XML generation](example_xml_generation.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1414-1416
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1426-1428
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long ServiceOrder.GenerateSerializedItem(
 domain  tcorno           iServiceOrder,
 domain  tsmdm.acln       iActivityLine,
@@ -30,7 +30,7 @@ the item on the Service Order Activity Line.
 When iMaterialLine is filled the serial will be generated for
 the item on the Service Order Material Line.
 iActivityLine and iMaterialLine cannot be set both.
-The sold                      -to business partner defined on the Service Order will
+The sold-to business partner defined on the Service Order will
 be set as owner of the serialized item.
 Optionally the generated serialized item can be linked to the
 installation group defined on the Service Order and Service
@@ -78,9 +78,9 @@ iUpdateSerialOnServiceOrder
 Controls if the serial number must be set on the
 Service Order/Activity Line based on which the
 serialized item is generated.
--                               yes: The serial number on the order/line is updated
+- yes: The serial number on the order/line is updated
 with the generated serial number.
--                               no: Only a serialized item is generated.
+- no: Only a serialized item is generated.
 (mandatory)
 Output: oGeneratedSerialNumber
 The serial number of the generated serialized item.
@@ -91,9 +91,9 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Serialized Item generated succesfull and (optionally)
+Return: 0       - Serialized Item generated succesfully and (optionally)
 updated on the Service Order/Activity/Material Line.
-<> 0                          - Error during generating serialized item occurred
+<> 0    - Error during generating serialized item occurred
 When oGeneratedSerialNumber is filled, the serialized
 item is generated successfully but the update of the
 serial number on the Service Order/Activity/Material

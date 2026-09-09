@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 946-947
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 956-957
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2021.10 (KB2210123  ).
+This function is available from 2021.10 (KB2210123).
 Syntax: long Inventory.GetAnonymousInventoryQuantities(
 domain  tccwar           iWarehouse,
 domain  whloca           iLocation,
@@ -30,28 +30,28 @@ This function only returns the quantities for the specified
 inventory structure record.
 Pre:    N.A.
 Post:   N.A.
-Input:  iWarehouse                            - Warehouse (Mandatory)
-iLocation                                     - Location (Mandatory, if warehouse
+Input:  iWarehouse              - Warehouse (Mandatory)
+iLocation               - Location (Mandatory, if warehouse
 and item are location controlled)
-iItem                                         - Item (Mandatory)
-iLot                                          - Lot
-iInventoryDate                                - Inventory Date
-iStorageUnit                                  - Storage Unit (Mandatory)
-iPackageDefinition                            - Package definition
+iItem                   - Item (Mandatory)
+iLot                    - Lot
+iInventoryDate          - Inventory Date
+iStorageUnit            - Storage Unit (Mandatory)
+iPackageDefinition      - Package definition
 Only fixed package definitions are
 allowed.
-Output: oQuantityOnHand                       - Quantity On Hand
-oQuantityAvailable                            - Quantity Available
-oQuantityAllocated                            - Quantity Allocated
-oQuantityBlocked                              - Quantity Blocked
-oExceptionMessage                             - The last message if any message is
+Output: oQuantityOnHand         - Quantity On Hand
+oQuantityAvailable      - Quantity Available
+oQuantityAllocated      - Quantity Allocated
+oQuantityBlocked        - Quantity Blocked
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Success
-<> 0                                          - Error
+Return: 0                       - Success
+<> 0                    - Error
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 340-341
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 342-342
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2020.11 (KB2148537  ).
+This function is available from 2020.11 (KB2148537).
 Syntax: long SalesOrderLine.ConfirmSalesDelivery(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -21,13 +21,13 @@ Sales Delivery Line.
 iSalesDeliverySequence is the sequence from that comes from the
 Sales Delivery (tdsls426) record. This record must be present
 and allowed to be confirmed.
-Pre:    Caller must set retry              -point.
+Pre:    Caller must set retry-point.
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                                   - Sales Order (Mandatory)
-iSalesOrderLine                                       - Sales Order Line (Mandatory)
-iSalesOrderSequence                                   - Sales Sequence number
+Input:  iSalesOrder                     - Sales Order (Mandatory)
+iSalesOrderLine                 - Sales Order Line (Mandatory)
+iSalesOrderSequence             - Sales Sequence number
 (must be >= 0)
-iSalesDeliverySequence                                - Sales Delivery Sequence number
+iSalesDeliverySequence          - Sales Delivery Sequence number
 (must be >= 1)
 Output: oExceptionMessage       The last message if any message is
 found. If more than one message is

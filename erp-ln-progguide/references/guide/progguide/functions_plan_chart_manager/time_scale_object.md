@@ -16,11 +16,11 @@ The following predefined variables are available for PCM_OT_TIMESCALE objects.
 ## Attributes
 | | |
 |---|---|
-|  PcmTimescaleVisible (long)  | This flag indicates if the time scale must be visible on the planning board. The possible values are true and false.  |
-|  PcmTimescaleDesc (string)  | The format of the description on the time scale – for example, month numbers, day numbers, and so on. See [sprintf$()](../functions_formatting_io/sprintf.md).  |
-|  PcmTimescaleExprV (string)  | This expression determines how the time scale must be divided and where the ticks indicating the divisions must be placed.  |
-|  PcmTimescaleExprD (string)  | This expression determines the value by which the substitution symbol specified in PcmTimescaleDesc must be replaced – for example, a day number. |
-|  PcmTimescaleInterval (double)  | The interval for the time scale division. |
+| PcmTimescaleVisible (long) | This flag indicates if the time scale must be visible on the planning board. The possible values are true and false. |
+| PcmTimescaleDesc (string) | The format of the description on the time scale – for example, month numbers, day numbers, and so on. See [sprintf$()](../functions_formatting_io/sprintf.md). |
+| PcmTimescaleExprV (string) | This expression determines how the time scale must be divided and where the ticks indicating the divisions must be placed. |
+| PcmTimescaleExprD (string) | This expression determines the value by which the substitution symbol specified in PcmTimescaleDesc must be replaced – for example, a day number. |
+| PcmTimescaleInterval (double) | The interval for the time scale division. |
 
 ## Example
 ```
@@ -48,5 +48,7 @@ sprintf$("Week %D(%wer)", PCM_DAYNO)
 
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)
+
 - [Plan Chart Manager: example](example.md)

@@ -1,36 +1,38 @@
 # TSS Encoding
-TSS is the default character encoding in the 3GL language. Several types of TSS-encoded characters can be distinguished. The first distinction is between single-byte and multibyte.
+TSS is the default [character encoding](../3gl_features/data_types.md#character encoding) in the 3GL language. Several types of TSS-encoded characters can be distinguished. The first distinction is between single-byte and multibyte.
+
 - A single-byte TSS-encoded character occupies exactly one byte and that byte has a value different from 0x9B.
-- A multibyte TSS-encoded character occupies exactly four subsequent bytes and the first byte has the value 0x9B.   Both single-byte and multibyte TSS-encoded characters can be further distinguished.
+
+- A multibyte TSS-encoded character occupies exactly four subsequent bytes and the first byte has the value 0x9B.
+
+Both single-byte and multibyte TSS-encoded characters can be further distinguished.
 
 ## Single-byte TSS-encoded characters
 | | |
 |---|---|
-|  TSS range (hexadecimal)  | Meaning |
-|  00 … 7F  | [ASCII](ascii_table.md) character.  |
-|  80 … 8A  | Line drawing character. |
-|  8B … 9A  | Code feature (see [cf$()](../functions_char_b_win/cf.md)).  |
-|  9B  | Lead-byte value for four-byte TSS sequence. |
-|  9C … 9E  | Reserved for future use. |
-|  9F  | Used to encode the Euro Sign € in the rare circumstance (i.e. only in a Cyrillic context) that none of the byte values in the range A0 … FF can be used for it. |
-|  A0 … FF  |  Used to encode characters from one of the ISO 8859 subsets, dependent on the character set of the current locale. If possible, one of the values is used to encode the Euro Sign €, which normally is not part of the supported ISO 8859 subsets. This usage of the range A0 … FF is ambiguous. For example, in ISO 8859-1 the byte value E7 encodes the character Latin Small Letter C With Cedilla ç, but in ISO 8859-7 it encodes the character Greek Small Letter Eta η.  |
+| TSS range (hexadecimal) | Meaning |
+| 00 … 7F | [ASCII](ascii_table.md) character. |
+| 80 … 8A | Line drawing character. |
+| 8B … 9A | Code feature (see [cf$()](../functions_char_b_win/cf.md)). |
+| 9B | Lead-byte value for four-byte TSS sequence. |
+| 9C … 9E | Reserved for future use. |
+| 9F | Used to encode the Euro Sign € in the rare circumstance (i.e. only in a Cyrillic context) that none of the byte values in the range A0 … FF can be used for it. |
+| A0 … FF | Used to encode characters from one of the ISO 8859 subsets, dependent on the character set of the current locale. If possible, one of the values is used to encode the Euro Sign €, which normally is not part of the supported ISO 8859 subsets. This usage of the range A0 … FF is ambiguous. For example, in ISO 8859-1 the byte value E7 encodes the character Latin Small Letter C With Cedilla ç, but in ISO 8859-7 it encodes the character Greek Small Letter Eta η. |
 
 ## Multibyte TSS-encoded characters
 Multibyte TSS-encoded characters are exactly four bytes long, and their first byte has hexadecimal value 9B. They are distinguished by the value of their second byte.
--
--
 | | |
 |---|---|
-|  TSS range (hexadecimal)  | Meaning |
-|  9B 21 *pp qq*  | Japanese full width character. |
-|  9B 23 21 *pp*  | Japanese half width character. |
-|  9B 25 *pp qq*  | Simplified Chinese character. |
-|  9B 27 *pp qq*  | Traditional Chinese character. |
-|  9B 31 *pp qq*  | Korean (Wansung) character. |
-|  9B 32 *pp qq*  | Korean (Johab) character. |
-|  9B 9C 9D *nn*  |  Used to encode characters from one of the single-byte Windows Code Pages that cannot be unified with one of the characters of the corresponding ISO 8859 subset. The fourth byte *nn* is 64 (0x40) less than the Windows Code Page encoding of the character. For example, the character Horizontal Ellipsis … (encoded with hexadecimal byte value 85 in Windows Code Page 1252) is not available in the corresponding character set ISO 8859-1, and therefore it is encoded in multibyte TSS as 9B 9C 9D 45. In principle, this usage is ambiguous. However, in practice it appears that only 3 of the 52 used encodings in this range are ambiguous. For example, TSS-encoding 9B 9C 9D 74 is used in two different cases: In Windows Code Page 1251 (Cyrillic), hexadecimal byte value B4 encodes the character Cyrillic Small Letter Ghe With Upturn ґ. This character is not available in the corresponding Cyrillic character set ISO 8859-5. Therefore, it is encoded in TSS as 9B 9C 9D 74. In Windows Code Pages 1256 (Arabic) and 1257 (Baltic Rim) hexadecimal byte value B4 encodes the character Acute Accent ´. This character is neither available in the Arabic character set ISO 8859-6, nor in the Baltic Rim character set ISO 8859-13. Therefore, it is encoded in TSS as 9B 9C 9D 74.  |
-|  9B BC *pp qq* … 9B BF *pp qq*  |  Used to encode the Basic Multilingual Plane (BMP), i.e. the first 2^16 Unicode code points (U+0000 … U+FFFF). See [UTF-T Encoding](utft.md). For a Unicode code point in this range, its [UTF-16](utf16.md) encoding consists of a single 16-bit word. The first 128 Unicode code points correspond to the [ASCII](ascii_table.md) character set. For ASCII characters, this multibyte TSS encoding must not be used. Instead, for ASCII characters the single-byte TSS encoding must be used.  |
-|  9B C0 *pp qq* … 9B FF *pp qq*  | Used to encode the Supplementary Characters, i.e. the remaining 2^20 Unicode code points (U+010000 … U+10FFFF). See [UTF-T Encoding](utft.md). For a Unicode code point in this range, its [UTF-16](utf16.md) encoding consists of two 16-bit words.  |
+| TSS range (hexadecimal) | Meaning |
+| 9B 21 *pp qq* | Japanese full width character. |
+| 9B 23 21 *pp* | Japanese half width character. |
+| 9B 25 *pp qq* | Simplified Chinese character. |
+| 9B 27 *pp qq* | Traditional Chinese character. |
+| 9B 31 *pp qq* | Korean (Wansung) character. |
+| 9B 32 *pp qq* | Korean (Johab) character. |
+| 9B 9C 9D *nn* | Used to encode characters from one of the single-byte Windows Code Pages that cannot be unified with one of the characters of the corresponding ISO 8859 subset. The fourth byte *nn* is 64 (0x40) less than the Windows Code Page encoding of the character. For example, the character Horizontal Ellipsis … (encoded with hexadecimal byte value 85 in Windows Code Page 1252) is not available in the corresponding character set ISO 8859-1, and therefore it is encoded in multibyte TSS as 9B 9C 9D 45. In principle, this usage is ambiguous. However, in practice it appears that only 3 of the 52 used encodings in this range are ambiguous. For example, TSS-encoding 9B 9C 9D 74 is used in two different cases: In Windows Code Page 1251 (Cyrillic), hexadecimal byte value B4 encodes the character Cyrillic Small Letter Ghe With Upturn ґ. This character is not available in the corresponding Cyrillic character set ISO 8859-5. Therefore, it is encoded in TSS as 9B 9C 9D 74. In Windows Code Pages 1256 (Arabic) and 1257 (Baltic Rim) hexadecimal byte value B4 encodes the character Acute Accent ´. This character is neither available in the Arabic character set ISO 8859-6, nor in the Baltic Rim character set ISO 8859-13. Therefore, it is encoded in TSS as 9B 9C 9D 74. |
+| 9B BC *pp qq* … 9B BF *pp qq* | Used to encode the Basic Multilingual Plane (BMP), i.e. the first 2^16 Unicode code points (U+0000 … U+FFFF). See [UTF-T Encoding](utft.md). For a Unicode code point in this range, its [UTF-16](utf16.md) encoding consists of a single 16-bit word. The first 128 Unicode code points correspond to the [ASCII](ascii_table.md) character set. For ASCII characters, this multibyte TSS encoding must not be used. Instead, for ASCII characters the single-byte TSS encoding must be used. |
+| 9B C0 *pp qq* … 9B FF *pp qq* | Used to encode the Supplementary Characters, i.e. the remaining 2^20 Unicode code points (U+010000 … U+10FFFF). See [UTF-T Encoding](utft.md). For a Unicode code point in this range, its [UTF-16](utf16.md) encoding consists of two 16-bit words. |
 
 ## Ambiguity
 Two areas of the TSS encoding are ambiguous: the single-byte range A0 … FF and the multibyte range 9B 9C 9D *nn*. For several TSS encodings in these ranges it is not completely clear which character is meant. In slightly other words: it depends on the context which character is meant.
@@ -53,4 +55,5 @@ This implies that the phenomenon of unification occurs very often. For example, 
 
 ## Related topics
 - [ASCII table (C0 Controls and Basic Latin)](ascii_table.md)
+
 - [UTF-T Encoding](utft.md)

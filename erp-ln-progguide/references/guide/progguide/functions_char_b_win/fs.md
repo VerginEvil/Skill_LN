@@ -10,7 +10,7 @@ Use this to move the cursor *num_expr* positions to the left. If you exclude the
 ## Arguments
 | | | |
 |---|---|---|
-| `[ long` | `num_expr ]` |  |
+| `[ long` | `num_expr ]` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

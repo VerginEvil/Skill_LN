@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Calendar
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 154-155
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 155-156
 
 ```baan
 DLL:   tcextccpapi
-This function is available from     2024.11 (KB3522420  ).
+This function is available from 2024.11 (KB3522420).
 Syntax: long Calendar.UpdateWorkingHours(
 domain  tcccp.ccal       iCalendarCode,
 domain  tcccp.ract       iAvailabilityType,
@@ -26,18 +26,14 @@ iOnlyChangedCalendars           Only process changed calendars.
 iProcessChildCalendars          Process child calendars.
 iRestoreCalendarDefaults        Restore calendar defaults
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Updated successfully.
-<> 0                                          - An error occurred.
+Return: 0                       - Updated successfully.
+<> 0                    - An error occurred.
 ```
-
-## Public Interfaces for CalendarWorkingHour
-
-The following functions are available: CalendarWorkingHours.StartOverview

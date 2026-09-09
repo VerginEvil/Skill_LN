@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that you are not logged on to a database.  |
+| This error indicates that you are not logged on to a database. |
 | *Solution:* |
 | Contact Infor support. |

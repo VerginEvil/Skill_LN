@@ -6,13 +6,13 @@ When moving a UI script from a [Tools Interface Version (TIV)](../tiv/tiv_overvi
 |---|---|
 | [marked](../misc/predefined_variables.md) | doesn't work anymore |
 | [unmarked](../misc/predefined_variables.md) | doesn't work anymore |
-| [mark.table](../misc/predefined_variables.md) | only reflects the state of records that are visible in the window. Note that with TIV higher than 1075 there can also be records selected that are not visible, but are scrolled out of the window. For this purpose, [do.selection()](../functions_form_and_form_field_operations/do.selection.md) can be used.  |
+| [mark.table](../misc/predefined_variables.md) | only reflects the state of records that are visible in the window. Note that with TIV higher than 1075 there can also be records selected that are not visible, but are scrolled out of the window. For this purpose, [do.selection()](../functions_form_and_form_field_operations/do.selection.md) can be used. |
 | [choice.global.delete](../4gl_features/4gl_choice_sections.md) | doesn't work anymore |
 | [mark.occ()](../functions_form_and_form_field_operations/mark.occ.md) | behavior has changed, see [mark.occ()](../functions_form_and_form_field_operations/mark.occ.md) |
 So in case the above variables are not used, no rework is needed. There are a couple of scenarios in which the above variables are used. The most important ones are mentioned below.
 
 ## Use mark.occ to append records to selection
-When you want [mark.occ()](../functions_form_and_form_field_operations/mark.occ.md) to append a record to the selection, specify true for the second argument of mark.occ . E.g.:
+When you want [mark.occ()](../functions_form_and_form_field_operations/mark.occ.md) to append a record to the selection, specify true for the second argument of mark.occ. E.g.:
 ```
 
 mark.occ( 1, true)
@@ -86,4 +86,5 @@ Note  Improved record selection functionality is available from [Tools Interface
 
 ## Related topics
 - [Record selection Overview](overview.md)
+
 - [Record selection Synopsis](synopsis.md)

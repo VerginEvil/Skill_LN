@@ -18,7 +18,7 @@ Get the data of a node. When *node* is of type XML_DATA or XML_PI, only the data
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error: the supplied *basedString* argument is not a based string.  |
+| -1 | Error: the supplied *basedString* argument is not a based string. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -32,4 +32,5 @@ string	xmlData$( long node, [ const string default.value, const string separator
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

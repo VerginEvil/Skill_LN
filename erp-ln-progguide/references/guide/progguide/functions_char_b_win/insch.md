@@ -10,7 +10,7 @@ Use this to insert the result of *string_expr* at the current cursor position. T
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `attr` |  |
+| `string` | `attr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

@@ -34,6 +34,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

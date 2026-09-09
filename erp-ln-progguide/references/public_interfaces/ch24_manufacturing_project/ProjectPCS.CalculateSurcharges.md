@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 878-880
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 888-890
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2024.08 (KB2319474  ).
+This function is available from 2024.08 (KB2319474).
 Syntax: long ProjectPCS.CalculateSurcharges(
 domain  tccprj           iProject,
 domain  tcccur           iCurrency,
@@ -28,7 +28,7 @@ the given set of amounts in the input arrays.
 The output arrays are allocated by this function and must be
 declared as based.
 The output arrays will contain the calculation results,
-separated out into fixed cost                       - and variable cost project
+separated out into fixed cost - and variable cost project
 surcharges.
 Pre:    N.A.
 Post:   N.A.

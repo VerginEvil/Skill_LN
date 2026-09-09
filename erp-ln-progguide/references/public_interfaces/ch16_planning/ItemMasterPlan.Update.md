@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemMasterPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 542-543
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 545-546
 
 ```baan
 DLL:   cpextrmpapi
-This function is available from     2021.06 (KB2171483  ).
+This function is available from 2021.06 (KB2171483).
 Syntax: long ItemMasterPlan.Update(
 domain  tcncmp           iCompany,
 domain  cpcom.plnc       iPlanningScenario,
@@ -35,7 +35,3 @@ information.
 Return: 0                       Function has completed.
 <> 0                    A fatal problem occurred.
 ```
-
-## Public Interfaces for ItemOrderPlan
-
-The following functions are available: ItemOrderPlan.Generate ItemOrderPlan.Get ItemOrderPlan.GetV2 ItemOrderPlan.StartPlan ItemOrderPlan.StartPlanForProject ItemOrderPlan.StartPlanForProjectPeg ItemOrderPlan.StartSessionForOrder

@@ -33,4 +33,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [CDF (Customer Defined Fields) handling overview](overview.md)
+
 - [CDF (Customer Defined Fields) handling synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1084-1086
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1094-1096
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.02 (KB2314556  ).
+This function is available from 2024.02 (KB2314556).
 Syntax: long InboundOrderLine.StartPrintGoodsReceivedNote(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -26,7 +26,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Print Goods Received Note
 (whinh3412m100). Depending on the main table of the calling
-session, Non                      -Consecutive Record Selection (NCRS) is used.
+session, Non-Consecutive Record Selection (NCRS) is used.
 When the main table is:
 Warehouse Orders (whinh200) or
 Inbound Order Lines (whinh210) or
@@ -81,18 +81,14 @@ iToReceipt
 To Receipt selection field is filled with this
 value. (when iIgnoreSelectionFields is false and NCRS
 is not applicable)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for InboundRun
-
-The following functions are available: InboundRun.GenerateStorageList InboundRun.StartAutomaticInboundProcessing

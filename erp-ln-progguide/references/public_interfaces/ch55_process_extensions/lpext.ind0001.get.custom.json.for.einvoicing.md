@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for IND.EInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2034-2035
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2053-2054
 
 ```baan
 Syntax: long lpext.ind0001.get.custom.json.for.einvoicing(
@@ -31,15 +31,11 @@ To update the value
 JSON.setString( i.json,"No","NewValue")
 Pre:    NA
 Post:   NA
-Input:  i.financial.company               -> Financial Company
-i.transaction.type                       -> Transaction type
-i.invoice.number                       -> Invoice Number
-i.json                       -Generated JSON for IRN
-Output: o.json               - User Edited JSON
-Return: 0                     -       Success
-DALHOOKERROR                          - Otherwise.
+Input:  i.financial.company -> Financial Company
+i.transaction.type -> Transaction type
+i.invoice.number -> Invoice Number
+i.json -Generated JSON for IRN
+Output: o.json - User Edited JSON
+Return: 0       -       Success
+DALHOOKERROR    - Otherwise.
 ```
-
-## Process Extensions for IntegrationTransaction
-
-The following process extension(s) is/are available: IntegrationTransaction.GetMaxNumberOfDocumentLines IntegrationTransaction.SetDocumentSeries IntegrationTransaction.SkipPrint

@@ -11,18 +11,19 @@ Use [xmlAllocPrettyString](serialize_xml_object_alloc_pretty.md) instead to seri
 | | | |
 |---|---|---|
 | `ref string` | `basedString$` |  Ref string argument that receives the UTF-8 encoded unformatted XML document. As its contents will not be encoded in TSS, it is desirable that this argument is of type string, rather than type multibyte string. The argument must be declared as BASED. It is implicitly allocated to the correct size (see [alloc.mem](../functions_memory_operations/alloc.mem.md)).  |
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 | | |
 |---|---|
-| 0 | Success. Even if the serialization fails, this value is returned. In that case *basedString$* will be an empty string.  |
-| 1 | Error: the supplied *basedString$* argument is not a based string.  |
+| 0 | Success. Even if the serialization fails, this value is returned. In that case *basedString$* will be an empty string. |
+| 1 | Error: the supplied *basedString$* argument is not a based string. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

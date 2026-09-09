@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1268-1271
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1278-1280
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.08 (KB3615530  ).
+This function is available from 2025.08 (KB3615530).
 Syntax: long WarehouseInspection.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -33,10 +33,10 @@ Usage:        Expl    This function starts the overview session Warehouse Inspec
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -126,20 +126,16 @@ The Inspection Type to be started
 Mandatory if iStartMode = MODELESS and
 iSessionIndex = 7 (or iStartFilter = "byInspectionType")
 Output: for iStartMode MODAL:
-oInspection                                   - Inspection Number of selected record
-oInspectionSequence                           - Inspection Sequence of selected record
-oExceptionMessage                             - The last message if any message is
+oInspection          - Inspection Number of selected record
+oInspectionSequence  - Inspection Sequence of selected record
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for WarehouseInspectionLine
-
-The following functions are available: WarehouseInspectionLine.Inspect WarehouseInspectionLine.StartDetail WarehouseInspectionLine.StartOverview

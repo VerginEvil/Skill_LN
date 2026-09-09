@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPurchaseBusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 201-202
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 202-203
 
 ```baan
 DLL:   tdextipuapi
-This function is available from     2021.03 (KB2172211  ).
+This function is available from 2021.03 (KB2172211).
 Syntax: long ItemPurchaseBusinessPartner.CalculateLeadTimes(
 domain  tccom.bpid       iBuyFromBusinessPartner,
 domain  tccom.bpid       iShipFromBusinessPartner,
@@ -38,52 +38,52 @@ full lead time) and transportation time in days for the given
 combination of purchased item and business partner.
 Pre:    Not Applicable.
 Post:   Not Applicable.
-Input:  iBuyFromBusinessPartner               - Buy-from Business Partner (Mandatory)
-iShipFromBusinessPartner                      - Ship-from Business Partner (not Mandatory)
-iShipFromAddress                              - Ship-from Address.
+Input:  iBuyFromBusinessPartner - Buy-from Business Partner (Mandatory)
+iShipFromBusinessPartner- Ship-from Business Partner (not Mandatory)
+iShipFromAddress        - Ship-from Address.
 If filled this address will be used in
 transportation time calculation.
-iShipToAddress                                - Ship-to Address.
+iShipToAddress          - Ship-to Address.
 If filled this address will be used in
 transportation time calculation.
-iItem                                         - Item (Mandatory)
-iLogisticCompany                              - Logistic company (Mandatory)
-iSite                                         - Site (not Mandatory)
-iSupplyTime                                   - Supply Time (not Mandatory)
-iSupplyTimeUnit                               - Supply Time Unit (Mandatory)
+iItem                   - Item (Mandatory)
+iLogisticCompany        - Logistic company (Mandatory)
+iSite                   - Site (not Mandatory)
+iSupplyTime             - Supply Time (not Mandatory)
+iSupplyTimeUnit         - Supply Time Unit (Mandatory)
 Possible values:
--                                                       Hours
--                                                       Days
-iFullSupplyTime                               - Full Supply Time (not Mandatory)
-iFullSupplyTimeUnit                           - Full Supply Time Unit (Mandatory)
+- Hours
+- Days
+iFullSupplyTime         - Full Supply Time (not Mandatory)
+iFullSupplyTimeUnit     - Full Supply Time Unit (Mandatory)
 Possible values:
--                                                       Hours
--                                                       Days
-iInternalProcessTime                          - Internal Process Time (not Mandatory)
-iInternalProcessTimeUnit                      - Internal Process Time Unit (Mandatory)
+- Hours
+- Days
+iInternalProcessTime    - Internal Process Time (not Mandatory)
+iInternalProcessTimeUnit- Internal Process Time Unit (Mandatory)
 Possible values:
--                                                       Hours
--                                                       Days
-iSafetyTime                                   - Safety Time (not Mandatory)
-iSafetyTimeUnit                               - Safety Time Unit (Mandatory)
+- Hours
+- Days
+iSafetyTime             - Safety Time (not Mandatory)
+iSafetyTimeUnit         - Safety Time Unit (Mandatory)
 Possible values:
--                                                       Hours
--                                                       Days
-iCarrier                                      - Carrier  (not Mandatory)
-iLeadTime                                     - Current Lead Time (not Mandatory)
-iFullLeadTime                                 - Current Full Lead Time (not Mandatory)
-Output: oLeadTime                             - Calculated Lead Time
-oFullLeadTime                                 - Calculated Full Lead Time
-oTransportationTime                           - Calculated Transit Time
-oExceptionMessage                             - The last message if any message is
+- Hours
+- Days
+iCarrier                - Carrier  (not Mandatory)
+iLeadTime               - Current Lead Time (not Mandatory)
+iFullLeadTime           - Current Full Lead Time (not Mandatory)
+Output: oLeadTime               - Calculated Lead Time
+oFullLeadTime           - Calculated Full Lead Time
+oTransportationTime     - Calculated Transit Time
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Calculate Leadtimes finished
-<> 0                                          - Not all mandatory input arguments are
+Return: 0                       - Calculate Leadtimes finished
+<> 0                    - Not all mandatory input arguments are
 filled.
 ```

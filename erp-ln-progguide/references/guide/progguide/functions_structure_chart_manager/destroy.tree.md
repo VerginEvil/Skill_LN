@@ -19,5 +19,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Structure ChartManager synopsis](synopsis.md)
+
 - [Tree structures: example](example.md)

@@ -2,13 +2,13 @@
 
 > Chapter: Chapter 19 Public Interfaces for Job Shop
 >
-> Group: Public Interfaces for ConfigurableStructures
+> Group: Public Interfaces for ConfigurableStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 817-818
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 820-821
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2026.10 (KB3684755  ).
+This function is available from 2026.10 (KB3684755).
 Syntax: long ConfigurableStructures.StartDetail(
 long             iStartMode,
 domain  tcitem           iProduct,
@@ -23,10 +23,10 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iProduct                Product. Mandatory.

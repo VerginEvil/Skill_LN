@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundRun
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1195-1198
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1205-1208
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.03 (KB2325172  ).
+This function is available from 2024.03 (KB2325172).
 Syntax: long OutboundRun.HandlePickingList(
 domain  whinh.btno       iOutboundRun,
 domain  whinh.spla       iAction,
@@ -43,16 +43,16 @@ Component is not available are ignored.
 Extended:
 Since 2025.09 release the following options have been added to the
 iProcessingOptionSet:
-PrintPickingList                              - relevant for iAction = Generate.
+PrintPickingList        - relevant for iAction = Generate.
 Determines whether the report should
 be printed or not after Picking List
 was generated.
-CombinePickingMission                         - yes: outbound advices for the same
+CombinePickingMission   - yes: outbound advices for the same
 Run and Warehouse will be combined in
 one picking mission;
 no: a new picking mission is generated
 for each Picking List.
-CombineWithMission                            - specifies which picking mission the
+CombineWithMission      - specifies which picking mission the
 Picking List should be added to.
 Mandatory if CombinePickingMission is
 Yes.
@@ -163,13 +163,13 @@ ReportName                      domain tcmcs.str16      Empty String
 ReportName only needs to filled for customized reports, otherwise
 the report related to the SortOption is automatically used.
 ReportName must start with an "r", e.g. "rwhinh441511001"
-Output: oDataProcessed                        - true:  Picking List Generated/Printed.
+Output: oDataProcessed          - true:  Picking List Generated/Printed.
 false: Nothing Generated/Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

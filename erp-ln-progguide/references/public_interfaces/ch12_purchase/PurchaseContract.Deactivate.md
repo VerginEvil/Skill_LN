@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 425-426
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 427-428
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2020.12 (KB2160844  ).
+This function is available from 2020.12 (KB2160844).
 Syntax: long PurchaseContract.Deactivate(
 domain  tccono           iPurchaseContract,
 boolean          iUpdateLineStatus,
@@ -30,37 +30,37 @@ contract, then the following applies:
 * Deactivating a contract is not applicable. The
 contract will remain active. The change request
 procedure is required to perform changes.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iPurchaseContract                             - Purchase Contract; Mandatory
-iUpdateLineStatus                                     - True: will update the status
+Input:  iPurchaseContract               - Purchase Contract; Mandatory
+iUpdateLineStatus               - True: will update the status
 of the contract lines
 as well.
 False: Contract lines will not
 be updated.
-iUpdateLogisticDataStatus                             - True: will update the status
+iUpdateLogisticDataStatus       - True: will update the status
 of the logistic data
 records as well.
 False: Logistic Data is not
 updated.
-iUpdatePriceStatus                                    - True: will update the status
+iUpdatePriceStatus              - True: will update the status
 of the contract price
 records as well.
 False: Price records are not
 updated.
-iUpdateTerminatedLines                                - True: will also update the
+iUpdateTerminatedLines          - True: will also update the
 status of terminated
 contract lines.
 False: Terminated contract
 lines are not updated.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The contract is deactivated
-<> 0                                          - An error occurred
+Return: 0                       - The contract is deactivated
+<> 0                    - An error occurred
 ```

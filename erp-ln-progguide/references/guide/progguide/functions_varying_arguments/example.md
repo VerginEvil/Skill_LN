@@ -44,4 +44,5 @@ function call:
 
 ## Related topics
 - [Functions with variable number of arguments: overview](overview.md)
+
 - [Functions with variable number of arguments: synopsis](synopsis.md)

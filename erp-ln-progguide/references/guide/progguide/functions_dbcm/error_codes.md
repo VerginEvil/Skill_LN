@@ -24,8 +24,13 @@ Several DBCM functions return specific error codes in an error situation, or the
 | `cDbcm_DatabaseErrorBeforeCallback` | 18 |
 | `cDbcm_DatabaseErrorDuringCallback` | 19 |
 | `cDbcm_DatabaseErrorAfterCallbacks` | 20 |
-| `cDbcm_DatabaseErrorRemoveToid` | 21 |
+| `cDbcm_DatabaseErrorRemoveToid` | 21 F8) |
+| `cDbcm_DatabaseUpdateCOBO` | 21 | FP9 and later |
+| `cDbcm_InvalidType` | 22 |
+| `cDbcm_ObjectNotCheckedOut` | 23 |
+| `cDbcm_ObjectCheckedOutInOtherCompany` | 24 |
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

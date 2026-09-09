@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Workflow
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1891-1893
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1911-1912
 
 ```baan
 DLL:   tcextocmapi
-This function is available from     2023.02 (KB2220087  ).
+This function is available from 2023.02 (KB2220087).
 Syntax: long Workflow.DisableSubmit(
 domain  tcmcs.str6       iObjectType,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -28,15 +28,15 @@ be called after the first update on the table.
 Example:
 Updating the Name of a Business Partner (tccom100.nama) will
 automatically update the Search Key of all roles of that Business
-Partner. If the Invoice                      -from role is active for the BP, tccom122.seak
+Partner. If the Invoice-from role is active for the BP, tccom122.seak
 is updated and the tccom122 record is automatically checked out and
 submitted if Object Type "TCIFBP" is enabled. If the same process
-wants to make an update on the Invoice                      -from role for the BP (tccom122),
-the error Invoice                      -from Business Partner [<BP>] has the 'Pending' status
+wants to make an update on the Invoice-from role for the BP (tccom122),
+the error Invoice-from Business Partner [<BP>] has the 'Pending' status
 is returned. The Workflow.DisableSubmit() function can be used before
 updating tccom100.nama to disable the submit for tccom122 (Object
 Type "TCIFBP"). The Workflow.EnableSubmit() function can be used
-after updating tccom100.nama and before updating Invoice                      -from BP data
+after updating tccom100.nama and before updating Invoice-from BP data
 (tccom122) to enable the submit for tccom122 and other tables.
 Coding example:
 long            return.value
@@ -68,16 +68,16 @@ Pre:    none
 Post:   Function Workflow.EnableSubmit() must be called to enable the
 Workflow action Submit of all Object Types . Submitting the checked
 out Objects is required as well if this is not yet done.
-Input:  iObjectType                           - object type (mandatory)
+Input:  iObjectType             - object type (mandatory)
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Success
-<> 0                                          - An error occurred
+Return: 0                       - Success
+<> 0                    - An error occurred
 ```

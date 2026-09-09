@@ -9,7 +9,7 @@ This reads a single query result and stores the values retrieved in the variable
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `sql_id` |   |
+| `long` | `sql_id` |    |
 
 ## Return values
 | | |
@@ -23,4 +23,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Dynamic SQL queries overview](overview.md)
+
 - [Dynamic SQL queries synopsis](synopsis.md)

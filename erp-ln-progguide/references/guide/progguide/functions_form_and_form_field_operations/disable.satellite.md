@@ -26,4 +26,5 @@ The focus will change to the first enabled satellite as defined by WorkTop. To a
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

@@ -10,18 +10,20 @@ This function may be used to determine the required size of the argument supplie
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 | | |
 |---|---|
-| >= 0 | Success; Length of the generated XML document. |
-| < 0 |  Error. Some specific values:  |
+| -1 | Incorrect argument. *FromNode* or *toNode* is not a valid xml node. |
+| -3 | A TSS conversion error occurred. |
+| -4 | An invalid character was encountered. See [Verify the used characters](contains_valid_characters_only.md). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

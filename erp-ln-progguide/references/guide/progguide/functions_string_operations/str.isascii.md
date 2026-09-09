@@ -32,4 +32,5 @@ result = str.isascii("abc123" & chr$(140))
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

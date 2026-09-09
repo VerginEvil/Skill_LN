@@ -4,7 +4,7 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1642-1643
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1661-1662
 
 ```baan
 DLL:   tcextbodapi
@@ -24,24 +24,24 @@ this function with iMethod is "Create" or if the actionCode is
 "Change", call this function with iMethod is "Change".
 Pre:    NA
 Post:   NA
-Input:  iNoun                         - The (protected) Noun for which the method
+Input:  iNoun           - The (protected) Noun for which the method
 must be executed, e.g.
 "ReceiveDeliveryWarehousingBOD". Mandatory
-iMethod                               - The method to be executed,
+iMethod         - The method to be executed,
 e.g. "Create" or "Change". Mandatory
-iXMLRequest                           - XML structure with request. Mandatory
-Output: oXMLResponse                  - XML structure with response (if method is
+iXMLRequest     - XML structure with request. Mandatory
+Output: oXMLResponse    - XML structure with response (if method is
 executed successfully)
-oXMLResult                            - XML structure with result (in case of error)
-oExceptionMessage                             - The last message if any message is
+oXMLResult      - XML structure with result (in case of error)
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                     - Method is executed.
-<> 0                                  - Method could not be executed.
+0               - Method is executed.
+<> 0            - Method could not be executed.
 ```

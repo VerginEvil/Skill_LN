@@ -4,16 +4,17 @@
 >
 > Group: Process Extensions for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2141-2142
-
-Skip the aggregation of Estimated Material Lines. This process extension is available from 2025.08 ( KB3532174 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2164-2165
 
 ```baan
+Skip the aggregation of Estimated Material Lines.
+This process extension is available from 2025.08 (KB3532174).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension ProductionOrder.SkipMaterialLineAggregation can be
 used to skip the aggregation of estimated material lines during the
 creation of the production order.
 Sessions where this Process Extension can be implemented:
--               Production Order (tisfc0101m100)
+- Production Order (tisfc0101m100)
 Fields that are available to be used in this Process Extension:
 Extern Variables used in this process extension:
 |* For control of aggregation based on BOM (model or classic)

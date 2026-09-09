@@ -4,19 +4,19 @@
 >
 > Group: Public Interfaces for EngineeringItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 265-266
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 267-268
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.08 (KB3638118  ).
+This function is available from 2026.08 (KB3638118).
 Syntax: long EngineeringItem.GenerateByMBC(
 domain  tcorno           iMBCNumber,
 long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to Generate Engineering Items by MBC.
-If the E                      -item does not have a revision yet, one will be created
-by the MBC. If the E                      -item does have a revision, the revision is
+If the E-item does not have a revision yet, one will be created
+by the MBC. If the E-item does have a revision, the revision is
 linked to the MBC as old revision (which will expire when new
 revisions are created). New revisions will be generated only
 when the EBOM is processed, and these items are the basis for

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLineStockPointDetail
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1173-1174
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1183-1184
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.02 (KB2280145  ).
+This function is available from 2023.02 (KB2280145).
 Syntax: long ShipmentLineStockPointDetails.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,10 +29,10 @@ Point Details (whinh4133m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -52,22 +52,18 @@ Optional
 iDistributionSequence
 Optional
 Output: for iStartMode MODAL:
-oShipment                                     - selected shipment
-oShipmentLine                                 - selected shipment line
-oBomLine                                      - selected bom line
-oDistributionSequence                         - selected distribution sequence
-oExceptionMessage                             - The last message if any message is
+oShipment               - selected shipment
+oShipmentLine           - selected shipment line
+oBomLine                - selected bom line
+oDistributionSequence   - selected distribution sequence
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for ProjectedShipment
-
-The following functions are available: ProjectedShipment.Generate ProjectedShipment.GenerateOutboundAdvice ProjectedShipment.ReleaseOutboundAdvice ProjectedShipment.StartGenerate

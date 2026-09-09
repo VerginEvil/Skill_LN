@@ -9,8 +9,8 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `ref string` | `str$` |  |
-| `long` | `mode` |  |
+| `ref string` | `str$` |    |
+| `long` | `mode` |    |
 
 ## Return values
 0: success
@@ -43,5 +43,7 @@ s3 = strip$(s2)     | strip$ is useless here, the set.symbol.strip.mode did this
 
 ## Related topics
 - [set.strip.mode()](set.strip.mode.md)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

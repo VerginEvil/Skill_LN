@@ -18,4 +18,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Graph on Form Overview](overview.md)
+
 - [Graph on Form synopsis](synopsis.md)

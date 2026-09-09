@@ -25,5 +25,7 @@ For an example, see [java.load.application](java.load.application.md)
 
 ## Related topics
 - [Java VM integration - Infor Enterprise Server 3GL](overview.md)
+
 - [java.load.application](java.load.application.md)
+
 - [java.execute.static.application.method](java.execute.static.application.method.md)

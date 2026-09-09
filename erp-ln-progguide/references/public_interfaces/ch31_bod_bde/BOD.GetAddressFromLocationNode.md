@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1649-1650
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1668-1669
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2026.09 (KB3686801  ).
+This function is available from 2026.09 (KB3686801).
 Syntax: long BOD.GetAddressFromLocationNode(
 long             iXmlNode,
 domain  tcbod.name       iNoun,
@@ -30,9 +30,9 @@ Location is used.
 Based on the address fields of the selected Location, the
 interface either gets an existing LN address code or creates a
 new one:
--                       GET: when an LN address already exists with the same address
+- GET: when an LN address already exists with the same address
 fields, the code of that existing address is returned.
--                       CREATE: when no matching LN address exists, a new LN address
+- CREATE: when no matching LN address exists, a new LN address
 is created and the code of the newly created address is
 returned.
 iCurrentAddress is the address that is currently linked to the
@@ -50,28 +50,28 @@ the address is considered empty: no address code is returned
 and oAddressCodeIsSet is false.
 Pre:    NA
 Post:   NA
-Input : iXmlNode                              - The xml node to search in. Mandatory
-iNoun                                         - Noun. e.g. "ServiceOrderInBOD".
+Input : iXmlNode                - The xml node to search in. Mandatory
+iNoun                   - Noun. e.g. "ServiceOrderInBOD".
 Mandatory.
-iAddressPath                                  - The path to the Location node in the xml node.
+iAddressPath            - The path to the Location node in the xml node.
 e.g.
 "<ServiceOrderHeader><CustomerParty><Location>".
 Mandatory.
-iCurrentAddress                               - The current address code. Only relevant
+iCurrentAddress         - The current address code. Only relevant
 in case of a change; otherwise it can
 be left empty. e.g. "ADD000232".
-Output: oAddress                              - The address code that was found or
+Output: oAddress                - The address code that was found or
 created. e.g. "ADD000232".
-oAddressIsSet                                 - Indicator whether the address code was
+oAddressIsSet           - Indicator whether the address code was
 set (true or false).
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK.
-<> 0                                          - Error occurred.
+Return: 0                       - OK.
+<> 0                    - Error occurred.
 ```

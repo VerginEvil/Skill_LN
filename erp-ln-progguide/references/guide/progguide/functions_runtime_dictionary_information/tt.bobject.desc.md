@@ -9,7 +9,7 @@ This retrieves the description of a specified business object ( *b_object*). It 
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `b_object(10)` |  |
+| `string` | `b_object(10)` |    |
 | `[ ref string` | `desc() mb ]` |  The Business Object Description.  |
 
 ## Return values

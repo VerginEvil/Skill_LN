@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 929-930
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 939-940
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2023.09 (KB2300987  ).
+This function is available from 2023.09 (KB2300987).
 Syntax: long Inventory.CalculateTimePhasedAvailability(
 domain  tcitem           iItem,
 domain  tcuef.effn       iEffectivityUnit,
@@ -24,7 +24,7 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function will read the available quantity and
 the currently blocked quantity from table
-Warehouse                       - Item Inventory (whwmd215).
+Warehouse - Item Inventory (whwmd215).
 The available quantity will be calculated up to and
 including the given date (whwmd215 + whinp100).
 Depending on the values of warehouse and cluster
@@ -42,20 +42,20 @@ Consignment are taken into account.
 If specification is filled, then the inventory
 levels will not be read from table whwmd215 but
 from table whwmd219 (Inventory by Specification).
-Input:  iItem                                 - Item (Mandatory)
-iEffectivityUnit                              - Effectivity Unit (Optional)
-iWarehouse                                    - Warehouse (Optional)
-iCluster                                      - Cluster (Optional)
-iSpecification                                - Specification (Optional)
-iDate                                         - Date (Mandatory)
-iSkipPlannedReceipts                          - Skip planned receipts (Yes/No)
-Output: oAvailableQuantity                    - Available quantity expressed in the
+Input:  iItem                   - Item (Mandatory)
+iEffectivityUnit        - Effectivity Unit (Optional)
+iWarehouse              - Warehouse (Optional)
+iCluster                - Cluster (Optional)
+iSpecification          - Specification (Optional)
+iDate                   - Date (Mandatory)
+iSkipPlannedReceipts    - Skip planned receipts (Yes/No)
+Output: oAvailableQuantity      - Available quantity expressed in the
 inventory unit.
-oCurrentlyBlockedQuantity                       -
+oCurrentlyBlockedQuantity -
 Currently blocked quantity expressed
 in the inventory unit.
-oInventoryUnit                                - Inventory Unit
-Return: 0                                     - Inventory availability could not be
+oInventoryUnit          - Inventory Unit
+Return: 0                       - Inventory availability could not be
 calculated.
-<> 0                                          - Error
+<> 0                    - Error
 ```

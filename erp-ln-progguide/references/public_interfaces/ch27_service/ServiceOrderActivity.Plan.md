@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1444-1447
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1457-1460
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2023.06 (KB2290749  ).
+This function is available from 2023.06 (KB2290749).
 Syntax: long ServiceOrderActivity.Plan(
 domain  tcorno           iServiceOrder fixed,
 domain  tsmdm.acln       iActivityLine,
@@ -80,7 +80,7 @@ Indicator whether the ATP check is performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Mandatory.
 iPerformPlannedAvailableCheck
 Indicator whether the Planned Inventory check is
@@ -88,7 +88,7 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Mandatory.
 iPerformOnHandAvailableCheck
 Indicator whether the On Hand Inventory check is
@@ -96,14 +96,14 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Mandatory.
 iSkipBlockedInventory
 Indicator whether Blocked Inventory has to be considered
 during the various material availability checks.
 Note: value Yes only allowed if material availability
 is present in the Service Order Parameters
-(or site specific record, if the Sites                              -concept has
+(or site specific record, if the Sites-concept has
 been implemented). Furthermore, at least one of the
 input arguments iPerformPlannedAvailableCheck or
 iPerformOnHandAvailableCheck should have the value
@@ -200,8 +200,8 @@ to Planned.
 If the return value = 0 (so not an error), the
 oExceptionID can still contain information about the
 process.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Service Order Activity changed to Planned.
-<> 0                          -       The status of the Service Order Activity could
+<> 0    -       The status of the Service Order Activity could
 not be changed to Planned.
 ```

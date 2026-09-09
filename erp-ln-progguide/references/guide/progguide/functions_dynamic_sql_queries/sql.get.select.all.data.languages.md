@@ -16,5 +16,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Dynamic SQL queries overview](overview.md)
+
 - [Dynamic SQL queries synopsis](synopsis.md)
-- Inverse operation: [sql.set.select.all.data.languages()](sql.set.select.all.data.languages.md)
+
+- [sql.set.select.all.data.languages()](sql.set.select.all.data.languages.md)

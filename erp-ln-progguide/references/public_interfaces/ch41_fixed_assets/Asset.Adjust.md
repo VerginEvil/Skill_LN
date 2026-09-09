@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Asset
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1815-1817
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1835-1837
 
 ```baan
 DLL:   tfextfamapi
-This function is available from     2026.04 (KB3649252  ).
+This function is available from 2026.04 (KB3649252).
 Syntax: long Asset.Adjust(
 domain  tcncmp           iAssetCompany,
 domain  tffam.mcod       iAssetNumber,
@@ -20,14 +20,14 @@ long             iProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function adjusts an asset.
-Input:  iAssetCompany                         - Asset Company: Mandatory
-iAssetNumber                                  - Asset Number: Mandatory
-iAssetExtension                               - Asset Extension: Mandatory
-iEffectiveFrom                                - Effective From: Mandatory
-iAdjustmentDate                               - Adjustment Date: Mandatory if
+Input:  iAssetCompany           - Asset Company: Mandatory
+iAssetNumber            - Asset Number: Mandatory
+iAssetExtension         - Asset Extension: Mandatory
+iEffectiveFrom          - Effective From: Mandatory
+iAdjustmentDate         - Adjustment Date: Mandatory if
 iEffectiveFrom is Effective Date
-iReason                                       - Reason: Mandatory
-iProcessingOptionSet                          - Mandatory, a Processing Option Set
+iReason                 - Reason: Mandatory
+iProcessingOptionSet    - Mandatory, a Processing Option Set
 can be created via a call to
 ProcessingOptionSet.Create().
 Processing Options have a direct relationship with the form fields
@@ -85,14 +85,14 @@ Location7To             domain  tffam.lcod      maximum value
 Location8From           domain  tffam.lcod      minimum value
 Location8To             domain  tffam.lcod      maximum value
 LocationChange          domain  tcyesno         tcyesno.no
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

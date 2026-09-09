@@ -1,7 +1,9 @@
 # Hints for a split query in level-2
 To evaluate a query the Oracle level-2 driver may split up a query in several smaller ones (child queries). When this happens the hints of the main query are distributed over these smaller queries. This is done according to the same rules as when the query was truly distributed:
-1. An index hint is only added to a child query if it contains the corresponding table in its from clause.
-1. All other hints are added to all child queries.
+
+- An index hint is only added to a child query if it contains the corresponding table in its from clause.
+
+- All other hints are added to all child queries.
 
 ## Example
 ```
@@ -14,7 +16,7 @@ hint   use index 1 on b
 and    array fetching
 and    array size 100
 ```
-**The Oracle level-2 driver will split this query into the following to child queries:
+The Oracle level-2 driver will split this query into the following to child queries:
 Query 1:
 ```
 
@@ -23,7 +25,7 @@ from   tppdm740 a
 and    array fetching
 and    array size 100
 ```
-**Query 2:
+Query 2:
 ```
 
 select b.cuno
@@ -33,8 +35,9 @@ hint   use index 1 on b
 and    array fetching
 and    array size 100
 ```
-**Query 1 does not have any execution plan hints and therefore the driver will generate default hints for this query. Just like with distributed queries you can prevent the driver from generating default hints for query 1 by adding the hint 'no hints' to the main query. Adding this hint will have no effect for query 2.
+Query 1 does not have any execution plan hints and therefore the driver will generate default hints for this query. Just like with distributed queries you can prevent the driver from generating default hints for query 1 by adding the hint 'no hints' to the main query. Adding this hint will have no effect for query 2.
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)

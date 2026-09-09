@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1501-1501
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1515-1516
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2023.04 (KB2281710  ).
+This function is available from 2023.04 (KB2281710).
 Syntax: long WorkOrderActivity.ProcessReturnDeliveries(
 domain  tcorno           iWorkOrder,
 domain  tsmdm.acln       iActivityLine,
@@ -34,8 +34,8 @@ calling this function the existing database transactions should
 either have been aborted or committed).
 Post:   If warehouse procedures have been set to automatic, then these
 are executed.
-Input:  iWorkOrder                            - Work Order: Mandatory
-iActivityLine                                 - Work Order Activity: Not mandatory
+Input:  iWorkOrder              - Work Order: Mandatory
+iActivityLine           - Work Order Activity: Not mandatory
 Output: oExceptionMessage       The last message if any message is
 found. If more than one message is
 given, these are present in the
@@ -44,6 +44,6 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```

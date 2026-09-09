@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 613-614
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 616-617
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2024.06 (KB2329983  ).
+This function is available from 2024.06 (KB2329983).
 Syntax: long StandardCosts.StartCalculate(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -23,21 +23,21 @@ ProcessingOptionSet.Create(), and cleaned up after use, via a
 call to ProcessingOptionSet.Delete().
 Pre:    N.A.
 Post:   N.A.
-Input:  i.start.mode               -  Specifies the start mode for the session
+Input:  i.start.mode -  Specifies the start mode for the session
 (Mandatory). Possible values are:
-MODAL                                       - The parent session is blocked until the
+MODAL - The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS_ALWAYS                                       - Parent and child are parallel
+MODELESS_ALWAYS - Parent and child are parallel
 sessions that can be manipulated
 simultaneously, even if the session is
 a Dialog.
-i.item                       -        Item for which the standard cost should be
+i.item -        Item for which the standard cost should be
 calculated (Optional).
-i.enterprise.unit                       -
+i.enterprise.unit -
 Enterprise Unit for which the standard cost
 should be calculated (Optional).
-iProcessingOptionSet                       -
+iProcessingOptionSet -
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
 If 0, then user default/session default values
@@ -72,18 +72,14 @@ InventoryValueBasedOnLCMV       domain  tcyesno         empty
 ReverseToOriginalInventoryValue domain  tcyesno         empty
 ValuePurchaseReceiptAfterLMVDate
 domain  tcprus          empty
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started successfully.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started successfully.
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for SalesPrice
-
-The following functions are available: SalesPrice.CalculateSurcharges SalesPrice.CalculateSurchargesV2 SalesPrice.StartCalculate

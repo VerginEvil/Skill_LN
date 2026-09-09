@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 424-425
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 426-427
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2020.12 (KB2160844  ).
+This function is available from 2020.12 (KB2160844).
 Syntax: long PurchaseContract.Activate(
 domain  tccono           iPurchaseContract,
 boolean          iUpdateLineStatus,
@@ -33,41 +33,41 @@ contract, then the following applies:
 once. No change request is required for that.
 After that, the change request procedure is required
 to perform changes
-Note: * This function does not trigger the generation of retro                      -billed
+Note: * This function does not trigger the generation of retro-billed
 price change advices. A separate Public Interface can be
 used to trigger that if necessary:
 'Purchase.GenerateRetrobilledPriceChangeAdvicesForContracts'
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iPurchaseContract                             - Purchase Contract; Mandatory
-iUpdateLineStatus                                     - True: will update the status
+Input:  iPurchaseContract               - Purchase Contract; Mandatory
+iUpdateLineStatus               - True: will update the status
 of the contract lines
 as well.
 False: Contract lines will not
 be updated.
-iUpdateLogisticDataStatus                             - True: will update the status
+iUpdateLogisticDataStatus       - True: will update the status
 of the logistic data
 records as well.
 False: Logistic Data is not
 updated.
-iUpdatePriceStatus                                    - True: will update the status
+iUpdatePriceStatus              - True: will update the status
 of the contract price
 records as well.
 False: Price records are not
 updated.
-iUpdateTerminatedLines                                - True: will also update the
+iUpdateTerminatedLines          - True: will also update the
 status of terminated
 contract lines.
 False: Terminated contract
 lines are not updated.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Contract is activated
-<> 0                                          - An error occurred
+Return: 0                       - Contract is activated
+<> 0                    - An error occurred
 ```

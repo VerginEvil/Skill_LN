@@ -4,7 +4,7 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 178-180
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 179-180
 
 ```baan
 DLL:   tdextisaapi
@@ -32,47 +32,47 @@ Example: when item sales price and currency are needed, the
 function must be called as follows:
 if Item.GetSalesData(
 |* Fixed arguments:
-company,                                                            --    > input
-item,                                                            --       > input
-site,                                                            --       > input
-sales office,                                                           --> input
-force.read,                                                            -- > input
-context is master data                                                  --> input
-exception.message,                                                      --> output
-exception.id,                                                           --> output
+company,                  --> input
+item,                     --> input
+site,                     --> input
+sales office,             --> input
+force.read,               --> input
+context is master data    --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"ccur",                                                            --     > input
-sales.currency,                                                         --> output
-"pris",                                                            --     > input
-sales.price) <> 0 then                                               --> output
+"ccur",                   --> input
+sales.currency,           --> output
+"pris",                   --> input
+sales.price) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iItem                         -               - Item: Mandatory
-iSite                         -               - Site: Not Mandatory
-iSalesOffice                                  - Sales Office: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iItem   -               - Item: Mandatory
+iSite   -               - Site: Not Mandatory
+iSalesOffice            - Sales Office: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information
-iContextIsMasterData                          - True/False:
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - Otherwise.
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - Otherwise.
 ```

@@ -4,10 +4,10 @@
 `function long curl.setopt( )`
 
 ## Description
-This is not an actual function. This help topic lists all curl.setopt functions. See curl website for more information on these functions.
-The general principle is: For most 'easy' cURL options that accept some value (like ` curl_easy_setopt(h,OptionName,OptionValue)` there is a corresponding bshell function that is called `curl.OptionName(OptionValue)`.
+This is not an actual function. This help topic lists all curl.setopt functions. See [curl website](https://curl.se/) for more information on these functions.
+The general principle is: For most 'easy' cURL options that accept some value (like [curl_easy_setopt(h,OptionName,OptionValue)](https://curl.se/libcurl/c/curl_easy_setopt.html) there is a corresponding bshell function that is called `curl.OptionName(OptionValue)`.
 The `OptionValue` can be a long or a string, depending on the option being set. For example, the cURL call to set a buffer size is:
-` curl_easy_setopt(h,CURLOPT_BUFFERSIZE,size)`
+[curl_easy_setopt(h,CURLOPT_BUFFERSIZE,size)](https://curl.se/libcurl/c/CURLOPT_BUFFERSIZE.html)
 And so the bshell equivalent is:
 `long curl.setopt.buffersize(size)`
 Note: Not all cURL functions are supported (they can conflict with internal bshell functions, be operating system specific, or various other reasons). The supported options also vary over time (as new versions of the underlying cURL are supported) and/or new support is added to the bshell.
@@ -557,5 +557,7 @@ Note  The use of the function curl.setopt.sslversion() is discouraged. By defaul
 
 ## Related topics
 - [cURL handling overview](overview.md)
-- cURL website
+
+- [cURL website](https://curl.se/)
+
 - [TIV Overview](../tiv/tiv_overview.md)

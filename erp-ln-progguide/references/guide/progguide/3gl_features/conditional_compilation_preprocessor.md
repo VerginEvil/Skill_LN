@@ -24,15 +24,16 @@ This is equivalent to the following:
 ```
 | | |
 |---|---|
-| `#ifdef <macro>` | The source after #ifdef up to #else/#elif/#endif is compiled if <macro> is defined. Otherwise this source is ignored.  |
-| `#ifndef <macro>` | The source after #ifndef up to #else/#elif/#endif is compiled if <macro> is not defined. Otherwise this source is ignored.  |
-| `#if <constant expression>` |  The source after #if up to #else/#elif/#endif is compiled if <constant expression> evaluates to TRUE. Otherwise this source is ignored. The <constant expression> is in fact a runtime expression with the same features as described for the function [expr.compile()](../functions_expressions_runtime/expr.compile.md). Variable names in the expression refer to macro definitions. Variable names for which no macro definition exists, evaluate to 0. If the macro substitution text is the string "0" or can be implicitly converted to a non-zero integer value, then the variable is evaluated to the indicated integer value. Assignment expressions are not allowed.  |
-| `#else` | If the condition belonging to #if/#ifdef/#ifndef/#elif is FALSE, the source after #else up to #endif is compiled. If the condition belonging to #if/#ifdef/#ifndef/#elif is TRUE, the source after #else up to #endif is ignored.  |
-| `#elif <constant expression>` |  '#elif' is a combination of #else and #if. For example:  |
-| `#endif` | To finish a part of the source started with #ifdef/#ifndef/#if.  |
-| `#undef <macro>` | To delete a macro definition. The macro is not known on the next #ifdef call.  |
-Notes on using the directives
+| `#ifdef <macro>` | The source after #ifdef up to #else/#elif/#endif is compiled if <macro> is defined. Otherwise this source is ignored. |
+| `#ifndef <macro>` | The source after #ifndef up to #else/#elif/#endif is compiled if <macro> is not defined. Otherwise this source is ignored. |
+| `#if <constant expression>` | The source after #if up to #else/#elif/#endif is compiled if <constant expression> evaluates to TRUE. Otherwise this source is ignored. The <constant expression> is in fact a runtime expression with the same features as described for the function [expr.compile()](../functions_expressions_runtime/expr.compile.md). Variable names in the expression refer to macro definitions. Variable names for which no macro definition exists, evaluate to 0. If the macro substitution text is the string "0" or can be implicitly converted to a non-zero integer value, then the variable is evaluated to the indicated integer value. Assignment expressions are not allowed. |
+| `#else` | If the condition belonging to #if/#ifdef/#ifndef/#elif is FALSE, the source after #else up to #endif is compiled. If the condition belonging to #if/#ifdef/#ifndef/#elif is TRUE, the source after #else up to #endif is ignored. |
+| `#elif <constant expression>` | '#elif' is a combination of #else and #if. For example: |
+| `#endif` | To finish a part of the source started with #ifdef/#ifndef/#if. |
+| `#undef <macro>` | To delete a macro definition. The macro is not known on the next #ifdef call. |
+
 - It is possible to use nested #if structures.
+
 - It is possible to define a macro when starting the compiler. You use the D option to do this. For example:
 ```
 
@@ -40,6 +41,7 @@ bic6.2 -D<macro>                  | no value means default 1
 bic6.2 -D<macro>=<value>
 bic6.2 -D<macro>='any token string'
 ```
+
 - These macros can also be used in the #if conditions. For example:
 ```
 
@@ -60,6 +62,7 @@ bic6.2 -DSTANDARD <source>
         ...
 #endif
 ```
+
 - You can use #ifdef to make a part of the file inactive. For example: Example:
 ```
 
@@ -69,7 +72,9 @@ bic6.2 -DSTANDARD <source>
         ...
 #endif
 ```
+
 - The preprocessor works only during compilation of a 3GL source, as the standard generator std_gen6.2 does not have a preprocessor pass. So it is not possible to use 4GL events in #if, #ifdef or #ifndef.
+
 - It is not possible to use a #ifdef statement within an embedded SQL query. So, the following construction is not allowed:
 ```
 
@@ -86,7 +91,7 @@ selectdo
         ...
 endselect
 ```
-But the following construction is possible:
+Notes on using the directives  But the following construction is possible:
 ```
 
 #ifdef STANDARD
@@ -101,6 +106,7 @@ But the following construction is possible:
         endselect
 #endif
 ```
+
 - The following keywords provide debug information in 3GL sources:
 ```
 
@@ -118,4 +124,5 @@ message("This is at line %d in the source %s", __LINE__, __FILE__)
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Preprocessor](preprocessor.md)

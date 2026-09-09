@@ -8,15 +8,19 @@
 Set the packaging method of the signature.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `i.request` |  The handle to the signing request as returned by a previous call to [sig.init.sign.request](sig.init.sign.request.md)  |
-| `string` | `i.packaging` |  The packaging to be used for the signature. The applicable packaging formats depend on the signature format. Must be one of the following values (defined in `bic_sig`):  |
+| | |
+|---|---|
+| `Enveloped` | The signature becomes part of the document that was signed. |
+| `Enveloping` | The document that was signed is contained in the signature. |
+| `Detached` | The signature is separate from the document. The output file will only contain the signature. |
+| `Internally_Detached` | Applies only to XAdES, both the document that was signed and the signature are enveloped with a new element. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
 
 ## Related topics
 - [Digital Signatures overview](overview.md)
+
 - [Digital Signatures synopsis](synopsis.md)
+
 - [Digital Signatures examples](examples.md)

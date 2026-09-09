@@ -5,9 +5,8 @@ The row value constructor constructs a row value from a value or a list of value
 ```
 
 <row value constructor>
-    ::= Column reference
-      | Value expression
-      | { Value expression [ , Value expression ]... }
+    ::= <value expression>
+      | { <value expression> [ , <value expression> ]... }
 ```
 
 ## Examples

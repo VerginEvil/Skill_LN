@@ -17,12 +17,12 @@ For example, in the following comparison the left value expression ( *hiredate*)
 
 hiredate = :1
 ```
-As another example, in the following expression both parameters must be of type *string* or of type *raw*, because these are the only valid types for the [Operator & (concatenation)](ve_concat.md).
+As another example, in the following expression both parameters must be of type *string* or of type *raw*, because these are the only valid types for the [Operator & (string concatenation)](ve_concat.md).
 ```
 
 :1 & :2
 ```
-As another example, in the following expression both parameters must be of type *raw*, because this is the only valid type for the [Operator & (concatenation)](ve_concat.md) given that the right hand side of the comparison is of type *raw*.
+As another example, in the following expression both parameters must be of type *raw*, because this is the only valid type for the [Operator & (string concatenation)](ve_concat.md) given that the right hand side of the comparison is of type *raw*.
 ```
 
 :1 & :2 = x'ABCD'

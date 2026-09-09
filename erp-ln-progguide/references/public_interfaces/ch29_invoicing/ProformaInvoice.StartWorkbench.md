@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProformaInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1597-1599
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1616-1617
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2022.10 (KB2262990  ).
+This function is available from 2022.10 (KB2262990).
 Syntax: long ProformaInvoice.StartWorkbench(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,10 +28,10 @@ Usage:        Expl:   This Public Interface starts session 'Proforma Invoicing W
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -68,18 +68,14 @@ Possible values : Pro Forma     tcsli.tinv.pro.forma
 : Customs       tcsli.tinv.customs
 : Consignment   tcsli.tinv.consignment
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for Installment
-
-The following functions are available: Installment.ApproveCorrections Installment.Close Installment.CreateCorrections Installment.StartMultiMain Installment.Transfer Installment.TransferCorrections

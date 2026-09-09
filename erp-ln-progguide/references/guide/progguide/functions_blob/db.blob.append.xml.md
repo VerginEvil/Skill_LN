@@ -9,22 +9,20 @@ It is required to lock the record. if the lock is a delayed lock then db.blob.ap
 A call to db.blob.append.xml() causes a flush of buffered updates. Such a flush can cause a jump to the retry point. Errors that occur in db.blob.append.xml() itself do not cause a jump to the retry point.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `const string` | `blob.locator` |  The BLOB locator, which is fetched from the database by e.g. *db.eq* or by a SQL statement  |
-| `long` | `xml.node` |  The top node of the XML tree to append to the BLOB  |
-| `[ long` | `mode ]` |  This has one possible value:  |
-| `[ long` | `eflag ]` |  For some errors, it is possible to indicate the action the system must perform when the error occurs. You use this argument to specify the required action(s). See [Error handling](../functions_database_handling/error_handling.md)  |
+| | |
+|---|---|
+| DB.RETRY | Set this value if retry points are being used. The function can now jump to the retry point under the usual conditions. |
 
 ## Return values
 | | | |
 |---|---|---|
 | 0 | Success. |  |
-| <> 0 | Error. | for some negative return values additional information can be found with function [xmlWrite()](../functions_xml/serialize_xml_object.md).  |
+| <> 0 | Error. | for some negative return values additional information can be found with function [xmlWrite()](../functions_xml/serialize_xml_object.md). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [BLOB handling overview](overview.md)
+
 - [BLOB handling synopsis](synopsis.md)

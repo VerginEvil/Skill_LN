@@ -1,13 +1,27 @@
 # eMessage Connector overview
 The Infor LN eMessage Connector provides a developer with a set of functions that can be used in application scripts to enable:
+
 - An Infor LN user to send a message (email) with the help of Microsoft Outlook mail client. This is not supported when using LN UI
-- An Infor LN Application to send a message without any user assistance.    The Infor LN eMessage Connector is defined between a Baan messaging-enabled application and one or more providers. A provider is a third party software package. The Infor LN eMessage Connector environment is depicted in the figure shown above.
+
+- An Infor LN Application to send a message without any user assistance.
+
+The Infor LN eMessage Connector is defined between a Baan messaging-enabled application and one or more providers. A provider is a third party software package. The Infor LN eMessage Connector environment is depicted in the figure shown above.
 The Infor LN eMessage Connector relies on the following Infor Enterprise Server products:
+
 - Baan Virtual Machine (Bshell)
+
 - Baan User Interfaces (BW or WebUI).
-- Baan 4GL Development tools  The Infor LN eMessage Connector has a relationship with the underlying provider. Examples of providers which could be supported are:
+
+- Baan 4GL Development tools
+
+The Infor LN eMessage Connector has a relationship with the underlying provider. Examples of providers which could be supported are:
+
 - Microsoft Exchange
-- SMTP based provider  The Infor LN eMessage Connector has a relationship with external messaging clients. Examples of external messaging clients are:
+
+- SMTP based provider
+
+The Infor LN eMessage Connector has a relationship with external messaging clients. Examples of external messaging clients are:
+
 - Microsoft Outlook
 
 ## Architecture
@@ -30,9 +44,13 @@ The Baan eMessage Connector acts as the intermediary between the 4GL process and
 
 ## Infor LN eMessage Connector Repository
 The repository stores several types of information about the Baan eMessage Connector environment.
+
 - Infor LN eMessage Connector services which are supported (email, fax, EDI, SMS, Baan, etc)
+
 - Message types supported per service (SMTP, SMS, fax, telex, etc)
+
 - Infor LN eMessage Connector Service providers ( Outlook, SMTP, etc)
+
 - Message Logs
 
 ## Outbound Message Handling
@@ -44,4 +62,5 @@ Note: Inbound message handling is not yet implemented.
 
 ## Related topics
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

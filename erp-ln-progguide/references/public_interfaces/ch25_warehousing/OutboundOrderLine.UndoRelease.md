@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1235-1236
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1245-1245
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.12 (KB3613235  ).
+This function is available from 2025.12 (KB3613235).
 Syntax: long OutboundOrderLine.UndoRelease(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -26,21 +26,17 @@ in the oExceptionID and the last message is present in
 oExceptionMessage.
 Pre:    NA
 Post:   NA
-Input:  iOrderOrigin                          - Order Origin (Mandatory)
-iOrderNumber                                  - Order Number (Mandatory)
-iOrderLine                                    - Order Line (Optional)
-iOrderSequence                                - Order Line Sequence (Optional)
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iOrderOrigin            - Order Origin (Mandatory)
+iOrderNumber            - Order Number (Mandatory)
+iOrderLine              - Order Line (Optional)
+iOrderSequence          - Order Line Sequence (Optional)
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error
 ```
-
-## Public Interfaces for ReceiptLine
-
-The following functions are available: ReceiptLine.Confirm ReceiptLine.Correct ReceiptLine.CorrectFinalReceipt ReceiptLine.GenerateHandlingUnits ReceiptLine.GenerateHandlingUnitsV2 ReceiptLine.GenerateLots ReceiptLine.GenerateSerials ReceiptLine.GetLanguage ReceiptLine.RemoveHandlingUnits ReceiptLine.Reverse ReceiptLine.Split ReceiptLine.SplitForLotsBatches ReceiptLine.SplitForSerials ReceiptLine.StartAutomaticInboundProcessing ReceiptLine.StartAwaitingDirectMaterialSupply

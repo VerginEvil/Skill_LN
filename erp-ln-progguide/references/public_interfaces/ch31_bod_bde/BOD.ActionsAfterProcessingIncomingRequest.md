@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1631-1632
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1650-1651
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.03 (KB2040021  ).
+This function is available from 2019.03 (KB2040021).
 Syntax: long BOD.ActionsAfterProcessingIncomingRequest(
 long             iXMLRequest,
 ref             long             oResult,
@@ -24,16 +24,16 @@ OnShow, OnAcknowledge etc.
 Pre:    Before the incoming BOD is processed, function
 BOD.ActionsBeforeProcessingIncomingRequest() must be called.
 Post:   NA
-Input:  iXMLRequest                           - XML structure with request. Mandatory
-Output: oResult                               - 0 if succes, otherwise <> 0
-oExceptionMessage                             - The last message if any message is
+Input:  iXMLRequest             - XML structure with request. Mandatory
+Output: oResult                 - 0 if succes, otherwise <> 0
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Staged BODs are published.
-<> 0                                          - Staged BODs could not be published.
+Return: 0                       - Staged BODs are published.
+<> 0                    - Staged BODs could not be published.
 ```

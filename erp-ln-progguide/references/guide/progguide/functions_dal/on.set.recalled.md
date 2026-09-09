@@ -10,12 +10,13 @@ Note: This hook should only be implemented for root tables.
 ## Return values
 | | |
 |---|---|
-| 0 |  In case of success.  |
-| DALHOOKERROR |  In case of a failure.  |
+| 0 | In case of success. |
+| DALHOOKERROR | In case of a failure. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in DAL script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1800.
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [Database Change Management (DBCM) overview](../functions_dbcm/overview.md)

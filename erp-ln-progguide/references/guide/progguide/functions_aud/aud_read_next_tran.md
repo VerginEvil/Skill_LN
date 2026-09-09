@@ -19,9 +19,7 @@ This reads the next transaction header in the specified sequence file. You can u
 | | |
 |---|---|
 | 0 | Success |
-| -1 |  Error; Possible reasons are: *seqid* does not exist No more transactions in the sequence file.  |
--
--
+| -1 | Error; Possible reasons are: *seqid* does not exist No more transactions in the sequence file. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -29,6 +27,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - transaction header](macros_transaction_header.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

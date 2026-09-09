@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1245-1245
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1255-1255
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.10 (KB2304631  ).
+This function is available from 2023.10 (KB2304631).
 Syntax: long ReceiptLine.GetLanguage(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -27,11 +27,11 @@ will be printed. The same applies to printing the Inspection
 Text (whinh211.itxt).
 Pre:    N.a.
 Post:   N.a.
-Input:  iReceipt               - Receipt number (Mandatory)
-iReceipt                       - Receipt line (Mandatory)
-iConvertToSystemLanguage                       - Convert to internal language
+Input:  iReceipt - Receipt number (Mandatory)
+iReceipt - Receipt line (Mandatory)
+iConvertToSystemLanguage - Convert to internal language
 (true/false)
-Output: oLanguage               - The language code for the receipt
+Output: oLanguage - The language code for the receipt
 Return: 0: OK
 <> 0: Error
 ```

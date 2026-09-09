@@ -5,10 +5,10 @@ If a local variable has the same name as an external variable, the local variabl
 ## Declaration, initialization, and scope
 | | |
 |---|---|
-| Point of declaration | Outside the functions. (Or within a function, but this is not recommended.)  |
+| Point of declaration | Outside the functions. (Or within a function, but this is not recommended.) |
 | Syntax of declaration | extern <type> name |
-| Initialization |  At program start: numeric set to 0 strings ""  |
-| Scope (validity and time) | Valid anywhere in the source, throughout the execution. Also valid outside the program. For example, on forms/reports, in runtime expressions, and by way of [import()](../functions_variables_interprocess_transfer/import.md) and [export()](../functions_variables_interprocess_transfer/export.md).  |
+| Initialization | At program start: numeric set to 0 strings "" |
+| Scope (validity and time) | Valid anywhere in the source, throughout the execution. Also valid outside the program. For example, on forms/reports, in runtime expressions, and by way of [import()](../functions_variables_interprocess_transfer/import.md) and [export()](../functions_variables_interprocess_transfer/export.md). |
 
 ## Example
 ```
@@ -22,4 +22,5 @@ function void test()
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

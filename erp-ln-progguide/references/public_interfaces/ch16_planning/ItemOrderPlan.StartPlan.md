@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 548-549
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 552-553
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2020.06 (KB2127795  ).
+This function is available from 2020.06 (KB2127795).
 Syntax: long ItemOrderPlan.StartPlan(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,

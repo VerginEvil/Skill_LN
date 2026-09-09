@@ -32,7 +32,11 @@ result = str.isnumeric("123A")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)
+
 - [str.isalpha()](str.isalpha.md)
+
 - [str.isalphanum()](str.isalphanum.md)
+
 - [isdigit()](isdigit.md)

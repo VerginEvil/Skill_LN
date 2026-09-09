@@ -19,4 +19,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [cURL handling overview](overview.md)
+
 - [curl.escape.decode$()](curl.escape.decode$.md)

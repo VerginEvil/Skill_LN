@@ -12,9 +12,9 @@ This makes a copy of the entire text of a specified text field, for all language
 | `string` | `text_field_to` |  The name of the new text field. See [Text fields overview](overview.md). This returns the text number for the new text field.  |
 | `string` | `text_field_from` |  The name of the text field that must be copied. See [Text fields overview](overview.md).  |
 | `string` | `kw1` |  Use these arguments to specify key words for the new text. If you specify one or more of these arguments as an empty string, the corresponding key word(s) are copied from the original text. It is possible, for example, to specify two new key words and to copy the other two from the original text.  |
-| `string` | `kw2` |  |
-| `string` | `kw3` |  |
-| `string` | `kw4` |  |
+| `string` | `kw2` |    |
+| `string` | `kw3` |    |
+| `string` | `kw4` |    |
 | `string` | `tgroup` |  This specifies the name of the text group to which the new text must be assigned. If you specify an empty string here, the text is assigned to the user's default group.  |
 | `string` | `edit_opt` |  This specifies the type of window in which the text must be displayed.  |
 
@@ -38,4 +38,5 @@ ret=TEXT.COPY("tttxt008.docu", "tttxt008.help", "docu", "help", "",
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

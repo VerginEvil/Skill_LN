@@ -4,22 +4,23 @@
 >
 > Group: Process Extensions for SalesOrderInvoiceLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2233-2234
-
-Skips Sales Order Invoice Line when Releasing to Invoicing. This process extension is available from 2025.07 ( KB3570312 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2256-2256
 
 ```baan
+Skips Sales Order Invoice Line when Releasing to Invoicing.
+This process extension is available from 2025.07 (KB3570312).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension SalesOrderInvoiceLine.SkipReleaseToInvoicing can be used
 to skip specific Sales Order Invoice Lines when Releasing to Invoicing.
 Sessions where this Process Extension can be implemented:
--               Release Sales Orders/Schedules to Invoicing (tdsls4247m000) for option 'Release
+- Release Sales Orders/Schedules to Invoicing (tdsls4247m000) for option 'Release
 Order'
--               Print Sales Draft Invoices (tdsls4447m000) for option 'Print Order'
--               All sessions and processes that trigger the release of sales order invoice lines
+- Print Sales Draft Invoices (tdsls4447m000) for option 'Print Order'
+- All sessions and processes that trigger the release of sales order invoice lines
 (like automatic processing logic).
 Fields that are available to be used in this Process Extension:
--               All fields of table Sales Order Actual Delivery Lines (tdsls406)
--               All fields of table Linked Ord. Line Data for Invoicing (tdsls408)
+- All fields of table Sales Order Actual Delivery Lines (tdsls406)
+- All fields of table Linked Ord. Line Data for Invoicing (tdsls408)
 Note: Tables must also be declared in the Process Extension.
 So skip conditions can be built on current tdsls406 and tdsls408 data
 as instructed below.
@@ -41,7 +42,3 @@ endif
 return (false)
 }
 ```
-
-## Process Extensions for SalesOrderLine
-
-The following process extension(s) is/are available: SalesOrderLine.AllowDisplaySelectedContract SalesOrderLine.AllowSaveInCaseOfInsufficientATP SalesOrderLine.SkipGenerateProjectStructure SalesOrderLine.SkipPrint SalesOrderLine.SkipPrintAcknowledgement

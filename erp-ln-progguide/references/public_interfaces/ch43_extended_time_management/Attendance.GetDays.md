@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1863-1863
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1883-1883
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetDays(
 domain  bpxtm.atty       iAttendanceType,
 ref     domain  bpxtm.days       oDays,
@@ -20,16 +20,16 @@ and date which are under review and given attendance type.
 Pre:
 Post:
 Input:
-iAttendanceType                               - Attendance type
+iAttendanceType         - Attendance type
 Output:
-oDays                                         - Number of days
-oExceptionMessage                             - The last message if any message is
+oDays                   - Number of days
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return:         0                                     - Data read
+Return:         0                       - Data read
 ```

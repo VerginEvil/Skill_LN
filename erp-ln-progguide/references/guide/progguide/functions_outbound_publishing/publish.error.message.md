@@ -17,7 +17,7 @@ This function reports an error instead of publishing a message. It can be used i
 | | |
 |---|---|
 | 0 | success. |
-| <> 0 | an error value (this only occurs if the functionality is unavailable in the current Adapter version)  |
+| <> 0 | an error value (this only occurs if the functionality is unavailable in the current Adapter version) |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,4 +25,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Outbound Publishing functions overview](overview.md)
+
 - [Outbound Publishing functions synopsis](synopsis.md)

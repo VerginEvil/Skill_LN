@@ -1,7 +1,7 @@
 # query.define.sort.order()
 
 ## Syntax:
-`function long query.define.sort.order( long table.index, const string field.var, direction.var, [ const string ..., ... ] )`
+`function long query.define.sort.order( long table.index, const string field.var, direction.var, [ const string...,... ] )`
 
 ## Description
 With this function the direction of an index-field or the whole index of an table-index can be set.
@@ -12,7 +12,7 @@ The function overrides the direction of parts in the table-index only for the se
 |---|---|
 | first | in the display and the process of the detail-lines (grid) |
 | second | in the navigation through the groups of the header. The sql statement first, next, prev and last are changed. |
-| third | in the session find. In the search instruction, the blank fields for a descending index are replaced at search time by high value.  |
+| third | in the session find. In the search instruction, the blank fields for a descending index are replaced at search time by high value. |
 The function don't override the field sort order of an active filter.
 You can use the function query.define.sort.order in the section before.program. In other sections it will activated with the function rebuild.query(). Per referenced key, one or more index fields with the direction can be set.
 
@@ -58,12 +58,12 @@ NOTE: The combination of query.define.sort.order and use of combined field state
 
 ## Arguments
 
-##
+## field order direction set
 | | | |
 |---|---|---|
 | `long` | `table.index` |  Sequence number of the referenced table-index.  |
-| `const string` | `field.var, direction.var` |  field order direction set For each set, specify the order direction with the name of the relevant field and it's direction of sorting field.var: 1) Field must exist in the table index by parameter table.index or 2) the whole of the referenced table-index with name: *file*_index< *number* > field.var equals indexname cannot combined with another field.var. direction.var: Presentation direction, possible values direction "ASC" or "DESC".  |
-| `[ const string` | `..., ... ]` |  next pair of [field.var, direction.var]. Use these optional pair of arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
+| `const string` | `field.var, direction.var` |  For each set, specify the order direction with the name of the relevant field and it's direction of sorting field.var: 1) Field must exist in the table index by parameter table.index or 2) the whole of the referenced table-index with name: *file*_index< *number* > field.var equals indexname cannot combined with another field.var. direction.var: Presentation direction, possible values direction "ASC" or "DESC".  |
+| `[ const string` | `...,... ]` |  next pair of [field.var, direction.var]. Use these optional pair of arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
 
 ## Return values
 | | |

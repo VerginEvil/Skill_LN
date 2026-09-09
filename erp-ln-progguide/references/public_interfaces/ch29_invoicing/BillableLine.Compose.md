@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BillableLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1606-1608
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1625-1627
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2026.03 (KB3650806  ).
+This function is available from 2026.03 (KB3650806).
 Syntax: long BillableLine.Compose(
 domain  tcncmp           iSalesInvoiceCompany,
 domain  tcsli.tinv       iTypeOfInvoice,
@@ -30,12 +30,12 @@ this function. Retry point, commit transaction and abort
 transaction will be handled in this function.
 ----------------------------------------------------------------
 Start of Example of Implementation
-Requirement                       -   Compose Billable lines for a Manual Sales
+Requirement -   Compose Billable lines for a Manual Sales
 Invoice.
-Solution                          -   Read all the confirmed billable lines created
+Solution    -   Read all the confirmed billable lines created
 for the manual sales invoice id and compose the
 billable line key collection.
-Pseudocode                        -
+Pseudocode  -
 table   tcisli810       |* Billable Lines
 long            collection.key.fields
 long            keyfields.object
@@ -67,30 +67,30 @@ Pre:    No open database transaction.
 Post:   Billable line key collection 'iBillableLineKeyCollection'
 should be deleted after the public interface has been called.
 Use 'delete.keyfields.collection(iBillableLineKeyCollection)'
-Input:  iSalesInvoiceCompany                  -
+Input:  iSalesInvoiceCompany    -
 Sales Invoice Company.
 This is a Mandatory field.
-iTypeOfInvoice                                -
+iTypeOfInvoice          -
 The Type of Invoice.
 This is a Mandatory field.
 Possible values : Standard      tcsli.tinv.standard
 : Pro Forma     tcsli.tinv.pro.forma
 : Customs       tcsli.tinv.customs
 : Consignment   tcsli.tinv.consignment
-iBillableLineKeyCollection                       -
+iBillableLineKeyCollection -
 Billable line Key Collection
 This is a Mandatory field.
 Output:
-oNumberOfInvoicingBatchesComposed                       -
+oNumberOfInvoicingBatchesComposed -
 Number of Invoicing Batches Composed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Billable Lines Composed.
-<> 0                                          - Error
+Return: 0                       - Billable Lines Composed.
+<> 0                    - Error
 ```

@@ -6,14 +6,14 @@ The set function specification applies a function to an argument.
 
 <set function specification>
     ::= COUNT(*)
-      | <set function type> ( Value expression )
+      | <set function type> ( <value expression> )
 
 <set function type>
     ::= MIN | MAX | SUM | COUNT | AVG
 ```
 
 ## Syntactical restrictions
-The *<value expression>* shall not contain an outer column reference, a [subquery](sub_query.md) or a *<set function specification>*.
+The *<**value expression**>* shall not contain an [outer column reference](sql_glossary.md#OuterColumnReference), a [subquery](subquery.md) or a *<**set function specification**>*.
 
 ## Semantics
 The following table shows the data types that are allowed for each set function specification and the resulting data type. A hyphen ('-') indicates that the combination is not allowed.

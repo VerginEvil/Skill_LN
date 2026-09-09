@@ -26,4 +26,5 @@ Note  A successful execution of this function need not imply that the message ha
 
 ## Related topics
 - [Outbound Publishing functions overview](overview.md)
+
 - [Outbound Publishing functions synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesPriceMatrices
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 529-531
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 531-532
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SalesPriceMatrices.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,16 +29,16 @@ Usage:        Expl:   This function starts the session Sales Price Matrices Over
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the table                              -index that is to be used.
+Specifies the table-index that is to be used.
 Allowed values: 0 or 1. Both will start the session with
 the primary index.
 iQueryExtend
@@ -66,12 +66,6 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Chapter 14 Public Interfaces for Landed Costs
-
-## Public Interfaces for LandedCosts
-
-The following functions are available: LandedCosts.GetSettings

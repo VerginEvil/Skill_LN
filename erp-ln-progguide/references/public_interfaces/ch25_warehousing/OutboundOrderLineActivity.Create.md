@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundOrderLineActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1223-1224
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1233-1234
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.01 (KB2271017  ).
+This function is available from 2023.01 (KB2271017).
 Syntax: long OutboundOrderLineActivity.Create(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -20,16 +20,16 @@ Usage:        Expl:   This function will create the outbound order line activiti
 for an outbound order line.
 Pre:    db.retry.point should be set
 Post:   commit or abort transaction depending on the return value.
-Input:  iOrderOrigin                          - Mandatory
-iOrderNumber                                  - Mandatory
-iOrderLine                                    - Optional (inbound line can be 0)
-iOrderSequence                                - Optional (inbound sequence can
+Input:  iOrderOrigin            - Mandatory
+iOrderNumber            - Mandatory
+iOrderLine              - Optional (inbound line can be 0)
+iOrderSequence          - Optional (inbound sequence can
 be 0)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

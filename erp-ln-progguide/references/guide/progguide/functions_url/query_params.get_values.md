@@ -18,8 +18,8 @@ The function returns the number of values found.
 ## Return values
 | | |
 |---|---|
-| > 0 | The number of values that have been copied to the `values` string array.  |
-| 0 | The specified query parameter was not found; note that in this case the `values` parameter is not touched.  |
+| > 0 | The number of values that have been copied to the `values` string array. |
+| 0 | The specified query parameter was not found; note that in this case the `values` parameter is not touched. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -58,9 +58,13 @@ free.mem(values)
 
 ## Availability
 This function is available in the following TIV level ranges:
+
 - 2153 - 2199 (ES 10.5.2.1)
+
 - 2231 - 2299 (ES 10.6.1.1)
+
 - 2393 - 2399 (ES 10.7.4.1)
+
 - 2451 and above (ES 10.8.5)
 
 ## Related topics

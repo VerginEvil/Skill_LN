@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for LocationSearchEngine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2081-2084
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2102-2104
 
 ```baan
 Syntax: long whext.dll0015.overrule.location(
@@ -65,48 +65,48 @@ a location of their own choice. However, after verification by
 the LN standard, the specified location may not meet the storage
 conditions and the advice cannot be completed.
 Pre:    NA
-Post:   Location found by LN Standard may be replaced by a user              -defined
+Post:   Location found by LN Standard may be replaced by a user-defined
 location if it meets the storage conditions
-Input:  i.warehouse                           - Warehouse
-i.location                                    - Found Location
-i.rental.owner.company                        - Rental Owner Company
-i.rental.owner                                - Rental Owner
-i.item                                        - Item
-i.attribute.set                               - Attribute Set. Applicable in case of
+Input:  i.warehouse             - Warehouse
+i.location              - Found Location
+i.rental.owner.company  - Rental Owner Company
+i.rental.owner          - Rental Owner
+i.item                  - Item
+i.attribute.set         - Attribute Set. Applicable in case of
 Product Dimensions
-i.required.quantity                           - Quantity that must be advised
-i.required.unit                               - Unit of i.required.qty
-i.multi.item.array()                          - The items in the handling unit
+i.required.quantity     - Quantity that must be advised
+i.required.unit         - Unit of i.required.qty
+i.multi.item.array()    - The items in the handling unit
 structure
 i.multi.item.required.quantity.array()
--                                               The quantities in the handling unit
+- The quantities in the handling unit
 structure
 i.multi.item.required.unit.array()
--                                               The units in the handling unit
+- The units in the handling unit
 structure
-i.number.of.units                             - The number of handling units in the
+i.number.of.units       - The number of handling units in the
 handling unit structure (excluding
 dummy handling units)
-i.lot                                         - Lot code
-i.owner                                       - The business partner allocated to
+i.lot                   - Lot code
+i.owner                 - The business partner allocated to
 the location
-i.required.weight                             - Required weight
-i.required.volume                             - Required volume
-i.required.floor                              - Required floor in location units.
+i.required.weight       - Required weight
+i.required.volume       - Required volume
+i.required.floor        - Required floor in location units.
 Where floor = length unit*length unit
-i.required.depth                              - Required depth
-i.required.width                              - Required width
-i.required.height                             - Required height
-i.package.definition                          - Package definition
+i.required.depth        - Required depth
+i.required.width        - Required width
+i.required.height       - Required height
+i.package.definition    - Package definition
 i.quantity.package.definition.received
--                                               Only applicable in case of package
+- Only applicable in case of package
 definitions.
 i.quantity.package.definition.advised
--                                               Only applicable in case of package
+- Only applicable in case of package
 definitions.
-i.transaction.type                            - Transaction type (receipt, issue, etc)
+i.transaction.type      - Transaction type (receipt, issue, etc)
 i.assign.location.to.business.partner
--                                               true: if no location can be found for
+- true: if no location can be found for
 the given owner then an empty,
 unassigned location is searched for.
 If found, then this location is
@@ -114,22 +114,22 @@ assigned to the owner and advise is
 done to this location.
 false: no location will be assigned to
 an owner.
-i.all.on.one.location                         - true: advise must be done to one
+i.all.on.one.location   - true: advise must be done to one
 location. If not possible, then no
 advice will be generated.
 false: advise can be done to several
 locations.
-i.must.be.multi.item                          - true: location must be multi item
+i.must.be.multi.item    - true: location must be multi item
 false:location may also be single item
 Note: a multi item HU can not be
 placed on a single item location.
-i.must.be.multi.lot                           - true: location must be a multi lot
+i.must.be.multi.lot     - true: location must be a multi lot
 location
 false: location may be single lot as
 well
-i.location.type                               - Location type to search for
-i.minimal.put.away                            - Minimal put away
-Output: o.new.location                        - Location that might replace
+i.location.type         - Location type to search for
+i.minimal.put.away      - Minimal put away
+Output: o.new.location          - Location that might replace
 Found Location. Initially initialized
 by i.location
 Return: 0/DALHOOKERROR

@@ -1,12 +1,20 @@
 # eMessage Connector synopsis
 Functions are categorized into the following:
+
 - Message object general functions
+
 - Message object identification functions
+
 - Message object delivery settings functions
+
 - Message object recipient functions
+
 - Message object attachment functions
+
 - Task object functions
+
 - Appointment object functions
+
 - Miscellaneous
 
 ## Message object general functions
@@ -154,9 +162,10 @@ Functions are categorized into the following:
 | `long` | [cmf.getAddressBookKey()](cmf.getaddressbookkey.md) | `(long entry.id, ref string key, ref string category)` |
 | `long` | [cmf.updateAddressStatus()](cmf.updateaddressstatus.md) | `(long entry_id, long errorcode)` |
 | `long` | [cmf.getService()](cmf.getservice.md) | `(enum addresstype, enum user_interaction, enum resolve, ref string service)` |
-| `long` | [cmf.sendToPerson()](cmf.sendtoperson.md) | `(long mid, long aid, long display, long show.progress, ref string message_string() [,long convert, string filename1, string filename2, ...] )` |
+| `long` | [cmf.sendToPerson()](cmf.sendtoperson.md) | `(long mid, long aid, long display, long show.progress, ref string message_string() [,long convert, string filename1, string filename2,...] )` |
 | `void` | [cmf.stopAllServices()](cmf.stopallservices.md) | `()` |
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector examples](examples.md)

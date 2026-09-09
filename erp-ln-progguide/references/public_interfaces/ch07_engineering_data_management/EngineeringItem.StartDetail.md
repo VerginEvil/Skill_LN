@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 266-266
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 268-268
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.03 (KB3609151  ).
+This function is available from 2026.03 (KB3609151).
 Syntax: long EngineeringItem.StartDetail(
 long             iStartMode,
 domain  tcitem           iEngineeringItem,
@@ -20,10 +20,10 @@ engineering items.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a Zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iEngineeringItem        Engineering Item.

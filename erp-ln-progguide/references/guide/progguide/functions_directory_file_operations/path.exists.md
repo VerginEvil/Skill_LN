@@ -7,10 +7,12 @@
 This function returns true if the given path exists, and false otherwise. If the current BSE is a tenant BSE and no absolute path is given, the path is interpreted as a relative path.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `const string` | `path` |  The file or directory to check.  |
-| `[ long` | `access_level ]` |  Optional, determines how to interpret the path if the current BSE is a tenant BSE:  |
+| | |
+|---|---|
+| PATH_USER_LEVEL | Default; the path is interpreted relative to $BSE/appdata |
+| PATH_SYSTEM_LEVEL | The path is interpreted relative to $BSE |
+This parameter has no effect if the current BSE is not a tenant BSE, the path will be used as-is in that case.
+This parameter is deprecated as of [Tools Interface Version (TIV)](../tiv/tiv_overview.md) [level 2200](../tiv/tiv_2200.md).
 
 ## Return values
 True if the file or directory exists, false otherwise
@@ -33,4 +35,5 @@ ret = path.exists("${BSE}/tmp/somefile.txt", PATH_SYSTEM_LEVEL)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

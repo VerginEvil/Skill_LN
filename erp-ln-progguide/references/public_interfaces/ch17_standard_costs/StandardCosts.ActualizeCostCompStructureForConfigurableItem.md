@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 602-603
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 605-605
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2025.07 (KB3592930  ).
+This function is available from 2025.07 (KB3592930).
 Syntax: long StandardCosts.ActualizeCostCompStructureForConfigurableItem(
 domain  tcitem           iItem,
 ref             boolean          oCostComponentStructureUpdated,
@@ -18,7 +18,7 @@ ref             long             oExceptionID )
 Usage:        Expl:   This function Actualizes the Cost Component Structure and
 Surcharges for a Configurable Item, like the form command
 Actualize Cost Comp Structure for Configurable Item available on
-session Item                       - Costing (ticpr0107m000).
+session Item - Costing (ticpr0107m000).
 Pre:    N.A.
 Post:   N.A.
 Input:  iItem                   Item (Mandatory)

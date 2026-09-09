@@ -1,17 +1,27 @@
 # signature.start.request()
 
 ## Syntax:
-`function long signature.start.request( domain ttesg.docm i.docm, [ const string key_field1, const string | long | double key_value1 ], ... )`
+`function long signature.start.request( domain ttesg.docm i.docm, [ const string key_field1, const string | long | double key_value1 ],... )`
 
 ## Description
 This starts a Signature Request dialog and must be called before performing an action on a document of a specific type (called Document Type) and a list of primary key field/value pairs
 A Signature Request dialog only appears if the following applies for the specified Document Type:
-1. *In All Companies* checkbox is checked or the current company is in the list of active Companies.
-1. *Signature Required* is *Always* or is *Conditional* where all Conditions for Signing have been satisfied.   If all above conditions have been satisfied, the dialog appears with the information as defined for the specified Document Type:
+
+- *In All Companies* checkbox is checked or the current company is in the list of active Companies.
+
+- *Signature Required* is *Always* or is *Conditional* where all Conditions for Signing have been satisfied.
+
+If all above conditions have been satisfied, the dialog appears with the information as defined for the specified Document Type:
+
 - The Description of the Document Type.
+
 - The Notification of the Document Type if the *Show User Notification* checkbox is checked.
+
 - *Reason for Signing* with an already filled reason if a default reason is defined for the Document Type.
-- User Comments if the *Request User Comments* checkbox is checked.   After the current user has successfully signed with Username and Password and the User signed with is allowed to sign, the current values of the Document retrieved based on the specified primary key fields/value pairs and stored in Signed Documents.
+
+- User Comments if the *Request User Comments* checkbox is checked.
+
+After the current user has successfully signed with Username and Password and the User signed with is allowed to sign, the current values of the Document retrieved based on the specified primary key fields/value pairs and stored in Signed Documents.
 The user is allowed to Sign if the *All Users must Sign* checkbox is checked or the user is in the list of active Signers.
 After the action has been completed, the Electronic Signature has to be finalized by calling [signature.finish.request()](signature.finish.request.md)
 
@@ -19,9 +29,9 @@ After the action has been completed, the Electronic Signature has to be finalize
 | | | |
 |---|---|---|
 | `domain ttesg.docm` | `i.docm` |  Type of Document to sign  |
-| `[ const string` | `key_field1 ]` |  |
-| `[ const string | long | double` | `key_value1 ]` |  |
-| `` | `...` |  List of primary key field / value pairs in the format "ppmmm999.ffff", value. In case of array elements, specify the field as "ppmmm999.ffff(element)"  |
+| `[ const string` | `key_field1 ]` |    |
+| `[ const string | long | double` | `key_value1 ]` |    |
+|  | `...` | List of primary key field / value pairs in the format "ppmmm999.ffff", value. In case of array elements, specify the field as "ppmmm999.ffff(element)" |
 
 ## Return values
 | | |
@@ -35,7 +45,7 @@ After the action has been completed, the Electronic Signature has to be finalize
 | -6 | User Comments not filled. Only applicable if User Comments is mandatory. |
 | -7 | Maximum authentication attempts exceeded. A maximum of 3 failed attempts has been exceeded. |
 | -8 | Missing Reasons. No reasons were defined for the specified Document Type. |
-| -9 | Missing Notification text. No notification text available for the specified Document Type. Only applicable if the Show Notification checkbox was checked.  |
+| -9 | Missing Notification text. No notification text available for the specified Document Type. Only applicable if the Show Notification checkbox was checked. |
 | -10 | User is not authorized to sign. |
 | -11 | Document Transaction failed. The process step, for which a signature was requested, has failed. |
 | -12 | Data Integrity Compromised. The data of the Signed Document has been tampered with. |
@@ -68,4 +78,5 @@ Note  After the user has successfully signed, this function stores the current s
 
 ## Related topics
 - [Electronic Signature overview](overview.md)
+
 - [Electronic Signature synopsis](synopsis.md)

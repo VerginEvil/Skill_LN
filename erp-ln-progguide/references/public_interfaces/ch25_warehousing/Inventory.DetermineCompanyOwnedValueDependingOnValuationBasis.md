@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 936-939
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 946-949
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2026.01 (KB3544552  ).
+This function is available from 2026.01 (KB3544552).
 Syntax: long Inventory.DetermineCompanyOwnedValueDependingOnValuationBasis(
 domain  tcitem           iItem,
 domain  tccwar           iWarehouse,
@@ -82,8 +82,8 @@ Indicator (True/False) if valuation basis should be
 based on Attribute Set Level if applicable, else
 Item Level is used.
 This indicator can only be set to True when:
--                               iItem is dimension controlled.
--                               iSpecificAttributeSet is True
+- iItem is dimension controlled.
+- iSpecificAttributeSet is True
 This is mandatory to fill
 iLevelMarketPrice
 The Level Market Price should be used to indicate at
@@ -162,8 +162,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0               - The inventory and inventory value have been found
+Return: 0 - The inventory and inventory value have been found
 successfully.
-<> 0                       - Error. The inventory and inventory value could not be
+<> 0 - Error. The inventory and inventory value could not be
 determined.
 ```

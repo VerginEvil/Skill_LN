@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_httpclt>`
-`function void http.routeparamlist.new( ... )`
+`function void http.routeparamlist.new(... )`
 
 ## Description
 Constructs a new http.routeparamlist object. It is possible to initialize the http.routeparamlist object with name-value route parameter pairs. When the http.routeparamlist object is passed to eg. http.get(), the name and value pairs will be used to fill in route parameters in the url.
@@ -28,14 +28,15 @@ This results in the following url: https://aws.com/apps/eln/farms/euwe1prda/tena
 ## Arguments
 | | | |
 |---|---|---|
-| `` | `...` |  pairs of name and value parameters  |
+|  | `...` | pairs of name and value parameters |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2120.
 
 ## Preconditions
-- the number of arguments passed must be an even number (0, 2, 4, ...)
+- the number of arguments passed must be an even number (0, 2, 4,...)
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

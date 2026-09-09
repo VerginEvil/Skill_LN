@@ -18,4 +18,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Progress indicators overview and synopsis](overview_and_synopsis.md)
+
 - [Progress indicators sample program](example.md)

@@ -31,4 +31,5 @@ filtered_text = filter.infrastructural.details(initial_text)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

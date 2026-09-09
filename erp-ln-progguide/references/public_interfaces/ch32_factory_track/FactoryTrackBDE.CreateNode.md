@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FactoryTrackBDE
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1664-1666
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1683-1684
 
 ```baan
 DLL:   brextbdeapi
-This function is available from     2021.04 (KB2181351  ).
+This function is available from 2021.04 (KB2181351).
 Syntax: long FactoryTrackBDE.CreateNode(
 const           string           iNodeID(),
 long             iBDEResponseArgument,
@@ -48,25 +48,21 @@ Then the XML tree of the response node (bl.ResponseArgument) is
 Pre:    N.A.
 Post:   N.A.
 Input:
-iNodeID                                       - The name of the node to be created.
-iBDEResponseArgument                          - The response argument of the BDE. This
+iNodeID                 - The name of the node to be created.
+iBDEResponseArgument    - The response argument of the BDE. This
 is the XML node bl.ResponseArgument in
 the business object layer of the BDE.
 Output:
-oNode                                         - A reference to the newly created node.
-oExceptionMessage                             - The last message if any message is
+oNode                   - A reference to the newly created node.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - Success
-<> 0                                          - Failure
+0                       - Success
+<> 0                    - Failure
 ```
-
-## Public Interfaces for FactoryTrackQuery
-
-The following functions are available: FactoryTrackQuery.CreateElement FactoryTrackQuery.CreateRow FactoryTrackQuery.GetElement

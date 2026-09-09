@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 518-523
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 520-525
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2024.04 (KB2328014  ).
+This function is available from 2024.04 (KB2328014).
 Syntax: long Pricing.StartPriceSimulator(
 long             iStartMode,
 domain  tdpcg.tyor       iTypeOfOrder,
@@ -70,13 +70,13 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    This function starts the session Price Simulator
 (tdpcg0200m300).
-Input:  iStartMode                                    - Not Used
+Input:  iStartMode                      - Not Used
 |***************************************************************
 |* Mandatory input arguments
 |*
 |* These input arguments are mandatory to be filled.
 |***************************************************************
-iTypeOfOrder                                          - Type of Order. Controls many
+iTypeOfOrder                    - Type of Order. Controls many
 other input arguments. For
 example, when Type of Order
 is 'General Sales', arguments
@@ -85,23 +85,23 @@ Attributes or Service
 Attributes are not allowed
 to be filled.
 (General Attribute)
-iPriceType                                            - Price Type
+iPriceType                      - Price Type
 (General Attribute)
-iShowItemBpSignals                                    - Show Item / Business Partner Signals
+iShowItemBpSignals              - Show Item / Business Partner Signals
 (General Attribute)
-iInternalRepairPriceBook                              - Use Internal Repair Price Book
+iInternalRepairPriceBook        - Use Internal Repair Price Book
 (Service Attribute)
-iIncludeFreightCosts                                  - Include freight Costs
+iIncludeFreightCosts            - Include freight Costs
 (Freight Attribute)
-iInvoiceFreightCostBasedOn                            - Invoice Freight Cost Based On
+iInvoiceFreightCostBasedOn      - Invoice Freight Cost Based On
 (Freight Attribute)
-iIncludeATP                                           - Include ATP
+iIncludeATP                     - Include ATP
 (General Attribute)
-iATPHandling                                          - ATP
+iATPHandling                    - ATP
 (General Attribute)
-iItem                                                 - Item
+iItem                           - Item
 (General Attribute)
-iCurrency                                             - Currency
+iCurrency                       - Currency
 (General Attribute)
 |***************************************************************
 |* Checked input arguments
@@ -110,115 +110,111 @@ iCurrency                                             - Currency
 |* filled, are validated based on other input arguments like
 |* for instance the iTypeOfOrder input argument.
 |***************************************************************
-iGenericItem                                          - Generic Item
+iGenericItem                    - Generic Item
 (General Attribute)
-iItemCodeSystemItem                                   - Item Code System Item
+iItemCodeSystemItem             - Item Code System Item
 (General Attribute)
-iManufacturerPartNumbe                                - Manufacturer Part Number
+iManufacturerPartNumbe          - Manufacturer Part Number
 (General Attribute)
-iManufacturer                                         - Manufacturer
+iManufacturer                   - Manufacturer
 (General Attribute)
-iEffectivityUnit                                      - Effectivity Unit
+iEffectivityUnit                - Effectivity Unit
 (General Attribute)
-iSite                                                 - Site
+iSite                           - Site
 (General Attribute)
-iSalesOrderOrigin                                     - Order Origin
+iSalesOrderOrigin               - Order Origin
 (Sales Attribute)
-iSalesBusinessPartnerChannel                          - Business Partner Channel
+iSalesBusinessPartnerChannel    - Business Partner Channel
 (Sales Attribute)
-iPurchaseShipFromBusinessPartner                      - Schip-from Business
+iPurchaseShipFromBusinessPartner- Schip-from Business
 Partner
 (Purchase Attribute)
-iPurchaseOrderOrigin                                  - Order Origin
+iPurchaseOrderOrigin            - Order Origin
 (Purchase Attribute)
-iPurchaseSubcontractorSite                            - Subcontractor Site
+iPurchaseSubcontractorSite      - Subcontractor Site
 (Purchase Attribute)
-iPurchaseManufacturer                                 - Manufacturer
+iPurchaseManufacturer           - Manufacturer
 (Purchase Attribute)
-iServiceOffice                                        - Service Office
+iServiceOffice                  - Service Office
 (Service Attribute)
-iServiceType                                          - Service Type
+iServiceType                    - Service Type
 (Service Attribute)
-iServiceItemGroup                                     - Item Group
+iServiceItemGroup               - Item Group
 (Service Attribute)
-iServiceSerializedItemGroup                           - Serialized Item Group
+iServiceSerializedItemGroup     - Serialized Item Group
 (Service Attribute)
-iServiceMaintainedItem                                - Item
+iServiceMaintainedItem          - Item
 (Service Attribute)
-iServiceMaintainedSerialNumber                        - Serial Number
+iServiceMaintainedSerialNumber  - Serial Number
 (Service Attribute)
-iServiceInstallationGroup                             - Installation Group
+iServiceInstallationGroup       - Installation Group
 (Service Attribute)
-iServiceArea                                          - Service Area
+iServiceArea                    - Service Area
 (Service Attribute)
-iServiceReferenceActivity                             - Reference Activity
+iServiceReferenceActivity       - Reference Activity
 (Service Attribute)
-iServiceMasterRouting                                 - Master Routing
+iServiceMasterRouting           - Master Routing
 (Service Attribute)
-iServiceRoutingOption                                 - Routing Option
+iServiceRoutingOption           - Routing Option
 (Service Attribute)
-iServiceManufacturer                                  - Manufacturer
+iServiceManufacturer            - Manufacturer
 (Service Attribute)
-iFreightClass                                         - Freight Class
+iFreightClass                   - Freight Class
 (Freight Attribute)
-iFreightRateBasisNumber                               - Rate Basis Number
+iFreightRateBasisNumber         - Rate Basis Number
 (Freight Attribute)
-iFreightShippingOffice                                - Shipping Office
+iFreightShippingOffice          - Shipping Office
 (Freight Attribute)
-iFreightPaymentTerms                                  - Payment Terms
+iFreightPaymentTerms            - Payment Terms
 (Freight Attribute)
-iOrderType                                            - Order Type
+iOrderType                      - Order Type
 (Sales/Purchase Attribute)
-iOffice                                               - Office
+iOffice                         - Office
 (Sales/Purchase Attribute)
-iShipToBusinessPartner                                - Ship-to Business Partner
+iShipToBusinessPartner          - Ship-to Business Partner
 (Sales/Service Attribute)
-iInvoiceToBusinessPartner                             - Invoice-to Business Partner
+iInvoiceToBusinessPartner       - Invoice-to Business Partner
 (Sales/Service Attribute)
-iPriceOrigin                                          - Price Origin
+iPriceOrigin                    - Price Origin
 (Sales/Service Attribute)
-iInvoiceFromBusinessPartner                           - Invoice-from Business Partner
+iInvoiceFromBusinessPartner     - Invoice-from Business Partner
 (Purchase/Service Attribute)
 |***************************************************************
 |* Free input arguments
 |*
 |* These input arguments are allowed to be empty or filled.
 |***************************************************************
-iBusinessPartner                                      - Business Partner
+iBusinessPartner                - Business Partner
 (General Attribute)
-iItemCodeSystem                                       - Item Code System
+iItemCodeSystem                 - Item Code System
 (General Attribute)
-iQuantity                                             - Quantity
+iQuantity                       - Quantity
 (General Attribute)
-iQuantityUnit                                         - Quantity Unit
+iQuantityUnit                   - Quantity Unit
 (General Attribute)
-iPriceDate                                            - Price Date
+iPriceDate                      - Price Date
 (General Attribute)
-iWarehouse                                            - Warehouse
+iWarehouse                      - Warehouse
 (General Attribute)
-iPricingBusinessPartner                               - Pricing Business Partner
+iPricingBusinessPartner         - Pricing Business Partner
 (Sales/Purchase/Service Attribute)
-iPriceList                                            - Price List
+iPriceList                      - Price List
 (Sales/Purchase/Service Attribute)
-iPaymentMethod                                        - Payment Method
+iPaymentMethod                  - Payment Method
 (Sales/Purchase/Service Attribute)
-iDeliveryTerms                                        - Delivery Terms
+iDeliveryTerms                  - Delivery Terms
 (Sales/Purchase/Service Attribute)
-iArea                                                 - Area
+iArea                           - Area
 (Sales/Purchase/Service Attribute)
-Output: oExceptionMessage                             - The last message if any
+Output: oExceptionMessage               - The last message if any
 message is found. If more than
 one message is given, these
 are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the
+oExceptionID                    - An ID that refers to the
 exception information. Use
 the functions in Exception to
 get all relevant information.
-Return: 0                                             - Session started
-<> 0                                                  - Error.
+Return: 0                               - Session started
+<> 0                            - Error.
 ```
-
-## Public Interfaces for PriceBook
-
-The following functions are available: PriceBook.InitiateChangeRequest PriceBook.StartMultiMain PriceBooks.StartOverview

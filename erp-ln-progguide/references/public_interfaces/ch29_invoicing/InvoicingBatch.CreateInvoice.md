@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InvoicingBatch
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1605-1606
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1624-1625
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2023.12 (KB2306144  ).
+This function is available from 2023.12 (KB2306144).
 Syntax: long InvoicingBatch.CreateInvoice(
 domain  tcncmp           iSalesInvoiceCompany,
 domain  tcsli.tinv       iTypeOfInvoice,
@@ -27,36 +27,32 @@ this function. Retry point, commit transaction and abort
 transaction will be handled in this function.
 Pre:    No open database transaction.
 Post:   NA
-Input:  iSalesInvoiceCompany                  -
+Input:  iSalesInvoiceCompany    -
 Sales Invoice Company.
 This is a Mandatory field.
-iTypeOfInvoice                                -
+iTypeOfInvoice          -
 The Type of Invoice.
 This is a Mandatory field.
 Possible values : Standard      tcsli.tinv.standard
 : Pro Forma     tcsli.tinv.pro.forma
 : Customs       tcsli.tinv.customs
 : Consignment   tcsli.tinv.consignment
-iInvoicingBatchFrom                           -
+iInvoicingBatchFrom     -
 Invoicing Batch from
-iInvoicingBatchTo                             -
+iInvoicingBatchTo       -
 Invoicing Batch to
 This is a Mandatory field.
 Output:
-oNumberOfInvoicingBatchesPosted                       -
+oNumberOfInvoicingBatchesPosted -
 Number of Invoicing Batches posted.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Invoice Created.
-<> 0                                          - Error
+Return: 0                       - Invoice Created.
+<> 0                    - Error
 ```
-
-## Public Interfaces for BillableLine
-
-The following functions are available: BillableLine.Compose BillableLine.CreateInvoice BillableLine.UpdateStatus

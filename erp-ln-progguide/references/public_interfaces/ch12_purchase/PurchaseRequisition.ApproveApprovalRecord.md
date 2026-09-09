@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseRequisition
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 416-417
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 418-418
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2021.05 (KB2185794  ).
+This function is available from 2021.05 (KB2185794).
 Syntax: long PurchaseRequisition.ApproveApprovalRecord(
 domain  tcrqno           iPurchaseRequisition,
 domain  tcsern           iSequenceNumber,
@@ -22,19 +22,19 @@ requisition parameter/setting 'Approval Authorizations'
 (tdpur000.apau.2/tdpur082.apau) is taken into account for this.
 This function cannot be used if approval of requisitions is
 done through Workflow.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iPurchaseRequisition                  - Purchase Requisition; Mandatory.
-iSequenceNumber                               - Sequence number of the Approval Progress
+Input:  iPurchaseRequisition    - Purchase Requisition; Mandatory.
+iSequenceNumber         - Sequence number of the Approval Progress
 record; Mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The Approval Progress record is approved.
-<> 0                                          - An error occurred
+Return: 0                       - The Approval Progress record is approved.
+<> 0                    - An error occurred
 ```

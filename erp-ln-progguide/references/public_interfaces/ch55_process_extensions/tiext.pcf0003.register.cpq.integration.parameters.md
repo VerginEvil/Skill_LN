@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2147-2148
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2170-2171
 
 ```baan
 Syntax: long tiext.pcf0003.register.cpq.integration.parameters(
@@ -28,13 +28,13 @@ o.parameter.names(1,6) = "ParameterNull"
 return(0)
 Pre:
 Post:
-Input:                -
-Output: o.number.of.parameters                - The number of custom CPQ integration
+Input:  -
+Output: o.number.of.parameters  - The number of custom CPQ integration
 parameters registered.
-o.parameter.names                             - The array with custom CPQ integration
+o.parameter.names       - The array with custom CPQ integration
 parameter names. Allocation of this
 output array is required.
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

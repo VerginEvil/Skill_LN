@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectFinancialTransactions
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1718-1721
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1737-1740
 
 ```baan
 DLL:   tpextppcapi
-This function is available from     2024.06 (KB2295638  ).
+This function is available from 2024.06 (KB2295638).
 Syntax: long ProjectFinancialTransactions.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -46,11 +46,11 @@ Financial Transactions(tpppc2100m100) in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -114,56 +114,52 @@ Allowed values:
 11:sort by Contract Line
 iQueryExtend
 A specific query to be used when zooming to this session.
-iProject                              - Mandatory when start filter "byProject" or
+iProject        - Mandatory when start filter "byProject" or
 "byProjectElement" or "byProjectActivity" or
 "byCostObject" or "byProjectExtension" is used.
-iElement                              - Element code. Optional
-iActivity                             - Activity code. Optional
-iPlan                                 - Plan linked to project. Optional
-iExtension                            - Extension. Optional
-iEmployee                             - Employee code. Optional
-iPeriodTable                          - Period Table Hours Accounting. Optional
-iYearHours                            - Year hours Accounting. Optional
-iPeriodHours                          - Period hours Accounting. Optional
-iCostType                             - Cost type linked to the project. Mandatory when
+iElement        - Element code. Optional
+iActivity       - Activity code. Optional
+iPlan           - Plan linked to project. Optional
+iExtension      - Extension. Optional
+iEmployee       - Employee code. Optional
+iPeriodTable    - Period Table Hours Accounting. Optional
+iYearHours      - Year hours Accounting. Optional
+iPeriodHours    - Period hours Accounting. Optional
+iCostType       - Cost type linked to the project. Mandatory when
 start filter "byCostObject" is used.
-iCostObject                           - Cost object linked to the project. Mandatory when
+iCostObject     - Cost object linked to the project. Mandatory when
 start filter "byCostObject" is used.
-iOrderType                            - Order origin type. Mandatory when start filter
+iOrderType      - Order origin type. Mandatory when start filter
 "byOriginDocument" is used.
-iOrderNumber                          - Order number. Mandatory when start filter
+iOrderNumber    - Order number. Mandatory when start filter
 "byOriginDocument"
 is used and for all origin types except for
 not applicable.
-iOrderLine                            - Order Line number.Mandatory when start filter
+iOrderLine      - Order Line number.Mandatory when start filter
 "byOriginDocument" is used and for all origin
 types except for not applicable.
-iPhantomItem                          - code of the phantom item. Optional
-iContract                             - Mandatory when start filter "byContract" is used.
-iContractLine                         - Mandatory when start filter "byContract" is used.
-iApprovedForInvoicing                       - Costs that are approved for Invoicing (Yes/No)
+iPhantomItem    - code of the phantom item. Optional
+iContract       - Mandatory when start filter "byContract" is used.
+iContractLine   - Mandatory when start filter "byContract" is used.
+iApprovedForInvoicing - Costs that are approved for Invoicing (Yes/No)
 Mandatory when start filter "byToBeInvoiced" is used.
-iTransferredToInvoicing                       - Costs that are transferred to Invoicing (Yes/No)
+iTransferredToInvoicing - Costs that are transferred to Invoicing (Yes/No)
 Mandatory when start filter "byToBeInvoiced" is used.
-iFinancialCompany                       - Financial company number. Optional
-iTransactionType                      - Transaction type of the document. Optional
-iInvoiceDocument                      - Invoice document number. Optional
+iFinancialCompany - Financial company number. Optional
+iTransactionType- Transaction type of the document. Optional
+iInvoiceDocument- Invoice document number. Optional
 Output: for iStartMode MODAL :
-oProject                                      - Project of the selected transaction
-oElement                                      - Element of the selected transaction
-oActivity                                     - Activity of the selected transaction
-oExceptionMessage                             - The last message if any message is
+oProject        - Project of the selected transaction
+oElement        - Element of the selected transaction
+oActivity       - Activity of the selected transaction
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for PlannedPRPOrders
-
-The following functions are available: PlannedPRPOrders.Generate PlannedPRPOrders.StartGenerate

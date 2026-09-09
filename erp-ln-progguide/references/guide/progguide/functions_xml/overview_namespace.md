@@ -2,7 +2,7 @@
 
 ## Purpose
 The purpose of the XML object api with namespace support is to offer namespace support in XML to 3GL/4GL applications. The first target application is support for SOAP, but there is no restriction on the use of this interface.
-For a good description of namespace support in XML see Namespaces in XML 1.0.
+For a good description of namespace support in XML see [Namespaces in XML 1.0](https://www.w3.org/TR/REC-xml-names/).
 
 ## Example
 What follows is an example of the use of the XML object api with namespace support.
@@ -170,7 +170,11 @@ function main()
 
 ## Related topics
 - [XML object constraints](constraints.md)
+
 - [XML object glossary](glossary.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)
+
 - [XML object API](api.md)

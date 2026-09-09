@@ -26,4 +26,5 @@ grab.mwindow(mwindow, group) | Send all events to the new group
 
 ## Related topics
 - [Process groups overview](overview.md)
+
 - [Process groups synopsis](synopsis.md)

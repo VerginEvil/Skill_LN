@@ -4,7 +4,7 @@
 `function long xmlFindNodes( long node, string criteria, long maxFound, [ ref long numFound ] )`
 
 ## Description
-Search in a tree starting at *node* and create a new tree containing references to all occurrences of XML_ELEMENT or XML_DTD nodes, which name matches with the string *criteria*. Searching stops when *maxFound* number of Nodes is found. When *maxFound* has value 0, searching stops when the complete tree has been traversed. The tree is traversed in the order as shown in Figure 2 - Depth first Tree traversal order.
+Search in a tree starting at *node* and create a new tree containing references to all occurrences of XML_ELEMENT or XML_DTD nodes, which name matches with the string *criteria*. Searching stops when *maxFound* number of Nodes is found. When *maxFound* has value 0, searching stops when the complete tree has been traversed. The tree is traversed in the order as shown in [Figure 2 - Depth first Tree traversal order](api.md#tree_traversal_order).
 On return, the optional argument *numFound* contains the number of matching nodes which have been found.
 
 ## Arguments
@@ -30,7 +30,7 @@ In this example *idn* is the decimal string representation of a nodeId of a node
 Like any other tree of Nodes, the returned tree must be freed from memory by using xmlDelete().
 | | |
 |---|---|
-| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node.  |
+| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node. |
 | 0 | Error. |
 
 ## Context
@@ -38,4 +38,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 886-888
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 896-898
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2024.11 (KB3519652  ).
+This function is available from 2024.11 (KB3519652).
 Syntax: long ProjectPCS.PrintActualStandardCost(
 domain  tccprj           iProject,
 long             iProcessingOptionSet,
@@ -17,11 +17,11 @@ ref             long             oExceptionID )
 Usage:        Expl:   This Public Interface can be used to print Actual Standard Cost
 for a range of PCS Projects. This Public Interface is similar to
 session tipcs3462m000.
-Pre:                  -
-Post:                 -
-Input:  iProject                              - Project for which the report must be
+Pre:    -
+Post:   -
+Input:  iProject                - Project for which the report must be
 printed. Optional.
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default printing options
 are applied.
 A Processing Option Set can be created
@@ -83,15 +83,15 @@ DetailsPerOrder                 domain  tcyesno         tcyesno.yes
 DetailsPerCostComponent         domain  tcyesno         tcyesno.no
 PrintingDevice                  domain  tcmcs.str14     ""
 PrintingFileoutPathAndName      domain  tcmcs.str100    ""
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Print Actual Standard Cost by Project
+Return: 0                       - Print Actual Standard Cost by Project
 is succesfull.
-<> 0                                          - Otherwise.
+<> 0                    - Otherwise.
 ```

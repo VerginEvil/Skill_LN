@@ -18,9 +18,9 @@
 ## Return values
 | | |
 |---|---|
-| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid.  |
-| AUD_INCORRECT_TABLE_ID | *Table.Id* is invalid.  |
-| AUD_OK |  The meta data information was retrieved successfully. Note: if one or more *field.ids* are 0, this function will still return.  |
+| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid. |
+| AUD_INCORRECT_TABLE_ID | *Table.Id* is invalid. |
+| AUD_OK | The meta data information was retrieved successfully. Note: if one or more *field.ids* are 0, this function will still return. |
 | AUD_FAIL | The meta data information could not be found. |
 
 ## Context
@@ -32,5 +32,7 @@ The [aud.get.next.action()](aud.get.next.action.md) must be run before this func
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

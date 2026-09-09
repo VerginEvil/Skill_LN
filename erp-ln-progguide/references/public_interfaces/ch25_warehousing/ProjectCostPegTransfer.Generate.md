@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectCostPegTransfer
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1090-1092
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1100-1102
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.05 (KB2286749  ).
+This function is available from 2023.05 (KB2286749).
 Syntax: long ProjectCostPegTransfer.Generate(
 domain  tcseri           iSeries,
 domain  tccwar           iWarehouse,
@@ -80,18 +80,18 @@ Is mandatory if cost control level by activity is active
 for the iToProject
 iTransferType   (mandatory)
 The project cost peg transfer type. Allowed values:
--                               Permanent:
+- Permanent:
 The loaning project is compensated for the cost of the
 material. New demand orders are created to replenish it
--                               Borrow/Loan:
+- Borrow/Loan:
 The borrowing project must pay back the borrowed
 inventory to the lending project before the next
 billing cycle.
 No cost is transferred between the projects.
 This value is only allowed if:
--                               iOwnership is Company Owned and
--                               Both iFromProject as iToProject is filled and
--                               Manual Borrow/Loan Transfers are allowed according to
+- iOwnership is Company Owned and
+- Both iFromProject as iToProject is filled and
+- Manual Borrow/Loan Transfers are allowed according to
 the Project Pegging Parameters (tcpeg0100m000)
 iQuantity (mandatory)
 The quantity to be transferred (in inventory unit)

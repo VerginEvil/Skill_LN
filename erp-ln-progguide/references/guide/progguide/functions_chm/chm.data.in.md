@@ -15,7 +15,7 @@ This sends a data point to the Business Chart Manager. You must call this functi
 | `long` | `data_number` |  If there is more than one data point per category (a high-low graph, for example), this indicates the sequence number of the data point within the category. If there is only one data point per category, the sequence number is 1.  |
 | `double` | `data_value` |  The data value for the specified series and category. The data value must lie within the scope of the data domain.  |
 | `long` | `footnote_no` |  If you want to include a footnote for the data point, specify the number of the footnote here. Use [chm.footnote.in()](chm.footnote.in.md) to create the footnote  |
-| `[ long` | `duplicate_option ]` |  |
+| `[ long` | `duplicate_option ]` |    |
 
 ## Return values
 | | |
@@ -29,6 +29,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

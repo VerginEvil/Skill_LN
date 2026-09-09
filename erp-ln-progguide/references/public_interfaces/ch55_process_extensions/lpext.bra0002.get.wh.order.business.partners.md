@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BRA.WarehouseOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1975-1977
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1994-1995
 
 ```baan
 Syntax: long lpext.bra0002.get.wh.order.business.partners(
@@ -22,14 +22,14 @@ Usage:        Expl:   Use this method to get a ship-to and invoice-to business
 partners from a warehouse order. These business partners
 are used to check if shipment or receipt generates a
 fiscal document or fiscal receipt respectively.
-Some warehouse order order origin can set ship                      -to business
+Some warehouse order order origin can set ship-to business
 partner in warehouse order header. Other order types are
 searched. Business partner can be set by the following
 scenarios:
-1                       - Ship-to business partner is set in warehouse order header.
-2                       - It is search ship-to and invoice-to business partner
+1 - Ship-to business partner is set in warehouse order header.
+2 - It is search ship-to and invoice-to business partner
 based on order origin.
-3                       - The custom business partner search is defined by this process
+3 - The custom business partner search is defined by this process
 extension.
 In standard, the business partners are retrieved from the
 warehouse order header or other search logic.
@@ -74,22 +74,18 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    n.a.
 Post:   n.a.
-Input:  i.order.origin                                - Order Origin
-i.order                                               - Order number
-i.order.set                                           - Order header set
-i.order.line                                          - Order line
-i.order.sequence                                      - Order line sequence
-i.ship.to.business.partner                            - Ship-to BP retrieved by
+Input:  i.order.origin                  - Order Origin
+i.order                         - Order number
+i.order.set                     - Order header set
+i.order.line                    - Order line
+i.order.sequence                - Order line sequence
+i.ship.to.business.partner      - Ship-to BP retrieved by
 Standard.
-i.invoice.to.business.partner                         - Invoice-to BP retrieved by
+i.invoice.to.business.partner   - Invoice-to BP retrieved by
 Standard.
 Output: o.ship.to.business.partner
 o.invoice.to.business.partner
-Return: long                                          - If not zero, the results of
+Return: long                            - If not zero, the results of
 this process extension
 will not be used.
 ```
-
-## Process Extensions for BrazilianInvoice
-
-The following process extension(s) is/are available: BrazilianInvoice.CustomXMLInvoicing

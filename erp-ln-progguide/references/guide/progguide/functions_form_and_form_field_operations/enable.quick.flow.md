@@ -1,7 +1,7 @@
 # enable.quick.flow()
 
 ## Syntax:
-`function void enable.quick.flow( const string frmcmd, const string ... )`
+`function void enable.quick.flow( const string frmcmd, const string... )`
 
 ## Description
 This function can be used in e.g. the after.choice of choice.mark.occur to disable the quick.flow for one or more form commands. In this way the application script can decide to disable quick.flow based on values in the marked record.
@@ -24,5 +24,7 @@ enable.quick.flow( "ttadv3500m000" )
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)
+
 - [Improved Record selection Cookbook](../functions_selection/cookbook.md)

@@ -9,7 +9,7 @@ This retrieves the DAL message of type `MSG.ERROR` from the message buffer at po
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `n` |  |
+| `long` | `n` |    |
 
 ## Return values
 The message from the message buffer at position *n*, where n = 1 is the oldest message.

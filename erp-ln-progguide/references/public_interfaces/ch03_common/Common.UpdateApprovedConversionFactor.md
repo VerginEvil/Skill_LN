@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 113-114
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 114-115
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2022.04 (KB2235599  ).
+This function is available from 2022.04 (KB2235599).
 Syntax: long Common.UpdateApprovedConversionFactor(
 domain  tcitem           iItem,
 domain  tccitg           iItemGroup,

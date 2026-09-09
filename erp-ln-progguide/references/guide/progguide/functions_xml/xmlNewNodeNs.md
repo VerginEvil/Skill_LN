@@ -17,7 +17,7 @@ Create a new XML node in the specified namespace.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the new node when successful.  |
+| <> 0 | Success; A reference to the new node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -39,5 +39,7 @@ The *xml_body* node would serialize to the following XML. Note that the *Body* n
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

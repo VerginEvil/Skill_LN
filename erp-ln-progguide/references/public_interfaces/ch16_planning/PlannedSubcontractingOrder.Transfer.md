@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedSubcontractingOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 587-589
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 591-592
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2026.10 (KB3643773  ).
+This function is available from 2026.10 (KB3643773).
 Syntax: long PlannedSubcontractingOrder.Transfer(
 domain  cpcom.plnc       iScenario,
 domain  cprrp.orno       iPlannedSubcontractingOrder,
@@ -31,25 +31,25 @@ done inside the function.
 Pre:    N.A.
 Post:   N.A.
 Input:  iScenario
--                                       (Mandatory) The Planning Scenario
+- (Mandatory) The Planning Scenario
 iPlannedSubcontractingOrder
--                                       (Mandatory) The Planned Subcontracting Order
+- (Mandatory) The Planned Subcontracting Order
 to be transferred.
 iSubcontractingOrderType
--                                       (Optional) The Subcontracting Order Type. If
+- (Optional) The Subcontracting Order Type. If
 the user does not provide a value, then the
 value is retrieved from the user purchase
 profile.
 iSubcontractingOrderSeries
--                                       (Optional) The Subcontracting Order Series.
+- (Optional) The Subcontracting Order Series.
 If the user does not provide a value, then the
 value is retrieved from the user purchase
 profile.
 iRetainBuyer
--                                       Control to force that generated order is
+- Control to force that generated order is
 linked to the same Buyer (Optional).
 iProcessingOptionSet
--                                       Processing Option Set which can be used to
+- Processing Option Set which can be used to
 pass additional parameters. This parameter is
 optional, when zero (0) is passed, the options
 get their defined default values (Optional).
@@ -67,52 +67,48 @@ ContractIgnored         domain tcyesno          tcyesno.no
 TransferText            boolean                 false
 Default Values:
 Contract
--                                       If the contract is selected, it will be used
+- If the contract is selected, it will be used
 as the default value, otherwise it will be
 defaulted with empty string.
 ContractLine
--                                       If the contract is selected, its Contract Line
+- If the contract is selected, its Contract Line
 will be as the default value, otherwise it
 will be defaulted with 0.
 ContractSequence
--                                       If the contract is selected, its sequence
+- If the contract is selected, its sequence
 number will be used as the default value,
 otherwise it will be defaulted with 0.
 ContractPurchaseOffice
--                                       If the contract is selected, its Purchase
+- If the contract is selected, its Purchase
 Office will be used as the default value,
 otherwise it will be defaulted with empty
 string.
 ContractIgnored
--                                       If the contract is selected, it will be used
+- If the contract is selected, it will be used
 as the default value, otherwise it will be
 defaulted with tcyesno.no.
 TransferText
--                                       If true, the text of Planned Subcontracting
+- If true, the text of Planned Subcontracting
 Order will be transferred. Default value is
 false (Optional).
 Output:
 oCreatedOrderType
--                                       Transferred to Order Type.
+- Transferred to Order Type.
 Possible values are:
 Purchase Order (tckoor.act.pur) or
 Request for Quotation (tckoor.pur.rfq).
 oCreatedOrder
--                                       The Order that was created.
+- The Order that was created.
 oCreatedOrderLine
--                                       The Order Line number of the created Order.
+- The Order Line number of the created Order.
 oExceptionMessage
--                                       The last message if any message is found. If
+- The last message if any message is found. If
 more than one message is found, these are
 present in the oExceptionID.
 oExceptionID
--                                       An ID that refers to the exception information.
+- An ID that refers to the exception information.
 Use the functions in Exception to get all
 relevant information.
-Return: 0                             - Planned Order successfully transferred.
-<> 0                                  - Error occurred during Transfer Planned Order.
+Return: 0               - Planned Order successfully transferred.
+<> 0            - Error occurred during Transfer Planned Order.
 ```
-
-## Public Interfaces for SpecialDemandByItem
-
-The following functions are available: SpecialDemandByItem.StartPrint

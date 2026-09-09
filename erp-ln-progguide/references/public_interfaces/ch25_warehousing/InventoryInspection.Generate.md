@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InventoryInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1275-1277
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1285-1287
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.08 (KB2296967  ).
+This function is available from 2023.08 (KB2296967).
 Syntax: long InventoryInspection.Generate(
 domain  tcsite           iSiteFrom,
 domain  tcsite           iSiteTo,
@@ -61,84 +61,80 @@ Be aware that transaction management is handled within this
 function.
 Pre:    N.A.
 Post:   N.A.
-Input:  iSiteFrom               - Optional
-iSiteTo                       - Mandatory
-iWarehouseFrom                       - Optional
-iWarehouseTo                       - Mandatory
-iLocationFrom                       - Optional
-iLocationTo                       - Mandatory
-iLocationOwnerFrom                       - Optional
-iLocationOwnerTo                       - Mandatory
-iBuyFromBusinessPartnerFrom                       - Optional
-iBuyFromBusinessPartnerTo                       - Mandatory
-iInventoryDateFrom                       - Optional
-iInventoryDateTo                       - Mandatory
-iZoneFrom                       - Optional
-iZoneTo                       - Mandatory
-iRowFrom                       - Optional
-iRowTo                       - Mandatory
-iLevelFrom                       - Optional
-iLevelTo                       - Mandatory
-iBinFrom                       - Optional
-iBinTo                       - Mandatory
-iItemGroupFrom                       - Optional
-iItemGroupTo                       - Mandatory
-iLotFrom                       - Optional
-iLotTo                       - Mandatory
-iSerialNumberFrom                       - Optional
-iSerialNumberTo                       - Mandatory
-iHandlingUnitFrom                       - Optional
-iHandlingUnitTo                       - Mandatory
-iLastInventoryInspectionDateFrom                       - Optional
-iLastInventoryInspectionDateTo                       - Mandatory
-iItemFrom                       - Optional
-iItemTo                       - Mandatory
-iInspectNonHandlingUnitInventory                       - When this is set to True,
+Input:  iSiteFrom - Optional
+iSiteTo - Mandatory
+iWarehouseFrom - Optional
+iWarehouseTo - Mandatory
+iLocationFrom - Optional
+iLocationTo - Mandatory
+iLocationOwnerFrom - Optional
+iLocationOwnerTo - Mandatory
+iBuyFromBusinessPartnerFrom - Optional
+iBuyFromBusinessPartnerTo - Mandatory
+iInventoryDateFrom - Optional
+iInventoryDateTo - Mandatory
+iZoneFrom - Optional
+iZoneTo - Mandatory
+iRowFrom - Optional
+iRowTo - Mandatory
+iLevelFrom - Optional
+iLevelTo - Mandatory
+iBinFrom - Optional
+iBinTo - Mandatory
+iItemGroupFrom - Optional
+iItemGroupTo - Mandatory
+iLotFrom - Optional
+iLotTo - Mandatory
+iSerialNumberFrom - Optional
+iSerialNumberTo - Mandatory
+iHandlingUnitFrom - Optional
+iHandlingUnitTo - Mandatory
+iLastInventoryInspectionDateFrom - Optional
+iLastInventoryInspectionDateTo - Mandatory
+iItemFrom - Optional
+iItemTo - Mandatory
+iInspectNonHandlingUnitInventory - When this is set to True,
 inventory that is not stored in handling units is
 inspected.
-iInspectHandlingUnitInventory                       - When this is set to True,
+iInspectHandlingUnitInventory - When this is set to True,
 inventory that is stored in handling units is inspected
-iHandlingUnitLevel                       - Mandatory
+iHandlingUnitLevel - Mandatory
 Allowed Values:
--                                       Inspect Handling Unit Top Levels
+- Inspect Handling Unit Top Levels
 (whinh.cchu.top.level)
--                                       Inspect Handling Unit Bottom Levels
+- Inspect Handling Unit Bottom Levels
 (whinh.cchu.bottom.level)
-iForceInventoryInspection                       - When this is set to True, all
+iForceInventoryInspection - When this is set to True, all
 stock points found in the selection are inspected.
 When set to False, the stock points due for inspection
 according the planned inspection date and frequency of
 inventory inspection are inspected.
-iExcludeLocationAllocatedItems                       -  When this is set to True,
+iExcludeLocationAllocatedItems -  When this is set to True,
 ERP LN does not generate inventory inspections for
 stock points with location allocated inventory.
-iLeadTime                       - Optional
-iLeadTimeUnit                       - Mandatory
+iLeadTime - Optional
+iLeadTimeUnit - Mandatory
 Allowed Values:
--                                       Hours (tctope.hours)
--                                       Days (tctope.days)
-iSeries                       - Optional
+- Hours (tctope.hours)
+- Days (tctope.days)
+iSeries - Optional
 Output:
-oNumberOfGeneratedInspections                       - Number of generated inventory
+oNumberOfGeneratedInspections - Number of generated inventory
 inspections
-oInspectionArray                       - Array with generated inventory inspection
+oInspectionArray - Array with generated inventory inspection
 numbers.
 This array must be declared as a based variable; this
 function will allocate the memory
-oInspectionSequenceArray                       - Array with generated inventory
+oInspectionSequenceArray - Array with generated inventory
 inventory sequences.
 This array must be declared as a based variable; this
 function will allocate the memory
-oExceptionMessage                       - The last message if any message is found. If
+oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
-Return: 0                     - Success
-<> 0                          - Error
+Return: 0       - Success
+<> 0    - Error
 ```
-
-## Public Interfaces for HandlingUnitStockPointDetail
-
-The following functions are available: HandlingUnitStockPointDetail.Inspect HandlingUnitStockPointDetail.SplitForSerial

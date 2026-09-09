@@ -221,5 +221,7 @@ function handle.event.loop()
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

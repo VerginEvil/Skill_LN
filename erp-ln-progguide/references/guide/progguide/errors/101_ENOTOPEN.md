@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the table is not open.  |
+| This error indicates that the table is not open. |
 | *Solution:* |
 | Ensure the table can be opened. |

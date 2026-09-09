@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2123-2129
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2146-2151
 
 ```baan
 Syntax: long tdext.pcg0001.get.customer.determined.price.and.discounts.for.service(
@@ -115,14 +115,14 @@ ref     domain  tcyesno          o.eligible,
 ref             boolean          o.fallback.to.standard.logic.in.case.of.errors )
 Usage:        Expl:   This function gets the customer determined price and discounts
 from an extension, if applicable. The function is called in
-some flows where price                      -retrieval is initiated from the Service
+some flows where price-retrieval is initiated from the Service
 package.
 The price and discounts are only retrieved and used if:
--                       Method
+- Method
 'tdext.pcg0001.get.customer.determined.price.and.discounts.for.service'
 is implemented for Process Extension
 Pricing.RetrievePriceAndDiscounts (tdpcg.retrieve.price.and.disc).
--                       No errors are found during executing the extension.
+- No errors are found during executing the extension.
 If the extension returns a zero price and/or zero discounts,
 these will be treated as valid prices and discounts. If that's
 not desired, then the extension should return an error in those
@@ -130,27 +130,27 @@ cases.
 Pre:    NA
 Post:   NA
 Input:  i.type.of.order
--                               The type of order being processed. Possible values:
+- The type of order being processed. Possible values:
 tdpcg.tyor.sr:          General Service
 tdpcg.tyor.sr.quote:    Service Quote
 tdpcg.tyor.sr.msc:      Maintenance Sales Order
 tdpcg.tyor.sr.soc:      Service Order
 i.number
--                               The "Order Number".
+- The "Order Number".
 This depends on the Type of Order (i.type.of.order):
 tdpcg.tyor.sr:          "" (empty string)
 tdpcg.tyor.sr.quote:    Service Quote
 tdpcg.tyor.sr.msc:      Maintenance Sales Order
 tdpcg.tyor.sr.soc:      Service Order
-i.price.search.method                         -
--                               The Search Method. Possible values:
+i.price.search.method   -
+- The Search Method. Possible values:
 1:                      Price Books Service
 2:                      Price Books Service/Sales
 3:                      Item Service Prices
 4:                      Price Books Sales/Service
 i.office                        The office used for e.g. reading
 Office specific settings
-i.site                        -                       Site
+i.site  -                       Site
 i.quantity.in.piece.unit        The quantity in Piece Unit.
 Only used in Dimension Controlled
 scenarios.
@@ -160,11 +160,11 @@ i.piece.unit.conv.factor        Conversion factor from quantity
 units to inventory unit
 i.item                          Item (Mandatory)
 i.attribute.set                 Attribute Set
-i.sold.to.bp                    Sold                      -to Business Partner (Mandatory)
-i.ship.to.bp                    Ship                      -to Business Partner (Mandatory)
-i.invoice.to.bp                 Invoice                      -to Business Partner
+i.sold.to.bp                    Sold-to Business Partner (Mandatory)
+i.ship.to.bp                    Ship-to Business Partner (Mandatory)
+i.invoice.to.bp                 Invoice-to Business Partner
 (Mandatory)
-i.invoice.from.bp               Invoice                      -from Business Partner
+i.invoice.from.bp               Invoice-from Business Partner
 i.pricing.bp                    Parent Business Partner for
 Prices and Discounts
 i.sales.order.origin            Sales Order Origin.
@@ -182,7 +182,7 @@ i.price.group                   Price Group (Mandatory)
 i.item.group                    Item Group (Mandatory)
 i.price.origin                  Price Origin
 Value: empty
-i.sold.to.type                  Sold                      -to business partner type
+i.sold.to.type                  Sold-to business partner type
 i.area                          Area
 i.service.type                  Service Type
 i.service.installation.group    Maintained Installation Group
@@ -319,13 +319,9 @@ by the extension, then LN
 will use the outcome of
 the LN standard logic.
 False:  Errors in the extension
-are returned as                                                            -  is to LN.
+are returned as-is to LN.
 Output variables are
 initialized to 0/empty/""
 Return: 0                               Success
 <> 0                            An error occurred
 ```
-
-## Process Extensions for Procurement
-
-The following process extension(s) is/are available: Procurement.DefaultPurchaseOffice Procurement.HandleGeneralLedgerCodeDefaulting

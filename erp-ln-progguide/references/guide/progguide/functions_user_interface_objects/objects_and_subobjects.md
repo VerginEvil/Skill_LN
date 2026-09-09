@@ -37,5 +37,7 @@ This table lists all the available object and subobject types. It also indicates
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

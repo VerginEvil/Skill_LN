@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1962-1963
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1981-1982
 
 ```baan
 Syntax: long tcext.bod0001.get.custom.bod.publish.function(
@@ -18,9 +18,9 @@ be used. The default values are:
 functionname = "tcbod.dll0005.publish.custom.bod"
 instruction = 1
 Input:
--              i.bodname         - custom BOD name
+- i.bodname         - custom BOD name
 Output:
--              o.functionname    - the function name which has been created by the
+- o.functionname    - the function name which has been created by the
 extension team to publish the BOD. The name of the
 DLL wherein this function exists, is derived from
 the function name. The function name must start
@@ -28,7 +28,7 @@ with the package (tx), module, hardcoded ".dll",
 and the DLL number (4 characters). E.g. function
 name "txbod.dll0005.publish.custom.bod.tax.cty"
 must exist in DLL txboddll0005.
--              o.instruction     - The instruction code. Possible values:
+- o.instruction     - The instruction code. Possible values:
 1 (PD_NO_SPECIFIC_COMMAND): the logic of the
 standard publish BOD function is used for
 counting and for publishing data.
@@ -38,8 +38,8 @@ in the function of output argument o.functionname.
 In the current implementation, the value of
 o.instruction must be set to 2.
 return:
--              0                 - OK
--              DALHOOKERROR      - not OK
+- 0                 - OK
+- DALHOOKERROR      - not OK
 Example of implementation:
 o.functionname = ""
 o.instruction = 0

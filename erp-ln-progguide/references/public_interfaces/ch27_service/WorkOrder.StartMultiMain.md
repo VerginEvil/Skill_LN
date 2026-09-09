@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1498-1499
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1512-1513
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2022.01 (KB2219389  ).
+This function is available from 2022.01 (KB2219389).
 Syntax: long WorkOrder.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,20 +21,20 @@ Usage:        Expl:   This function starts the Multi-Main session Work Order
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -
+MODAL -
 The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -
+MODELESS -
 Parent and child are parallel sessions that
 can be manipulated simultaneously.
-MODAL+START.WITH.ADD.SET                               -
-Session is started in Add                                      -mode, so a new
+MODAL+START.WITH.ADD.SET -
+Session is started in Add-mode, so a new
 work order can be entered directly.
 The parent session is blocked until the
 child session exits.
-MODELESS+START.WITH.ADD.SET                               -
-Session is started in Add                                      -mode, so a new
+MODELESS+START.WITH.ADD.SET -
+Session is started in Add-mode, so a new
 work order can be entered directly.
 Parent and child are parallel sessions that
 can be manipulated simultaneously.
@@ -43,10 +43,10 @@ Not Used.
 iQueryExtend
 A specific query to be used when zooming
 to this session.
-This argument is ignored when started in Add                              -mode.
+This argument is ignored when started in Add-mode.
 iWorkOrder
 Work Order
-This argument is ignored when started in Add                              -mode.
+This argument is ignored when started in Add-mode.
 Output:
 oExceptionMessage       The last message if any message is
 found. If more than one message is

@@ -61,5 +61,7 @@ The resulting XML-document is shown below:
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [Example XML parsing](example_xml_parsing.md)

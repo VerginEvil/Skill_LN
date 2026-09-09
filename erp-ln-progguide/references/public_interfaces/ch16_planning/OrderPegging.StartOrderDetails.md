@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OrderPegging
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 592-593
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 596-597
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2025.11 (KB3605560  ).
+This function is available from 2025.11 (KB3605560).
 Syntax: long OrderPegging.StartOrderDetails(
 long             iStartMode,
 domain  cpcom.plnc       iScenario,

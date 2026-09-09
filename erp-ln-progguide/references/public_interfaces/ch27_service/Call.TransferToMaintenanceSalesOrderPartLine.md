@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1370-1373
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1382-1384
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2024.08 (KB3506889  ).
+This function is available from 2024.08 (KB3506889).
 Syntax: long Call.TransferToMaintenanceSalesOrderPartLine(
 domain  tcorno           iCall,
 long             iProcessingOptionSet,
@@ -19,19 +19,19 @@ ref     domain  tcpono           oPartDeliveryLine,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this function to:
--                       Transfer a Call to a new Maintenance Sales Order Part Line:
+- Transfer a Call to a new Maintenance Sales Order Part Line:
 Part Delivery, Part Receipt, Part Loan or Part Maintenance
--                       Transfer a Call to a pair of new Maintenance Sales Order
+- Transfer a Call to a pair of new Maintenance Sales Order
 Part Receipt and Delivery Lines.
--                       Transfer a Call to an existing Maintenance Sales Order
+- Transfer a Call to an existing Maintenance Sales Order
 Part Maintenance Line.
--                       Any of the above under an existing or a new Maintenance Sales
+- Any of the above under an existing or a new Maintenance Sales
 Order.
 Via the Processing Option Set several options can be passed to
 control the type(s) of the Part Line(s) to be created, the
 Maintenance Sales Order to reuse, the Part Maintenance Line to
 reuse and the answer to several questions that could be asked in
-the UI                      -based equivalent of this Public Interface.
+the UI-based equivalent of this Public Interface.
 Note that when Call Management parameter 'Matching Maintenance
 Sales Order Numbers' is set to Yes, always a new Maintenance
 Sales Order and Part Lines are generated.
@@ -40,7 +40,7 @@ defined in the Call Management parameters, it is checked if the
 call must be blocked. When the call is set to blocked, the call
 cannot be transferred and output argument oCallIsBlocked
 will be set to Yes.
-This function sets a retry                      -point and will commit and/or abort
+This function sets a retry-point and will commit and/or abort
 the transaction.
 Pre:    Call ProcessingOptionSet.Create() to obtain iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete()
@@ -152,4 +152,5 @@ An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
 Return: 0    :  Transfer successful or Call is Blocked
 <> 0 :  Error occurred
+Return: long
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 464-465
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 466-467
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2024.01 (KB2312115  ).
+This function is available from 2024.01 (KB2312115).
 Syntax: long PurchaseOrderLine.Split(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -35,14 +35,14 @@ recalculations etc.). The change request will have origin
 afterwards, if applicable.
 3. This function does not update the planning pegging data.
 Regular planning run will update this.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Mandatory)
 iOrderLineSequence      Purchase Order Line Sequence (Mandatory)
 iQuantityForNewDetail   The quantity that will be used for the
 new detail line (Mandatory)
-iPlannedReceiptDateForNewDetail                       -
+iPlannedReceiptDateForNewDetail -
 The planned receipt date that will be
 used for the new detail line (Mandatory)
 iPegChangeReason        The Peg Change Reason that will be stored

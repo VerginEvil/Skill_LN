@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BillableLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1610-1611
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1629-1629
 
 ```baan
 DLL:   ciextsliapi
-This function is available from     2024.09 (KB3519213  ).
+This function is available from 2024.09 (KB3519213).
 Syntax: long BillableLine.UpdateStatus(
 domain  tcncmp           iSourceCompany,
 domain  tcsli.srtp       iSourceType,
@@ -23,37 +23,33 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This public interface is used to update the billable line
 status to the given new status if possible.
-Pre:    Caller must set retry              -point.
+Pre:    Caller must set retry-point.
 Post:   Caller must commit/abort transaction.
-Input:  i.calling.api                         - Calling API
-iSourceCompany                                - Source Company
+Input:  i.calling.api           - Calling API
+iSourceCompany          - Source Company
 (This is a Mandatory field)
-iSourceType                                   - Source Type
+iSourceType             - Source Type
 (This is a Mandatory field)
-iOrderNumber                                  - Order Number
+iOrderNumber            - Order Number
 (This is a Mandatory field)
-iOrderLine                                    - Order Line
-iOrderReference                               - Order Reference
-iTechnicalReference                           - Technical Reference
-iBillingSequence                              - Billing Sequence
+iOrderLine              - Order Line
+iOrderReference         - Order Reference
+iTechnicalReference     - Technical Reference
+iBillingSequence        - Billing Sequence
 (This is a Mandatory field)
-iNewBillableLineStatus                        - New Billable Line Status
+iNewBillableLineStatus  - New Billable Line Status
 (This is a Mandatory field)
-iSynchronizeBillingSet                        - Synchronize the status for all the
+iSynchronizeBillingSet  - Synchronize the status for all the
 billable lines having the same billing
 set.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Billable Line updated successfully
-<> 0                                          - Otherwise
+Return: 0                       - Billable Line updated successfully
+<> 0                    - Otherwise
 ```
-
-## Public Interfaces for ManualSalesInvoice
-
-The following functions are available: ManualSalesInvoice.ConfirmInvoices

@@ -16,7 +16,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Notes
 The presentation of these messages depends on:
+
 - the specified Message Type, one of `MSG.ALL, MSG.ERROR, MSG.WARNING, MSG.INFO`.
+
 - the Message Mode setting of the user - Interactive or Non-interrupting (this can be set in the User Data session)
 
 ## Modal Dialog

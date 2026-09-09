@@ -3,4 +3,5 @@ To hide the internal structure of the audit trail, the Infor Enterprise Server A
 
 ## Related topics
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

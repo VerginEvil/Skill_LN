@@ -5,7 +5,7 @@
 `function void dal.skip.never.applicable.checks( [ boolean keep_old_data ] )`
 
 ## Description
-By default, the 4GL engine will check fields that are defined as never applicable. You can skip these checks by calling this function in the [before.open.object.set()](../functions_dal/before.open.object.set.md) hook in the DAL.
+By default, the [4GL engine](../glossary/glossary.md#fourgl_engine) will check fields that are defined as never applicable. You can skip these checks by calling this function in the [before.open.object.set()](../functions_dal/before.open.object.set.md) hook in the DAL.
 
 ## Arguments
 | | | |
@@ -18,4 +18,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

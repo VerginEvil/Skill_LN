@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1369-1370
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1381-1381
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2024.12 (KB3542116  ).
+This function is available from 2024.12 (KB3542116).
 Syntax: long Call.TransferToCustomerClaim(
 domain  tcorno           iCall,
 ref     domain  tcyesno          oCallIsBlocked,
@@ -22,7 +22,7 @@ call must be blocked. When the call is set to blocked, the call
 cannot be transferred and output argument oCallIsBlocked
 will be set to Yes.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit and/or abort
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iCall
 Call Number: Mandatory

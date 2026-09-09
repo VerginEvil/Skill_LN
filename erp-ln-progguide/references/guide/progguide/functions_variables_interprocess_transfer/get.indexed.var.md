@@ -11,7 +11,7 @@ This retrieves the value of the specified variable. It is the same as [get.var()
 |---|---|---|
 | `long` | `processno` |  The process from which the variable is to be retrieved. You can specify the process ID, or you can use the predefined variables *pid* or *parent*.  |
 | `string` | `variable_name` |  The name of the variable to be retrieved (this must be a lower case string). The variable can be a single variable or an array and must be declared as external.  |
-| `ref void` | `destination` |  Reference argument to which the value of the retrieved variable must be assigned. Implicit conversion of the value of the retrieved variable from its original type to the type of the reference argument is performed.  |
+| `ref void` | `destination` |  Reference argument to which the value of the retrieved variable must be assigned. [Implicit conversion](../3gl_features/type_conversions.md#implicit_type_conversion) of the value of the retrieved variable from its original type to the type of the reference argument is performed.  |
 | `long` | `dim1 [, dim2, dim3, dim4 ]` |  Use these to specify a particular array element to be retrieved. To retrieve a single variable, set dim1 to 1 and omit the other *dim* arguments.  |
 
 ## Return values

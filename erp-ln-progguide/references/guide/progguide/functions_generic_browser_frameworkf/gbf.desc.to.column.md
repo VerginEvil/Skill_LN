@@ -1,7 +1,7 @@
 # gbf.desc.to.column()
 
 ## Syntax:
-`function string gbf.desc.to.column( const string column1, const string ... )`
+`function string gbf.desc.to.column( const string column1, const string... )`
 
 ## Description
 Create a special description string which is used to separate columns.
@@ -24,13 +24,23 @@ Incase of BW/Worktop, this function requires that the option "GBF.OPT.FONT.FIXED
 
 ## Related topics
 - [gbf.add.interior()](gbf.add.interior.md)
+
 - [gbf.add.leaf()](gbf.add.leaf.md)
+
 - [gbf.add.object()](gbf.add.object.md)
+
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

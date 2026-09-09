@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Sales
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2209-2212
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2232-2234
 
 ```baan
 Syntax: long tdext.sls0009.determine.additional.cost.set(
@@ -27,7 +27,7 @@ ret = ProcessingOptionSet.Read(
 i.input.option.set,
 my.exception.message,
 my.exception.id,
-|* option name                          option                      -variable
+|* option name                          option-variable
 default
 "SalesOrder",                           sales.order,
 "",
@@ -61,12 +61,12 @@ o.additional.cost.set =
 i.additional.cost.set.from.standard.logic
 return(0)
 endif
-|* Return a customer                              -determined cost set
+|* Return a customer-determined cost set
 o.additional.cost.set = <customer.determined.cost.set>
 return(0)
 Pre:    N.A.
 Post:   N.A.
-Input:  i.input.option.set                    - Processing Option Set containing the
+Input:  i.input.option.set      - Processing Option Set containing the
 context in which the additional cost
 set is being determined.
 Read via ProcessingOptionSet.Read()
@@ -89,7 +89,7 @@ UserInteractionAllowed                  boolean
 EDIBatch                                boolean
 Explanation for some of the supported Processing Options:
 Line
--                                               The meaning depends on the context
+- The meaning depends on the context
 in which the additional cost set is
 retrieved:
 * Sales Order context:
@@ -101,33 +101,33 @@ Line refers to the price calculation
 line.
 See also Sequence.
 Sequence
--                                               Belongs to the same context as Line.
+- Belongs to the same context as Line.
 CollectOrder
--                                               Can only be Yes in Sales Order
+- Can only be Yes in Sales Order
 context.
 UserInteractionAllowed
--                                               true:  questions may be asked.
--                                               false: no user interaction allowed.
+- true:  questions may be asked.
+- false: no user interaction allowed.
 EDIBatch
--                                               true:  triggered from an EDI batch
+- true:  triggered from an EDI batch
 process.
--                                               false: not an EDI batch process.
+- false: not an EDI batch process.
 i.additional.cost.set.from.standard.logic
--                                               The additional cost set as determined
+- The additional cost set as determined
 by the standard logic.
 Empty if standard logic did not find
 a cost set.
 Note: This argument is passed directly,
 not via the Processing Option Set.
-Output: o.additional.cost.set                 - The additional cost set as determined
+Output: o.additional.cost.set   - The additional cost set as determined
 by the extension.
-* non                                                -empty:
+* non-empty:
 The returned cost set will be used.
 * empty:
 No cost set will be used, even if
 the standard logic yielded a
-non                                                  -empty cost set.
-Return: 0                                     - Success.
-<> 0                                          - When an error occurs.
+non-empty cost set.
+Return: 0                       - Success.
+<> 0                    - When an error occurs.
 LN will fall back to standard logic.
 ```

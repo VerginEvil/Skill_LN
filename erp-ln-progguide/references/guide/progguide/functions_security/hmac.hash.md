@@ -8,10 +8,15 @@ Calculates a keyed-hash message authentication code (HMAC) using a cryptographic
 The cryptographic strength of the HMAC depends upon the cryptographic strength of the underlying hash function, the size of its hash output, and on the size and quality of the key.
 The hash is returned in 'raw hex' format; depending on the specified hash type, this is a string of max 128 bytes.
 The following cryptographic hash functions are supported:
+
 - MD5
+
 - SHA1
+
 - SHA224
+
 - SHA256
+
 - SHA512
 
 ## Arguments
@@ -57,5 +62,7 @@ raw.hash.len = hex2bytes(hex.hash(1;hex.hash.len), raw.hash)
 
 ## Related topics
 - [hex2bytes()](../functions_string_operations/hex2bytes.md)
+
 - [Security Functions overview](security_overview.md)
+
 - [Secure Functions synopsis](security_synopsis.md)

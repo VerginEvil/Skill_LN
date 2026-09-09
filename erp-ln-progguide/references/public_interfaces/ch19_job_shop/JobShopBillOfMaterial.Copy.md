@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 641-642
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 644-645
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2021.05 (KB2156270  ).
+This function is available from 2021.05 (KB2156270).
 Syntax: long JobShopBillOfMaterial.Copy(
 domain  tcsite           iSourceSite,
 domain  tcitem           iSourceProduct,
@@ -81,7 +81,7 @@ An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0               - Function is executed successfully.
-<> 0                       - An error occurred. The Job Shop Bill of Material could not
+Return: 0 - Function is executed successfully.
+<> 0 - An error occurred. The Job Shop Bill of Material could not
 be copied.
 ```

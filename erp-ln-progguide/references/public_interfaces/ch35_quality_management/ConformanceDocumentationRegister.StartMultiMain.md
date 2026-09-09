@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ConformanceDocumentationRegister
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1780-1781
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1799-1800
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2024.08 (KB3501672  ).
+This function is available from 2024.08 (KB3501672).
 Syntax: long ConformanceDocumentationRegister.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -28,10 +28,10 @@ Register" (qmptc1650m000)
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -44,20 +44,20 @@ iOrigin
 The origin of the order linked to the conformance document.
 Mandatory.
 Allowed Values:
--                                       Purchase (qmptc.orgn.purchase)
--                                       Production (JSC) (qmptc.orgn.production)
--                                       Routing (TI) (qmptc.orgn.rou.ti)
--                                       Purchase Schedule (qmptc.orgn.purchase.sched)
--                                       Sales (qmptc.orgn.sales)
--                                       Sales Schedule (qmptc.orgn.sales.sched)
--                                       Inventory Inspection (qmptc.orgn.inv.insp)
--                                       Warehouse Transfer (qmptc.orgn.cwar.trans)
--                                       Warehouse Transfer (Manual) (qmptc.orgn.cwar.trans.man)
--                                       EP Distribution (qmptc.orgn.enterprise.plan)
--                                       Service (qmptc.orgn.service)
--                                       Maintenance Sales (qmptc.orgn.maint.sales)
--                                       Maintenance Work (qmptc.orgn.maint.work)
--                                       Project Contract (qmptc.orgn.prj.contract)
+- Purchase (qmptc.orgn.purchase)
+- Production (JSC) (qmptc.orgn.production)
+- Routing (TI) (qmptc.orgn.rou.ti)
+- Purchase Schedule (qmptc.orgn.purchase.sched)
+- Sales (qmptc.orgn.sales)
+- Sales Schedule (qmptc.orgn.sales.sched)
+- Inventory Inspection (qmptc.orgn.inv.insp)
+- Warehouse Transfer (qmptc.orgn.cwar.trans)
+- Warehouse Transfer (Manual) (qmptc.orgn.cwar.trans.man)
+- EP Distribution (qmptc.orgn.enterprise.plan)
+- Service (qmptc.orgn.service)
+- Maintenance Sales (qmptc.orgn.maint.sales)
+- Maintenance Work (qmptc.orgn.maint.work)
+- Project Contract (qmptc.orgn.prj.contract)
 iOrderNumber
 Order Number. Optional.
 iOrderLine
@@ -72,18 +72,14 @@ warehouse inspection order number. Optional.
 iInspectionOrder
 Inspection order linked to conformance report. Optional.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for TestData
-
-The following functions are available: TestData.EvaluateAlgorithm TestData.Update

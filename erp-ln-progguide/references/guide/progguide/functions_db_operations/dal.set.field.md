@@ -37,4 +37,5 @@ Note  This function does not update any dependent fields itself, nor does it che
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

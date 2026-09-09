@@ -1,7 +1,7 @@
 # stat.set.field()
 
 ## Syntax:
-`function void stat.set.field( const string i.fieldname, boolean i.selectable, [ const string i.title, const string i.commandname ] )`
+`function long stat.set.field( const string i.fieldname, boolean i.selectable, [ const string i.title, const string i.commandname ] )`
 
 ## Description
 This function changes the type of the field to Stat. The field will be displayed as a Stat on the form.

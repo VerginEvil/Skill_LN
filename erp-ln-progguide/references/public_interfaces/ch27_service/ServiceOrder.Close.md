@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1407-1408
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1419-1420
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2023.11 (KB2297823  ).
+This function is available from 2023.11 (KB2297823).
 Syntax: long ServiceOrder.Close(
 domain  tcorno           iServiceOrder,
 domain  tcyesno          iDeleteServiceOrder,
@@ -43,6 +43,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

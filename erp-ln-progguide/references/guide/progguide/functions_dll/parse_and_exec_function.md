@@ -11,9 +11,9 @@ Use this function only when the function and its arguments are known only at run
 | | | |
 |---|---|---|
 | `string` | `dll_name` |  The name of the DLL that must be loaded.  |
-| `string` | `function_call` |  A string containing the function name and arguments. You can specify any function in this argument, except one that contains array arguments. To execute a function with array arguments, use *exec_dll_function()* instead. For each argument value, implicit conversion of its string representation to the type of the function argument is performed.  |
-| `[ ref void` | `return_value ]` |  Reference argument to which the return value of the function call must be assigned. Implicit conversion of the return value of the function call from its original type to the type of the reference argument is performed. If the function to be called is of type void (this means that no value is returned), then this argument must be omitted.  |
-| `[ ref string` | `return_call ]` |  Reference argument which receives a representation of the function call after its execution. For reference arguments of the function, the resulting argument value is given. Implicit conversion of the represented values from their original type to the string type is performed.  |
+| `string` | `function_call` |  A string containing the function name and arguments. You can specify any function in this argument, except one that contains array arguments. To execute a function with array arguments, use *exec_dll_function()* instead. For each argument value, [implicit conversion](../3gl_features/type_conversions.md#implicit_type_conversion) of its string representation to the type of the function argument is performed.  |
+| `[ ref void` | `return_value ]` |  Reference argument to which the return value of the function call must be assigned. [Implicit conversion](../3gl_features/type_conversions.md#implicit_type_conversion) of the return value of the function call from its original type to the type of the reference argument is performed. If the function to be called is of type void (this means that no value is returned), then this argument must be omitted.  |
+| `[ ref string` | `return_call ]` |  Reference argument which receives a representation of the function call after its execution. For reference arguments of the function, the resulting argument value is given. [Implicit conversion](../3gl_features/type_conversions.md#implicit_type_conversion) of the represented values from their original type to the string type is performed.  |
 
 ## Return values
 | | |

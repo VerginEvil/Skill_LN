@@ -22,4 +22,5 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related help topics
 - [Synchronized sessions overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)

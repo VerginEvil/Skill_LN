@@ -21,4 +21,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

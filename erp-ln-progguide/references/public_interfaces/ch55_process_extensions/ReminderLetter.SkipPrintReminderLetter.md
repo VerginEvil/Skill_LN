@@ -4,17 +4,18 @@
 >
 > Group: Process Extensions for ReminderLetter
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2201-2202
-
-Skips printing of a reminding letter. This process extension is available from 2023.09 ( KB2300210 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2224-2225
 
 ```baan
+Skips printing of a reminding letter.
+This process extension is available from 2023.09 (KB2300210).
+To implement this process extension, you can use the information below:
 Usage:        ReminderLetter.SkipPrintReminderLetter can be used to skip
 printing of a reminder letter.
 Session where this Process Extension can be implemented:
--               Print Reminder Letter (tfacr3405m100)
+- Print Reminder Letter (tfacr3405m100)
 Fields that are available to be used in this Process Extension:
--               All fields of "Reminder selection"  (tfacr303)
+- All fields of "Reminder selection"  (tfacr303)
 Note: tables must also be declared in the Process Extension.
 Pseudocode:
 Below you can find an example:
@@ -29,7 +30,3 @@ endif
 return (false)
 }
 ```
-
-## Process Extensions for RequestForQuoteConvert
-
-The following process extension(s) is/are available: RequestForQuoteConvert.CustomSorting

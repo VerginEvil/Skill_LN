@@ -2,7 +2,7 @@
 When the browse list session ends, data of the selected record needs to be returned to the parent session. In case of automatic export, the name of the return field (or fields) can be defined by means of the predefined variable *attr.zoomreturn$*, or by filling the Return field property in DFE.
 
 ## Automatic export of a single field
-If the application sets the predefined variable *attr.zoomreturns$* in the *before.zoom* sub-event, or when the Return field property in DFE is filled, the 4GL engine will automatically export the right field value to the parent session on exit of the browse list session. The 4GL engine also copies the value of the return field in the current field of the parent session.
+If the application sets the predefined variable *attr.zoomreturns$* in the *before.zoom* sub-event, or when the Return field property in DFE is filled, the [4GL engine](../glossary/glossary.md#fourgl_engine) will automatically export the right field value to the parent session on exit of the browse list session. The [4GL engine](../glossary/glossary.md#fourgl_engine) also copies the value of the return field in the current field of the parent session.
 Example:
 ```
 
@@ -33,10 +33,10 @@ after.zoom:
         display("ppmmm999.prbp") | Not automatically done
         display("ppmmm999.bpid") | Not automatically done
 ```
-If tccom100._index2 consists of the fields tccom100.prbp and tccom100.bpid, then both fields will be exported by the 4GL engine to the parent process, just before the browse list session exits. In the *after.zoom* sub event you can assign these values to the fields of the parent session and do a display of these fields.
+If tccom100._index2 consists of the fields tccom100.prbp and tccom100.bpid, then both fields will be exported by the [4GL engine](../glossary/glossary.md#fourgl_engine) to the parent process, just before the browse list session exits. In the *after.zoom* sub event you can assign these values to the fields of the parent session and do a display of these fields.
 
 ## No automatic export
-When no return field is defined, the 4GL engine will not export anything. In this case the browse list session has to do the export itself. This can be programmed in the *zoom.from.*: on.exit:* event section. It is up to the browse list session to define what will be exported.
+When no return field is defined, the [4GL engine](../glossary/glossary.md#fourgl_engine) will not export anything. In this case the browse list session has to do the export itself. This can be programmed in the *zoom.from.*: on.exit:* event section. It is up to the browse list session to define what will be exported.
 Example:
 Parent session:
 ```
@@ -65,6 +65,9 @@ on.exit:
 
 ## Related topics
 - [Definition](browsing_definition.md)
+
 - [Overview of browsing](browsing_overview.md)
+
 - [Importing variables](browsing_importing.md)
+
 - [Starting a browse list session](browsing_starting.md)

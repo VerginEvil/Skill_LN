@@ -22,7 +22,7 @@ The number of menus is limited, currently fixed to 10. Note that the default men
 | > 0 | The identification of this new menu head |
 | GBF.NO.MEMORY | Not enough memory |
 | GBF.MENU.EMPTY | Empty menu text is not allowed |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 | GBF.MAX.MENU | Too many menus defined |
 
 ## Context
@@ -30,10 +30,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

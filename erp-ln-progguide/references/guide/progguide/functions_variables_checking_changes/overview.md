@@ -5,4 +5,5 @@ Note that the report writer also uses these functions. And use of the functions 
 
 ## Related topics
 - [Variables (checking changes) synopsis](synopsis.md)
+
 - [Variables (checking changes): sample program](example.md)

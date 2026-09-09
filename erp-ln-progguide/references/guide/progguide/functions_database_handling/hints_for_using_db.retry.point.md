@@ -8,7 +8,9 @@ To have clearly structured sources, never use more than one level *db.retry.poin
 | Collecting | 3 | 3 |
 | Combination | 4 | 5 |
 A skip back to a retry point can be indicated by a problem in:
+
 - db.update(), db.delete() or db.insert() with argument db.retry
+
 - commit.transaction()
 
 ## Situation 1: Only update actions, commit per fetch

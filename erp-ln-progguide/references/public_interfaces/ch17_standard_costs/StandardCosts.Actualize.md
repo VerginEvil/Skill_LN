@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 601-602
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 604-605
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2025.04 (KB3536706  ).
+This function is available from 2025.04 (KB3536706).
 Syntax: long StandardCosts.Actualize(
 domain  tcitem           iItem,
 domain  tcemm.grid       iEnterpriseUnit,

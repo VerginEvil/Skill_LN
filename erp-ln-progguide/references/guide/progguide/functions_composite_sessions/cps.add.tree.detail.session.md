@@ -23,5 +23,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Composite Sessions overview](overview.md)
+
 - [Composite Sessions synopsis](synopsis.md)
+
 - [Composite Sessions Code Examples](examples.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesPrice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 616-618
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 619-621
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2025.06 (KB3539789  ).
+This function is available from 2025.06 (KB3539789).
 Syntax: long SalesPrice.StartCalculate(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -25,10 +25,10 @@ Post:   N.A.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS_ALWAYS                               -
+MODELESS_ALWAYS -
 Parent and child are parallel
 sessions that can be manipulated
 simultaneously, even if the session is
@@ -81,7 +81,3 @@ information.
 Return: 0                       Session started successfully.
 <> 0                    Errors occurred.
 ```
-
-## Public Interfaces for ItemCosting
-
-The following functions are available: ItemCosting.StartDetail ItemCosting.StartOverview

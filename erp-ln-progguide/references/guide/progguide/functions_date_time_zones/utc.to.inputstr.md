@@ -19,12 +19,12 @@ This converts a UTC long format value to a local date string *and* a local time 
 | | |
 |---|---|
 | 0 | Success. |
-| -1 |  Error. For example: An illegal format is specified.  |
--
+| -1 | Error. For example: An illegal format is specified. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

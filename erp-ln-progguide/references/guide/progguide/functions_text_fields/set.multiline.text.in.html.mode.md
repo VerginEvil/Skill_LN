@@ -25,4 +25,5 @@ This function works only for Multi Line Text fields. If the same text is display
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1466-1467
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1480-1482
 
 ```baan
 DLL:   tsexteppapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long ServiceQuote.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -30,21 +30,21 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used. (Optional)
+Specifies the table-index that is to be used. (Optional)
 Supported values:
 1: sort by Quote Revision
 2: sort by Quote Status
 3: sort by Related Order
-4: sort by Sold                               -to Business Partner
+4: sort by Sold-to Business Partner
 iQueryExtend
 A specific query to be used when zooming to this
 session. Note that only extensions on main

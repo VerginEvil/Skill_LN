@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1658-1660
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1677-1679
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.03 (KB2040021  ).
+This function is available from 2019.03 (KB2040021).
 Syntax: long BOD.PublishLNMessage(
 domain  tcmcs.str30m     iMessageType mb,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -17,7 +17,7 @@ ref             long             oExceptionID,
 Usage:        Expl:   This function publishes the LnMessageBOD with a specific MessageType.
 The first three arguments are mandatory, in the given order.
 iMessageType can f.i. have value "PurchaseScheduleLine".
-The other arguments should be 'xml_elementname                       - xml_elementvalue'
+The other arguments should be 'xml_elementname - xml_elementvalue'
 pairs, e.g.:
 "Description",          tfgld011.desc,
 The number of input arguments can vary.
@@ -31,12 +31,12 @@ DisplayID.
 To create a user area node a UserAreaName, UserAreaType and
 UserAreaValue are mandatory. UserAreaDescription,
 UserAreaStartDate and UserAreaEndDate can also be used.
---                      > In the function call, the same order must be used!
+--> In the function call, the same order must be used!
 Allowed values for UserAreaType are:
--                            "DateTimeType"
--                            "IndicatorType"
--                            "NumericType"
--                            "StringType"
+-  "DateTimeType"
+-  "IndicatorType"
+-  "NumericType"
+-  "StringType"
 If an xml_elementname is not in the list of possible
 xml_elementnames, the xml_element value is added to the
 "MessageTypeDetails" node, e.g.:
@@ -67,47 +67,47 @@ are related, e.g.:
 <PurchaseInvoiceAmount currencyID="EUR">10.000
 </PurchaseInvoiceAmount>
 Possible xml_element names:
--                            "ActionCode"
--                            "Authorization"
--                            "Description"
--                            "DocumentReference"
--                            "DocumentReference_ID"
--                            "DocumentReference_LineNumber"
--                            "DocumentReference_ScheduleLineNumber"
--                            "DisplayID"
--                            "DistributionGroup_Contact"
--                            "DistributionGroup_ContactGroup"
--                            "DistributionGroup_Email"
--                            "DistributionGroup_Person"
--                            "DistributionGroup_PersonGroup"
--                            "DocumentID"
--                            "Message_Description"
--                            "Message_ID"
--                            "MessageType"
--                            "Note" (the xml_element value must be a text number)
--                            "Status_Code"
--                            "Status_EffectiveDateTime"
--                            "Status_ArchiveIndicator"
--                            "UserAreaDescription"
--                            "UserAreaEndDate"
--                            "UserAreaName"
--                            "UserAreaStartDate"
--                            "UserAreaType"
--                            "UserAreaValue"
+-  "ActionCode"
+-  "Authorization"
+-  "Description"
+-  "DocumentReference"
+-  "DocumentReference_ID"
+-  "DocumentReference_LineNumber"
+-  "DocumentReference_ScheduleLineNumber"
+-  "DisplayID"
+-  "DistributionGroup_Contact"
+-  "DistributionGroup_ContactGroup"
+-  "DistributionGroup_Email"
+-  "DistributionGroup_Person"
+-  "DistributionGroup_PersonGroup"
+-  "DocumentID"
+-  "Message_Description"
+-  "Message_ID"
+-  "MessageType"
+-  "Note" (the xml_element value must be a text number)
+-  "Status_Code"
+-  "Status_EffectiveDateTime"
+-  "Status_ArchiveIndicator"
+-  "UserAreaDescription"
+-  "UserAreaEndDate"
+-  "UserAreaName"
+-  "UserAreaStartDate"
+-  "UserAreaType"
+-  "UserAreaValue"
 Pre:    Transaction handling is needed.
 Post:   Transaction handling is needed: A commit or abort must be done.
 Input:  iMessageType: Mandatory
 Variable arguments are pairs of two arguments with
 name and value. At least one argument with name "DocumentID"
 is Mandatory.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - BOD is published.
-<> 0                                          - BOD could not be publised.
+Return: 0                       - BOD is published.
+<> 0                    - BOD could not be publised.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1499-1501
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1513-1515
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2025.01 (KB3543185  ).
+This function is available from 2025.01 (KB3543185).
 Syntax: long WorkOrder.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,16 +29,16 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used. (Optional)
+Specifies the table-index that is to be used. (Optional)
 Supported values:
 1: sort by Work Order
 2: sort by (Serialized) Item
@@ -47,7 +47,7 @@ Supported values:
 5: sort by Department, Planned Finish Time
 6: sort by Status
 7: sort by Top Work Order, Initiating Work Order
-8: sort by Sold                               -to Business Partner, Project
+8: sort by Sold-to Business Partner, Project
 iQueryExtend
 A specific query to be used when zooming to this
 session. Note that only extensions on main
@@ -90,7 +90,3 @@ functions in Exception to get all relevant information.
 Return: 0       Session started
 <> 0    An error occurred
 ```
-
-## Public Interfaces for WorkOrderActivity
-
-The following functions are available: WorkOrderActivity.ProcessReturnDeliveries WorkOrderActivity.SignOff

@@ -7,11 +7,10 @@
 This adds a new record to a specified table. The record pointer does not change.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `table_id` |  The table ID, as returned by [db.bind()](db.bind.md).  |
-| `[ long` | `mode ]` |  This has two possible values:  |
-| `[ long` | `eflag ]` |  For some errors, it is possible to indicate the action the system must perform when the error occurs. You use this argument to specify the required action(s). See [Error handling](../functions_database_handling/error_handling.md).  |
+| | |
+|---|---|
+| DB.RETRY | Set this value if retry points are being used. The actual database action is postponed until the transaction is committed. |
+| 0 | When no retry point is used. This is default value. |
 
 ## Return values
 | | |
@@ -24,4 +23,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

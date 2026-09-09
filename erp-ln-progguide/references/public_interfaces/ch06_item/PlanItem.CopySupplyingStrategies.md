@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 217-217
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 218-218
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.03 (KB2303603  ).
+This function is available from 2024.03 (KB2303603).
 Syntax: long PlanItem.CopySupplyingStrategies(
 domain  cpcom.plnc       iPlanningScenario,
 domain  cpitem           iPlanItem,

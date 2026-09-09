@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that a reference could not be updated.  |
+| This error indicates that a reference could not be updated. |
 | *Solution:* |
 | Ensure the reference can be updated. |

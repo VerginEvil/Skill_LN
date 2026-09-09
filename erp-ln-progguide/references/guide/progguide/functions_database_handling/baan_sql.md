@@ -9,17 +9,31 @@ FROM table reference(s) ...
 WHERE each row fulfills the condition(s) ...
 ```
 The following sections provide information on SQL syntax and using SQL:
+
 - [SQL reserved words](sql_reserved_words.md)
+
 - [SQL data types](sql_data_types.md)
+
 - [SELECT statement](select_statement.md)
+
 - [Using program variables](using_program_variables.md)
+
 - [References](references.md)
+
 - [Company numbers](company_numbers.md)
+
 - [Multi Language Data](multi_language_data.md)
+
 - [SQL and combined fields](sql_and_combined_fields.md)
+
 - [SQL subqueries](sql_subqueries.md)
+
 - [SQL programming](sql_programming.md)
+
 - [SQL and delayed locks](sql_and_delayed_locks.md)
+
 - [SQL states and messages](../sql_states_and_messages/help_sql_states_and_messages.md)
+
 - [SQL trace options](sql_trace_options.md)
+
 - [SQL glossary](sql_glossary.md)

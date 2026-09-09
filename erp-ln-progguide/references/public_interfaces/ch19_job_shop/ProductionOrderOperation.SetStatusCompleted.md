@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderOperation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 802-804
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 802-803
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2021.04 (KB2178236  ).
+This function is available from 2021.04 (KB2178236).
 Syntax: long ProductionOrderOperation.SetStatusCompleted(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -21,7 +21,7 @@ ref             boolean          oErrorInWarehousing,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   With this Public Interface, the Production Order Operation
-status of the specified Operation will be set to ›¼À˜Completed›¼À                      ™.
+status of the specified Operation will be set to ›¼À˜Completed›¼À™.
 This Public Interface consists of 2 transactions:
 1. Change status.
 2. Process the automatic activities on the generated

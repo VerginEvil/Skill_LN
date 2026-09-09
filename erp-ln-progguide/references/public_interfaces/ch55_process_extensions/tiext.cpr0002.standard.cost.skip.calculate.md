@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for StandardCost
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2250-2252
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2273-2275
 
 ```baan
 Syntax: long tiext.cpr0002.standard.cost.skip.calculate(
@@ -21,63 +21,63 @@ skipped for a specific Item/Enterprise Unit combination.
 A message may be returned, to present information about
 the decision to the user.
 When this function is called all fields of table:
--                       Item Costing (ticpr007) are read and current.
+- Item Costing (ticpr007) are read and current.
 Note that fields ticpr007.item and ticpr007.eunt refer to the
 current Item/Enterprise Unit being considered for calculation.
 External variables available for use by this process extension
 function:
--                       proc_ext_std_cost_skip_calc_calculation_code
+- proc_ext_std_cost_skip_calc_calculation_code
 [type: domain tccpcc]
 Calculation code for which the calculation is executed.
--                       proc_ext_std_cost_skip_calc_calculation_method
+- proc_ext_std_cost_skip_calc_calculation_method
 [type: domain tcccmt]
 single.level:
 Limited product structure explosion, standard
 cost at second level is read, not calculated.
 top.down:
-Explodes product structure top                                      -down, calculates
+Explodes product structure top-down, calculates
 all lower levels and cost is rolled up to top
 level.
 bottom.up:
 Product structure determines which higher level
 items need to part of the calculated set.
--                       proc_ext_std_cost_skip_calc_calculation_mode
+- proc_ext_std_cost_skip_calc_calculation_mode
 [type: long]
 0: calculating only
 1: printing multilevel
 2: printing single level
--                       proc_ext_std_cost_skip_calc_project
+- proc_ext_std_cost_skip_calc_project
 [type: domain tccprj]
 The project, set in case the calculation is started in
 the context of a project, otherwise empty.
--                       proc_ext_std_cost_skip_calc_calculation_date
+- proc_ext_std_cost_skip_calc_calculation_date
 [type: domain tcdate]
 The date used for calculation. Used for selection of
-date                              -effective base data, like BOM lines/models, routing
+date-effective base data, like BOM lines/models, routing
 operations/models and/or operation rates.
--                       proc_ext_std_cost_skip_calc_actualize
+- proc_ext_std_cost_skip_calc_actualize
 [type: domain tcyesno]
 Indicates if actualization of calculated standard cost
 is requested.
--                       proc_ext_std_cost_skip_calc_effective_date
+- proc_ext_std_cost_skip_calc_effective_date
 [type: domain tcdate]
 The date used for calculation. Used for selection of
-date                              -effective base data, like BOM lines/models, routing
+date-effective base data, like BOM lines/models, routing
 operations/models and/or operation rates.
--                       proc_ext_std_cost_skip_calc_analyze_before_print
+- proc_ext_std_cost_skip_calc_analyze_before_print
 [type: domain tcyesno]
 Special calculation mode, calculating before printing
 while in simulation.
--                       proc_ext_std_cost_skip_calc_uef_calculation
+- proc_ext_std_cost_skip_calc_uef_calculation
 [type: boolean]
 Indicates if calculation is done for an effectivity unit.
--                       proc_ext_std_cost_skip_calc_from_pcs
+- proc_ext_std_cost_skip_calc_from_pcs
 [type: boolean]
 Indicates if calculation is called in Project (PCS)
 context.
--                       proc_ext_std_cost_skip_calc_from_sales
+- proc_ext_std_cost_skip_calc_from_sales
 [type: boolean]
-Indicates if calculation is called from Sales                               - or
+Indicates if calculation is called from Sales - or
 Quotation line context.
 Note: tables and external variables must also be declared in
 the Process Extension
@@ -85,7 +85,7 @@ the Process Extension
 The example assumes that the actual set of Implemented Software
 Components (tccom0100s000) has the concepts Standard Cost by
 Enterprise Unit and Job Shop by Site set to Active.
-Product A (top                      -item) requires a standard cost for two enterprise
+Product A (top-item) requires a standard cost for two enterprise
 units. Its enterprise units have the following properties:
 A/EU1 (costing source Intercompany Transfer, supplied by
 EU2)
@@ -99,10 +99,10 @@ Items B and C only have standard cost in enterprise unit EU2.
 A representation of the product structure levels with the
 dependencies for standard cost calculation:
 A (EU1) (level 1) (Costing Source Intercompany Transfer)
-^                          -----A(EU2) (level 2) (Costing Source Job Shop)
-^                                   ----B(EU2) (level 3)
-^                                   ----C(EU2) (level 3)
-When this function is called in a top                      -down calculation for
+^-----A(EU2) (level 2) (Costing Source Job Shop)
+^----B(EU2) (level 3)
+^----C(EU2) (level 3)
+When this function is called in a top-down calculation for
 top item A, then at some point, the calculation encounters
 item C and EU2.
 Besides the available ticpr007 fields:
@@ -138,13 +138,13 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.level                       - the depth in the calculation process
-i.top.item                            - top item
-i.top.eu                              - top enterprise unit
-i.parent.item                         - parent item
-i.parent.eu                           - parent enterprise unit
-Output: o.skip.calculate              - decision result
-o.message                             - message, multibyte - max 300 characters
-Return: 0                                     - success
-DALHOOKERROR                                  - error
+Input:  i.level         - the depth in the calculation process
+i.top.item      - top item
+i.top.eu        - top enterprise unit
+i.parent.item   - parent item
+i.parent.eu     - parent enterprise unit
+Output: o.skip.calculate- decision result
+o.message       - message, multibyte - max 300 characters
+Return: 0                       - success
+DALHOOKERROR            - error
 ```

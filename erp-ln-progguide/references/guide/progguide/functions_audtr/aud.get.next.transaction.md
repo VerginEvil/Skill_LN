@@ -10,7 +10,7 @@ After the transactions to be selected have been specified using [aud.select.tran
 | | | |
 |---|---|---|
 | `long` | `selection.id` |  Id of the selected transactions returned by [aud.select.transactions()](aud.select.transactions.md).  |
-| `long` | `number.of.retries` |  |
+| `long` | `number.of.retries` |    |
 | `long` | `retry.interval` |  Number of milliseconds to wait before doing a retry to retrieve the data.  |
 | `ref string` | `transaction.id` |  Id of the transaction, as read from the audit trail.  |
 | `ref long` | `commit.time` |  The commit date and time of the next transaction (UTC format).  |
@@ -20,9 +20,9 @@ After the transactions to be selected have been specified using [aud.select.tran
 ## Return values
 | | |
 |---|---|
-| AUD_OK | Next transaction could be determined and transaction header data is retrieved successfully  |
-| AUD_FAIL | An error occurred when trying to retrieve the transaction data  |
-| AUD_NO_MORE_TRANSACTIONS | If there are no more transactions that meet the selection criteria defined, using function aud.select.transactions, the function returns NO_MORE_TRANSACTIONS.  |
+| AUD_OK | Next transaction could be determined and transaction header data is retrieved successfully |
+| AUD_FAIL | An error occurred when trying to retrieve the transaction data |
+| AUD_NO_MORE_TRANSACTIONS | If there are no more transactions that meet the selection criteria defined, using function aud.select.transactions, the function returns NO_MORE_TRANSACTIONS. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -33,5 +33,7 @@ Aud.select.transactions has to be called successfully prior to this function. Th
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

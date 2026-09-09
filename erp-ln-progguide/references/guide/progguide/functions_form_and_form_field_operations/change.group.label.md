@@ -26,4 +26,5 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

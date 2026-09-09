@@ -10,8 +10,8 @@ Stops the currently running Infor LN eMessage Connector service named *service* 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `service(15)` |  |
-| `long` | `mode` |  |
+| `long` | `service(15)` |    |
+| `long` | `mode` |    |
 
 ## Return values
 | | |
@@ -26,5 +26,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

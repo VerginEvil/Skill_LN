@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for LoadBuilding
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2079-2081
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2100-2101
 
 ```baan
 Syntax: long whext.dll0004.custom.load.building.constraints(
@@ -19,15 +19,15 @@ Usage:        Expl:   This process extension allows for customer specific load
 building constraints. This process extension is called from the
 Infor LN standard, when one of the following events are
 triggered:
--                       Create Projected Shipment
--                       Confirm Pick (when Outbound Inspections are not in use)
--                       Approve (when Outbound Inspections are in use)
--                       Cross Docking (when Confirmation of Receipt or Putaway of
+- Create Projected Shipment
+- Confirm Pick (when Outbound Inspections are not in use)
+- Approve (when Outbound Inspections are in use)
+- Cross Docking (when Confirmation of Receipt or Putaway of
 Inbound Advice is done and the goods are to be
-Cross                                       -Docked or when Approve is done for the
-Inbound Inspection where Cross                                       -Docking should
+Cross-Docked or when Approve is done for the
+Inbound Inspection where Cross-Docking should
 be done in non location controlled warehouses.)
--                       Create Outbound Order Line for Cost/Service items which are
+- Create Outbound Order Line for Cost/Service items which are
 released to warehousing.
 Note: This process extension is not called when composing a
 load structure. The constraints that are applicable for the
@@ -68,16 +68,16 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.found.load                          - Load that is found during load
+Input:  i.found.load            - Load that is found during load
 building
-i.found.shipment                              - Shipment that is found during shipment
+i.found.shipment        - Shipment that is found during shipment
 building
 Outbound Order Line Key
 i.order.origin
 i.order.number
 i.order.line
 i.order.sequence
-Output: o.use.selected.load                   - Indicator if the found load should
+Output: o.use.selected.load     - Indicator if the found load should
 be used (true/false)
 Please also set an error message
 regarding this shipment building
@@ -85,7 +85,3 @@ constraint, so the users will get
 feedback when required.
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for LocationSearchEngine
-
-The following process extension(s) is/are available: LocationSearchEngine.CheckLocation

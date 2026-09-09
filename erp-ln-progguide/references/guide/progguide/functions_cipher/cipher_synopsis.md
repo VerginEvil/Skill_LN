@@ -33,5 +33,7 @@ long
 
 ## Related topics
 - [Cipher Functions overview](cipher_overview.md)
+
 - [Secure Digest Functions overview](../functions_digest/digest_overview.md)
+
 - [Secure Hash Algorithm overview](../functions_sha/sha_overview.md)

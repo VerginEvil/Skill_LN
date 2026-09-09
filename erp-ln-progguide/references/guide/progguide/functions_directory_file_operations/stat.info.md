@@ -7,19 +7,31 @@
 This returns information about a named file. It provides the same information as [fstat.info()](fstat.info.md), but for a named file.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `string` | `file_name` |  The name of the file. All files listed in the path name must be searchable. To specify a remote file, include the host name. For example: "host!/usr/myfile".  |
-| `ref long` | `size` |  The file size in bytes.  |
-| `ref long` | `mode` |  This contains a bit pattern that indicates the access permission (posix) of the file. Use the following defines to check the file mode:  |
-| `ref long` | `inode` |  inode number. This field is deprecated. Its value is operating system dependent and on 64-bit systems its value may be truncated.  |
-| `ref long` | `dev` |  Device where file is stored. This field is deprecated. Its value is operating system dependent and on 64-bit systems its value may be truncated.  |
-| `ref long` | `uid` |  User ID of the file’s owner.  |
-| `ref long` | `gid` |  The file’s group ID.  |
-| `ref long` | `nlink` |  Number of links to the file.  |
-| `ref long` | `ctime` |  The time when the file status was last changed, as a number of seconds since 00:00:00 GMT, January 1, 1970.  |
-| `ref long` | `mtime` |  The time when the file was last modified, as a number of seconds since 00:00:00 GMT, January 1, 1970.  |
-| `ref long` | `atime` |  The time when the file data was last accessed, as a number of seconds since 00:00:00 GMT, January 1, 1970.  |
+| | |
+|---|---|
+| S_IRWXU | read, write, execute permission by owner |
+| S_IRUSR | read permission by owner |
+| S_IWUSR | write permission by owner |
+| S_IXUSR | execute, search permission by owner |
+| | |
+|---|---|
+| S_IRWXG | read, write, execute permission by group |
+| S_IRGRP | read permission by group |
+| S_IWGRP | write permission by group |
+| S_IXGRP | execute, search permission by group |
+| | |
+|---|---|
+| S_IRWXO | read, write, execute permission by others |
+| S_IROTH | read permission by others |
+| S_IWOTH | write permission by others |
+| S_IXOTH | execute, search permission by others |
+| | |
+|---|---|
+| S_ISUID | set user id on execution (sbit) |
+| S_ISGID | set group id on execution (sbit) |
+| | |
+|---|---|
+| S_ISVTX | save text after execution |
 
 ## Return values
 | | |
@@ -70,4 +82,5 @@ endif
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

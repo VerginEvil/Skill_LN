@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 782-783
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 781-782
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.12 (KB3530049  ).
+This function is available from 2024.12 (KB3530049).
 Syntax: long ProductionOrders.ProcessMaterialShortages(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -59,7 +59,7 @@ OrderGroupFrom          domain  tcpdno  ""
 OrderGroupTo            domain  tcpdno  OrderGroupFrom when set,
 Otherwise max domain value
 IssueSequence           domain  tisfc.issq
-tisfc.issq.pdno›¼                                                      
+tisfc.issq.pdno›¼•
 Output:
 oExceptionMessage       The last message if any message is
 found. If more than one message is

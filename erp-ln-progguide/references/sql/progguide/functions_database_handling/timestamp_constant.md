@@ -27,7 +27,7 @@ The timestamp constant specifies a timestamp value.
 The timestamp represented by the timestamp constant must be a valid timestamp according to the Gregorian calender.
 The minimum timestamp constant in UTC is "1970-01-01 00:00:00".
 The maximum timestamp constant in UTC is "2038-01-19 03:14:07".
-In Utc40 mode and in Utc64 mode, the maximum timestamp constant in UTC is "9999-12-31 00:00:00".
+In [Utc40 mode](sql_data_types.md#Utc40) and in [Utc64 mode](sql_data_types.md#Utc64), the maximum timestamp constant in UTC is "9999-12-31 00:00:00".
 For the minimum and maximum timestamp constant in the local timezone, the local timezone displacement and daylight savings time must be taken into account.
 The timezone offset must be in the range from -12:59 to 13:00.
 
@@ -53,9 +53,15 @@ TIMESTAMP '2022-03-30 13:42:17+2:00'
 
 ## Related topics
 - [Infor Enterprise Server SQL](baan_sql.md)
-- SQL data type timestamp
-- BitCountOfUtc
-- ByteCountOfUtc
-- Utc32 mode
-- Utc40 mode
-- Utc64 mode
+
+- [timestamp](sql_data_types.md#timestamp)
+
+- [BitCountOfUtc](sql_data_types.md#BitCountOfUtc)
+
+- [ByteCountOfUtc](sql_data_types.md#ByteCountOfUtc)
+
+- [Utc32 mode](sql_data_types.md#Utc32)
+
+- [Utc40 mode](sql_data_types.md#Utc40)
+
+- [Utc64 mode](sql_data_types.md#Utc64)

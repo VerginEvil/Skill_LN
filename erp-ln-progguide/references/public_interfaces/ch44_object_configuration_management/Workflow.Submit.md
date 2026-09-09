@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Workflow
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1895-1896
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1915-1915
 
 ```baan
 DLL:   tcextocmapi
-This function is available from     2023.10 (KB2289885  ).
+This function is available from 2023.10 (KB2289885).
 Syntax: long Workflow.Submit(
 domain  tcmcs.tabl       iRootTable,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -22,22 +22,16 @@ Pre:    An Object Type must be configured in the OCM Model for the
 specified iRootTable and this Object Type must be deployed.
 The related Workflow must be activated in ION.
 Post:   NA
-Input:  iRootTable                            - Root Table. Only tables in package "tx"
+Input:  iRootTable              - Root Table. Only tables in package "tx"
 are allowed. Mandatory.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Success
-<> 0                                          - An error occurred
+Return: 0                       - Success
+<> 0                    - An error occurred
 ```
-
-## Chapter 45 Public Interfaces for Time Management
-
-## Public Interfaces for ProductionOrderHours
-
-The following functions are available: ProductionOrderHours.CloseActiveLine ProductionOrderHours.InsertActiveLine ProductionOrderHours.StartOverview

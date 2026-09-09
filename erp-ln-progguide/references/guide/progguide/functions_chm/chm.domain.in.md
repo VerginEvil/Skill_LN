@@ -14,9 +14,9 @@ This defines a domain, which specifies a start value, an end value, and a step v
 | `long` | `data_type` |  This specifies the domain type. The possible values are: CHM_REAL real (the domain consists of integers and fractions) CHM_INTEGER integer (the domain consists of integers) CHM_SET enumerated set (the domain consists of a set of labels)  |
 | `string` | `set_name(16)` |  When the domain type is CHM_SET, this specifies the name of the relevant set. For other domain types, specify an empty string [""] here. Use [chm.set.in()](chm.set.in.md) to define the set.  |
 | `string` | `title(16)` |  These specify the axis title and the unit of measurement that must be displayed in the chart to describe the corresponding axis.  |
-| `string` | `unit_label(16)` |  |
+| `string` | `unit_label(16)` |    |
 | `double` | `from_value` |  These specify the start and end values of the domain. You can calculate these values with the function [chm.scale.axis()](chm.scale.axis.md).  |
-| `double` | `to_value` |  |
+| `double` | `to_value` |    |
 | `double` | `interval` |  This specifies the interval between domain values.  |
 | `string` | `display_format(80)` |  For domains of type CHM_REAL or CHM_INTEGER, you must specify a display format. See [edit$()](../functions_formatting_io/edit.md).  |
 
@@ -32,6 +32,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

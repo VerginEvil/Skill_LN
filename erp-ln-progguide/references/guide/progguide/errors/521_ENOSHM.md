@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that shared memory has not been loaded.  |
+| This error indicates that shared memory has not been loaded. |
 | *Solution:* |
 | Start the shared memory. |

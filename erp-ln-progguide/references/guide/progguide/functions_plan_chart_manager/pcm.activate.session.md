@@ -25,4 +25,5 @@ See [pcm.send.bms.event()](pcm.send.bms.event.md)
 
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)

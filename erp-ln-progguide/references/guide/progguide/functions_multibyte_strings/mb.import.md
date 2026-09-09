@@ -16,65 +16,222 @@ This function converts a string from the external, native character set to the [
 ## Return values
 | | |
 |---|---|
-| >= 0 |   |
-| -1 |  An incomplete or illegal code sequence was detected in the input string value. As of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md)), the already generated output is available in the *target$* ref argument string. In earlier versions, an empty string is returned in *target$*. This return value may hide other exceptional cases. Replacement of problematic characters may have taken place (otherwise indicated by return value -3). More importantly, the *target$* ref argument string or some internal buffer may be too small to contain the already generated output (otherwise indicated by return value get.size.in.bytes( *target$*)).  |
-| -3 | At least one input character could not be converted, because no character definition is known for the specified native code point; such input characters were replaced by some replacement character, e.g by a question mark '?'.  |
+| <= get.size.in.bytes( *target$*) | The resulting number of bytes stored in the *target$* ref argument string. Notice that value get.size.in.bytes( *target$*) also may indicate an overflow condition. |
+| get.size.in.bytes( *target$*) | This can be an indication of an overflow condition! This behavior is retained for compatibility reasons. The term *overflow* is used to indicate that some processing step was finished prematurely, because the output of that step was larger than would fit in the (intermediate) buffer that was available for the output of that step. It does *not* mean that any data was actually written outside the borders of the available buffer. If the supplied buffer is too small, the number of output bytes that fits in the supplied buffer is returned, with no clear indication of the overflow condition. In such a case, when the *target$* ref argument is a multibyte string (as opposed to a single-byte string), the supplied buffer may be not completely filled: when the TSS encoding of a character consists of multiple bytes that cannot all be put in the output buffer, then none of them is put there and the remaining (at most three) bytes are left undefined or (as of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md)) are set to 0. This conversion function uses fixed size internal temporary buffers, which can overflow. As of [porting set TIV](../tiv/tiv_overview.md) [level 2420](../tiv/tiv_2420.md), overflow of such an internal buffer is also indicated by returning the value get.size.in.bytes( *target$*). In earlier versions, such an overflow is certainly noticed, but the returned value is not well-defined. Any of the described cases of signaling an overflow may hide another exceptional case: replacement of problematic characters may have taken place (otherwise indicated by return value -3). In most cases, overflow situations can be avoided by supplying a sufficiently large output buffer. However, overflow of a fixed size internal temporary buffer can only be avoided by supplying a sufficiently short input string. The size of the internal temporary buffers is 4096 bytes. That is why the *target$* ref argument string receives at most 4096 bytes of output. After the conversion to the TSS character set, several escape sequences are converted to their specified TSS characters. Each escape sequence (consisting of multiple single-byte ASCII characters) results in one single-byte TSS character in the second internal buffer. This means that intermediate results can be larger than the final result and that internal buffer overflow can occur even when the size of the final result would be less than 4096 bytes. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Remarks
 After the conversion to the TSS character set, several escape sequences are converted to their specified TSS characters. This conversion is the inverse of the introduction of escape sequences as done by the function [mb.export$()](mb.export.md), but also several other escape sequences are recognized. This is shown in the following table. Especially notice that each escape sequence can be converted to upper case (capital letters) or to lower case (small letters) without changing its meaning.
-| | | | |
-|---|---|---|---|
-|  Escape sequence  |  Description  |  TSS code point (hexadecimal)  |  Character  |
-|   | backslash \ followed by digit zero 0, followed by latin (small or capital) letter x, followed by at most two (small or capital) hexadecimal digits  | the value of the hexadecimal number formed by the digits | Any single-byte [TSS](../misc/tss.md) character, including line drawing characters and code features  |
-|   | backslash \ followed by digit zero 0, followed by at most three octal digits  | the value (modulo 256) of the octal number formed by the digits | Any single-byte [TSS](../misc/tss.md) character, including line drawing characters and code features  |
-|   | backslash \ followed by at least one and at most three decimal digits, of which the first one is not digit zero 0  | the value (modulo 256) of the decimal number formed by the digits | Any single-byte [TSS](../misc/tss.md) character, including line drawing characters and code features  |
-|   | backslash \ followed by latin (small or capital) letter b | 08 | [ASCII](../misc/ascii_table.md) character BS (backspace)  |
-|   | backslash \ followed by latin (small or capital) letter e | 1B | [ASCII](../misc/ascii_table.md) character ESC (escape)  |
-|   | backslash \ followed by latin (small or capital) letter f | 0C | [ASCII](../misc/ascii_table.md) character FF (form feed)  |
-|   | backslash \ followed by latin (small or capital) letter n | 0A | [ASCII](../misc/ascii_table.md) character LF (line feed, new line)  |
-|   | backslash \ followed by latin (small or capital) letter r | 0D | [ASCII](../misc/ascii_table.md) character CR (carriage return)  |
-|   | backslash \ followed by latin (small or capital) letter s | 20 | [ASCII](../misc/ascii_table.md) character SP (space)  |
-|   | backslash \ followed by latin (small or capital) letter t | 09 | [ASCII](../misc/ascii_table.md) character HT (horizontal tab)  |
-|   | backslash \ followed by latin (small or capital) letter v | 0B | [ASCII](../misc/ascii_table.md) character VT (vertical tab)  |
-|   | backslash \ followed by backslash \ | 5C | [ASCII](../misc/ascii_table.md) character \ (reverse solidus, backslash)  |
-|   | backslash \ followed by circumflex accent ^ | 5E | [ASCII](../misc/ascii_table.md) character ^ (circumflex accent)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter a or exclamation mark ! | 01 | [ASCII](../misc/ascii_table.md) character SOH (start of heading)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter b or quotation mark " | 02 | [ASCII](../misc/ascii_table.md) character STX (start of text)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter c or number sign # | 03 | [ASCII](../misc/ascii_table.md) character ETX (end of text)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter d or dollar sign $ | 04 | [ASCII](../misc/ascii_table.md) character EOT (end of transmission)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter e or percent sign % | 05 | [ASCII](../misc/ascii_table.md) character ENQ (enquiry)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter f or ampersand & | 06 | [ASCII](../misc/ascii_table.md) character ACK (acknowledge)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter g or apostrophe ' | 07 | [ASCII](../misc/ascii_table.md) character BEL (bell)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter h or left parenthesis ( | 08 | [ASCII](../misc/ascii_table.md) character BS (backspace)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter i or right parenthesis ) | 09 | [ASCII](../misc/ascii_table.md) character HT (horizontal tab)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter j or asterisk * | 0A | [ASCII](../misc/ascii_table.md) character LF (line feed, new line)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter k or plus sign + | 0B | [ASCII](../misc/ascii_table.md) character VT (vertical tab)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter l or comma , | 0C | [ASCII](../misc/ascii_table.md) character FF (form feed)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter m or hyphen-minus - | 0D | [ASCII](../misc/ascii_table.md) character CR (carriage return)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter n or full stop . | 0E | [ASCII](../misc/ascii_table.md) character SO (shift out)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter o or solidus (slash) / | 0F | [ASCII](../misc/ascii_table.md) character SI (shift in)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter p or digit zero 0 | 10 | [ASCII](../misc/ascii_table.md) character DLE (data link escape)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter q or digit one 1 | 11 | [ASCII](../misc/ascii_table.md) character DC1 (device control one)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter r or digit two 2 | 12 | [ASCII](../misc/ascii_table.md) character DC2 (device control two)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter s or digit three 3 | 13 | [ASCII](../misc/ascii_table.md) character DC3 (device control three)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter t or digit four 4 | 14 | [ASCII](../misc/ascii_table.md) character DC4 (device control four)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter uor digit five 5 | 15 | [ASCII](../misc/ascii_table.md) character NAK (negative acknowledge)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter v or digit six 6 | 16 | [ASCII](../misc/ascii_table.md) character SYN (synchronous idle)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter w or digit seven 7 | 17 | [ASCII](../misc/ascii_table.md) character ETB (end of transmission block)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter x or digit eight 8 | 18 | [ASCII](../misc/ascii_table.md) character CAN (cancel)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter y or digit nine 9 | 19 | [ASCII](../misc/ascii_table.md) character EM (end of medium)  |
-|   | circumflex accent ^ followed by latin (capital or small) letter z or colon : | 1A | [ASCII](../misc/ascii_table.md) character SUB (substitute)  |
-|   | circumflex accent ^ followed by left square bracket [ or left curly bracket { or semicolon ; | 1B | [ASCII](../misc/ascii_table.md) character ESC (escape)  |
-|   | circumflex accent ^ followed by backslash (reverse solidus) \ or vertical line | or less-than sign < | 1C | [ASCII](../misc/ascii_table.md) character FS (file separator)  |
-|   | circumflex accent ^ followed by right square bracket ] or right curly bracket } or equals sign = | 1D | [ASCII](../misc/ascii_table.md) character GS (group separator)  |
-|   | circumflex accent ^ followed by circumflex accent ^ or tilde ~ or greater-than sign > | 1E | [ASCII](../misc/ascii_table.md) character RS (record separator)  |
-|   | circumflex accent ^ followed by low line _ or question mark ? | 1F | [ASCII](../misc/ascii_table.md) character US (unit separator)  |
+| |
+|---|
+| \0x *[0-9a-fA-F]** |
+| \0X *[0-9a-fA-F]** |
+| |
+|---|
+| \0 *[0-7]** |
+| |
+|---|
+| \ *[1-9][0-9]** |
+| |
+|---|
+| \b |
+| \B |
+| |
+|---|
+| \e |
+| \E |
+| |
+|---|
+| \f |
+| \F |
+| |
+|---|
+| \n |
+| \N |
+| |
+|---|
+| \r |
+| \R |
+| |
+|---|
+| \s |
+| \S |
+| |
+|---|
+| \t |
+| \T |
+| |
+|---|
+| \v |
+| \V |
+| |
+|---|
+| \\ |
+| |
+|---|
+| \^ |
+| |
+|---|
+| ^A |
+| ^a |
+| ^! |
+| |
+|---|
+| ^B |
+| ^b |
+| ^" |
+| |
+|---|
+| ^C |
+| ^c |
+| ^# |
+| |
+|---|
+| ^D |
+| ^d |
+| ^$ |
+| |
+|---|
+| ^E |
+| ^e |
+| ^% |
+| |
+|---|
+| ^F |
+| ^f |
+| ^& |
+| |
+|---|
+| ^G |
+| ^g |
+| ^' |
+| |
+|---|
+| ^H |
+| ^h |
+| ^( |
+| |
+|---|
+| ^I |
+| ^i |
+| ^) |
+| |
+|---|
+| ^J |
+| ^j |
+| ^* |
+| |
+|---|
+| ^K |
+| ^k |
+| ^+ |
+| |
+|---|
+| ^L |
+| ^l |
+| ^, |
+| |
+|---|
+| ^M |
+| ^m |
+| ^- |
+| |
+|---|
+| ^N |
+| ^n |
+| ^. |
+| |
+|---|
+| ^O |
+| ^o |
+| ^/ |
+| |
+|---|
+| ^P |
+| ^p |
+| ^0 |
+| |
+|---|
+| ^Q |
+| ^q |
+| ^1 |
+| |
+|---|
+| ^R |
+| ^r |
+| ^2 |
+| |
+|---|
+| ^S |
+| ^s |
+| ^3 |
+| |
+|---|
+| ^T |
+| ^t |
+| ^4 |
+| |
+|---|
+| ^U |
+| ^u |
+| ^5 |
+| |
+|---|
+| ^V |
+| ^v |
+| ^6 |
+| |
+|---|
+| ^W |
+| ^w |
+| ^7 |
+| |
+|---|
+| ^X |
+| ^x |
+| ^8 |
+| |
+|---|
+| ^Y |
+| ^y |
+| ^9 |
+| |
+|---|
+| ^Z |
+| ^z |
+| ^: |
+| |
+|---|
+| ^[ |
+| ^{ |
+| ^; |
+| |
+|---|
+| ^\ |
+| ^| |
+| ^< |
+| |
+|---|
+| ^] |
+| ^} |
+| ^= |
+| |
+|---|
+| ^^ |
+| ^~ |
+| ^> |
+| |
+|---|
+| ^_ |
+| ^? |
 
 ## Related topics
-- A similar function, but without conversion of escape sequences to their specified TSS-characters: [mb.import.raw()](mb.import.raw.md)
-- Inverse operation: [mb.export$()](mb.export.md)
+- [mb.import.raw()](mb.import.raw.md)
+
+- [mb.export$()](mb.export.md)
+
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

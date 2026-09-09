@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 646-646
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 649-649
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2025.10 (KB3629872  ).
+This function is available from 2025.10 (KB3629872).
 Syntax: long JobShopBillOfMaterial.GetSourceEngineeringRevision(
 domain  tcsite           iSite,
 domain  tcitem           iItem,

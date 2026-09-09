@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1365-1367
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1377-1379
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2026.07 (KB3676338  ).
+This function is available from 2026.07 (KB3676338).
 Syntax: long Call.SetStatusToInProcess(
 domain  tcorno           iCall,
 long             iProcessingOptionSet,
@@ -23,12 +23,12 @@ to the current user, regardless of the initial value of the
 field.
 This public interface also provides the option to change the
 status to In Process for another Support Engineer.
--                       If the system must always use the support engineer defined
+- If the system must always use the support engineer defined
 on the call, the arguments AssignCallToMe and
 AssignInProcessCallToMe must be set to tcyesno.no.
 If the user only wants this behavior when the call is not yet
 In Process, only AssignCallToMe must be set to tcyesno.no.
--                       If the system must not use the Support Engineer assigned
+- If the system must not use the Support Engineer assigned
 to the call, but instead assign a different support engineer,
 the SupportEngineer argument must be filled. In this case, the
 arguments AssignCallToMe and AssignInProcessCallToMe are ignored.
@@ -44,9 +44,9 @@ iProcessingOptionSet.
 Post:   An abort.transaction() or commit.transaction() must be executed.
 After the call, the option set can be deleted by calling
 ProcessingOptionSet.Delete().
-Input:  iCall                                 - The Call for which the status must be
+Input:  iCall                   - The Call for which the status must be
 set to In Process; mandatory.
-iProcessingOptionSet                          - Processing Option Set: a processing
+iProcessingOptionSet    - Processing Option Set: a processing
 option set number referring to a
 processing option set containing at
 least one valid option; mandatory.
@@ -91,13 +91,13 @@ If tcyesno.no, the call status is changed to In Process
 for the already assigned Support Engineer, without
 changing the Support Engineer, even if the status was
 In Process already.
-Output: oExceptionMessage                     - The last message, if any is found.
+Output: oExceptionMessage       - The last message, if any is found.
 If more than one message is given,
 these are present in the oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error
-<> 0                                          - An error occurred.
+Return: 0                       - No error
+<> 0                    - An error occurred.
 ```

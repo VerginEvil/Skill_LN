@@ -9,7 +9,7 @@ This removes the specified form command(s). Form commands are identified either 
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `command,...` |   |
+| `string` | `command,...` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -26,4 +26,5 @@ after.form.read:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

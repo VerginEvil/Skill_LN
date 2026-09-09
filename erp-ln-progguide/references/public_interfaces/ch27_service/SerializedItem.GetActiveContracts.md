@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SerializedItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1344-1346
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1356-1358
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SerializedItem.GetActiveContracts(
 domain  tcitem           iItem,
 domain  tcibd.sern       iSerialNumber,
@@ -37,16 +37,16 @@ Parent Serialized Items in the Physical Breakdown
 Tree if any.
 A Serialized Item can be covered by a contract
 for the Owner of the Serialized Item, but also by a contract
-for the In                        -use by Business Partner. When this is the case,
+for the In-use by Business Partner. When this is the case,
 both contracts are returned. As a result, the output arrays
 are filled with 0, 1, or 2 contracts, indicated by the output
 arguments o.nr.of.coverage.contracts and
 o.nr.of.pricing.contracts respectively.
-When one contract is found, it is for the Owner/Sold                        -to
+When one contract is found, it is for the Owner/Sold-to
 Business Partner of the Serialized Item.
 When two contracts are found, the first is for the
-Owner/Sold                        -to Business Partner of the Serialized Item,
-the second is for the In                        -use by Business Partner of the
+Owner/Sold-to Business Partner of the Serialized Item,
+the second is for the In-use by Business Partner of the
 Serialized Item.
 Two contracts are possible when the Contract Parameter
 Allow Multple Contracts for Serialized Items is Yes.
@@ -83,6 +83,6 @@ in the oExceptionID.
 oExceptionID
 An ID that refers to all error information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                           - Search routine successful
-<> 0                                  - An error occurred
+Return  : 0             - Search routine successful
+<> 0          - An error occurred
 ```

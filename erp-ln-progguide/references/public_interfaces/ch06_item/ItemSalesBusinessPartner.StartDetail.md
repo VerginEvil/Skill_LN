@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemSalesBusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 207-208
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 208-209
 
 ```baan
 DLL:   tdextisaapi
-This function is available from     2023.08 (KB2300144  ).
+This function is available from 2023.08 (KB2300144).
 Syntax: long ItemSalesBusinessPartner.StartDetail(
 long             iStartMode,
 domain  tccitg           iItemGroup,
@@ -33,8 +33,8 @@ iItemGroup              Item Group (Mandatory if argument iItem
 is not specified).
 iItem                   Item (Mandatory if argument iItemGroup
 is not specified).
-iSoldToBusinessPartner  Sold                      -to Business Partner (Mandatory)
-iShipToBusinessPartner  Ship                      -to Business Partner (Optional).
+iSoldToBusinessPartner  Sold-to Business Partner (Mandatory)
+iShipToBusinessPartner  Ship-to Business Partner (Optional).
 iEffectiveDate          Effective date (Mandatory).
 Output:
 oExceptionMessage       The last message if any message is

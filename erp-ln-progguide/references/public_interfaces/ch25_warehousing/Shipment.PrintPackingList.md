@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1145-1147
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1155-1157
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.09 (KB3516507  ).
+This function is available from 2024.09 (KB3516507).
 Syntax: long Shipment.PrintPackingList(
 domain  whinh.shpm       iShipment,
 domain  tcmcs.str15      iDevice,
@@ -32,8 +32,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iShipment is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ShipmentArray
+- selection range fields (From/To)
+- ShipmentArray
 The Packing List will then be printed for the given iShipment.
 In case option ShipmentArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
@@ -77,7 +77,7 @@ ReportName                      domain tcmcs.str16      Empty String
 Language can be filled with a Software Language to print the labels
 of the report in another language.
 Possible values of ReportNumber are:
-1               - By Shipment
+1 - By Shipment
 JSON Object ShipmentArray has the following structure:
 "ShipmentArray": [
 {
@@ -98,13 +98,13 @@ Json.add(ShipmentArray, Shipment)
 ReportName only needs to filled for customized reports,
 otherwise the standard report is used based on the ReportNumber.
 ReportName must start with an "r", e.g. "rwhinh447601001"
-Output: oDataProcessed                        - true:  Packing List Printed.
+Output: oDataProcessed          - true:  Packing List Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

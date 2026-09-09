@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderMaterialSupplyLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 475-477
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 477-479
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2023.10 (KB2308375  ).
+This function is available from 2023.10 (KB2308375).
 Syntax: long PurchaseOrderMaterialSupplyLine.GenerateSupplyOrder(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -51,7 +51,7 @@ This function does not start the execution of automatic
 order steps. A separate Public Interface can be used to
 start automatic order steps if necessary:
 'PurchaseOrder.StartAutomaticProcessing'.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 The purchase order of the material supply

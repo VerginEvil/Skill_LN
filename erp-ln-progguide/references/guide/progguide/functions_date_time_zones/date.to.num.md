@@ -9,9 +9,9 @@ This returns the number of days since 01-01-0001 for a specified year, month, an
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `yearno` |  |
-| `long` | `monthno` |  |
-| `long` | `month_dayno` |  |
+| `long` | `yearno` |    |
+| `long` | `monthno` |    |
+| `long` | `month_dayno` |    |
 
 ## Return values
 | | |
@@ -31,4 +31,5 @@ no_of_days = date.to.num( 1991, 04, 20 ) | Returns 726942
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

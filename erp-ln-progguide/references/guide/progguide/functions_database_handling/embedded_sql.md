@@ -6,8 +6,8 @@ The following loop structure enables the use of SQL as part of the language:
 
 [ @sql.statement(cSqlAnnotation_SelectAllDataLanguages) ]
 SELECT < set definition (= actual query, see SELECT statement) >
-[ SELECTBIND ( number, var) ] ...
-[ WHEREBIND (number, expression) ] ...
+[ { SELECTBIND ( number, var ) }... ]
+[ { WHEREBIND ( number, expression ) }... ]
 [ SELECTDO
                 < operation(s) on all selected records > ]
 [ SELECTEOS

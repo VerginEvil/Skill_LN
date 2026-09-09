@@ -9,7 +9,7 @@ This switches to another company and sets the read-only variable COMPNR to the s
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `new_compnr` |  |
+| `long` | `new_compnr` |    |
 
 ## Return values
 | | |
@@ -17,8 +17,8 @@ This switches to another company and sets the read-only variable COMPNR to the s
 | 1 | Success. |
 | -1 | Company not available. |
 | -2 | No permission to change to this company. |
-| -3 | Package combination does not correspond with new company number.  |
-| -4 | First day of the week does not correspond to first day of the week of original company.  |
+| -3 | Package combination does not correspond with new company number. |
+| -4 | First day of the week does not correspond to first day of the week of original company. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.

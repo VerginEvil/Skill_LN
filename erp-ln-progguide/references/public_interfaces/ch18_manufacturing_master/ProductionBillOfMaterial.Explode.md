@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 624-626
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 627-629
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2026.01 (KB3573290  ).
+This function is available from 2026.01 (KB3573290).
 Syntax: long ProductionBillOfMaterial.Explode(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -30,8 +30,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to get "exploded" Bill of Material
 information in output arrays.
 The BOM tree is searched for:
--                       direct non-phantom children of iProduct
--                       non-phantom children of phantom children (multi-level;
+- direct non-phantom children of iProduct
+- non-phantom children of phantom children (multi-level;
 maximum number of levels: iExplosionDepth)
 The found children (= materials) are added to the
 output arrays. The output arrays will have a length of 3000.
@@ -66,28 +66,28 @@ iMergeComponents
 Merge Components.
 iExplodeLowestPhantoms
 Explode Lowest Phantoms.
-Output: oProject                      - Array of Projects, must be a based array.
-oWarehouse                            - Array of Warehouses, must be a based array.
-oItem                                 - Array of Items, must be a based array.
-oCustomizable                         - Array of Customizable flags, must be a based
+Output: oProject        - Array of Projects, must be a based array.
+oWarehouse      - Array of Warehouses, must be a based array.
+oItem           - Array of Items, must be a based array.
+oCustomizable   - Array of Customizable flags, must be a based
 array.
-oPositionNumber                       - Array of Position numbers, must be a based
+oPositionNumber - Array of Position numbers, must be a based
 array.
-oBomQuantity                          - Array of BOM Quantities, must be a based
+oBomQuantity    - Array of BOM Quantities, must be a based
 array.
 oNumberOfMaterials
--                                       Number of materials.
+- Number of materials.
 oExceptionMessage
--                                       The last message if any message is
+- The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
 oExceptionID
--                                       An ID that refers to the exception
+- An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0               -     Function is executed successfully.
-<> 0                       -  An error occurred. The Production Bill of Material could
+Return: 0 -     Function is executed successfully.
+<> 0 -  An error occurred. The Production Bill of Material could
 not be exploded.
 ```

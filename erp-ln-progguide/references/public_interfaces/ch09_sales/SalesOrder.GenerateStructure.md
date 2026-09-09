@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 321-324
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 323-326
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2024.12 (KB3538863  ).
+This function is available from 2024.12 (KB3538863).
 Syntax: long SalesOrder.GenerateStructure(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -21,10 +21,10 @@ structure for the items of all lines of a sales order or for the
 item of a specific order line.
 The execution of automatic order steps is not started. Function
 SalesOrderLine.StartAutomaticProcessing can be used for this.
-Pre:    Caller must set a retry              -point by default.
+Pre:    Caller must set a retry-point by default.
 When the Processing Option "ConsiderMaterialPricing" is set to
 Yes (tcyesno.yes), the transaction management is done by the
-function itself, setting a retry                      -point is not needed.
+function itself, setting a retry-point is not needed.
 See also Processing Option "ConsiderMaterialPricing" below for
 more information.
 Post:   Caller must commit/abort the transaction by default.
@@ -33,13 +33,13 @@ Yes (tcyesno.yes), the transaction management is done by the
 function itself, commit or abort is not needed.
 See also Processing Option "ConsiderMaterialPricing" below for
 more information.
-Input:  iSalesOrder                           - Sales order (Mandatory)
-iSalesOrderLine                               - Sales order line (Optional)
+Input:  iSalesOrder             - Sales order (Mandatory)
+iSalesOrderLine         - Sales order line (Optional)
 If 0, a structure is generated for
 all order lines if applicable.
 If not 0, a structure is generated
 only for the specified order line.
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default values for the
 settings and option fields of session
 'Generate (Project PCS) Structure'
@@ -72,7 +72,7 @@ CreateOrderLinesForPhantom              domain tcyesno          tcyesno.no
 GenerateProjectPartsForCostServiceItems domain tcyesno          tcyesno.no
 GenerateProjectPartsForAllOrders        domain tcyesno          tcyesno.no
 Some notes on options:
--               ConsiderMaterialPricing
+- ConsiderMaterialPricing
 This option is not available on the session. Normally session
 'Generate (Project PCS) Structure' updates material pricing content
 for applicable items when the concept "Material Pricing" is used
@@ -88,36 +88,36 @@ restricts the use of the function.
 Therefore option "ConsiderMaterialPricing" has been added. The option
 can have 2 values:
 No (tcyesno.no, the default value if it is not specified)
--                   the logic for Material Pricing is skipped
--                   the caller must use its own transaction management
+- the logic for Material Pricing is skipped
+- the caller must use its own transaction management
 Yes (tcyesno.yes)
--                   the logic for Material Pricing is executed when applicable
--                   the caller cannot use its own transaction management
--               GenerationMethod
+- the logic for Material Pricing is executed when applicable
+- the caller cannot use its own transaction management
+- GenerationMethod
 Valid values:
--                   tccpge.eto (Engineer-to-Order)
--                   tccpge.sto (Standard-to-Order)
--               InitialProjectStatus
+- tccpge.eto (Engineer-to-Order)
+- tccpge.sto (Standard-to-Order)
+- InitialProjectStatus
 Valid values:
--                   tcpsts.free (Free)
--                   tcpsts.simulation (Simulated)
--                   tcpsts.active (Active)
--               CreateProjectPerSalesOrder
+- tcpsts.free (Free)
+- tcpsts.simulation (Simulated)
+- tcpsts.active (Active)
+- CreateProjectPerSalesOrder
 This option can be overruled by the setting of Sales Order Parameter
 "Link Installments to Projects". If this parameter reads Yes, the option
 is ignored and the system  will generate one project per Sales Order.
 Not all combinations of options are possible:
--               CreateProjectPerSalesOrder
+- CreateProjectPerSalesOrder
 If this option is set to No, the value of option
 EquateProjectWithSalesOrder must be set to No.
 The system will correct the value of EquateProjectWithSalesOrder
 if needed.
--               EquateProjectWithSalesOrder
+- EquateProjectWithSalesOrder
 If this option is set to No, it is mandatory to provide a valid
 series with option ProjectSeries. If the ProjectSeries is not
 provided or it does not exist, the function cannot continue and
 returns an error.
--               CreateOrderLinesForPhantom
+- CreateOrderLinesForPhantom
 If this option is set to No, the value of option
 IgnoreWarehouseFromBOM must be set to No. The system will correct
 the value of option IgnoreWarehouseFromBOM if needed.
@@ -184,16 +184,16 @@ ret.val = ProcessingOptionSet.Delete(
 processing.option.set)  |* ref
 endif
 Output:
-oStructureGenerated                           - True:  A structure has been generated
--                                               False: No structure has been generated
-oExceptionMessage                             - The last message if any message is
+oStructureGenerated     - True:  A structure has been generated
+- False: No structure has been generated
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error occurred
-<> 0                                          - An error occurred
+Return: 0                       - No error occurred
+<> 0                    - An error occurred
 ```

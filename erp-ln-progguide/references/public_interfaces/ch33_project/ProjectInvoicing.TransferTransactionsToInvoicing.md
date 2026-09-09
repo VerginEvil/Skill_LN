@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectInvoicing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1733-1735
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1753-1754
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long ProjectInvoicing.TransferTransactionsToInvoicing(
 domain  tcyesno          iAdvancePayments,
 domain  tcyesno          iUnitRates,
@@ -32,24 +32,24 @@ Note : This function should be called for one contract and contract line
 or one project at a time.
 Pre:    N.A
 Post:   N.A
-Input:  iAdvancePayments                      - Advance Payments (Yes/No). Mandatory
-iUnitRates                                    - Unit Rates (Yes/No). Mandatory
-iExtensions                                   - Extensions (Yes/No). Mandatory
-iInstallments                                 - Installments (Yes/No). Mandatory
-iProgressPayments                             - Progress Payments (Yes/No). Mandatory
-iHoldback                                     - Holdback (Yes/No). Mandatory
-iCostplus                                     - Cost-plus (Yes/No). Mandatory
-iFeesAndPenalties                             - Fees and Penalties (Yes/No). Mandatory
-iContract                                     - Contract. Optional
-iContractLine                                 - Contract Line. Optional
-iProject                                      - Project. Optional
+Input:  iAdvancePayments        - Advance Payments (Yes/No). Mandatory
+iUnitRates              - Unit Rates (Yes/No). Mandatory
+iExtensions             - Extensions (Yes/No). Mandatory
+iInstallments           - Installments (Yes/No). Mandatory
+iProgressPayments       - Progress Payments (Yes/No). Mandatory
+iHoldback               - Holdback (Yes/No). Mandatory
+iCostplus               - Cost-plus (Yes/No). Mandatory
+iFeesAndPenalties       - Fees and Penalties (Yes/No). Mandatory
+iContract               - Contract. Optional
+iContractLine           - Contract Line. Optional
+iProject                - Project. Optional
 Note : 1) iContract and iContractLine are mandatory for
 Advance Payments , Holdback, Progress Payments and
 Fees And Penalties.
 2) (iContract and iContractLine) or iProject is mandatory
-for Cost                                -Plus and Installments.
+for Cost-Plus and Installments.
 3) iProject is mandatory for Extensions and Unit Rates.
-iProcessingOptionSet                          -
+iProcessingOptionSet    -
 Optional, if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -81,21 +81,17 @@ ToTransactionTime               domain  tppdm.date      <Maximum Value>
 InvoiceStatus                   domain  tcsli.stat      tcsli.stat.confirmed
 CutOffDate                      domain  tcdate          Current Date and Time
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
 In case of successful transfers,
 this message provides information
 about the processed transactions.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Successful
-<> 0                                          - An error occurred
+Return: 0                       - Successful
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectAdvancePayments
-
-The following functions are available: ProjectAdvancePayments.StartOverview

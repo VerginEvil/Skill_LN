@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectCostPegTransferLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1095-1096
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1105-1106
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2023.09 (KB2304375  ).
+This function is available from 2023.09 (KB2304375).
 Syntax: long ProjectCostPegTransferLine.Process(
 domain  tcorno           iCostPegTransfer,
 domain  tcpono           iCostPegTransferLine,
@@ -19,8 +19,8 @@ It is only allowed when the Project Pegging concept is enabled
 in Implemented Software Components (tccom0500m000).
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iCostPegTransfer               - Project Cost Peg Transfer (Mandatory)
-iCostPegTransferLine                       - Project Cost Peg Transfer Line(Mandatory)
+Input:  iCostPegTransfer - Project Cost Peg Transfer (Mandatory)
+iCostPegTransferLine - Project Cost Peg Transfer Line(Mandatory)
 Output: NA
 Return: 0: OK
 <> 0: Error

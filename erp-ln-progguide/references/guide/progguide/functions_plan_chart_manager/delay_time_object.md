@@ -6,12 +6,14 @@ Delay time is a span of time characterized as non-working time – for example, 
 ## Attributes
 | | |
 |---|---|
-|  PcmDelayStart (double)  | The starting point of the delay time on the time scale.  |
-|  PcmDelayFinish (double)  | The end point of the delay time on the time scale.  |
-|  PcmDelayRepeat (long)  |  This indicates whether or not the delay time is repeated. The possible values are: true delay time is repeated false delay time occurs only once  |
-|  PcmDelayInterval (double)  | If PcmDelayRepeat = true, use this flag to specify the interval at which the delay time must be repeated. The format depends on the division of the time scale.  |
+| PcmDelayStart (double) | The starting point of the delay time on the time scale. |
+| PcmDelayFinish (double) | The end point of the delay time on the time scale. |
+| PcmDelayRepeat (long) | This indicates whether or not the delay time is repeated. The possible values are: true delay time is repeated false delay time occurs only once |
+| PcmDelayInterval (double) | If PcmDelayRepeat = true, use this flag to specify the interval at which the delay time must be repeated. The format depends on the division of the time scale. |
 
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)
+
 - [Plan Chart Manager: example](example.md)

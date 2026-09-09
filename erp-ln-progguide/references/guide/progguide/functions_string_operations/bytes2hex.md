@@ -36,6 +36,8 @@ hex = bytes2hex(bytes, 4)
 ```
 
 ## Related topics
-- Inverse operation: [hex2bytes()](hex2bytes.md)
+- [hex2bytes()](hex2bytes.md)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

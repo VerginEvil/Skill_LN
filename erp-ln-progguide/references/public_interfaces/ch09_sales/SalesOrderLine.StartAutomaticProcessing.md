@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 357-358
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 359-360
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2021.03 (KB2173890  ).
+This function is available from 2021.03 (KB2173890).
 Syntax: long SalesOrderLine.StartAutomaticProcessing(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -25,20 +25,20 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iSalesOrder                           - Sales Order (mandatory)
-iSalesOrderLine                               - Sales Order Line (mandatory)
-iSalesOrderSequence                           - Sales Sequence number
+Input:  iSalesOrder             - Sales Order (mandatory)
+iSalesOrderLine         - Sales Order Line (mandatory)
+iSalesOrderSequence     - Sales Sequence number
 (must be >= 0)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Automatic Processing finished or
+Return: 0                       - Automatic Processing finished or
 next activity is not automatic.
-<> 0                                          - Not all mandatory input arguments are
+<> 0                    - Not all mandatory input arguments are
 filled.
 ```

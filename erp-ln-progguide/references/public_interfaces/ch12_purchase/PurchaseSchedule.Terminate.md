@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseSchedule
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 440-441
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 442-443
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2022.06 (KB2241446  ).
+This function is available from 2022.06 (KB2241446).
 Syntax: long PurchaseSchedule.Terminate(
 domain  tcorno           iPurchaseSchedule,
 domain  tcyesno          iCopySchedule,
@@ -17,7 +17,7 @@ domain  tdpur.stat       iCancelUptoStatus,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function terminates the given purchase schedule.
-For Pull Call                      -off schedules, the purchase release is generated
+For Pull Call-off schedules, the purchase release is generated
 or updated for each cancelled schedule line.
 For Push and Pull Forecast schedules, Public Interface
 'PurchaseSchedule.GenerateReleaseForPushAndPullForecast' must be
@@ -25,14 +25,14 @@ called after termination of the purchase schedule.
 Purchase Schedules that are related to Direct Delivery cannot be
 terminated using this Public Interface. They must be terminated
 from the related Sales Schedule.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseSchedule       Purchase Schedule (Mandatory)
 iCopySchedule           No:  No new purchase schedule will be
 created.
 Yes: Copies the open schedule lines to a
 new schedule. This applies to Push
-and Pull                                                   -Forecast only. Lines
+and Pull-Forecast only. Lines
 having the following status are
 copied:
 tdpur.stat.created
@@ -55,18 +55,14 @@ tdpur.stat.approved
 tdpur.stat.disapproved
 tdpur.stat.order.generated
 tdpur.stat.asn.received
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       The purchase schedule is terminated
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PurchaseOrder
-
-The following functions are available: PurchaseOrder.Approve PurchaseOrder.InitiateChangeRequest PurchaseOrder.PrintPurchaseOrder PurchaseOrder.RecalculateLandedCosts PurchaseOrder.StartAutomaticProcessing PurchaseOrder.StartIntakeWorkbench PurchaseOrder.StartMultiMain PurchaseOrder.StartPrintReminders PurchaseOrders.StartOverview

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Invoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2055-2057
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2074-2076
 
 ```baan
 Syntax: long ciext.sli0001.define.custom.xml.data.elements(
@@ -87,11 +87,11 @@ End of Example of Implementation
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.number.of.elements                          - Number of custom XML data elements
-o.custom.element.field.names                          - Array with field names
-o.custom.element.descriptions                         - Array with descriptions.
+Output: o.number.of.elements            - Number of custom XML data elements
+o.custom.element.field.names    - Array with field names
+o.custom.element.descriptions   - Array with descriptions.
 Maximum of 70 characters.
-o.custom.element.data.types                           - Array data types
+o.custom.element.data.types     - Array data types
 Data type should be one of the
 following values:
 tcxml.tgtp.string
@@ -100,13 +100,13 @@ tcxml.tgtp.bool
 tcxml.tgtp.date
 tcxml.tgtp.utc.date
 tcxml.tgtp.enum
-o.custom.element.sections                             - Array with section
+o.custom.element.sections       - Array with section
 Section should be one of the
 following values:
 cisli.xils.header
 cisli.xils.line
 cisli.xils.tax.summary
-Return: 0                                     - Success
-<> 0                                          - When an error occurs in setting
+Return: 0                       - Success
+<> 0                    - When an error occurs in setting
 custom xml data elements.
 ```

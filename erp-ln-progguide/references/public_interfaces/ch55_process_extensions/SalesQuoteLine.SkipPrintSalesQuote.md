@@ -4,18 +4,19 @@
 >
 > Group: Process Extensions for SalesQuoteLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2240-2241
-
-Skips Sales Quote Lines when Printing Sales Quote. This process extension is available from 2024.06 ( KB2330719 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2263-2264
 
 ```baan
+Skips Sales Quote Lines when Printing Sales Quote.
+This process extension is available from 2024.06 (KB2330719).
+To implement this process extension, you can use the information below:
 Usage:        Process Extension SalesQuoteLine.SkipPrintSalesQuote can be used
 to skip Sales Quote Lines when printing the Sales Quote.
 Sessions where this Process Extension can be implemented:
--               Print Sales Quotation (tdsls1401m000)
+- Print Sales Quotation (tdsls1401m000)
 Fields that are available to be used in this Process Extension:
--               All fields of table Sales Quotation (tdsls100)
--               All fields of table Sales Quotation Lines (tdsls101)
+- All fields of table Sales Quotation (tdsls100)
+- All fields of table Sales Quotation Lines (tdsls101)
 Note: tables must also be declared in the Process Extension.
 Pseudocode:
 Below you can find an example:
@@ -30,7 +31,3 @@ endif
 return (false)
 }
 ```
-
-## Process Extensions for SelfBilledInvoiceLine
-
-The following process extension(s) is/are available: SelfBilledInvoiceLine.SkipMatching

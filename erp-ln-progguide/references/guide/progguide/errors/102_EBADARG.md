@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that an illegal argument has been specified.  |
+| This error indicates that an illegal argument has been specified. |
 | *Solution:* |
 | Contact Infor support. |

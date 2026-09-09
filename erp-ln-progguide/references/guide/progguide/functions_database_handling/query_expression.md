@@ -5,12 +5,12 @@ A query expression defines a row set. The row set can be built up from multiple 
 ```
 
 <query expression>
-    ::= Query specification
-      | Query specification UNION operator <query expression>
+    ::= <query specification>
+      | <query expression> UNION [ALL] <query specification>
 ```
 
 ## Semantics
-The result of the *<query expression>* is the result of the *<query specification>* or the result of applying the [UNION](union.md) operator.
+The result of the *<**query expression**>* is the result of the *<**query specification**>* or the result of applying the [UNION operator](union.md).
 
 ## Examples
 The following example shows the simplest *query expression*, a *query specification*:
@@ -34,5 +34,7 @@ where salary < 10000
 
 ## Related topics
 - [SELECT statement](select_statement.md)
+
 - [UNION operator](union.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

@@ -1,8 +1,8 @@
 # java.execute.static.method.sync
 
 ## Syntax:
-`function long java.execute.static.method.sync( string class.name, string method.name, [ void ... ] )`
-`function long java.execute.static.method.async( string class.name, string method.name, [ void ... ] )`
+`function long java.execute.static.method.sync( string class.name, string method.name, [ void... ] )`
+`function long java.execute.static.method.async( string class.name, string method.name, [ void... ] )`
 
 ## Description
 Executes a Java static method, with no return type, within the JavaVM.
@@ -25,7 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 | | |
 |---|---|
 | 0 | Success |
-| -1 | JavaVM not supported on this platform; or unable to locate Java class and method at the Java end.  |
+| -1 | JavaVM not supported on this platform; or unable to locate Java class and method at the Java end. |
 | -2 | JavaVM integration not available (not supported on this OS) |
 | -3 | JavaVM integration not available (Java VM not properly configured). |
 | -4 | Invalid method argument. |

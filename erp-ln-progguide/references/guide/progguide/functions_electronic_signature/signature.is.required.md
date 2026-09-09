@@ -6,8 +6,12 @@
 ## Description
 This function tells whether a Signature is required for the document of a specified type (called Document Type) for the specified company.
 A Signature is required if:
-1. An active document exists of the specified type for which the *Signature is Required* option is set
-1. *In All Companies* checkbox is checked or the current company is in the list of active Companies.   If the above conditions have been satisfied true will be returned else false.
+
+- An active document exists of the specified type for which the *Signature is Required* option is set
+
+- *In All Companies* checkbox is checked or the current company is in the list of active Companies.
+
+If the above conditions have been satisfied true will be returned else false.
 The function can be used to check whether signing will be done by the standard or that application specific variant should be called
 
 ## Arguments
@@ -28,4 +32,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Electronic Signature overview](overview.md)
+
 - [Electronic Signature synopsis](synopsis.md)

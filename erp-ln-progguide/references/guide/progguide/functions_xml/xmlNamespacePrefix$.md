@@ -15,7 +15,7 @@ Get the prefix of the specified namespace.
 | | |
 |---|---|
 | string | Success; A temporary string containing the prefix of the namespace. |
-| "" | The *namespace* is invalid or the *namespace* is the *default* namespace.  |
+| "" | The *namespace* is invalid or the *namespace* is the *default* namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -36,5 +36,7 @@ prefix = xmlNamespacePrefix$( xmlns_soap )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

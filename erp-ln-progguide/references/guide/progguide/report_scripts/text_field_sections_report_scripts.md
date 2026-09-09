@@ -4,7 +4,7 @@ For example, you could include the [Report script functions](functions_in_report
 
 ## Main field
 
-## field.<text_field>:
+## field.text_field:
 Actions programmed in this section are executed for all instances of the specified text field that are included in the report. The text field must have been defined as a report input field in the data dictionary.
 
 ## Subsection
@@ -14,7 +14,11 @@ Actions programmed in this section are executed before the specified text field 
 
 ## Related topics
 - [Report scripts overview](overview.md)
+
 - [Report script sections](sections.md)
+
 - [Predefined variables](predefined_variables.md)
+
 - [Report script functions](functions_in_report_scripts.md)
+
 - [Expanding text variables](expanding_text_variables.md)

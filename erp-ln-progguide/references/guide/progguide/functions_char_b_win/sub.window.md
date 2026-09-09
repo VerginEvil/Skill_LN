@@ -12,9 +12,9 @@ This creates a new window in the specified parent window.
 |---|---|---|
 | `long` | `parent_wind` |  The ID of the parent window.  |
 | `long` | `height` |  The height and width of the new window.  |
-| `long` | `width` |  |
+| `long` | `width` |    |
 | `long` | `row` |  These indicate the position of the top left corner of the new window, relative to the top left corner of the parent window.  |
-| `long` | `col` |  |
+| `long` | `col` |    |
 
 ## Return values
 The window ID for the new window.

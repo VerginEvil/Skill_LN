@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkCell
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 840-841
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 850-850
 
 ```baan
 DLL:   tiextrptapi
-This function is available from     2024.06 (KB2325441  ).
+This function is available from 2024.06 (KB2325441).
 Syntax: long WorkCell.RejectProduct(
 domain  tccwoc           iWorkCell,
 domain  tcutcs           iDate,

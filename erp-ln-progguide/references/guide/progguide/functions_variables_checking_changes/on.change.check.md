@@ -9,12 +9,14 @@ This starts the checking mechanism by setting a checkpoint for the specified var
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `variable` |  |
+| `string` | `variable` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Variables (checking changes) overview](overview.md)
+
 - [Variables (checking changes) synopsis](synopsis.md)
+
 - [Variables (checking changes): sample program](example.md)

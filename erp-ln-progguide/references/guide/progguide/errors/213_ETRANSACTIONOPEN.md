@@ -2,6 +2,6 @@
 | |
 |---|
 | *Description:* |
-| This error indicates that the transaction is started, but not updated. This is an internal bshell error.  |
+| This error indicates that the transaction is started, but not updated. This is an internal bshell error. |
 | *Solution:* |
 | Contact Infor support. |

@@ -13,9 +13,9 @@ You can retrieve the command parameter of an event by using the following statem
 The command parameter indicates the reason for the event. It can have any of the following values:
 | | |
 |---|---|
-| MSG.PUSH.BUTTON | Indicates that the user has clicked on a button in the Structure Chart.  |
-| MSG.NODE.PRESS | Indicates that the user has clicked on a node of the Structure Chart.  |
-| MSG.NODE.DPRESS | Indicates that the user has double-clicked on a node of the Structure Chart.  |
+| MSG.PUSH.BUTTON | Indicates that the user has clicked on a button in the Structure Chart. |
+| MSG.NODE.PRESS | Indicates that the user has clicked on a node of the Structure Chart. |
+| MSG.NODE.DPRESS | Indicates that the user has double-clicked on a node of the Structure Chart. |
 You use the following functions to retrieve data from the Structure Chart Manager after a bucket message has been received: [get.tree.node.press()](get.tree.node.press.md), [get.tree.node.dpress()](get.tree.node.dpress.md), [get.tree.push.button()](get.tree.push.button.md), [get.tree.default()](get.tree.default.md).
 
 ## Colors
@@ -26,4 +26,5 @@ RGB.YELLOW RGB.GRAY RGB.CYAN
 
 ## Related topics
 - [Structure ChartManager synopsis](synopsis.md)
+
 - [Tree structures: example](example.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Purchase
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 401-402
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 403-404
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long Purchase.GetOrderSettings(
 domain  tcncmp           iLogisticCompany,
 domain  tcsite           iSite,
@@ -32,55 +32,55 @@ defined per office or site) are also retrieved.
 2. This function uses variable arguments, for input and
 output. Data is retrieved via name value pairs: specify the
 field and the field value.
-3. Several table                      -fields are stored as arrays. Individual elements
-of these table                      -fields can be retrieved by adding the element
-number to the field                      -mnemonic. Example: "comm(7)", "crt1(8)".
+3. Several table-fields are stored as arrays. Individual elements
+of these table-fields can be retrieved by adding the element
+number to the field-mnemonic. Example: "comm(7)", "crt1(8)".
 Example: when number group for orders, series for purchase invoice
 and confirm receipt as final are needed, the function must be
 called as follows:
 if Purchase.GetPurchaseOrderSettings(
 |* Fixed arguments:
-company,                                                --> input
-site,                                                   --> input
-purchase office,                                        --> input
-force.read,                                             --> input
-context is master data                                  --> input
-exception.message,                                      --> output
-exception.id,                                           --> output
+company,                  --> input
+site,                     --> input
+purchase office,          --> input
+force.read,               --> input
+context is master data    --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"ngpo.4",                                               --> input
-number.group.for.orders,                                --> output
-"sepi",                                                 --> input
-series.for.purchase.invoice,                              --> output
-"craf",                                               --> input
-confirm.receipt.as.final) <> 0 then                               --> output
+"ngpo.4",                 --> input
+number.group.for.orders,  --> output
+"sepi",                   --> input
+series.for.purchase.invoice,--> output
+"craf",                 --> input
+confirm.receipt.as.final) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iSite                                         - Site: Not Mandatory
-iPurchaseOffice                               - Purchase Office: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iSite                   - Site: Not Mandatory
+iPurchaseOffice         - Purchase Office: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information
-iContextIsMasterData                          - True/False:
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - An error occurred
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - An error occurred
 ```

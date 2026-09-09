@@ -34,4 +34,5 @@ ret = tt.align.according.domain(item, tiitm001.item, "tcitem")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

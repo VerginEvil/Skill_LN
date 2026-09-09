@@ -62,4 +62,5 @@ path = path.change.extension("c:\data\my_file.doc", ".xls", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

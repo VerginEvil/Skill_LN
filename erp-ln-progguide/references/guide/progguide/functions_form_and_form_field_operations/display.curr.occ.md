@@ -4,7 +4,7 @@
 `function void display.curr.occ( )`
 
 ## Description
-Use this function to display all fields of the current occurrence on a form. Usually, the 4GL engine displays fields automatically, either when the form is opened or when data in a related input field is changed. However, there are situations when you need to use these functions to display fields. For example, to display fields that are not in the input field TAB sequence, or to send data to the form during batch processes.
+Use this function to display all fields of the current occurrence on a form. Usually, the [4GL engine](../glossary/glossary.md#fourgl_engine) displays fields automatically, either when the form is opened or when data in a related input field is changed. However, there are situations when you need to use these functions to display fields. For example, to display fields that are not in the input field TAB sequence, or to send data to the form during batch processes.
 | | |
 |---|---|
 | display.curr.occ() | Displays all fields of the current occurrence. |
@@ -22,4 +22,5 @@ The functions *display.all()*, *display.occ()*, and *display.curr.occ()* do not 
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

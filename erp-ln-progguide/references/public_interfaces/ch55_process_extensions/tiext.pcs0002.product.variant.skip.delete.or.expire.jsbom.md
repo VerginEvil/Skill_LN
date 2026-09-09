@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2151-2151
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2174-2174
 
 ```baan
 Syntax: long tiext.pcs0002.product.variant.skip.delete.or.expire.jsbom(
@@ -38,17 +38,17 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.product.variant                     - Product Variant
-i.parent.item                                 - Parent Item
-i.site                                        - Site
-i.bill.of.material                            - Bill of Material
-i.revision                                    - Revision
-i.status                                      - Status
+Input:  i.product.variant       - Product Variant
+i.parent.item           - Parent Item
+i.site                  - Site
+i.bill.of.material      - Bill of Material
+i.revision              - Revision
+i.status                - Status
 Output: o.skip.delete.or.expire.jsbom
--                                               Skip Delete or Expire Job Shop Bill of
+- Skip Delete or Expire Job Shop Bill of
 materials.
-Return: 0                                     - Success.
-DALHOOKERROR                                  - When an error occurs in determination
+Return: 0                       - Success.
+DALHOOKERROR            - When an error occurs in determination
 of the skip job shop bill of
 materials.
 ```

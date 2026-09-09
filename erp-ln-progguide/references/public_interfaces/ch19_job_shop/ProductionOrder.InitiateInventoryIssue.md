@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2020.07 (KB2135601  ).
+This function is available from 2020.07 (KB2135601).
 Syntax: long ProductionOrder.InitiateInventoryIssue(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -25,8 +25,8 @@ use:    ProductionOrder.InitiateInventoryIssueV2
 This function executes the Initiate Inventory Issue functionality,
 as in session tisfc0207m000, for 1 production order.
 NB.
--                       retrypoint and commit / rollback is done in the function
--                       no reports are printed
+- retrypoint and commit / rollback is done in the function
+- no reports are printed
 Input:  iSite                   Site (mandatory when the Site concept
 is active)
 iProductionOrder        Production Order (mandatory and must be

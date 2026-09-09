@@ -1,7 +1,7 @@
 # text.set.language()
 
 ## Syntax:
-`function boolean text.set.language( string text_field, string language, void ... )`
+`function boolean text.set.language( string text_field, string language, void... )`
 
 ## Description
 This function changes the language for multiline textfields that are displayed on the form and are part of the maintable. That language will be used when (one of) the textfields are/is read from the text tables. The language that is set with this function can still be overridden by setting attr.textlang$ in the before.choice section for the text.manager.
@@ -13,7 +13,7 @@ Field names and language codes must be provided in pairs.
 |---|---|---|
 | `string` | `text_field` |  The name of the textfield for which the language must be set.  |
 | `string` | `language` |  The language code.  |
-| `void` | `...` |  |
+| `void` | `...` |    |
 
 ## Return values
 false some error occurred
@@ -32,4 +32,5 @@ Note  You cannot use the function in any subsection of *choice.update.db* and in
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

@@ -9,7 +9,7 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `string_expr` |  |
+| `string` | `string_expr` |    |
 | `[ long` | `flags ]` |  TSS_REVERSE TSS_FORCE_REVERSE  |
 
 ## Return values

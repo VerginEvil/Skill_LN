@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderInvoiceLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 365-366
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 367-368
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long SalesOrderInvoiceLine.ReadInvoicingStatusDescription(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -26,34 +26,34 @@ feedback to a user, not for decision making within the software
 itself.
 Pre:    None
 Post:   None
-Input:  iSalesOrder                           - Sales Order (Mandatory)
-iSalesOrderLine                               - Sales Order Line (Mandatory)
-iSalesOrderLineSequence                       - Sales Sequence number (must be >= 0)
+Input:  iSalesOrder             - Sales Order (Mandatory)
+iSalesOrderLine         - Sales Order Line (Mandatory)
+iSalesOrderLineSequence - Sales Sequence number (must be >= 0)
 iSalesActualDeliverySequence
--                                               Sales Actual Delivery Sequence number
+- Sales Actual Delivery Sequence number
 (Optional)
 If iSalesActualDeliverySequence and
 iInvoiceLine are both 0, then the
 output will be based on all actual
 delivery lines/invoice lines that
 have been released to invoicing.
-iInvoiceLine                                  - Invoice Line (Optional)
+iInvoiceLine            - Invoice Line (Optional)
 If iSalesActualDeliverySequence and
 iInvoiceLine are both 0, then the
 output will be based on all actual
 delivery lines/invoice lines that
 have been released to invoicing.
-Output: oDescription                          - The description of the status in
+Output: oDescription            - The description of the status in
 Invoicing.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Function was executed successful
-<> 0                                          - An error occurred during execution of
+Return: 0                       - Function was executed successful
+<> 0                    - An error occurred during execution of
 the function.
 ```

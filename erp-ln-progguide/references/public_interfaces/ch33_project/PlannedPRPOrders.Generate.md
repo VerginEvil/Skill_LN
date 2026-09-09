@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPRPOrders
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1721-1723
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1740-1742
 
 ```baan
 DLL:   tpextpssapi
-This function is available from     2026.03 (KB3631483  ).
+This function is available from 2026.03 (KB3631483).
 Syntax: long PlannedPRPOrders.Generate(
 domain  tccprj           iFromProject,
 domain  tccprj           iToProject,
@@ -21,12 +21,12 @@ The number groups for PRP Warehouse Orders, PRP Purchase Orders,
 and Planned Equipment Requests are retrieved from the
 Project Planning Parameters session (tppss0100s000).
 This function provides capabilities equivalent to those available
-in the session (Generate Planned PRP Orders                       - tppss6200m000).
+in the session (Generate Planned PRP Orders - tppss6200m000).
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iFromProject                          - From Project. Optional
-iToProject                                    - To Project. Optional
-iProcessingOptionSet                          - Optional
+Input:  iFromProject            - From Project. Optional
+iToProject              - To Project. Optional
+iProcessingOptionSet    - Optional
 if 0, the default options are applied.
 A Processing Option Set can be created via a
 call to ProcessingOptionSet.Create().
@@ -78,14 +78,14 @@ ToElement                           domain  tppdm.cspa <Maximum value>
 FromActivity                        domain  tppdm.cact <Minimum value>
 ToActivity                          domain  tppdm.cact <Maximum value>
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     - Process successful
-<> 0                          - An error occurred
+Return: 0       - Process successful
+<> 0    - An error occurred
 ```

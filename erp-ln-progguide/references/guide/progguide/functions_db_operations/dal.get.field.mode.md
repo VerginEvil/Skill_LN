@@ -24,8 +24,9 @@ This function is equivalent to:
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
-Note  This function should not be used after the the actual insert/update has been done. E.g. it should not be used in any 'after' hook in the DAL, Table Extension DLL or DB DLL.
+Note  This function should not be used after the actual insert/update has been done. E.g. it should not be used in any 'after' hook in the DAL, Table Extension DLL or DB DLL.
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CustomerClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1526-1527
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1541-1541
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2023.09 (KB2295922  ).
+This function is available from 2023.09 (KB2295922).
 Syntax: long CustomerClaim.Submit(
 domain  tcorno           iCustomerClaim,
 ref             boolean          oLinesForRMA,
@@ -21,8 +21,8 @@ function.
 Therefore, it is not necessary to set a db.retry.point()
 before calling this function, and abort/commit after this
 function, because that is already handled within this function.
-Pre:                  -
-Post:   This function sets a retry              -point and will commit/abort
+Pre:    -
+Post:   This function sets a retry-point and will commit/abort
 the transaction.
 When oLinesForRMA is true, Customer Claim Acknowledgements
 might be printed.
@@ -38,10 +38,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No error
-<> 0                          - An error occurred
+Return: 0       - No error
+<> 0    - An error occurred
 ```
-
-## Public Interfaces for CustomerClaimLine
-
-The following functions are available: CustomerClaimLine.Approve CustomerClaimLine.ApproveForInvoiceLinking CustomerClaimLine.CalculateClaimAmount CustomerClaimLine.Reject

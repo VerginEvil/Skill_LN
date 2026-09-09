@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceivedProductionBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 246-247
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 247-248
 
 ```baan
 DLL:   tiextmfcapi
-This function is available from     2026.06 (KB3624417  ).
+This function is available from 2026.06 (KB3624417).
 Syntax: long ReceivedProductionBillOfMaterial.Process(
 domain  tcitem           iProduct,
 domain  tibmrv           iRevision,
@@ -53,21 +53,17 @@ PrintingFileoutPathAndNameErrorReport
 tcmcs.str100            ""
 Output:
 oSomeReceivedProductionBOMProcessed
--                                               True, Some of the received production
+- True, Some of the received production
 bill of material are processed.
 False, Otherwise.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Received PBOM has successfully processed.
-<> 0                                          - Error occurred.
+Return: 0                       - Received PBOM has successfully processed.
+<> 0                    - Error occurred.
 ```
-
-## Public Interfaces for Requirements
-
-The following functions are available: Requirements.StartOverview

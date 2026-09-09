@@ -29,5 +29,7 @@ The function [aud.get.next.action()](aud.get.next.action.md) has to be called pr
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

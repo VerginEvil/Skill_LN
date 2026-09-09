@@ -4,11 +4,12 @@
 >
 > Group: Process Extensions for BrazilianInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1977-1977
-
-Modify the XML of Brazilian invoices. This process extension is available from 2024.04 ( KB2328014 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1996-1996
 
 ```baan
+Modify the XML of Brazilian invoices.
+This process extension is available from 2024.04 (KB2328014).
+Technical information for this process extension:
 Usage:                With this Process Extension it is possible to modify the XML
 of a Brazilian electronic invoice of type commercial (NFe)
 or service (NFSe).
@@ -23,6 +24,5 @@ invoice XML are also provided.
 *** Warning: be careful when modifying the XML as it can be
 rejected by the Brazilian Tax Authority (SEFAZ). Infor is not
 responsible for custom XMLs which are sent to SEFAZ.
-```
-
 To implement this process extension, you need to implement the following method(s):
+```

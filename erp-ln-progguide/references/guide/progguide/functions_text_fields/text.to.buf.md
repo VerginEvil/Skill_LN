@@ -26,4 +26,5 @@ Note  When a database-text-field is entered as a long text-line without any LF o
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

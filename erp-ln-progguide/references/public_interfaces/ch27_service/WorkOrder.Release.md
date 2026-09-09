@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1495-1497
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1510-1511
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2020.12 (KB2162018  ).
+This function is available from 2020.12 (KB2162018).
 Syntax: long WorkOrder.Release(
 domain  tcorno           iWorkOrder,
 domain  tsmdm.acln       iWorkOrderActivityLine,
@@ -52,7 +52,7 @@ oMaintenanceSalesOrderBlocked will be set to 'yes' as the
 maintenance sales order is blocked. However releasing the work
 order is not successfull.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit and/or abort
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iWorkOrder
 Work Order. (mandatory)
@@ -73,8 +73,8 @@ Skip Blocked Inventory. (mandatory Yes/No)
 iScopeOfInventoryCheck
 Scope of Inventory Check. (mandatory)
 Possible values:
--                                 current warehouse only
--                                 all warehouses in planning cluster
+- current warehouse only
+- all warehouses in planning cluster
 iBlockInCaseOfInventoryShortage
 Block Planning or Releasing of Orders with Shortages.
 (mandatory Yes/No)
@@ -90,9 +90,9 @@ Synchronize Materials with Latest Planned Material Line.
 iAutomaticItemReceipt
 Automatic Item Receipt. (mandatory)
 Possible values:
--                                 yes
--                                 no
--                                 use default settings
+- yes
+- no
+- use default settings
 iUpdatePlannedQuantityToIssuedQuantity (Yes/No)
 Update Planned Quantity to Issued Quantity.
 (mandatory Yes/No)
@@ -113,6 +113,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - release succesfull
-<> 0                          - Error during release occurred
+Return: 0       - release succesfull
+<> 0    - Error during release occurred
 ```

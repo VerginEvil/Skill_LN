@@ -10,7 +10,7 @@ Use this to delete *num_expr* lines, from the current line down. Lines below the
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

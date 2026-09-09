@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2118-2123
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2141-2146
 
 ```baan
 Syntax: long tdext.pcg0001.get.customer.determined.price.and.discounts(
@@ -102,9 +102,9 @@ ref             boolean          o.fallback.to.standard.logic.in.case.of.errors 
 Usage:        Expl:   This function gets the customer determined price and discounts
 from an extension, if applicable.
 The price and discounts are only retrieved and used if:
--                       Process Extension Pricing.RetrievePriceAndDiscounts
+- Process Extension Pricing.RetrievePriceAndDiscounts
 (tdpcg.retrieve.price.and.disc) is implemented;
--                       No errors are found during executing the extension.
+- No errors are found during executing the extension.
 If the extension returns a zero price and/or zero discounts,
 these will be treated as valid prices and discounts. If that's
 not desired, then the extension should return an error in those
@@ -113,7 +113,7 @@ Pre:    NA
 Post:   NA
 Input:
 i.type.of.order
--                               The type of order being processed. Possible values:
+- The type of order being processed. Possible values:
 tdpcg.tyor.so:          Sales Orders
 tdpcg.tyor.sq:          Quotations
 tdpcg.tyor.po:          Purchase Orders
@@ -125,7 +125,7 @@ tdpcg.tyor.sr.quote:    Service Quote
 tdpcg.tyor.sr.msc:      Maintenance Sales Order
 tdpcg.tyor.sr.soc:      Service Order
 i.number
--                               The "Order Number".
+- The "Order Number".
 This depends on the Type of Order (i.type.of.order):
 tdpcg.tyor.so:          Sales Order
 tdpcg.tyor.sq:          Quotation Number
@@ -154,10 +154,10 @@ Only for Purchase Order Lines
 i.effectivity.unit              Effectivity unit
 i.product.variant               Product Variant from the order line
 i.option.list.id                Option list id from the order line
-i.buy.sell.bp                   Purchase: buy                      -from business partner
-Sales: sold                                                      -to business partner
-i.ship.bp                       Purchase: ship                      -from business partner
-Sales: ship                                                      -to business partner
+i.buy.sell.bp                   Purchase: buy-from business partner
+Sales: sold-to business partner
+i.ship.bp                       Purchase: ship-from business partner
+Sales: ship-to business partner
 i.pricing.bp                    Parent Business Partner for
 Prices and Discounts.
 i.product.class                 Product Class
@@ -292,7 +292,7 @@ by the extension, then LN
 will use the outcome of
 the LN standard logic.
 False:  Errors in the extension
-are returned as                                                            -  is to LN.
+are returned as-is to LN.
 Output variables are
 initialized to 0/empty/""
 Return: 0                               Success

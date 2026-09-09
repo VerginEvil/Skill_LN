@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CycleCountingOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 909-910
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 919-919
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long CycleCountingOrder.StartDetail(
 long             iStartMode,
 domain  tcorno           iOrder,
@@ -20,11 +20,11 @@ Usage:        Expl:   This function starts the detail session Cycle Counting Ord
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Following input variables form the primary key, these fields
@@ -33,16 +33,16 @@ will be set in the oExceptionMessage and the session will not
 be started.
 Primary Key Fields:
 iOrder
-iCountNumber                                  - The iOrder and iCountNumber must
+iCountNumber    - The iOrder and iCountNumber must
 refer to an existing cycle count order
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

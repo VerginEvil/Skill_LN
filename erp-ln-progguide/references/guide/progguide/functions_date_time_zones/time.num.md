@@ -15,4 +15,5 @@ The current time as the number of seconds since 00:00.
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

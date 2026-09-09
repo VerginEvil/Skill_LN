@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Sales
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 283-284
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 285-286
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long Sales.GetScheduleSettings(
 domain  tcncmp           iLogisticCompany,
 domain  tccwoc           iSalesOffice,
@@ -37,18 +37,18 @@ schedule lines are needed, the function must be called as
 follows:
 if Sales.GetScheduleSettings(
 |* Fixed arguments:
-company,                                                      --> input
-sales office,                                                 --> input
-site,                                                         --> input
-force.read,                                                   --> input
-context is master data                                        --> input
-exception.message,                                            --> output
-exception.id,                                                 --> output
+company,                        --> input
+sales office,                   --> input
+site,                           --> input
+force.read,                     --> input
+context is master data          --> input
+exception.message,              --> output
+exception.id,                   --> output
 |* Variable arguments:
-"sess",                                                       --> input
-series.for.sales.schedules,                                   --> output
-"ssss",                                                       --> input
-step.size.for.sales.schedule.lines) <> 0 then                               --> output
+"sess",                         --> input
+series.for.sales.schedules,     --> output
+"ssss",                         --> input
+step.size.for.sales.schedule.lines) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
@@ -58,27 +58,27 @@ parameter level.
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iSite                                         - Site: Not Mandatory
-iSalesOffice                                  - Sales Office: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iSite                   - Site: Not Mandatory
+iSalesOffice            - Sales Office: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information
-iContextIsMasterData                          - True/False:
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - An error occurred
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - An error occurred
 ```

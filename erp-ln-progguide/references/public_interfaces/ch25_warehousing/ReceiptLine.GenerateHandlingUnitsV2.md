@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1241-1242
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1251-1252
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.08 (KB2233913  ).
+This function is available from 2022.08 (KB2233913).
 Syntax: long ReceiptLine.GenerateHandlingUnitsV2(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -24,9 +24,9 @@ ref             long             oExceptionID )
 Usage:        Expl  : This function generates handling units for the given receipt
 line.
 Generating handling units is allowed when:
--                       Receipt line is open or confirmed but not yet advised;
--                       No handling unit is present on the receipt line;
--                       Handling units are in use in the receipt area for the
+- Receipt line is open or confirmed but not yet advised;
+- No handling unit is present on the receipt line;
+- Handling units are in use in the receipt area for the
 combination of item and warehouse.
 If iPackageDefinition is not empty handling unit will be
 generated using this package definition; otherwise receipt line
@@ -35,24 +35,24 @@ Generated handling unit(s) will be stored in the entity Receipt
 Line Handling Units (whinh324).
 Pre:    db.retry.point()
 Post:   abort.transaction() or commit.transaction()
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-iReceiptHandlingUnit                       - Receipt Header handling unit.
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+iReceiptHandlingUnit - Receipt Header handling unit.
 Optional
-iReceiptLineHandlingUnit                       - Receipt Line handling unit.
+iReceiptLineHandlingUnit - Receipt Line handling unit.
 Optional
-iPackageDefinition                            - Package Definition Optional
-iPackagingItem                                - Packaging Item Optional
-iPackagingItemQuantity                        - Quantity of packaging items
+iPackageDefinition      - Package Definition Optional
+iPackagingItem          - Packaging Item Optional
+iPackagingItemQuantity  - Quantity of packaging items
 Mandatory if packaging item is not empty
-Output: oNumberReceiptLineHandlingUnits               - number of handling units which
+Output: oNumberReceiptLineHandlingUnits - number of handling units which
 are generated for Receipt Line.
-oReceiptLineHandlingUnitsArray                       - array with generated handling
+oReceiptLineHandlingUnitsArray - array with generated handling
 units.
-oExceptionMessage                       - The last message if any message is found. If
+oExceptionMessage - The last message if any message is found. If
 more than one  message is given, these are present in
 the oExceptionID.
-oExceptionID                       - An ID that refers to all error information. Use
+oExceptionID - An ID that refers to all error information. Use
 the functions in Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error

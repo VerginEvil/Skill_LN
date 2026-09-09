@@ -1,5 +1,15 @@
 # Expressions and operators
-An expression is a combination of variables, constants, and operators, built up in accordance with certain rules. There are two main kinds of operators: unary and binary. All operators, except the negation operators, are binary. Expressions with unary operators have the general form:
+An expression is a combination of variables, constants, and operators, built up in accordance with certain rules.
+The available operators can be divided into four categories: arithmetic, relational, logical, and conditional operators.
+| | | |
+|---|---|---|
+| Class | Operator | Description |
+| Arithmetic | - * / \ + - & | negation multiplication, division, remainder after division addition, subtraction string concatenation |
+| Relational | = or EQ <> or NE < or LT <= or LE > or GT >= or GE | is equal to is not equal to (differs from) is less than is less than or equal to (is at most) is greater than is greater than or equal to (is at least) |
+| Logical | AND, OR, NOT | logical and, logical or, logical negation |
+| Conditional | ?: | if-then-else |
+Most operators are binary operators. The negation operators are unary operators. The if-then-else operator is a ternary operator.
+Expressions with unary operators have the general form:
 ```
 
 operator operand
@@ -9,38 +19,31 @@ Expressions with binary operators have the following form, where each operand ca
 
 operand operator operand
 ```
-The available operators can be divided into four categories: arithmetic, relational, logical, and control operators.
-| | | |
-|---|---|---|
-| Class | Operator | Description |
-| Arithmetic |  - * / + - \ &  |  negation multiply/divide/add/subtract remainder after division string concatenation  |
-| Relational |  = or EQ <> or NE > or GT < or LT >= or GE <= or LE  |  is equal to is not equal to is greater than is less than is equal to or greater than is equal to or less than  |
-| Logical | AND, OR, NOT | logical 'and', 'or' and negation |
-| Control | ? : | question mark expression |
-The question mark expression is a special type of expression. The syntax is:
-If the condition is TRUE, expr_1 is executed. If the condition is FALSE, expr_2 is executed. For example:
+The syntax for the ternary if-then-else operator is:
 ```
 
-<condition> ? <expr_1> : <expr_2>
+<condition> ? <then_expression> : <else_expression>
 ```
-If the condition is TRUE, expr_1 is executed. If the condition is FALSE, expr_2 is executed. For example:
-```
-
-lng_1 = (a >= b) ? a : b
-        | if condition a >= b is TRUE lng_1 gets the value of a,
-        | else lng_1 gets the value of b.
-```
-If boolean variabele bl is TRUE, expr_1 is executed. If bl is FALSE, expr_2 is executed. For example:
+First, the <condition> is evaluated. If the result is TRUE, then the <then_expression> is evaluated and that is the result of the if-then-else operation (leaving the <else_expression> unevaluated).
+Otherwise, the <else_expression> is evaluated and that is the result of the if-then-else operation (leaving the <then_expression> unevaluated).
+For example:
 ```
 
-bl ? <expr_1> : <expr_2>
+quotient = denominator = 0 ? division_by_zero_error() : numerator / denominator
 ```
+If `denominator` equals 0, then the function `division_by_zero_error` is called and its return value is assigned to `quotient` (leaving the illegal division by zero unevaluated).
+Otherwise, `denominator` differs from 0, the well-defined expression `numerator / denominator` is evaluated and the result is assigned to `quotient`; the function `division_by_zero_error` is not called.
 For further information on the different operator types, see the following sections:
+
 - [Arithmetic operators](arithmetic_operators.md)
+
 - [Relational operators](relational_operators.md)
+
 - [Logical operators](logical_operators.md)
-- [Operator precedence](operator_precedence.md)
-- [Assignment Operator](assignment_operator.md)
+
+- [Operator precedence and associativity](operator_precedence.md)
+
+- [Assignment](assignment_operator.md)
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)

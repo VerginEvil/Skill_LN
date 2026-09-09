@@ -8,7 +8,7 @@ This forces a switch from the current form to the specified form. The *form_numb
 The following predefined variables are relevant to this function:
 | | |
 |---|---|
-| number.forms | indicates the total number of forms in the session  |
+| number.forms | indicates the total number of forms in the session |
 | form.prev | indicates the previous form number |
 | form.curr | indicates the current form number |
 | form.next | indicates the next form number |
@@ -16,7 +16,7 @@ The following predefined variables are relevant to this function:
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `form_number` |   |
+| `long` | `form_number` |    |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -44,4 +44,5 @@ function extern my.form.command()
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

@@ -1,7 +1,6 @@
 # Example structure availability
 ```
 
-
 function init.planboard.legend.colors()
 {
 	|**********************************************************************
@@ -50,12 +49,10 @@ function extern void plcm.get.activity.unavailability( const string activity.id(
 		return
 	endif
 
-
 	| Retrieve the no.elements from for example calendar dates
 	...
 		|			application logic
 	...
-
 
 	if no.elements <= 0 then
 		return

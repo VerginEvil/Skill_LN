@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 96-97
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 97-98
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2023.11 (KB2300545  ).
+This function is available from 2023.11 (KB2300545).
 Syntax: long Common.CheckIBANCode(
 domain  tccom.iban       iIBANCode,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -17,21 +17,21 @@ Usage:        Expl. : This function checks if the ibancode is OK
 The following steps are performed:
 1.      Determine the country (position 1 and 2 from
 i.iban.code). If the country code is not a valid
-ISO                              -3166 country code, then the IBAN code is
+ISO-3166 country code, then the IBAN code is
 not correct.
 2.      Determine the length of the IBAN code based on
 the country code. If the length of i.iban.code
 is not the same, then the IBAN code is not
 correct.
 3.      Validate the IBAN code:
-a.      Move characters on position 1                              -4
+a.      Move characters on position 1-4
 (country code + check digit) to the
 utmost right position.
 b.      Replace alphanumeric characters by
 numerics (A = 10, B= 11, ..., Z = 35).
 If one of the characters is not valid,
 then the IBAN code is not orrect.
-c.      If ( resulting number                               \ 97 ) = 1, then
+c.      If ( resulting number \ 97 ) = 1, then
 the IBAN code is correct. Otherwise the
 IBAN code is not correct.
 Some examples of IBAN numbers
@@ -64,6 +64,6 @@ oExceptionID            An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - IBAN Code is correct
-<> 0                                          - Otherwise
+Return: 0                       - IBAN Code is correct
+<> 0                    - Otherwise
 ```

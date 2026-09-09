@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 686-687
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 689-690
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2024.04 (KB2327962  ).
+This function is available from 2024.04 (KB2327962).
 Syntax: long ProductVariant.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -32,16 +32,16 @@ mode (tipcf5501m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used.
+Specifies the table-index that is to be used.
 Standard supported values:
 1: sort by Product Variant (default)
 2: sort by Item, Product Variant
@@ -77,15 +77,15 @@ Configuration Date.
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has
 been selected.
-oProductVariant                               - Product Variant
-oExceptionMessage                             - The last message if any message is
+oProductVariant         - Product Variant
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```

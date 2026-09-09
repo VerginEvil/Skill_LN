@@ -26,4 +26,5 @@ This function is available from TIV level 1501.
 
 ## Related topics
 - [Runtime dictionary information overview and synopsis](overview_and_synopsis.md)
+
 - [Tools Interface Version (TIV)](../tiv/tiv_overview.md)

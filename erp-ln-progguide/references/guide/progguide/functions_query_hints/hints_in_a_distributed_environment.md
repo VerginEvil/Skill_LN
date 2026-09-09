@@ -1,7 +1,9 @@
 # Hints in a distributed environment
 If a query is distributed, it is executed using multiple database drivers. In this case a driver may not receive all hints because the client distributes the hints over the database drivers. The client distributes the hints according to the following two simple rules:
-1. An index hint is only sent to the driver if it handles the corresponding table.
-1. All other hints are sent to all drivers.
+
+- An index hint is only sent to the driver if it handles the corresponding table.
+
+- All other hints are sent to all drivers.
 ```
 
 select tppdm740.cuno, tccom010.cuno
@@ -49,4 +51,5 @@ Driver 1 will not generate default hints.
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)

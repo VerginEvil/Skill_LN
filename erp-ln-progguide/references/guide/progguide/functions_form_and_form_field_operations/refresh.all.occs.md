@@ -6,9 +6,14 @@
 ## Description
 This re-reads all records that are currently on the screen and refreshes them (after all processes are idle).
 Note that this is not done in the following cases:
+
 - One of the occurrences on the screen has been modified by the user, but not yet saved.
+
 - An occurrence is being added in an editable grid session.
-- The session is a parent session and it has been updated due to the adding of a record in a synchronized dialog. In that case the occurrences of the parent session are not ordered on the screen: the record being added appears at the end of the grid.   This function works in both overview and details sessions.
+
+- The session is a parent session and it has been updated due to the adding of a record in a synchronized dialog. In that case the occurrences of the parent session are not ordered on the screen: the record being added appears at the end of the grid.
+
+This function works in both overview and details sessions.
 This function does not work in display sections.
 
 ## Context
@@ -19,4 +24,5 @@ You can use this function in combination with the [Process Change Manager overvi
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

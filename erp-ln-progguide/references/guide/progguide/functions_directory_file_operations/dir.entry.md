@@ -7,13 +7,21 @@
 This retrieves entries from a previously opened directory. It retrieves the entries sequentially.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `dfd` |  The pointer to the required directory, as returned when the directory was opened by [dir.open()](dir.open.md) or [dir.open.tree()](dir.open.tree.md).  |
-| `long` | `read_type` |  Specifies the type of entry to be retrieved. Allowed values are listed below. These values can be combined with [bit.or()](../functions_bit/bit_and_exor_in_inv_or.md).  |
-| `[ ref long` | `return_type ]` |  Returns the type of entry retrieved. Optional argument as of TIV 2150. Possible values are:  |
-| `[ ref long` | `filesize ]` |  Returns the size of the entry retrieved. Optional argument as of TIV 2150.  |
-| `[ ref long` | `mode ]` |  If the user can access the entry, this argument returns the type of access the user has. Optional argument as of TIV 2150. Possible options (returned as a bitset) are:  |
+| | |
+|---|---|
+| TDIR | directories |
+| TFILE | files |
+| TLINK | symbolic link. |
+| | |
+|---|---|
+| TDIR | directory |
+| TFILE | file |
+| TLINK | symbolic link |
+| | |
+|---|---|
+| STAT_READABLE | read |
+| STAT_WRITEABLE | read, write, and delete |
+| STAT_EXECUTABLE | run program |
 
 ## Return values
 The directory entry. Or an empty string if the end of the entry list has been reached.
@@ -24,4 +32,5 @@ Symbolic links  The TLINK macro is allowed to be used on all platforms, but its 
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

@@ -45,24 +45,50 @@ You can use the record buffer of a table to save the contents of a record in a t
 
 ## Data types
 The data type is the internal representation of table field and domain data. The following data types are available.
-| | | | |
-|---|---|---|---|
-| Data type | Description | Record buffer byte count | Field variable domain type |
-|   | *unsigned* 8-bit integer value  | 1 | long |
-|   | signed 16-bit integer value | 2 | long |
-|   | signed 32-bit integer value | 4 | long |
-|   | UTC long format value  |  ByteCountOfUtc  | long |
-|   | 32-bit floating point value | 4 | double |
-|   | 64-bit floating point value | 8 | double |
-|   | string |  | string |
-|   | multibyte string |  | string mb |
-|   | combined field |  |  |
+| |
+|---|
+| DB.BYTE |
+| DB.ENUM |
+| |
+|---|
+| DB.INTEGER |
+| |
+|---|
+| DB.LONG |
+| DB.BITSET |
+| DB.DATE |
+| DB.MAIL |
+| DB.TEXT |
+| |
+|---|
+| DB.TIME |
+| |
+|---|
+| DB.FLOAT |
+| |
+|---|
+| DB.DOUBLE |
+| |
+|---|
+| DB.STRING |
+| |
+|---|
+| DB.MULTIBYTE |
+| |
+|---|
+| DB.COMBINED |
 
 ## Related topics
 - [Transaction handling](transaction_handling.md)
+
 - [Locking](locking.md)
+
 - [Retry points](retry_points.md)
+
 - [Error handling](error_handling.md)
+
 - [Hints for using SQL](hints_for_using_sql.md)
+
 - [Hints for using db.retry.point](hints_for_using_db.retry.point.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

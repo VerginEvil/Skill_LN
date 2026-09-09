@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 292-293
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 294-295
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.10 (KB2300933  ).
+This function is available from 2023.10 (KB2300933).
 Syntax: long SalesQuote.Process(
 domain  tcqono           iFromQuote,
 domain  tccom.bpid       iFromSoldToBusinessPartner,
@@ -27,42 +27,42 @@ Usage:        Expl:   This function processes a range of sales quotes to
 sales orders. It is using the same logic and transaction
 handling as the LN session 'Process Sales Quotations'.
 (tdsls1200m000).
-Pre:    LN Application sets retry              -point, so not by caller
+Pre:    LN Application sets retry-point, so not by caller
 Post:   LN Application sets commit/abort transaction, so not by caller
-Input:  iFromQuote                                - From Quote selection field
+Input:  iFromQuote                  - From Quote selection field
 is filled with this value.
-iFromSoldToBusinessPartner                        - From Sold-to Business Partner
+iFromSoldToBusinessPartner  - From Sold-to Business Partner
 selection field is filled with
 this value.
-iFromSalesOffice                                  - From Sales Office selection
+iFromSalesOffice            - From Sales Office selection
 field is filled with this value.
-iToQuote                                          - To Quote selection field is
+iToQuote                    - To Quote selection field is
 filled with this value.
-iToSoldToBusinessPartner                          - To Sold-to Business Partner
+iToSoldToBusinessPartner    - To Sold-to Business Partner
 selection field is filled with
 this value.
-iToSalesOffice                                    - To Sales Office selection
+iToSalesOffice              - To Sales Office selection
 field is filled with this value.
-iSalesOrderSeries                                         - Sales Order Series,
+iSalesOrderSeries                   - Sales Order Series,
 optional.
-iInitialProjectStatus                                     - Mandatory in case Project
+iInitialProjectStatus               - Mandatory in case Project
 Control(PCS) is
 implemented.
-iConsolidateBySoldToBusinessPartner                       - Consolidate by Sold-to
+iConsolidateBySoldToBusinessPartner - Consolidate by Sold-to
 BusinessPartner, must be
 Yes or No.
-iCopyAfterSalesServiceLines                               - Copy After Sales Service
+iCopyAfterSalesServiceLines         - Copy After Sales Service
 Lines, must be Yes or No.
-iEquateProjectWithSalesOrder                              - Equate Project with Sales
+iEquateProjectWithSalesOrder        - Equate Project with Sales
 Order, must be Yes or No.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

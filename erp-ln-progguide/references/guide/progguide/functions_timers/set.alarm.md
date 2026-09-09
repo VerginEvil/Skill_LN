@@ -9,7 +9,7 @@ This starts a timer that sends a single EVTTIMEREVENT event to the calling proce
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `msec` |  |
+| `long` | `msec` |    |
 
 ## Return values
 A unique identifier for the timer.
@@ -20,4 +20,5 @@ Note  The [kill.timer()](kill.timer.md) function uses the identifiers returned b
 
 ## Related topics
 - [Events overview](../events/overview.md)
+
 - [Timers overview and synopsis](overview_and_synopsis.md)

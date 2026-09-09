@@ -6,33 +6,19 @@ The search condition is used to restrict a row set to those rows that fulfill th
 ```
 
 <search condition>
-    ::= <search condition> AND <search condition>
-    | <search condition> OR <search condition>
-    | NOT <search condition>
-    | ( <search condition> )
-    | <comparison predicate>
-    | <row value constructor> [NOT] BETWEEN <row value constructor> AND <row value constructor>
-    | <row value constructor> [NOT] INRANGE <row value constructor> AND <row value constructor>
-    | <value expression> IS NULL predicate
-    | <like predicate>
-    | <in predicate>
-    | EXISTS ( <sub query> )
+    ::= <comparison predicate>
+      | <between predicate>
+      | <inrange predicate>
+      | <is null predicate>
+      | <like predicate>
+      | <in predicate>
+      | <exists predicate>
+      | <company_nr predicate>
+      | <search condition> AND <search condition>
+      | <search condition> OR <search condition>
+      | NOT <search condition>
+      | ( <search condition> )
 ```
-```
-
-    | <company_nr predicate>
-```
-```
-
-<row value constructor>
-    ::= <value expression>
-      | { <value expression> [ { , <value expression> }... ] }
-```
-
-## Syntactical restrictions
-
-## sub query
-The sub query shall be of degree 1.
 
 ## Examples
 *Example 1*: The following search condition is True if edlevel is larger than 10 and hiredate is before January 16, 1999.
@@ -43,8 +29,7 @@ The sub query shall be of degree 1.
 *Example 2*: The following search condition is True if the employees salary is larger than 10000 and there does not exist another employee with a larger salary.
 ```
 
-{ emp.salary > 10000 }
-    AND NOT EXISTS( SELECT * FROM dbtst120 where salary > emp.salary )
+{ emp.salary > 10000 } AND NOT EXISTS( SELECT * FROM dbtst120 WHERE salary > emp.salary )
 ```
 
 ## Related topics

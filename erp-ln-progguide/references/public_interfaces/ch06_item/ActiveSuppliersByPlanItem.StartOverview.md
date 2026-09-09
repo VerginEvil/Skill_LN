@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ActiveSuppliersByPlanItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 237-238
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 239-239
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.10 (KB3501642  ).
+This function is available from 2024.10 (KB3501642).
 Syntax: long ActiveSuppliersByPlanItem.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -22,10 +22,10 @@ Usage:        Expl:   This function starts the session Active Suppliers By Plan 
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -45,7 +45,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ActiveSupplySource
-
-The following functions are available: ActiveSupplySources.StartOverview

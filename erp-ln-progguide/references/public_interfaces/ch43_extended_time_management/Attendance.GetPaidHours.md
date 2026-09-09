@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1873-1874
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1893-1894
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetPaidHours(
 ref     domain  bpxtm.hours      oPaidHours,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -20,14 +20,14 @@ Pre:
 Post:
 Input:
 Output:
-oPaidHours                                    - Number of paid hours
-oExceptionMessage                             - The last message if any message is
+oPaidHours              - Number of paid hours
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read
+Return: 0                       - Data read
 ```

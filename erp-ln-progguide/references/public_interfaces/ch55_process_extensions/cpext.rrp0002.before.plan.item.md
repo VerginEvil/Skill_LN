@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2078-2079
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2099-2099
 
 ```baan
 Syntax: long cpext.rrp0002.before.plan.item(
@@ -32,14 +32,10 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.company                     - Company
-i.scenario                            - Scenario
-i.phase.number                        - Phase Number
-i.plan.item                           - Plan Item
+Input:  i.company       - Company
+i.scenario      - Scenario
+i.phase.number  - Phase Number
+i.plan.item     - Plan Item
 Output: N.A
-Return: 0                             - Success
+Return: 0               - Success
 ```
-
-## Process Extensions for LoadBuilding
-
-The following process extension(s) is/are available: LoadBuilding.CustomBuildingConstraints

@@ -41,7 +41,7 @@ long
 | `long` | [mkdir](mkdir.md) | `( string path_name$, [long access_level] )` |
 | `long` | [pathname](pathname.md) | `( string file_basename(16), string file_type, ref string file_path(256) )` |
 | `string` | [path.change.extension](path.change.extension.md) | `( const string path, const string extension, [long os.type] )` |
-| `string` | [path.combine](path.combine.md) | `( string part(1024), [[string part(1024), ...], long os.type] )` |
+| `string` | [path.combine](path.combine.md) | `( string part(1024), [[string part(1024),...], long os.type] )` |
 | `string` | [path.dir.separator](path.dir.separator.md) | `( [long os.type] )` |
 | `string` | [path.directory](path.directory.md) | `( const string path, [long os.type] )` |
 | `boolean` | [path.exists](path.exists.md) | `( const string path, [long access_level] )` |

@@ -23,10 +23,10 @@ display.total.fields( "tffbs.dbcr",
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `fieldname1` |   |
-| `void` | `value1` |   |
-| `string` | `fieldname2,...` |   |
-| `void` | `value2,...` |   |
+| `string` | `fieldname1` |    |
+| `void` | `value1` |    |
+| `string` | `fieldname2,...` |    |
+| `void` | `value2,...` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -49,4 +49,5 @@ on.display.total.line:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

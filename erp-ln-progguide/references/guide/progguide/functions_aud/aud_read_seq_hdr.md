@@ -28,6 +28,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - sequence header](macros_sequence_header.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

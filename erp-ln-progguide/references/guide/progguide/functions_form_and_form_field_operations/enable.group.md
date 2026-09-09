@@ -10,8 +10,8 @@ This function is relevant to dynamic forms only.
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `group.nr` |   |
-| `[ long` | `occurrence ]` |   |
+| `long` | `group.nr` |    |
+| `[ long` | `occurrence ]` |    |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -25,4 +25,5 @@ enable.group(7)
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

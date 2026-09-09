@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for DataAuthorization
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1746-1750
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1765-1769
 
 ```baan
 DLL:   tcextsecapi
-This function is available from     2020.11 (KB2158660  ).
+This function is available from 2020.11 (KB2158660).
 Syntax: long DataAuthorization.DocumentActionAllowed(
 domain  tcsec.auth.doc   iDocumentType,
 domain  tcsec.docm       iDocument,
@@ -151,15 +151,15 @@ else
 endif
 Pre:    None
 Post:   None
-Input:  iDocumentType                         - Document Type: Mandatory
-iDocument                                     - Document code: Optional
+Input:  iDocumentType           - Document Type: Mandatory
+iDocument               - Document code: Optional
 Typically this argument is filled
 with a Document number, e.g. a
 Contract or Project.
 If the Document is empty the action is
 allowed (the function will return a
 value 0).
-iDocumentCompany                              - Document Company: Mandatory
+iDocumentCompany        - Document Company: Mandatory
 The support for this input field
 depends on the Document Type and
 Document Action (see table above).
@@ -169,12 +169,12 @@ must be set to the current company
 the current or another company can
 be specified. Company 0 is not
 allowed.
-iDocumentAction                               - The action that must be checked:
+iDocumentAction         - The action that must be checked:
 Mandatory
 Possible actions: "VIEW", "USE and
 "MODIFY".
 iSkipActionNotAllowedMessage
--                                               Do not show an error message when
+- Do not show an error message when
 the Document Action is not allowed:
 mandatory.
 The purpose of this input argument is
@@ -189,7 +189,7 @@ If the value is true the error message
 not set. When false an error message
 could be set and returned in output
 argument oExceptionMessage.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID. When input argument
@@ -197,12 +197,12 @@ iSkipActionNotAllowedMessage is set
 to true, the returned message in this
 argument is the authorization error
 message.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The specified Document action is allowed
-<> 0                                          - An Error occurred or the user does not
+Return: 0                       - The specified Document action is allowed
+<> 0                    - An Error occurred or the user does not
 have authorization for the action
 specified.
 ```

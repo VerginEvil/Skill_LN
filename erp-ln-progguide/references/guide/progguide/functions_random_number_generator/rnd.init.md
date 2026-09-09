@@ -10,7 +10,7 @@
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `seed` |  |
+| `long` | `seed` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

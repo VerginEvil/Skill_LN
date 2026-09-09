@@ -17,7 +17,7 @@ Create a new XML node of type XML_ELEMENT with *local name* as specified by *nam
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the newly created XML_ELEMENT node when successful.  |
+| <> 0 | Success; A reference to the newly created XML_ELEMENT node when successful. |
 | 0 | Error. |
 
 ## Context
@@ -55,5 +55,7 @@ The *xml_envelope* node would serialize to the following XML. Note that the call
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

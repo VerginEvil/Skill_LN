@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PaymentAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1789-1791
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1808-1809
 
 ```baan
 DLL:   tfextcmgapi
-This function is available from     2021.06 (KB2178744  ).
+This function is available from 2021.06 (KB2178744).
 Syntax: long PaymentAdvice.StartProcessPayments(
 long             iStartMode,
 domain  tfgld.user       iUserFrom,
@@ -30,37 +30,33 @@ Usage:        Expl:   This function starts session Process Payments (tfcmg1240m0
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-iUserFrom                                     - User From             Not Mandatory
-iUserTo                                       - User To               Not Mandatory
-iPaymentBatchFrom                             - Payment Batch From    Not Mandatory
-iPaymentBatchTo                               - Payment Batch To      Not Mandatory
-iPaymentBatchStatusFrom                       - Payment Batch Status From     Not Mandatory
-iPaymentBatchStatusTo                         - Payment Batch Status To       Not Mandatory
-iBatchCreationDateFrom                        - Batch Creation Date From      Not Mandatory
-iBatchCreationDateTo                          - Batch Creation Date To        Not Mandatory
-iPaymentProcessDefaultID                              -Payment Process Default ID     Not
+iUserFrom               - User From             Not Mandatory
+iUserTo                 - User To               Not Mandatory
+iPaymentBatchFrom       - Payment Batch From    Not Mandatory
+iPaymentBatchTo         - Payment Batch To      Not Mandatory
+iPaymentBatchStatusFrom - Payment Batch Status From     Not Mandatory
+iPaymentBatchStatusTo   - Payment Batch Status To       Not Mandatory
+iBatchCreationDateFrom  - Batch Creation Date From      Not Mandatory
+iBatchCreationDateTo    - Batch Creation Date To        Not Mandatory
+iPaymentProcessDefaultID        -Payment Process Default ID     Not
 Mandatory
-iDefaultBankRelation                          - Default Bank Relation Not Mandatory
-iTextForRemittance                            - Text For Remittance   Not Mandatory
-iIncludeRemittanceIDInReference                       - Include Remittance ID in Reference
+iDefaultBankRelation    - Default Bank Relation Not Mandatory
+iTextForRemittance      - Text For Remittance   Not Mandatory
+iIncludeRemittanceIDInReference - Include Remittance ID in Reference
 Not Mandatory
-iSuffix                                       -Suffix                 Not Mandatory
+iSuffix                 -Suffix                 Not Mandatory
 Output: for iStartMode MODAL:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for RemittanceAdvice
-
-The following functions are available: RemittanceAdvice.Apply RemittanceAdvice.Post

@@ -9,7 +9,9 @@ Returns true if the given string contains an email address. This function define
 <local-part>@<domain-part>
 ```
 where:
+
 - `<local-part>` is not empty
+
 - `<domain-part>` is not empty, contains at least one dot, does not start with a dot and does not end with a dot
 
 ## Arguments
@@ -40,4 +42,5 @@ result = str.isemail("@example.com")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

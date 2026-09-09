@@ -52,4 +52,5 @@ void
 
 ## Related topics
 - [Composite Sessions overview](overview.md)
+
 - [Composite Sessions Code Examples](examples.md)

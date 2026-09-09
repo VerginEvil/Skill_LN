@@ -29,4 +29,5 @@ Note  This function is available from [Tools Interface Version (TIV)](../tiv/tiv
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [plcm.get.default.availability](plcm_get_activity_unavailability.md)

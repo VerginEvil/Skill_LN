@@ -1,4 +1,17 @@
 # HTTP Client examples
+- [Perform a HTTP GET request (Basic Authentication)](#GET Request (Basic Authentication))
+
+- [Perform an OAuth1.0 HTTP GET request](#GET Request (OAuth1.0))
+
+- [Perform an OAuth 2.0 HTTP GET request](#GET Request (OAuth2.0))
+
+- [Perform an OAuth 2.0 SAML Based HTTP GET request to an IONAPI service from LN in the cloud](#GET Request (OAuth2.0 current user SAML Based))
+
+- [Perform a (MIME) multipart HTTP POST request](#POST Request (MIME multipart))
+
+- [Perform an HTTP GET Request using a query parameter list](#GET Request (queryparamlist))
+
+- [Create an HTTP cookie object and add it to a cookiejar](#Dealing with cookies)
 
 ## Perform a HTTP GET request (Basic Authentication)
 Example of how to perform an HTTP request (using basic authentication) and process the response.
@@ -76,12 +89,21 @@ function http_example()
 
         |* Get the HTTP Body of the response, in this case a JSON value
         bodystream = http.response.bodystream(response)
+        |* NOTE: bodystream can be negative, indicating an error
+        |* e.g. -11 means that the HTTP client could not open a stream to
+        |* write the HTTP response to, because (temporarily) the limit of
+        |* open files, streams, and sockets has been reached.
+
         |* Read the JSON from the stream and process it
         jsonvalue = Json.read(bodystream, errormsg)
+
         |* Just get the JSON text (in this example)
         numbytes = Json.writeString(jsonvalue, jsontext, JSON_WRITE_PRETTY)
 
-        |* Cleanup, this will also delete the HTTP headerlist; also the body stream is closed
+        |* Do not forget to cleanup the http.response object;
+        |* this will also delete the HTTP headerlist; also the body stream is closed;
+        |* (forgetting to delete this can lead to a situation where no more
+        |* files, streams or sockets can be opened)
         http.response.delete(response)
 }
 ```
@@ -176,6 +198,66 @@ function http_oauth2.0_example()
 }
 ```
 
+## Perform an OAuth 2.0 SAML Based HTTP GET request to an IONAPI service from LN in the cloud
+Example of how to perform an OAuth 2.0 SAML Based request to an IONAPI service using the current user's credentials.
+```
+
+        #include <bic_http>       |* Common HTTP Definitions
+        #include <bic_httpclt>    |* HTTP Client Definitions
+
+function http_current_user_oauth2.0_saml_bearer_example()
+{
+        long    oauth2params
+        long    response
+
+        |* Create an http.oauth2params object
+        |* Note: this object can be re-used for multiple HTTP requests
+
+        oauth2params = http.oauth2params.new(
+           HTTP_OAUTH2_GRANT_TYPE,      HTTP_OAUTH2_CURRENT_SAML2_BEARER)
+
+        |* Perform an HTTP GET request with OAuth 2.0 Authentication
+        |* to an IONAPI service from LN in the cloud
+        response = http.get(http.service.info("ionapi", "url") & "/{tenantId}/GENAI/chatsvc/api/v1/chat",
+           HTTP_ACCEPT,                 HTTP_CTYPE_APPLICATION_JSON,
+           HTTP_ROUTEPARAM,             "tenantId", get.tenant.id(),
+           HTTP_OAUTH2PARAMS,           oauth2params)
+
+        |* Process the response
+        ...
+
+        |* Delete the http.response object
+        http.response.delete(response)
+
+        |* Delete the http.oauth2params object
+        http.oauth2params.delete(oauth2params)
+}
+```
+
+## Perform an HTTP GET Request using a query parameter list
+Example of how to create a new HTTP query parameter list
+```
+
+        #include <bic_http>       |* Common HTTP Definitions
+        #include <bic_httpclt>    |* HTTP Client Definitions
+
+function http_queryparamlist_example()
+{
+        long    queryparamlist
+        long    response
+
+        queryparamlist = http.queryparamlist.new(
+           "name",              "John Doe",
+           "address",           "34, Mainstreet",
+           "city",              "New York")
+
+        response = http.get("http://example.com/get",
+           HTTP_QUERYPARAMLIST, queryparamlist)
+
+        http.queryparamlist.delete(queryparamlist)
+}
+```
+
 ## Perform a (MIME) multipart HTTP POST request
 Example of how to perform a multipart HTTP request using the HTTP_MIMEPART attribute.
 ```
@@ -257,32 +339,8 @@ function http_mimepartlist_example()
 }
 ```
 
-## Create new HTTP query parameter list
-Example of how to create a new HTTP query parameter list
-```
-
-        #include <bic_http>       |* Common HTTP Definitions
-        #include <bic_httpclt>    |* HTTP Client Definitions
-
-function http_queryparamlist_example()
-{
-        long    queryparamlist
-        long    response
-
-        queryparamlist = http.queryparamlist.new(
-           "name",              "John Doe",
-           "address",           "34, Mainstreet",
-           "city",              "New York")
-
-        response = http.get("http://example.com/get",
-           HTTP_QUERYPARAMLIST, queryparamlist)
-
-        http.queryparamlist.delete(queryparamlist)
-}
-```
-
 ## Create an HTTP cookie object and add it to a cookiejar
-Example of how to create a new http.cookie object, add it an http.cookiejar object and save it to a file
+Example of how to create a new http.cookie object, add it to an http.cookiejar object and save it to a file.
 ```
 
         #include <bic_http>       |* Common HTTP Definitions
@@ -333,4 +391,5 @@ function http_cookie_example()
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

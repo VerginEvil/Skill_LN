@@ -11,7 +11,7 @@ The load.float() function is *not* machine independent and must be used with car
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `record$` |  String value of which the first 4 bytes are used as input bit pattern. It is an error to supply a string with a byte limit less than 4. In such a case, at least a log message will be generated. Above that, it may cause (now or in a future bshell version) the current 3GL process to be terminated. When a multibyte string is supplied, the behavior is undefined.  |
+| `string` | `record$` |  String value of which the first 4 bytes are used as input bit pattern. It is an error to supply a string with a [byte capacity](../3gl_features/data_types.md#byte capacity) less than 4. In such a case, at least a log message will be generated. Above that, it may cause (now or in a future bshell version) the current 3GL process to be terminated. When a multibyte string is supplied, the behavior is undefined.  |
 | `[ long` | `swap ]` |  This function assumes that the data in *record$* is stored in *machine dependent* format. To compensate for a difference in the endianess of the data and the host running the program set this optional argument to 1. In effect all four byte will be swapped.  |
 
 ## Context
@@ -29,9 +29,32 @@ value = load.float( tmp )
 ```
 
 ## Related topics
-- Related operations: [load.byte()](load.byte.md), [load.double()](load.double.md), [load.long()](load.long.md), [load.short()](load.short.md)
-- Inverse operations: [store.byte()](store.byte.md), [store.double()](store.double.md), [store.float()](store.float.md), [store.long()](store.long.md), [store.short()](store.short.md)
-- Special operations for UTC long format values: [load.utc()](load.utc.md), [store.utc()](store.utc.md)
-- Definition of the byte limit of a string variable: length limit in bytes
+- [load.byte()](load.byte.md)
+
+- [load.double()](load.double.md)
+
+- [load.long()](load.long.md)
+
+- [load.short()](load.short.md)
+
+- [store.byte()](store.byte.md)
+
+- [store.double()](store.double.md)
+
+- [store.float()](store.float.md)
+
+- [store.long()](store.long.md)
+
+- [store.short()](store.short.md)
+
+- [UTC](../functions_date_time_zones/overview.md#utc)
+
+- [load.utc()](load.utc.md)
+
+- [store.utc()](store.utc.md)
+
+- [capacity in bytes](../3gl_features/data_types.md#byte capacity)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

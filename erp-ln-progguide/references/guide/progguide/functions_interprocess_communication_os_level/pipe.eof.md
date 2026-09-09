@@ -21,4 +21,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Interprocess communication (OS level) overview](overview.md)
+
 - [Interprocess communication (OS level) synopsis](synopsis.md)

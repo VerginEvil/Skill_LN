@@ -13,13 +13,13 @@ Using functions like [gbf.get.first.child()](gbf.get.first.child.md) and [gbf.ge
 | | | |
 |---|---|---|
 | `const string` | `object.key()` |  The parent is identified by the object.key and object.value, which have been given to the GBF on a preceding [gbf.add.object()](gbf.add.object.md) call. Note that in this particular call the obj.type argument must have been set to GBF.INTERIOR otherwise this function ( [gbf.get.children()](gbf.get.children.md)) would not have been called for this object.  |
-| `long` | `object.value` |   |
+| `long` | `object.value` |    |
 | `long` | `cur.level` |  The cur.level indicates the current level of the given object. The level is defined as: 1 for every object which is added to the GBF by a [gbf.add.object()](gbf.add.object.md) call when called from a [gbf.get.top.level()](gbf.get.top.level.md) function call 1 + cur.level for each child which is added to the GBF with [gbf.add.object()](gbf.add.object.md) when called from this gbf.get.children() call.  |
 
 ## Return values
 | | |
 |---|---|
-| GBF.DO.CONTINUE or 0 | Successful completion, GBF will continue working  |
+| GBF.DO.CONTINUE or 0 | Successful completion, GBF will continue working |
 | GBF.DO.ABORT | Abort GBF, which will end the GBF and return with an error, see [gbf.start()](gbf.start.md) |
 | GBF.DO.EXIT | Finish GBF, which will end the GBF and return with 0, see [gbf.start()](gbf.start.md) |
 Any return other than these values will be treated as if GBF.DO.ABORT has been returned
@@ -29,10 +29,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

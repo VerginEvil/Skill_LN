@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkCenter
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 810-811
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 809-810
 
 ```baan
 DLL:   tiextrouapi
-This function is available from     2023.04 (KB2274111  ).
+This function is available from 2023.04 (KB2274111).
 Syntax: long WorkCenters.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,17 +25,17 @@ in overview mode (tirou0101m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           1                       - The session will start with the
+iSessionIndex           1 - The session will start with the
 first session index:
 Work Center
-2                                               - The session will start with the
+2 - The session will start with the
 second session index:
 Site, Work Center
 Second session index is only possible
@@ -61,7 +61,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for JobShopTask
-
-The following functions are available: JobShopTasks.StartOverview

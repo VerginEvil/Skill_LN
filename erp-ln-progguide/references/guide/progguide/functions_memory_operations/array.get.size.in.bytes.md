@@ -31,10 +31,10 @@ string  b4(1,1,1,1) based
 long    some.long
 
 size.in.bytes = array.get.size.in.bytes( a3 )
-        | Returns 3x5x7xBitCountOfLong/8
+        | Returns 3 x 5 x 7 x BitCountOfLong / 8
 
 size.in.bytes = array.get.size.in.bytes( s3 )
-        | Returns 3x5x7x1=105
+        | Returns 3 x 5 x 7 x 1 = 105
 
 size.in.bytes = array.get.size.in.bytes( b4 )
         | Returns 0
@@ -42,15 +42,16 @@ size.in.bytes = array.get.size.in.bytes( b4 )
 alloc.mem(b4, 2, 3, 5, 7)
 
 size.in.bytes = array.get.size.in.bytes( b4 )
-        | Returns 2*3*5*7=210
+        | Returns 2 x 3 x 5 x 7 = 210
 
 size.in.bytes = array.get.size.in.bytes( "abcde" )
         | Returns 5
 
 size.in.bytes = array.get.size.in.bytes( some.long )
-        | Returns 4xBitCountOfLong/8
+        | Returns BitCountOfLong / 8
 ```
 
 ## Related topics
-- A similar function, which does not work for array types of symbols, and with a different result only for multi language string variables: [get.size.in.bytes()](get.size.in.bytes.md)
+- [get.size.in.bytes()](get.size.in.bytes.md)
+
 - [Memory operations overview and synopsis](overview_and_synopsis.md)

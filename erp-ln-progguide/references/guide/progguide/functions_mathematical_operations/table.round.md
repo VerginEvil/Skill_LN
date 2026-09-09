@@ -1,7 +1,7 @@
 # table.round()
 
 ## Syntax:
-`function void table.round( [ void field [, field] ..., string table [, table] ... ] )`
+`function void table.round( [ void field [, field]..., string table [, table]... ] )`
 
 ## Description
 This rounds the values in certain tables and table fields according to parameters defined in the domain definition in the data dictionary.
@@ -9,8 +9,8 @@ This rounds the values in certain tables and table fields according to parameter
 ## Arguments
 | | | |
 |---|---|---|
-| `[ void` | `field [, field] ... ]` |  The names of one or more table fields. The function rounds the values in all specified fields.  |
-| `[ string` | `table [, table] ... ]` |  The names of one or more tables. The function rounds all fields in the specified tables. You must specify table names within quotes – for example, " tpctst999".  |
+| `[ void` | `field [, field]... ]` |  The names of one or more table fields. The function rounds the values in all specified fields.  |
+| `[ string` | `table [, table]... ]` |  The names of one or more tables. The function rounds all fields in the specified tables. You must specify table names within quotes – for example, " tpctst999".  |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

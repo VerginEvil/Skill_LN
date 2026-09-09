@@ -1,7 +1,7 @@
 # on.old.occ()
 
 ## Syntax:
-`function void on.old.occ( const string function_name, const string ... )`
+`function void on.old.occ( <function_name>, const string... )`
 
 ## Description
 This executes the specified function for the current occurrence, using the old values of the record. The record must have been previously modified.
@@ -9,7 +9,7 @@ This executes the specified function for the current occurrence, using the old v
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `function_name` |  The name of the function that must be executed. The function must be of type void.  |
+| `<function_name>` |  | The name of the function that must be executed. The function must be of type void. |
 | `const string` | `...` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
 
 ## Context
@@ -44,4 +44,5 @@ function void update.occurrences(long new.val)
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

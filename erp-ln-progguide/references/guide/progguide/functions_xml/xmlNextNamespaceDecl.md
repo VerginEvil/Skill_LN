@@ -14,8 +14,8 @@ Get the next namespace declaration of an XML node.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; A reference to the next namespace declaration of an XML node that carries the specified *namespace*.  |
-| 0 | Error. The *namespace* is invalid or it does not have a next namespace declaration, within the context of the same XML node.  |
+| <> 0 | Success; A reference to the next namespace declaration of an XML node that carries the specified *namespace*. |
+| 0 | Error. The *namespace* is invalid or it does not have a next namespace declaration, within the context of the same XML node. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -46,5 +46,7 @@ xmlns = xmlNextNamespaceDecl( xmlns )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -19,7 +19,7 @@ Creates a path to the header.xml file, which consists of the message storage pat
 | | |
 |---|---|
 | <> 0 | mid = Bshell-wide unique message ID. |
-| 0 | mid = no valid object id error_string contains detailed error information.  |
+| 0 | mid = no valid object id error_string contains detailed error information. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -27,5 +27,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

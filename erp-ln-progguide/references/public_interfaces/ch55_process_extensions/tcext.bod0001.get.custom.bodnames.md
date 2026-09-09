@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1963-1964
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1982-1983
 
 ```baan
 Syntax: long tcext.bod0001.get.custom.bodnames(
@@ -19,14 +19,14 @@ field "Standard" must not be selected. The BOD root table is mandatory
 for Master Data BODs and is optional for other BOD types.
 Input: N.A.
 Output:
--              o.bodnames        - array with custom BOD names (max.50, length 70)
--              o.labels          - array with custom BOD labels (max.50,
-length 70 multi                                    -byte)
--              o.root.tables     - array with custom BOD root tables (max.50, length 8)
--              o.indx            - number of custom BODs in stack
+- o.bodnames        - array with custom BOD names (max.50, length 70)
+- o.labels          - array with custom BOD labels (max.50,
+length 70 multi-byte)
+- o.root.tables     - array with custom BOD root tables (max.50, length 8)
+- o.indx            - number of custom BODs in stack
 Return:
--              0                 - OK
--              DALHOOKERROR      - not OK
+- 0                 - OK
+- DALHOOKERROR      - not OK
 Example of implementation:
 o.indx = 3
 alloc.mem(o.bodnames, 70, o.indx)

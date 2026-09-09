@@ -1,7 +1,11 @@
 # Interface Conversion Public Layer
 In this library the logic of the public calculated fields must be programmed in specific hooks:
+
 - function long public.{all|<attribute>}.map.to.<attribute>()
-- function long public.<attribute>.map.from.{all|<attribute>}()   'all' will be used when more then one protected attribute has been mapped to the public attribute. Normally the mapped attribute will be filled out in <attribute>.
+
+- function long public.<attribute>.map.from.{all|<attribute>}()
+
+'all' will be used when more then one protected attribute has been mapped to the public attribute. Normally the mapped attribute will be filled out in <attribute>.
 The system will generate the library. The file can be divided into two parts. The first part is read-only, while in the second part the content of the hooks must be programmed (see the example below).
 
 ## Example Read-only
@@ -73,7 +77,11 @@ In the development part, it is possible to report problems. The standard functio
 
 ## Related topics
 - [Business Object Layer](overview.md)
+
 - [Public Layer](sb_layer.md)
+
 - [Protected Layer](st_layer.md)
+
 - [Interface Conversion Protected Layer](sm_layer.md)
+
 - [Specific Methods Library](sf_layer.md)

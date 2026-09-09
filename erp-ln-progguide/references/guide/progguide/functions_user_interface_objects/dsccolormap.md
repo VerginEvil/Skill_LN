@@ -9,12 +9,14 @@ A DsCcolormap object does not generate events.
 ## Attributes
 | | | |
 |---|---|---|
-|  DsNcolorTable (long array)  | [CSG] | An array of rgb values. |
-|  DsNobjectType (long)  | [G] | The object type. |
-|  DsNparent (long)  | [G] | The ID of the parent object. |
-|  DsNtemplate (long)  | [CS] | The ID of a [DsCtemplate](dsctemplate.md) that defines a set of attributes to be applied to the object.  |
+| DsNcolorTable (long array) | [CSG] | An array of rgb values. |
+| DsNobjectType (long) | [G] | The object type. |
+| DsNparent (long) | [G] | The ID of the parent object. |
+| DsNtemplate (long) | [CS] | The ID of a [DsCtemplate](dsctemplate.md) that defines a set of attributes to be applied to the object. |
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CommissionsAndRebates
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 374-376
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 376-378
 
 ```baan
 DLL:   tdextcmsapi
-This function is available from     2020.10 (KB2134632  ).
+This function is available from 2020.10 (KB2134632).
 Syntax: long CommissionsAndRebates.DetermineSalesOrderData(
 domain  tdcms.type       iCommissionRebateType,
 domain  tcorno           iSalesOrder,
@@ -51,37 +51,37 @@ Basically, total and accumulated quantity and amount are
 calculated as follows:
 Linking of Relations On: Sales Order
 Calculation Method: Sales Order
--                               Total amount = sum of all sales order history lines
+- Total amount = sum of all sales order history lines
 (tdsls451)
--                               Accumulated amount = sum of all sales order history
+- Accumulated amount = sum of all sales order history
 lines (tdsls451)
 Calculation Method: Sales Invoice / Paid Sales Invoice
--                               Total amount = sum of all sales order delivery history
+- Total amount = sum of all sales order delivery history
 lines (tdsls456)
--                               Accumulated amount = sum of all sales order delivery
+- Accumulated amount = sum of all sales order delivery
 history lines (tdsls456)
 Linking of Relations On: Sales Order Line
 Calculation Method: Sales Order
--                               Total amount = sum of all sales order history lines
+- Total amount = sum of all sales order history lines
 (tdsls451), intake and cancellation
 based on sales order/line/sequence
 Calculation method for deliveries: Separately
--                               Accumulated amount = sum of all sales order history
+- Accumulated amount = sum of all sales order history
 lines (tdsls451), intake and
 cancellation based on
 sales order/line/sequence
 Calculation method for deliveries: Accumulate, Ordered
--                               Accumulated amount = sum of all sales order history
+- Accumulated amount = sum of all sales order history
 lines (tdsls451), intake and
 cancellation based on
 sales order/line
 Calculation Method: Sales Invoice / Paid Sales Invoice
--                               Total amount = sum of all sales order delivery history
+- Total amount = sum of all sales order delivery history
 lines (tdsls456), based on sales order/
 line/sequence/delivery sequence/invoice
 line
 Calculation method for deliveries: Separately
--                               Accumulated amount = sum of all sales order delivery
+- Accumulated amount = sum of all sales order delivery
 history lines (tdsls456),
 based on sales order/line/
 sequence/delivery sequence/
@@ -89,68 +89,68 @@ invoice line
 Calculation method for deliveries:
 Accumulate/Fully Invoiced Line
 Accumulate/Partial Invoiced Line
--                               Accumulated amount = sum of all sales order delivery
+- Accumulated amount = sum of all sales order delivery
 history lines (tdsls456),
 based on sales order/line/
 sequence
 Pre:    None
 Post:   None
-Input:  iCommissionRebateType                         - Type Commission or Rebate
+Input:  iCommissionRebateType           - Type Commission or Rebate
 |**************************************************************
 |* Sales order (line) related arguments based on Sales Order
 |* (Line) History (tdsls451/tdsls456)
 |**************************************************************
-iSalesOrder                                           - Sales Order (Mandatory)
-iSalesOrderLine                                       - Sales Order Line
-iSalesOrderSequence                                   - Sales Sequence Number, it is 0
+iSalesOrder                     - Sales Order (Mandatory)
+iSalesOrderLine                 - Sales Order Line
+iSalesOrderSequence             - Sales Sequence Number, it is 0
 in case the Commission/Rebate
 Parameter 'Linking of
 Relations On' is set to Sales
 Order
-iSalesOrderDeliverySequence                           - Sales Order Delivery Sequence
+iSalesOrderDeliverySequence     - Sales Order Delivery Sequence
 Line
-iSalesOrderInvoiceLine                        - Sales Order Invoice Line
-iRelation                                             - Relation by sales order line
-iCalculationMethod                                    - Calculation Method defined
+iSalesOrderInvoiceLine  - Sales Order Invoice Line
+iRelation                       - Relation by sales order line
+iCalculationMethod              - Calculation Method defined
 in Relations, used to control
 when the commissions and
 rebates are calculated
 iCalculationMethodForDeliveries
--                                                       Calculation Method for
+- Calculation Method for
 Deliveries defined in
 Relations, used to control how
 the commissions and rebates
 are calculated after sales
 order deliveries are executed.
-Output: oSalesOrderItem                               - Sales order line item
-oSalesOrderUnit                                       - Sales order unit
+Output: oSalesOrderItem                 - Sales order line item
+oSalesOrderUnit                 - Sales order unit
 oSalesOrderUnitConversionFactor
--                                                       Conversion Factor Sales to
+- Conversion Factor Sales to
 Inventory Unit
-oSalesOrderProject                                    - Sales order line project
-oSalesOrderDate                                       - Sales order date
-oSalesOrderRateDate                                   - Sales order rate date
-oSalesOrderRateType                                   - Sales order rate type
-oSalesOrderRate                                       - Sales order rates
-oSalesOrderRateFactor                                 - Sales order rate factor
-oSalesOrderDeliveryDate                               - Sales order delivery date
-oSalesOrderTransactionType                            - Sales order transaction type
-oSalesOrderInvoiceNumber                              - Sales order invoice number
-oSalesOrderInvoiceDate                                - Sales order invoice date
-oSalesOrderInvoiceCompany                             - Sales order invoice company
-oSalesOrderTotalQuantity                              - Sum of all quantities in sales
+oSalesOrderProject              - Sales order line project
+oSalesOrderDate                 - Sales order date
+oSalesOrderRateDate             - Sales order rate date
+oSalesOrderRateType             - Sales order rate type
+oSalesOrderRate                 - Sales order rates
+oSalesOrderRateFactor           - Sales order rate factor
+oSalesOrderDeliveryDate         - Sales order delivery date
+oSalesOrderTransactionType      - Sales order transaction type
+oSalesOrderInvoiceNumber        - Sales order invoice number
+oSalesOrderInvoiceDate          - Sales order invoice date
+oSalesOrderInvoiceCompany       - Sales order invoice company
+oSalesOrderTotalQuantity        - Sum of all quantities in sales
 order unit.
-oSalesOrderTotalNetAmount                             - Sum of all amounts in sales
+oSalesOrderTotalNetAmount       - Sum of all amounts in sales
 order currency
 oSalesOrderAccumulatedOrderQuantity
--                                                       Accumulated quantity in sales
+- Accumulated quantity in sales
 order unit. See explanation
 above.
 oSalesOrderAccumulatedOrderAmount
--                                                       Accumulated net amount in sales
+- Accumulated net amount in sales
 order currency. See explanation
 above.
-oSalesOrderGrossProfit                                - Sales order gross profit
+oSalesOrderGrossProfit          - Sales order gross profit
 oExceptionMessage       The last message if any message is
 found. If more than one message is.
 given, these are present in the

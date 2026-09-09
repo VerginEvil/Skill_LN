@@ -20,4 +20,5 @@ Note  This function is available from [TIV](../tiv/tiv_overview.md) [1900](../ti
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2149-2150
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2172-2173
 
 ```baan
 Syntax: long tiext.pcf0001.adjust.variant.price(
@@ -35,7 +35,7 @@ in the global variable section of the extension.
 Post:   N.A.
 Input:  io.price
 Output: io.price
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the
 added logic
 ```

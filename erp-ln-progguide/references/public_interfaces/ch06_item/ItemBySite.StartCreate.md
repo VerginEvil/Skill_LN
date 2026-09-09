@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemBySite
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 190-191
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 191-192
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2026.08 (KB3685058  ).
+This function is available from 2026.08 (KB3685058).
 Syntax: long ItemBySite.StartCreate(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -23,21 +23,21 @@ Input:
 iStartMode
 Specifies the start mode for the session (Mandatory).
 Possible values are:
-MODAL                                         - The parent session is blocked until the
+MODAL           - The parent session is blocked until the
 child session exits.
-MODELESS                                      - Parent and child are parallel
+MODELESS        - Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
-iItem                                         - Item (Mandatory).
+iItem                   - Item (Mandatory).
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started.
-<> 0                                          - Otherwise.
+Return: 0                       - Session started.
+<> 0                    - Otherwise.
 ```

@@ -7,4 +7,5 @@ To sign a document using the Digital Signatures API a sign request needs to be c
 
 ## Related topics
 - [Digital Signatures synopsis](synopsis.md)
+
 - [Digital Signatures examples](examples.md)

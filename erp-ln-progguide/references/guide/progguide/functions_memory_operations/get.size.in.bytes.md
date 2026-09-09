@@ -38,9 +38,9 @@ string	based.string(1)        based
 string	some.strings(3,5,7)
 string	based.strings(1,1,1,1) based
 
-size = get.size.in.bytes( a.long )		| size == BitCountOfLong/8
+size = get.size.in.bytes( a.long )		| size == BitCountOfLong / 8
 size = get.size.in.bytes( some.longs )	| size == -1
-size = get.size.in.bytes( some.longs(1,1,1) )	| size == BitCountOfLong/8
+size = get.size.in.bytes( some.longs(1,1,1) )	| size == BitCountOfLong / 8
 
 size = get.size.in.bytes( a.string )		| size == 11
 
@@ -59,5 +59,6 @@ size = get.size.in.bytes( based.strings(1,1,1,1) )	| size == 19
 ```
 
 ## Related topics
-- A similar function, with a different result only for multi language string variables, and which also works for array types of symbols: [array.get.size.in.bytes()](array.get.size.in.bytes.md)
+- [array.get.size.in.bytes()](array.get.size.in.bytes.md)
+
 - [Memory operations overview and synopsis](overview_and_synopsis.md)

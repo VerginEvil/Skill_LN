@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1632-1633
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1651-1651
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.03 (KB2040021  ).
+This function is available from 2019.03 (KB2040021).
 Syntax: long BOD.ActionsAfterProcessingIncomingRequestWithAutomaticProcessing(
 long             iXMLRequest,
 domain  tcmcs.str132     iObjectType,
@@ -29,22 +29,22 @@ OnShow, OnAcknowledge etc.
 Pre:    Before the incoming BOD is processed, function
 BOD.ActionsBeforeProcessingIncomingRequest() must be called.
 Post:   NA
-Input:  iXMLRequest                           - XML structure with request. Mandatory
-iObjectType                                   - object type for which automatic
+Input:  iXMLRequest             - XML structure with request. Mandatory
+iObjectType             - object type for which automatic
 processing must be started,
 e.g. "PurchaseOrder"
-iObject                                       - The identifier of the given ObjectType
+iObject                 - The identifier of the given ObjectType
 e.g. the purchase order if ObjectType
 is "PurchaseOrder"
-Output: oResult                               - 0 if succes, otherwise <> 0
-oExceptionMessage                             - The last message if any message is
+Output: oResult                 - 0 if succes, otherwise <> 0
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Staged BODs are published.
-<> 0                                          - Staged BODs could not be published.
+Return: 0                       - Staged BODs are published.
+<> 0                    - Staged BODs could not be published.
 ```

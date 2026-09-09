@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 266-268
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 268-269
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2026.03 (KB3609151  ).
+This function is available from 2026.03 (KB3609151).
 Syntax: long EngineeringItem.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,14 +27,14 @@ engineering items.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a Zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used. Default index is 1.
 Standard supported values:
 1: Sort by Engineering Item.
@@ -62,9 +62,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Chapter 8 Public Interfaces for CRM
-
-## Public Interfaces for Opportunity
-
-The following functions are available: Opportunities.StartOverview Opportunity.StartMultiMain

@@ -33,4 +33,5 @@ endif
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

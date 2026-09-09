@@ -26,7 +26,7 @@ Properties with no check function in the DAL always return 0.
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
 This function is marked as 'untrusted' and can therefore not be used in custom objects in a cloud-ready environment. See section about [managed execution](../misc/managed_execution.md) for more information.
-Note  This function should not be used after the the actual insert/update has been done. E.g. it should not be used in any 'after' hook in the DAL, Table Extension DLL or DB DLL.
+Note  This function should not be used after the actual insert/update has been done. E.g. it should not be used in any 'after' hook in the DAL, Table Extension DLL or DB DLL.
 
 ## Example
 This function is programmed in DAL tdsls401.
@@ -58,4 +58,5 @@ function extern long tdsls401.oqua.check(long has_changed)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

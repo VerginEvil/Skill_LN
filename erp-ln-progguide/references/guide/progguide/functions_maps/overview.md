@@ -8,4 +8,5 @@ A set of functions is available which can be used from 4GL-Sessions to define a 
 
 ## Related topics
 - [Maps Workbench synopsis](synopsis.md)
+
 - [Maps Workbench examples](examples.md)

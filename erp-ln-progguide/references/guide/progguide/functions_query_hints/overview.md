@@ -9,58 +9,67 @@ The <hint fixctl set> is available as off bshell TIV 2300.
 ## Syntax
 ```
 
-<hint clause> ::= hint <hint first set>  [{<hint fixctl set>}...]
+<hint clause>
+    ::= hint <hint first set> [ { <hint fixctl set> }... ]
 
-<hint first set> ::= <hint list>
-            |   <hint fixctl set>
+<hint first set>
+    ::= <hint list>
+      | <hint fixctl set>
 
-<hint fixctl set> ::= when fixctl <identifier> is on <hint list>
+<hint fixctl set>
+    ::= when fixctl <identifier> is on <hint list>
 
-<hint list>   ::= <hint>
-              |   <hint> and <hint list>
+<hint list>
+    ::= <hint>
+      | <hint> and <hint list>
 
-<hint>      ::= use index <nr list> on <table name> [asc|desc]
-            |   array fetching
-            |   no array fetching
-            |   array size <n>
-            |   all rows
-            |   first rows
-            |   buffer <n> rows
-            |   <string literal>
-            |   ordered
-            |   no hints
+<hint>
+    ::= use index <nr list> on <table name> [asc|desc]
+      | array fetching
+      | no array fetching
+      | array size <n>
+      | all rows
+      | first rows
+      | buffer <n> rows
+      | <string literal>
+      | ordered
+      | no hints
 
-<nr list>   ::= <n>
-            |   <n> ',' <nr_list>
+<nr list>
+    ::= <n>
+      | <n> ',' <nr_list>
 
-<n>           ::= a positive integer
+<n> ::= a positive integer
 
-<table name>     ::= the name of a table or a table name alias.
-<string literal> ::= string enclosed in double quotes
+<table name>
+    ::= the name of a table or a table name alias.
+
+<string literal>
+    ::= string enclosed in double quotes
 ```
 
 ## Examples
 Before we go into the semantics of the hints let us first give you some examples to illustrate the syntax.
 ```
 
-select  tfacr200.*
-from    tfacr200
-where   _index2 = {"  1001"}
-and     {ttyp, ninv, line, tdoc, docn, lino} >= {"",0,0,"",0,0}
-order   by _index2
+select   tfacr200.*
+from     tfacr200
+where    _index2 = {"  1001"}
+and      {ttyp, ninv, line, tdoc, docn, lino} >= {"",0,0,"",0,0}
+order by _index2
 as prepared set
-hint    use index 2 on tfacr200
-        and array fetching
+hint     use index 2 on tfacr200
+         and array fetching
     when fixctl msql_4231 is on no hints and array fetching
 
-select  a.cuno
-from    tccom010 a
-where   a.cuno in ( select b.cuno
-                    from   tfgld106 a, tccom010 b
-                    where  a.cuno = b.cuno
-                    hint   ordered )
-order   by cuno
-hint    buffer 100 rows
+select   a.cuno
+from     tccom010 a
+where    a.cuno in ( select b.cuno
+                     from   tfgld106 a, tccom010 b
+                     where  a.cuno = b.cuno
+                     hint   ordered )
+order by cuno
+hint     buffer 100 rows
 ```
 
 ## Related topics

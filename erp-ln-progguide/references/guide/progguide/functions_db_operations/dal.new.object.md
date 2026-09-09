@@ -24,9 +24,12 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Hooks called
 - [before.open.object.set()](../functions_dal/before.open.object.set.md) if this is the first call to the DAL
+
 - [before.new.object()](../functions_dal/before.new.object.md)
+
 - [set.object.defaults()](../functions_dal/set.object.defaults.md)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

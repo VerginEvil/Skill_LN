@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SubcontractingModel
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 832-833
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 842-843
 
 ```baan
 DLL:   tiextsubapi
-This function is available from     2024.08 (KB2328603  ).
+This function is available from 2024.08 (KB2328603).
 Syntax: long SubcontractingModel.Explode(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -30,8 +30,8 @@ Usage:        Expl:   Use this Public Interface to get "exploded" Product
 Subucontractor Bill of Material.
 The product structure in Product Subcontractor Bill of Material
 is searched for:
--                       direct non-phantom children of iProduct (single level)
--                       non-phantom children of the phantom children (multi-level;
+- direct non-phantom children of iProduct (single level)
+- non-phantom children of the phantom children (multi-level;
 maximum number of levels: iExplosionDepth)
 The child items (materials/sub items) found are added to the
 output arrays.

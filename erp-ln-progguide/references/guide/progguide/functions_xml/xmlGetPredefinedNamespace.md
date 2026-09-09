@@ -5,7 +5,7 @@
 
 ## Description
 Get one of the predefined XML namespaces. This function returns a reference to it. The reference can be used in for example the [xmlNewNodeNs()](xmlNewNodeNs.md) function.
-According to Namespaces in XML 1.0 (Third Edition), Chapter 3 Declaring Namespaces, there are two predefined namespaces:
+According to [Namespaces in XML 1.0 (Third Edition)](https://www.w3.org/TR/REC-xml-names), Chapter 3 Declaring Namespaces, there are two predefined namespaces:
 | | |
 |---|---|
 | prefix | URI |
@@ -21,7 +21,7 @@ According to Namespaces in XML 1.0 (Third Edition), Chapter 3 Declaring Namespac
 | | |
 |---|---|
 | <> 0 | Success. A reference to the predefined namespace when successful. |
-| 0 | Error. The *prefix* is not the prefix of a predefined namespace.  |
+| 0 | Error. The *prefix* is not the prefix of a predefined namespace. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2500.
@@ -42,5 +42,7 @@ xmlns_xml = xmlGetPredefinedNamespace( "xml" )
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

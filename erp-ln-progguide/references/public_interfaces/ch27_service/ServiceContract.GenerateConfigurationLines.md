@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContract
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1389-1391
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1401-1403
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2023.10 (KB2289318  ).
+This function is available from 2023.10 (KB2289318).
 Syntax: long ServiceContract.GenerateConfigurationLines(
 domain  tsctm.termappl   iGenerateFor,
 domain  tcorno           iServiceContractOrContractQuote,
@@ -67,7 +67,7 @@ To Serial Number; when left empty it is defaulted to
 its maximum value.
 Not mandatory
 iRunIdentification
-Run Identification. A user                              -definable identification.
+Run Identification. A user-definable identification.
 Not mandatory
 iInstallmentTemplate
 Installment Template: Not mandatory
@@ -77,10 +77,10 @@ iApplyItemPriceListForContractTemplate
 Apply Item Price List For Contract Template
 Mandatory yes/no
 iPickBestFitTemplateFromItemPriceList
-Pick Best                              -Fit Template from Item-Price List
+Pick Best-Fit Template from Item-Price List
 Mandatory yes/no
 iGenerateBaseInstallation
-Generate Base                              -Installation
+Generate Base-Installation
 Mandatory yes/no
 iGenerateOnlyForInstallations
 Generate Only for Installations
@@ -92,6 +92,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - Generation successful
-<> 0                          - Error occurred during Generation.
+Return: 0       - Generation successful
+<> 0    - Error occurred during Generation.
 ```

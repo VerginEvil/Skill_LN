@@ -4,7 +4,7 @@
 `function long xmlFindSetOfSiblingNodes( long node, string criteria, long maxFound, [ ref long numFound ] )`
 
 ## Description
-Traverse the tree starting at *node* and return all occurrences of XML_ELEMENT or XML_DTD nodes of which the name matches the *criteria* argument. Searching will stop when *maxFound* number of Nodes have been found. When *maxFound* has value 0, searching will stop when the complete tree has been traversed. The tree is traversed in the breadth first order as shown in Figure 3 - Breadth first Tree traversal order.
+Traverse the tree starting at *node* and return all occurrences of XML_ELEMENT or XML_DTD nodes of which the name matches the *criteria* argument. Searching will stop when *maxFound* number of Nodes have been found. When *maxFound* has value 0, searching will stop when the complete tree has been traversed. The tree is traversed in the breadth first order as shown in [Figure 3 - Breadth first Tree traversal order](api.md#breadth_first).
 On return, the optional argument *numFound* contains the number of matching nodes that were found.
 
 ## Arguments
@@ -46,7 +46,7 @@ In this example *idn* is the decimal string representation of the Node Id of a n
 Like any other tree of Nodes, the returned tree must be freed from memory by using xmlDelete().
 | | |
 |---|---|
-| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found, the tree consists of a single node.  |
+| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found, the tree consists of a single node. |
 | 0 | Error. |
 
 ## Context
@@ -54,4 +54,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

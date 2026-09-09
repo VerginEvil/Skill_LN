@@ -12,7 +12,7 @@ This retrieves the header of the info file associated with a specified table and
 ## Arguments
 | | | |
 |---|---|---|
-| `const string` | `host_name()` |  |
+| `const string` | `host_name()` |    |
 | `const string` | `table_name()` |  The name of the table with which the info file is associated. This takes the form *ppmmfff*, where *pp* is the package code, *mmm* is the module code, and *fff* is the file number.  |
 | `long` | `compno` |  The company number.  |
 | `ref string` | `info_hdr()` |  The buffer in which the info header is stored. The info header size is fixed. The predefined constant AUD_INFO_HDR_SIZE holds the size of the buffer.  |
@@ -21,13 +21,7 @@ This retrieves the header of the info file associated with a specified table and
 | | |
 |---|---|
 | > 0 | Success |
-| -1 |  Error; Possible reasons are: host not found info file not found error opening info file info file locked unable to unlock file after read action unable to close info file  |
--
--
--
--
--
--
+| -1 | Error; Possible reasons are: host not found info file not found error opening info file info file locked unable to unlock file after read action unable to close info file |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -35,6 +29,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Audit Information Overview](audit_information_overview.md)
+
 - [Audit Information Synopsis](audit_information_synopsis.md)
+
 - [Macros - info header](macros_info_header.md)
+
 - [Audit Information Sample Program](audit_information_sample_program.md)

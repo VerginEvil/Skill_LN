@@ -10,9 +10,9 @@ Optional the language code for the description can be specified. Default the des
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `session(13)` |  |
-| `[ ref string` | `desc() mb ]` |  |
-| `[ string` | `language ]` |  |
+| `string` | `session(13)` |    |
+| `[ ref string` | `desc() mb ]` |    |
+| `[ string` | `language ]` |    |
 
 ## Return values
 The description is returned.

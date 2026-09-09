@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1482-1484
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1496-1498
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2025.05 (KB3567472  ).
+This function is available from 2025.05 (KB3567472).
 Syntax: long MaintenanceSalesOrderLine.Release(
 domain  tcorno           iMaintenanceSalesOrder,
 domain  tcpono           iMaintenanceSalesOrderLine,
@@ -18,10 +18,10 @@ Usage:        Expl:   Use this function to release one specific maintenance sale
 line (tsmsc110 record). See functionality when a
 maintenance sales order line is released with the form command
 'Release' in sessions:
-Maintenance Sales Order                       - Part Maintenance Lines (tsmsc1110m100);
-Maintenance Sales Order                       - Part Loan Lines (tsmsc1110m200);
-Maintenance Sales Order                       - Part Delivery Lines (tsmsc1110m300);
-Maintenance Sales Order                       - Part Receipt Lines (tsmsc1110m400).
+Maintenance Sales Order - Part Maintenance Lines (tsmsc1110m100);
+Maintenance Sales Order - Part Loan Lines (tsmsc1110m200);
+Maintenance Sales Order - Part Delivery Lines (tsmsc1110m300);
+Maintenance Sales Order - Part Receipt Lines (tsmsc1110m400).
 If the complete action does not succeed, this function will
 return a value unequal zero.
 If completing succeeds then the value zero is returned.
@@ -36,7 +36,7 @@ If return warehouse orders are created, then the system will
 at the end also process the warehouse activities which are set
 to automatic.
 Note:
--                       When a maintenance sales order line is released for a
+- When a maintenance sales order line is released for a
 maintenance sales order with the status free, the maintenance
 sales order is also released. If that fails, the release of
 the maintenance sales order line is aborted.
@@ -65,12 +65,8 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 maintenance sales order line changed to released.
-<> 0                          -       The status of the maintenance sales order line
+<> 0    -       The status of the maintenance sales order line
 could not be changed to released.
 ```
-
-## Public Interfaces for WorkOrder
-
-The following functions are available: WorkOrder.Cancel WorkOrder.Close WorkOrder.Complete WorkOrder.DetermineStartOrFinishTime WorkOrder.GenerateActivitiesFromMasterRouting WorkOrder.GenerateSerializedItem WorkOrder.GetActualRepairCosts WorkOrder.Release WorkOrder.StartDetail WorkOrder.StartMultiMain WorkOrder.StartOverview

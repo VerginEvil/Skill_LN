@@ -17,8 +17,8 @@ This function is typically used in the communication between ION Workflow and In
 | | |
 |---|---|
 | 0 | The object was found successfully. |
-| `ENOREC` (111)  | The object was not found; probably the object is not checked out. |
-| <> 0 |  Another database error.  |
+| `ENOREC` (111) | The object was not found; probably the object is not checked out. |
+| <> 0 | Another database error. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1800.
@@ -26,4 +26,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

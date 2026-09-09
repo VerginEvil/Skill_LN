@@ -4,7 +4,7 @@
 `function long get.pixmap.info( ref string buffer, ref long num_colors, ref long width, ref long height )`
 
 ## Description
-This retrieves information about a picture, in .gif format, that has been read with the [seq.read()](../functions_directory_file_operations/seq.read.md) function. It returns the number of colors in the picture and the picture's width and height. When a picture is used in an object, the width and height values are necessary for determining the amount of memory that must be allocated for the picture.
+This retrieves information about a picture, in.gif format, that has been read with the [seq.read()](../functions_directory_file_operations/seq.read.md) function. It returns the number of colors in the picture and the picture's width and height. When a picture is used in an object, the width and height values are necessary for determining the amount of memory that must be allocated for the picture.
 
 ## Arguments
 | | | |
@@ -23,5 +23,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

@@ -31,4 +31,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Electronic Signature overview](overview.md)
+
 - [Electronic Signature synopsis](synopsis.md)

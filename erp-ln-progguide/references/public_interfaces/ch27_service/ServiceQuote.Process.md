@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1464-1466
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1479-1480
 
 ```baan
 DLL:   tsexteppapi
-This function is available from     2021.12 (KB2215314  ).
+This function is available from 2021.12 (KB2215314).
 Syntax: long ServiceQuote.Process(
 domain  tcorno           iQuote,
 domain  tcpono           iQuoteRevision,
@@ -31,7 +31,7 @@ a service order or maintenance sales order.
 Based on the given options/settings for processing the quote,
 additional checks related to inventory availability are done.
 Note:
--                       If a part maintenance line is created, no work order will be
+- If a part maintenance line is created, no work order will be
 created, regardless the value of the related maintenance
 sales control parameter.
 Pre     : a db.retry.point() must have been specified.
@@ -39,49 +39,49 @@ Post    : an abort.transaction() or commit.transaction() must be
 executed.
 Method: 'WorkOrder.CreateMSO' of BDE 'WorkOrder' can be used
 to create the related work order.
-Input:  iQuote                -
+Input:  iQuote  -
 Service Quote (mandatory)
-iQuoteRevision                        -
+iQuoteRevision  -
 Service Quote Revision (optional)
-iServiceOrderSeries                           -
+iServiceOrderSeries     -
 Service Order Series (not mandatory)
-iMaintenanceSalesOrderSeries                          -
+iMaintenanceSalesOrderSeries    -
 Maintenance Sales Order Series (not mandatory)
-iATPCheck                             -
+iATPCheck       -
 Perform ATP check (mandatory Yes/No)
-iCheckPlannedInventory                        -
+iCheckPlannedInventory  -
 Check Planned Available Inventory (mandatory Yes/No)
-iCheckInventoryOnHand                         -
+iCheckInventoryOnHand   -
 Check On Hand Inventory (mandatory Yes/No)
-iSkipBlockedInventory                         -
+iSkipBlockedInventory   -
 Skip Blocked Inventory (mandatory Yes/No)
-iBlockInCaseOfInventoryShortage                       -
+iBlockInCaseOfInventoryShortage -
 Block Planning or Releasing of Orders with Shortages
 (mandatory Yes/No)
-iScopeOfInventoryCheck                        -
+iScopeOfInventoryCheck  -
 Scope of Inventory Check (mandatory)
 Possible values:
--                                 current warehouse only
--                                 all warehouses in planning cluster
-iUpdatePlannedDeliveryTimeMaterialLine                        -
+- current warehouse only
+- all warehouses in planning cluster
+iUpdatePlannedDeliveryTimeMaterialLine  -
 Update Planned Delivery Time of Material Lines
 (mandatory Yes/No)
-iUpdateQuoteLinesWithLastPlannedMaterialLine                          -
+iUpdateQuoteLinesWithLastPlannedMaterialLine    -
 Update Quote Lines with Latest Planned
 Material Line (mandatory Yes/No)
-iSynchronizeQuoteLinesWithLastPlannedMaterialLine                             -
+iSynchronizeQuoteLinesWithLastPlannedMaterialLine       -
 Synchronize Quote lines with Latest Planned
 Material Line
 (mandatory Yes/No)
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     - process succesful
-<> 0                          - Error during process occurred
+Return: 0       - process succesful
+<> 0    - Error during process occurred
 ```

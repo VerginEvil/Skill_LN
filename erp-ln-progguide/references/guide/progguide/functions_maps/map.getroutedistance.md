@@ -26,4 +26,5 @@ This function is implemented in the 4GL Engine and can be used in 3GL script typ
 
 ## Related topics
 - [Maps Workbench overview](overview.md)
+
 - [Maps Workbench synopsis](synopsis.md)

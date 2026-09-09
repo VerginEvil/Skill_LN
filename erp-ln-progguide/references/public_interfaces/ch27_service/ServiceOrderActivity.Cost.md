@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrderActivity
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1441-1444
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1454-1457
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2022.06 (KB2239580  ).
+This function is available from 2022.06 (KB2239580).
 Syntax: long ServiceOrderActivity.Cost(
 const   domain  tcorno           iServiceOrder fixed,
 const   domain  tsmdm.acln       iActivityLine,
@@ -52,24 +52,24 @@ Pre:    No open database transaction should be present (so before
 calling this function the existing database transactions should
 either have been aborted or committed).
 Post:
-Input:  iServiceOrder               -
+Input:  iServiceOrder -
 The service order.
 Mandatory input.
-iActivityLine                       -
+iActivityLine -
 The activity line number.
 Mandatory input.
-iIncludeReleasedOrdersAndActivities                       -
+iIncludeReleasedOrdersAndActivities -
 If this option is set to Yes, then also if the
 status of the activity is Released, it is considered
 for costing.
 Mandatory input.
-iSetServiceOrderToCostedWhenAllActivitiesAreCosted                            -
+iSetServiceOrderToCostedWhenAllActivitiesAreCosted      -
 If this option is set to Yes, the system will also
 set the service order header to Costed if all related
 activities are Costed and all related cost lines are
 Costed.
 Mandatory input.
-iCheckUnconsumedItems                       -
+iCheckUnconsumedItems -
 If a material line is being costed, which is related to
 the given activity line, and this parameter is set to
 Yes, then if not all unconsumed items have been
@@ -78,26 +78,26 @@ If set to No, then the system will continue the
 costing even if there is still unconsumed quantity
 available.
 Mandatory input.
-iRemoveSubsequentDeliveryQuantity                       -
+iRemoveSubsequentDeliveryQuantity -
 If a material line is being costed, which is related to
 the given activity line, and the subsequent delivery
 quantity is unequal zero, then with this option set to
 Yes, the system will automatically set the subsequent
 delivery quantity on the material line to zero.
 Mandatory input.
-InvoiceFreightLinesinFreightManagement                       -
+InvoiceFreightLinesinFreightManagement -
 If this option is set to Yes, are there are
 freight invoice lines in Freight Management which
 have not been sent to Central Invoicing, then these
 are automatically released to Central Invoicing.
 Mandatory input.
-iIgnoreUnapprovedInvoices                       -
+iIgnoreUnapprovedInvoices -
 If this option is set to Yes and if a subcontracting
 other cost line is being costed and not all purchase
 invoices related to the related purchase order line
 have been approved, then costing will still proceed.
 Mandatory input.
-iCostZeroQuantityForOtherCosts                       -
+iCostZeroQuantityForOtherCosts -
 If this option is set to No and if another cost
 line is being costed (tssoc240) and the actual quantity
 is still zero, then costing will not proceed. Note that
@@ -105,7 +105,7 @@ a Total Travel Line is excluded from this check, because
 the actual quantity for a Total Travel Line is always
 zero.
 Mandatory input.
-iDoNotCostIfOpenInspectionsExist                       -
+iDoNotCostIfOpenInspectionsExist -
 If this option is set to Yes and if the related
 activity can also be set to Costed and open inspections
 exist (tscfg300) related to that activity, then costing
@@ -113,43 +113,43 @@ will not succeed. If also the the related order header
 can be set to Costed and open inspections exist
 related to the order, then costing will not succeed.
 Mandatory input.
-iSetOpenInspectionsToNotMeasured                       -
+iSetOpenInspectionsToNotMeasured -
 If the input argument iDoNotCostIfOpenInspectionsExist is
 set to No, this input can be set to Yes.
 If set to Yes, then any open inspection will get the
 status Not Measured.
 Mandatory input.
-iDeleteOpenInspections                       -
+iDeleteOpenInspections -
 If the input argument iDoNotCostIfOpenInspectionsExist is
 set to No and the input argument
 iSetOpenInspectionsToNotMeasured is set to No, this
 input argument can be set to Yes. If set to Yes, then
 any open inspection will be deleted.
 Mandatory input.
-iCurrency                       -
+iCurrency -
 The currency in which the input arguments
 iMaximumLimitForInvoiceAmount and
 iMaximumLimitForOtherAmount are expressed.
 Mandatory input.
-iMaximumLimitForInvoiceAmount                       -
+iMaximumLimitForInvoiceAmount -
 The maximum net invoice amount of the activity line
 which is allowed to be costed.
-iMaximumLimitForOtherAmount                       -
+iMaximumLimitForOtherAmount -
 The maximum other amount (is actually the goodwill
 amount) which is allowed to be costed.
-iLowerMargin                       -
+iLowerMargin -
 If margin control is applicable in the service order
 parameters (or in the settings by service office if
-the Sites                              -concept has been activated), then this
+the Sites-concept has been activated), then this
 is the lowest margin for which it is allowed to cost the
 given activity line.
-iUpperMargin                       -
+iUpperMargin -
 If margin control is applicable in the service order
 parameters (or in the settings by service office if the
-Sites                              -concept has been activated), then this is the
+Sites-concept has been activated), then this is the
 highest margin for which it is allowed to cost the
 given activity line.
-iInvoiceLineStatus                       -
+iInvoiceLineStatus -
 The line status with which the billable line in Central
 Invoicing is created.
 Allowed values are:
@@ -159,7 +159,7 @@ tcsli.stat.not.appl
 If the status is set to tcsli.stat.not.appl then this
 will mean that the system will default it again from
 either the service order parameters or from the
-settings per office, if the Sites                              -concept has been
+settings per office, if the Sites-concept has been
 activated.
 Mandatory input.
 Output: oExceptionMessage
@@ -172,8 +172,8 @@ functions in Exception to get all relevant information.
 Note that if the return value of this function is
 unequal zero, then the status of the activity line is
 not changed to Costed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 service order activity changed to Costed.
-<> 0                          -       The status of the service order activity could
+<> 0    -       The status of the service order activity could
 not be changed to Costed.
 ```

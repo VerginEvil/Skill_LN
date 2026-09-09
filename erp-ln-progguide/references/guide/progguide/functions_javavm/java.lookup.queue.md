@@ -19,7 +19,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 ## Return codes
 | | |
 |---|---|
-| >= 0 | upon success, return value is the number of bytes in body  |
+| >= 0 | upon success, return value is the number of bytes in body |
 | -1 | JavaVM not supported on this platform or |
 | -1 | incorrect queue ID |
 | -4 | no message available on queue |

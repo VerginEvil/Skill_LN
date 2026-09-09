@@ -326,7 +326,7 @@ long
 |  | [tt.field.desc()](tt.field.desc.md) | `( string field(17), [ref string desc() mb] )` |
 |  | [tt.index.desc()](tt.index.desc.md) | `( string tabl(8), long indexnr, [ref string desc() mb] )` |
 |  | [tt.is.domain.separated()](tt.is.domain.separated.md) | `( const string domain(), [ref long numberOfSeparators, ref string separatorCharacter()] )` |
-|  | [tt.init.vars()](tt.init.vars.md) | `( ref void variable, [, ...] )` |
+|  | [tt.init.vars()](tt.init.vars.md) | `( ref void variable, [,...] )` |
 |  | [tt.label.desc()](tt.label.desc.md) | `( string label_code(19), domain ttadv.cont label_context, [ref string desc() mb] )` |
 |  | [tt.langdesc()](tt.langdesc.md) | `( string language, ref string desc() mb )` |
 |  | [tt.language()](tt.language.md) | `( string lang, ref string desc() mb, ref string dec_sign, ref string thous_sign, ref string date_sep, ref string time_sep )` |
@@ -344,7 +344,7 @@ long
 |  | [tt.role()](tt.role.md) | `()` |
 |  | [tt.table.desc()](tt.table.desc.md) | `( string table(8), [ref string desc() mb] )` |
 |  | [tt.user()](tt.user.md) | `( string user(12), ref string name() mb )` |
-|  | [tt.user.data()](tt.user.data.md) | `( string user(12), property, ... )` |
+|  | [tt.user.data()](tt.user.data.md) | `( string user(12), property,... )` |
 |  | [rdi.report.sensitivity()](rdi.report.sensitivity.md) | `( [const string reportname] )` |
 |  | [rdi.tablefield.sensitivity()](rdi.tablefield.sensitivity.md) | `( string tablefield )` |
 |  | [rdi.session.sensitivity()](rdi.session.sensitivity.md) | `( )` |

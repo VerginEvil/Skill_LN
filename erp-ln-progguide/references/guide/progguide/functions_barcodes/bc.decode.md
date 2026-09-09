@@ -39,12 +39,20 @@ All options provided to bc$() are translated to speaking literal names and put a
 
 ## Possible error conditions
 A list of possible/common error conditions is provided below.
+
 - Invalid input data.
-- The provided input exceeds allowed ranges, e.g. a barcode type that is outside the 1 - 2000 range.    Availability  This function is available from bshell TIV 2050.
+
+- The provided input exceeds allowed ranges, e.g. a barcode type that is outside the 1 - 2000 range.
+
+Availability  This function is available from bshell TIV 2050.
 
 ## Related topics
 - [bc$()](bc.md)
+
 - [Delete Nodes](../functions_xml/delete_nodes.md)
+
 - [Base64 overview](../functions_base64/base64_overview.md)
+
 - [ASCII table (C0 Controls and Basic Latin)](../misc/ascii_table.md)
+
 - [TSS Encoding](../misc/tss.md)

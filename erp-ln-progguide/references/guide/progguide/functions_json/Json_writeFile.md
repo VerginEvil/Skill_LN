@@ -9,10 +9,6 @@ Writes a JSON value to a file as JSON text.
 By default, the JSON text is converted to UTF-8 and extra new-lines and indents are added to make the output human readable.
 
 ## Arguments
--
--
--
--
 | | | |
 |---|---|---|
 | `long` | `json_value` |  A JSON value.  |
@@ -32,4 +28,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

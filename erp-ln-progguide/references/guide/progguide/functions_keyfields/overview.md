@@ -4,4 +4,5 @@ These functions can be used in Composite Child sessions but can also be used in 
 
 ## Related topics
 - [Key fields object synopsis](synopsis.md)
+
 - [Composite Sessions overview](../functions_composite_sessions/overview.md)

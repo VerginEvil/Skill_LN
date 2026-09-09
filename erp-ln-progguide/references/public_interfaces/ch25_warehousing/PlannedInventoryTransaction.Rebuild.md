@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedInventoryTransaction
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 923-925
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 933-935
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2025.04 (KB3568895  ).
+This function is available from 2025.04 (KB3568895).
 Syntax: long PlannedInventoryTransaction.Rebuild(
 domain  tcitem           iItem,
 domain  tcmcs.str15      iDevice,
@@ -36,8 +36,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iItem is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ItemArray
+- selection range fields (From/To)
+- ItemArray
 Rebuilding will then be performed for the given iItem.
 In case option ItemArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
@@ -47,8 +47,8 @@ on session Rebuild Planned Inventory Transactions (whinp1200m000)
 and are not explained in further detail here.
 Please refer to the session help for additional information.
 Additional Processing Options:
-ShowPI                       - Show Progress Indicator (Yes/No)
-Sort                       - Sort Item Array before processing (Yes/No)
+ShowPI - Show Progress Indicator (Yes/No)
+Sort - Sort Item Array before processing (Yes/No)
 Explanation about setting of defaults:
 Minimum Value:  Minimum value of domain is taken as default value.
 Maximum Value:  Maximum value of domain is taken as default value.
@@ -80,13 +80,13 @@ Json.add(ItemArray, Item)
 Item = Json.newObject()
 Json.setString(Item, "Item", "         ITEM0003")
 Json.add(ItemArray, Item)
-Output: oDataProcessed                        - true:  Data Processed and Printed.
+Output: oDataProcessed          - true:  Data Processed and Printed.
 false: Nothing Processed and Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

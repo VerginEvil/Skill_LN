@@ -1,14 +1,14 @@
 # Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)
 
-Reference for all **1805 public interface functions** and **process extensions** of Infor LN Cloud
-(edition 11082026, 2,332 pages). One file per function: description, DLL, availability
+Reference for all **1833 public interface functions** and **process extensions** of Infor LN Cloud
+(edition 25082026, 2,361 pages). One file per function: description, DLL, availability
 (release/KB), syntax, Usage (Expl/Pre/Post/Input/Output), Return values.
 
 Start here when writing code that calls LN functionality from an extension
 (4GL Address.Create(...), Item.GetData(...) etc.) or hooks a process via a
 process extension DLL (	dext.*, whext.*, 	iext.* ...).
 
-Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) 11082026.pdf.
+Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) 25082026.pdf.
 
 ## Top-level files
 
@@ -98,14 +98,14 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [Calendar.UpdateWorkingHours](references/public_interfaces/ch04_calendar/Calendar.UpdateWorkingHours.md)
 - [CalendarWorkingHours.StartOverview](references/public_interfaces/ch04_calendar/CalendarWorkingHours.StartOverview.md)
 
-## Chapter 5: Intercompanytrade (4)
+## Chapter 5: IntercompanyTrade (4)
 
 - [IntercompanyTradeOrder.CalculateCommercialPrice](references/public_interfaces/ch05_intercompanytrade/IntercompanyTradeOrder.CalculateCommercialPrice.md)
 - [IntercompanyTradeOrder.CalculateEstimates](references/public_interfaces/ch05_intercompanytrade/IntercompanyTradeOrder.CalculateEstimates.md)
 - [IntercompanyTradeOrder.PostTransactionLine](references/public_interfaces/ch05_intercompanytrade/IntercompanyTradeOrder.PostTransactionLine.md)
 - [IntercompanyTradeOrder.PresentForWarehouseOrderLine](references/public_interfaces/ch05_intercompanytrade/IntercompanyTradeOrder.PresentForWarehouseOrderLine.md)
 
-## Chapter 6: Item (79)
+## Chapter 6: Item (80)
 
 - [ActiveSuppliersByPlanItem.StartOverview](references/public_interfaces/ch06_item/ActiveSuppliersByPlanItem.StartOverview.md)
 - [ActiveSupplySources.StartOverview](references/public_interfaces/ch06_item/ActiveSupplySources.StartOverview.md)
@@ -173,6 +173,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [PlanItem.GetInboundLeadTime](references/public_interfaces/ch06_item/PlanItem.GetInboundLeadTime.md)
 - [PlanItem.GetOrderLeadTime](references/public_interfaces/ch06_item/PlanItem.GetOrderLeadTime.md)
 - [PlanItem.GetOutboundLeadTime](references/public_interfaces/ch06_item/PlanItem.GetOutboundLeadTime.md)
+- [PlanItem.GetPlanningHorizonDate](references/public_interfaces/ch06_item/PlanItem.GetPlanningHorizonDate.md)
 - [PlanItem.IsAggregateItem](references/public_interfaces/ch06_item/PlanItem.IsAggregateItem.md)
 - [PlanItem.StartCopyPlanItemsToPlanningClusters](references/public_interfaces/ch06_item/PlanItem.StartCopyPlanItemsToPlanningClusters.md)
 - [PlanningBillOfCriticalCapacities.Generate](references/public_interfaces/ch06_item/PlanningBillOfCriticalCapacities.Generate.md)
@@ -426,7 +427,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [MaterialPricing.GetPurchaseSettings](references/public_interfaces/ch15_material_pricing/MaterialPricing.GetPurchaseSettings.md)
 - [MaterialPricing.GetSalesSettings](references/public_interfaces/ch15_material_pricing/MaterialPricing.GetSalesSettings.md)
 
-## Chapter 16: Planning (41)
+## Chapter 16: Planning (42)
 
 - [ExceptionMessages.StartOverview](references/public_interfaces/ch16_planning/ExceptionMessages.StartOverview.md)
 - [ItemMasterPlan.Generate](references/public_interfaces/ch16_planning/ItemMasterPlan.Generate.md)
@@ -444,6 +445,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [OrderPegging.StartOrderDetails](references/public_interfaces/ch16_planning/OrderPegging.StartOrderDetails.md)
 - [OrderPegging.StartSelect](references/public_interfaces/ch16_planning/OrderPegging.StartSelect.md)
 - [PlanItem.StartATPHandling](references/public_interfaces/ch16_planning/PlanItem.StartATPHandling.md)
+- [PlanItem.StartATPHandlingV2](references/public_interfaces/ch16_planning/PlanItem.StartATPHandlingV2.md)
 - [PlanItemExceptionMessageTotals.StartOverview](references/public_interfaces/ch16_planning/PlanItemExceptionMessageTotals.StartOverview.md)
 - [PlannedCostPegTransfers.StartDetail](references/public_interfaces/ch16_planning/PlannedCostPegTransfers.StartDetail.md)
 - [PlannedCostPegTransfers.StartOverview](references/public_interfaces/ch16_planning/PlannedCostPegTransfers.StartOverview.md)
@@ -507,7 +509,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ProductionItemBySite.Start360](references/public_interfaces/ch18_manufacturing_master/ProductionItemBySite.Start360.md)
 - [ProductionWarehouseOrders.StartDetail](references/public_interfaces/ch18_manufacturing_master/ProductionWarehouseOrders.StartDetail.md)
 
-## Chapter 19: Job Shop (171)
+## Chapter 19: Job Shop (176)
 
 - [BillOfMaterialLines.StartOverview](references/public_interfaces/ch19_job_shop/BillOfMaterialLines.StartOverview.md)
 - [ConfigurableItem.ReadCPQSettings](references/public_interfaces/ch19_job_shop/ConfigurableItem.ReadCPQSettings.md)
@@ -522,6 +524,11 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ConfigurableStructure.StartValidateVersion](references/public_interfaces/ch19_job_shop/ConfigurableStructure.StartValidateVersion.md)
 - [ConfigurableStructures.StartDetail](references/public_interfaces/ch19_job_shop/ConfigurableStructures.StartDetail.md)
 - [ConfigurableStructures.StartOverview](references/public_interfaces/ch19_job_shop/ConfigurableStructures.StartOverview.md)
+- [GenericAssemblyBillOfMaterial.ActualizeVersion](references/public_interfaces/ch19_job_shop/GenericAssemblyBillOfMaterial.ActualizeVersion.md)
+- [GenericAssemblyBillOfMaterial.CreateNewVersion](references/public_interfaces/ch19_job_shop/GenericAssemblyBillOfMaterial.CreateNewVersion.md)
+- [GenericAssemblyBillOfMaterial.StartDetectLoops](references/public_interfaces/ch19_job_shop/GenericAssemblyBillOfMaterial.StartDetectLoops.md)
+- [GenericAssemblyBillOfMaterial.StartReplaceItem](references/public_interfaces/ch19_job_shop/GenericAssemblyBillOfMaterial.StartReplaceItem.md)
+- [GenericAssemblyBillOfMaterial.StartValidate](references/public_interfaces/ch19_job_shop/GenericAssemblyBillOfMaterial.StartValidate.md)
 - [InstructionsByOperationStep.StartOverview](references/public_interfaces/ch19_job_shop/InstructionsByOperationStep.StartOverview.md)
 - [ItemRoutingOperations.StartOverview](references/public_interfaces/ch19_job_shop/ItemRoutingOperations.StartOverview.md)
 - [ItemRoutings.StartOverview](references/public_interfaces/ch19_job_shop/ItemRoutings.StartOverview.md)
@@ -743,7 +750,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ProjectPCS.StartCopyCustomizedProductStructureToStandardStructure](references/public_interfaces/ch24_manufacturing_project/ProjectPCS.StartCopyCustomizedProductStructureToStandardStructure.md)
 - [ProjectPCS.StartGenerateStructureForProductVariant](references/public_interfaces/ch24_manufacturing_project/ProjectPCS.StartGenerateStructureForProductVariant.md)
 
-## Chapter 25: Warehousing (338)
+## Chapter 25: Warehousing (339)
 
 - [AdjustmentOrder.GenerateHandlingUnits](references/public_interfaces/ch25_warehousing/AdjustmentOrder.GenerateHandlingUnits.md)
 - [AdjustmentOrder.GenerateHandlingUnitsV2](references/public_interfaces/ch25_warehousing/AdjustmentOrder.GenerateHandlingUnitsV2.md)
@@ -758,6 +765,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [BusinessObjectReference.Unpack](references/public_interfaces/ch25_warehousing/BusinessObjectReference.Unpack.md)
 - [CompanyItemInventory.StartDetail](references/public_interfaces/ch25_warehousing/CompanyItemInventory.StartDetail.md)
 - [CompanyItemInventory.StartOverview](references/public_interfaces/ch25_warehousing/CompanyItemInventory.StartOverview.md)
+- [CrossDockOrder.Generate](references/public_interfaces/ch25_warehousing/CrossDockOrder.Generate.md)
 - [CrossDockOrder.UpdateSystemPriority](references/public_interfaces/ch25_warehousing/CrossDockOrder.UpdateSystemPriority.md)
 - [CrossDockOrderLines.Print](references/public_interfaces/ch25_warehousing/CrossDockOrderLines.Print.md)
 - [CycleCountingOrder.Generate](references/public_interfaces/ch25_warehousing/CycleCountingOrder.Generate.md)
@@ -1094,7 +1102,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [Load.ConfirmDelivery](references/public_interfaces/ch26_freight/Load.ConfirmDelivery.md)
 - [Shipment.ConfirmDelivery](references/public_interfaces/ch26_freight/Shipment.ConfirmDelivery.md)
 
-## Chapter 27: Service (128)
+## Chapter 27: Service (130)
 
 - [BlockingReason.Release](references/public_interfaces/ch27_service/BlockingReason.Release.md)
 - [Call.CreateInvoice](references/public_interfaces/ch27_service/Call.CreateInvoice.md)
@@ -1181,6 +1189,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ServiceOrder.IssueInventory](references/public_interfaces/ch27_service/ServiceOrder.IssueInventory.md)
 - [ServiceOrder.Plan](references/public_interfaces/ch27_service/ServiceOrder.Plan.md)
 - [ServiceOrder.PrintServiceOrder](references/public_interfaces/ch27_service/ServiceOrder.PrintServiceOrder.md)
+- [ServiceOrder.ProcessProFormaInvoices](references/public_interfaces/ch27_service/ServiceOrder.ProcessProFormaInvoices.md)
 - [ServiceOrder.ReadShippingAddressForCostLine](references/public_interfaces/ch27_service/ServiceOrder.ReadShippingAddressForCostLine.md)
 - [ServiceOrder.Release](references/public_interfaces/ch27_service/ServiceOrder.Release.md)
 - [ServiceOrder.StartMultiMain](references/public_interfaces/ch27_service/ServiceOrder.StartMultiMain.md)
@@ -1197,6 +1206,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ServiceOrderMaterialCosts.ConfirmScrap](references/public_interfaces/ch27_service/ServiceOrderMaterialCosts.ConfirmScrap.md)
 - [ServiceOrderMaterialCosts.ProcessReturnDeliveries](references/public_interfaces/ch27_service/ServiceOrderMaterialCosts.ProcessReturnDeliveries.md)
 - [ServiceOrderMaterialCosts.RecalculatePriceDiscounts](references/public_interfaces/ch27_service/ServiceOrderMaterialCosts.RecalculatePriceDiscounts.md)
+- [ServiceOrderMaterialCosts.RemoveItem](references/public_interfaces/ch27_service/ServiceOrderMaterialCosts.RemoveItem.md)
 - [ServiceQuote.GenerateQuoteLinesForMasterRouting](references/public_interfaces/ch27_service/ServiceQuote.GenerateQuoteLinesForMasterRouting.md)
 - [ServiceQuote.GenerateSerializedItem](references/public_interfaces/ch27_service/ServiceQuote.GenerateSerializedItem.md)
 - [ServiceQuote.PrintQuoteDocuments](references/public_interfaces/ch27_service/ServiceQuote.PrintQuoteDocuments.md)
@@ -1225,7 +1235,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [WorkOrderMaterialCosts.ProcessReturnDeliveries](references/public_interfaces/ch27_service/WorkOrderMaterialCosts.ProcessReturnDeliveries.md)
 - [WorkOrderOutgoingSubassembly.Confirm](references/public_interfaces/ch27_service/WorkOrderOutgoingSubassembly.Confirm.md)
 
-## Chapter 28: Rental (16)
+## Chapter 28: Rental (17)
 
 - [RentalAgreement.Cancel](references/public_interfaces/ch28_rental/RentalAgreement.Cancel.md)
 - [RentalAgreement.Complete](references/public_interfaces/ch28_rental/RentalAgreement.Complete.md)
@@ -1242,13 +1252,15 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [RentalOrder.StartMultiMain](references/public_interfaces/ch28_rental/RentalOrder.StartMultiMain.md)
 - [RentalOrderCostLine.Cost](references/public_interfaces/ch28_rental/RentalOrderCostLine.Cost.md)
 - [RentalOrderMaterialCosts.ConfirmScrap](references/public_interfaces/ch28_rental/RentalOrderMaterialCosts.ConfirmScrap.md)
+- [RentalOrderMaterialCosts.RemoveItem](references/public_interfaces/ch28_rental/RentalOrderMaterialCosts.RemoveItem.md)
 - [RentalUsageLine.Approve](references/public_interfaces/ch28_rental/RentalUsageLine.Approve.md)
 
-## Chapter 29: Invoicing (19)
+## Chapter 29: Invoicing (21)
 
 - [BillableLine.Compose](references/public_interfaces/ch29_invoicing/BillableLine.Compose.md)
 - [BillableLine.CreateInvoice](references/public_interfaces/ch29_invoicing/BillableLine.CreateInvoice.md)
 - [BillableLine.UpdateStatus](references/public_interfaces/ch29_invoicing/BillableLine.UpdateStatus.md)
+- [Installment.Approve](references/public_interfaces/ch29_invoicing/Installment.Approve.md)
 - [Installment.ApproveCorrections](references/public_interfaces/ch29_invoicing/Installment.ApproveCorrections.md)
 - [Installment.Close](references/public_interfaces/ch29_invoicing/Installment.Close.md)
 - [Installment.CreateCorrections](references/public_interfaces/ch29_invoicing/Installment.CreateCorrections.md)
@@ -1259,6 +1271,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [Invoice.CreditInvoiceLine](references/public_interfaces/ch29_invoicing/Invoice.CreditInvoiceLine.md)
 - [Invoice.GetInterimRevenueLedgerAccountAndDimensions](references/public_interfaces/ch29_invoicing/Invoice.GetInterimRevenueLedgerAccountAndDimensions.md)
 - [Invoice.Reprint](references/public_interfaces/ch29_invoicing/Invoice.Reprint.md)
+- [Invoice.ReprintV2](references/public_interfaces/ch29_invoicing/Invoice.ReprintV2.md)
 - [Invoice.StartInvoicing360](references/public_interfaces/ch29_invoicing/Invoice.StartInvoicing360.md)
 - [Invoice.StartMultiMain](references/public_interfaces/ch29_invoicing/Invoice.StartMultiMain.md)
 - [InvoicingBatch.CreateInvoice](references/public_interfaces/ch29_invoicing/InvoicingBatch.CreateInvoice.md)
@@ -1413,12 +1426,12 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [TestData.Update](references/public_interfaces/ch35_quality_management/TestData.Update.md)
 - [TestingCombinations.StartOverview](references/public_interfaces/ch35_quality_management/TestingCombinations.StartOverview.md)
 
-## Chapter 36: Financialintegration (2)
+## Chapter 36: FinancialIntegration (2)
 
 - [FinancialIntegration.GetDefaultLedgerAccountAndDimensions](references/public_interfaces/ch36_financialintegration/FinancialIntegration.GetDefaultLedgerAccountAndDimensions.md)
 - [FinancialIntegration.RetrieveContributionToPcsWip](references/public_interfaces/ch36_financialintegration/FinancialIntegration.RetrieveContributionToPcsWip.md)
 
-## Chapter 37: Cash Management (6)
+## Chapter 37: Cash Management (7)
 
 - [BankStatement.Validate](references/public_interfaces/ch37_cash_management/BankStatement.Validate.md)
 - [BankTransaction.CreateBankReconciliation](references/public_interfaces/ch37_cash_management/BankTransaction.CreateBankReconciliation.md)
@@ -1426,12 +1439,14 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [PaymentAdvice.StartProcessPayments](references/public_interfaces/ch37_cash_management/PaymentAdvice.StartProcessPayments.md)
 - [RemittanceAdvice.Apply](references/public_interfaces/ch37_cash_management/RemittanceAdvice.Apply.md)
 - [RemittanceAdvice.Post](references/public_interfaces/ch37_cash_management/RemittanceAdvice.Post.md)
+- [TradeNoteReceivable.StartProcess](references/public_interfaces/ch37_cash_management/TradeNoteReceivable.StartProcess.md)
 
-## Chapter 38: Accounts Payable (3)
+## Chapter 38: Accounts Payable (4)
 
 - [AccountsPayable.DetermineDueDate](references/public_interfaces/ch38_accounts_payable/AccountsPayable.DetermineDueDate.md)
 - [PurchaseInvoice.StartMultiMain](references/public_interfaces/ch38_accounts_payable/PurchaseInvoice.StartMultiMain.md)
 - [ReceivedPurchaseInvoice.Cancel](references/public_interfaces/ch38_accounts_payable/ReceivedPurchaseInvoice.Cancel.md)
+- [ReceivedPurchaseInvoice.Validate](references/public_interfaces/ch38_accounts_payable/ReceivedPurchaseInvoice.Validate.md)
 
 ## Chapter 39: Accounts Receivable (6)
 
@@ -1629,7 +1644,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 
 - [Personalization.Copy](references/public_interfaces/ch54_application_personalization/Personalization.Copy.md)
 
-## Chapter 55: Process Extensions (350)
+## Chapter 55: Process Extensions (363)
 
 - [AccountsReceivable.GetEffectiveDateForAging](references/public_interfaces/ch55_process_extensions/AccountsReceivable.GetEffectiveDateForAging.md)
 - [AdvanceInstallment.SkipPrintZ5Reporting](references/public_interfaces/ch55_process_extensions/AdvanceInstallment.SkipPrintZ5Reporting.md)
@@ -1700,6 +1715,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [Invoice.SkipSelectForDirectDebit](references/public_interfaces/ch55_process_extensions/Invoice.SkipSelectForDirectDebit.md)
 - [Invoice.SkipSelectForPayment](references/public_interfaces/ch55_process_extensions/Invoice.SkipSelectForPayment.md)
 - [Invoice.SkipSelectInvoiceForReminding](references/public_interfaces/ch55_process_extensions/Invoice.SkipSelectInvoiceForReminding.md)
+- [Invoice.SplitRevenueByComponent](references/public_interfaces/ch55_process_extensions/Invoice.SplitRevenueByComponent.md)
 - [InvoiceFromBP.SkipCalculateAgingAnalysis](references/public_interfaces/ch55_process_extensions/InvoiceFromBP.SkipCalculateAgingAnalysis.md)
 - [InvoiceFromBP.SkipPrintAgingAnalysis](references/public_interfaces/ch55_process_extensions/InvoiceFromBP.SkipPrintAgingAnalysis.md)
 - [InvoiceFromBP.SkipPrintOpenEntries](references/public_interfaces/ch55_process_extensions/InvoiceFromBP.SkipPrintOpenEntries.md)
@@ -1714,6 +1730,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [LoadBuilding.CustomBuildingConstraints](references/public_interfaces/ch55_process_extensions/LoadBuilding.CustomBuildingConstraints.md)
 - [LocationSearchEngine.CheckLocation](references/public_interfaces/ch55_process_extensions/LocationSearchEngine.CheckLocation.md)
 - [MaterialSupplyLines.HandleCombining](references/public_interfaces/ch55_process_extensions/MaterialSupplyLines.HandleCombining.md)
+- [OCM.SkipObjectApproval](references/public_interfaces/ch55_process_extensions/OCM.SkipObjectApproval.md)
 - [OpenItem.SkipSelectForInterestInvoices](references/public_interfaces/ch55_process_extensions/OpenItem.SkipSelectForInterestInvoices.md)
 - [OrderPlanning.GetCustomRouting](references/public_interfaces/ch55_process_extensions/OrderPlanning.GetCustomRouting.md)
 - [OutboundAdvice.AllowOverdelivery](references/public_interfaces/ch55_process_extensions/OutboundAdvice.AllowOverdelivery.md)
@@ -1836,6 +1853,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [StandardCost.SkipCalculate](references/public_interfaces/ch55_process_extensions/StandardCost.SkipCalculate.md)
 - [StandardCost.UseAlternativeScheme](references/public_interfaces/ch55_process_extensions/StandardCost.UseAlternativeScheme.md)
 - [Statement.SkipPrintStatements](references/public_interfaces/ch55_process_extensions/Statement.SkipPrintStatements.md)
+- [StockPointBlocking.BeforeCheck](references/public_interfaces/ch55_process_extensions/StockPointBlocking.BeforeCheck.md)
 - [StorageMission.HandleAfterGenerate](references/public_interfaces/ch55_process_extensions/StorageMission.HandleAfterGenerate.md)
 - [TPOP.SkipPlannedTransaction](references/public_interfaces/ch55_process_extensions/TPOP.SkipPlannedTransaction.md)
 - [TUR.eTransport.GetData](references/public_interfaces/ch55_process_extensions/TUR.eTransport.GetData.md)
@@ -1860,6 +1878,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [ciext.sli0002.check.billable.line.status.confirmed.allowed](references/public_interfaces/ch55_process_extensions/ciext.sli0002.check.billable.line.status.confirmed.allowed.md)
 - [ciext.sli0003.invoice.custom.composing.criteria.met](references/public_interfaces/ch55_process_extensions/ciext.sli0003.invoice.custom.composing.criteria.met.md)
 - [ciext.sli0004.combine.advances.is.allowed](references/public_interfaces/ch55_process_extensions/ciext.sli0004.combine.advances.is.allowed.md)
+- [ciext.sli0005.split.revenue.by.component](references/public_interfaces/ch55_process_extensions/ciext.sli0005.split.revenue.by.component.md)
 - [cpext.pat0001.get.customer.defined.transfer.sequence](references/public_interfaces/ch55_process_extensions/cpext.pat0001.get.customer.defined.transfer.sequence.md)
 - [cpext.pat0002.get.custom.defined.production.order.series](references/public_interfaces/ch55_process_extensions/cpext.pat0002.get.custom.defined.production.order.series.md)
 - [cpext.rrp0001.get.customer.defined.routing](references/public_interfaces/ch55_process_extensions/cpext.rrp0001.get.customer.defined.routing.md)
@@ -1873,8 +1892,8 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [dataset.collection.end](references/public_interfaces/ch55_process_extensions/dataset.collection.end.md)
 - [dataset.collection.new](references/public_interfaces/ch55_process_extensions/dataset.collection.new.md)
 - [dataset.end](references/public_interfaces/ch55_process_extensions/dataset.end.md)
-- [dataset.get.output](references/public_interfaces/ch55_process_extensions/dataset.get.output.md)
 - [dataset.get.output.file](references/public_interfaces/ch55_process_extensions/dataset.get.output.file.md)
+- [dataset.get.output](references/public_interfaces/ch55_process_extensions/dataset.get.output.md)
 - [dataset.get.output.string](references/public_interfaces/ch55_process_extensions/dataset.get.output.string.md)
 - [dataset.new](references/public_interfaces/ch55_process_extensions/dataset.new.md)
 - [dataset.row.end](references/public_interfaces/ch55_process_extensions/dataset.row.end.md)
@@ -1892,6 +1911,7 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [tcext.bod0001.get.custom.bod.publish.function](references/public_interfaces/ch55_process_extensions/tcext.bod0001.get.custom.bod.publish.function.md)
 - [tcext.bod0001.get.custom.bodnames](references/public_interfaces/ch55_process_extensions/tcext.bod0001.get.custom.bodnames.md)
 - [tcext.bod0001.get.initial.load.query](references/public_interfaces/ch55_process_extensions/tcext.bod0001.get.initial.load.query.md)
+- [tcext.bod0002.get.credittransferheader.forwardingagentparty.clearingsystemmemberid](references/public_interfaces/ch55_process_extensions/tcext.bod0002.get.credittransferheader.forwardingagentparty.clearingsystemmemberid.md)
 - [tcext.mcs0001.get.customer.defined.purchase.type](references/public_interfaces/ch55_process_extensions/tcext.mcs0001.get.customer.defined.purchase.type.md)
 - [tcext.mcs0002.get.customer.defined.item.signal.information](references/public_interfaces/ch55_process_extensions/tcext.mcs0002.get.customer.defined.item.signal.information.md)
 - [tcext.tax0001.define.flexible.fields.node](references/public_interfaces/ch55_process_extensions/tcext.tax0001.define.flexible.fields.node.md)
@@ -1899,8 +1919,8 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [tcext.tax0002.before.external.tax.provider.call](references/public_interfaces/ch55_process_extensions/tcext.tax0002.before.external.tax.provider.call.md)
 - [tcext.uef0001.eff.units.are.interchng](references/public_interfaces/ch55_process_extensions/tcext.uef0001.eff.units.are.interchng.md)
 - [tdext.cms0001.commission.rebates.determine.tax.country](references/public_interfaces/ch55_process_extensions/tdext.cms0001.commission.rebates.determine.tax.country.md)
-- [tdext.pcg0001.get.customer.determined.price.and.discounts](references/public_interfaces/ch55_process_extensions/tdext.pcg0001.get.customer.determined.price.and.discounts.md)
 - [tdext.pcg0001.get.customer.determined.price.and.discounts.for.service](references/public_interfaces/ch55_process_extensions/tdext.pcg0001.get.customer.determined.price.and.discounts.for.service.md)
+- [tdext.pcg0001.get.customer.determined.price.and.discounts](references/public_interfaces/ch55_process_extensions/tdext.pcg0001.get.customer.determined.price.and.discounts.md)
 - [tdext.pcg0002.get.customer.determined.purchase.price.date.type.parameter](references/public_interfaces/ch55_process_extensions/tdext.pcg0002.get.customer.determined.purchase.price.date.type.parameter.md)
 - [tdext.pcg0002.get.customer.determined.purchase.price.date.type.setting](references/public_interfaces/ch55_process_extensions/tdext.pcg0002.get.customer.determined.purchase.price.date.type.setting.md)
 - [tdext.pcg0002.get.customer.determined.sales.price.date.type.parameter](references/public_interfaces/ch55_process_extensions/tdext.pcg0002.get.customer.determined.sales.price.date.type.parameter.md)
@@ -1912,12 +1932,13 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [tdext.pur0001.get.customer.determined.default.purchase.office](references/public_interfaces/ch55_process_extensions/tdext.pur0001.get.customer.determined.default.purchase.office.md)
 - [tdext.pur0002.suppress.commingling.of.purchase.order.line.during.generation](references/public_interfaces/ch55_process_extensions/tdext.pur0002.suppress.commingling.of.purchase.order.line.during.generation.md)
 - [tdext.pur0003.determine.purchase.order.for.combining.order.lines.during.generation](references/public_interfaces/ch55_process_extensions/tdext.pur0003.determine.purchase.order.for.combining.order.lines.during.generation.md)
+- [tdext.pur0003.suppress.combining.of.purchase.order.lines.to.existing.order.during.generation](references/public_interfaces/ch55_process_extensions/tdext.pur0003.suppress.combining.of.purchase.order.lines.to.existing.order.during.generation.md)
 - [tdext.pur0004.get.order.by.for.convert](references/public_interfaces/ch55_process_extensions/tdext.pur0004.get.order.by.for.convert.md)
 - [tdext.pur0005.skip.general.ledger.code.defaulting](references/public_interfaces/ch55_process_extensions/tdext.pur0005.skip.general.ledger.code.defaulting.md)
 - [tdext.pur0006.suppress.combining.of.supply.order.lines.to.existing.supply.order](references/public_interfaces/ch55_process_extensions/tdext.pur0006.suppress.combining.of.supply.order.lines.to.existing.supply.order.md)
 - [tdext.pur0007.determine.input.to.overrule.during.generation](references/public_interfaces/ch55_process_extensions/tdext.pur0007.determine.input.to.overrule.during.generation.md)
-- [tdext.pur0008.handle.additional.actions.after.printing.purchase.order](references/public_interfaces/ch55_process_extensions/tdext.pur0008.handle.additional.actions.after.printing.purchase.order.md)
 - [tdext.pur0008.handle.additional.actions.after.printing.purchase.order.line](references/public_interfaces/ch55_process_extensions/tdext.pur0008.handle.additional.actions.after.printing.purchase.order.line.md)
+- [tdext.pur0008.handle.additional.actions.after.printing.purchase.order](references/public_interfaces/ch55_process_extensions/tdext.pur0008.handle.additional.actions.after.printing.purchase.order.md)
 - [tdext.sls0001.get.customer.defined.order.by](references/public_interfaces/ch55_process_extensions/tdext.sls0001.get.customer.defined.order.by.md)
 - [tdext.sls0002.get.customer.determined.default.automatic.inventory.shortage.option](references/public_interfaces/ch55_process_extensions/tdext.sls0002.get.customer.determined.default.automatic.inventory.shortage.option.md)
 - [tdext.sls0003.suppress.combining.sales.order.lines.during.generation](references/public_interfaces/ch55_process_extensions/tdext.sls0003.suppress.combining.sales.order.lines.during.generation.md)
@@ -1940,16 +1961,16 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [tfext.gld0002.get.max.number.of.document.lines](references/public_interfaces/ch55_process_extensions/tfext.gld0002.get.max.number.of.document.lines.md)
 - [tfext.gld0003.set.document.series](references/public_interfaces/ch55_process_extensions/tfext.gld0003.set.document.series.md)
 - [tiext.cpr0001.standard.cost.skip.actualize](references/public_interfaces/ch55_process_extensions/tiext.cpr0001.standard.cost.skip.actualize.md)
-- [tiext.cpr0002.standard.cost.skip.calculate](references/public_interfaces/ch55_process_extensions/tiext.cpr0002.standard.cost.skip.calculate.md)
 - [tiext.cpr0002.standard.cost.skip.calculate.item](references/public_interfaces/ch55_process_extensions/tiext.cpr0002.standard.cost.skip.calculate.item.md)
+- [tiext.cpr0002.standard.cost.skip.calculate](references/public_interfaces/ch55_process_extensions/tiext.cpr0002.standard.cost.skip.calculate.md)
 - [tiext.cpr0003.get.alternative.scheme](references/public_interfaces/ch55_process_extensions/tiext.cpr0003.get.alternative.scheme.md)
 - [tiext.cpr0003.use.alternative.scheme](references/public_interfaces/ch55_process_extensions/tiext.cpr0003.use.alternative.scheme.md)
 - [tiext.pcf0001.adjust.variant.price](references/public_interfaces/ch55_process_extensions/tiext.pcf0001.adjust.variant.price.md)
 - [tiext.pcf0002.add.to.cpq.configuration](references/public_interfaces/ch55_process_extensions/tiext.pcf0002.add.to.cpq.configuration.md)
 - [tiext.pcf0003.get.cpq.integration.parameter.value](references/public_interfaces/ch55_process_extensions/tiext.pcf0003.get.cpq.integration.parameter.value.md)
 - [tiext.pcf0003.register.cpq.integration.parameters](references/public_interfaces/ch55_process_extensions/tiext.pcf0003.register.cpq.integration.parameters.md)
-- [tiext.pcs0001.project.pcs.skip.close](references/public_interfaces/ch55_process_extensions/tiext.pcs0001.project.pcs.skip.close.md)
 - [tiext.pcs0001.project.pcs.skip.close.implemented](references/public_interfaces/ch55_process_extensions/tiext.pcs0001.project.pcs.skip.close.implemented.md)
+- [tiext.pcs0001.project.pcs.skip.close](references/public_interfaces/ch55_process_extensions/tiext.pcs0001.project.pcs.skip.close.md)
 - [tiext.pcs0002.product.variant.skip.delete.or.expire.jsbom](references/public_interfaces/ch55_process_extensions/tiext.pcs0002.product.variant.skip.delete.or.expire.jsbom.md)
 - [tiext.pcs0003.get.customer.defined.project.series](references/public_interfaces/ch55_process_extensions/tiext.pcs0003.get.customer.defined.project.series.md)
 - [tiext.sfc0001.check.print.condition](references/public_interfaces/ch55_process_extensions/tiext.sfc0001.check.print.condition.md)
@@ -1978,11 +1999,13 @@ Source PDF: Infor LN Public Interfaces & Process Extensions Reference Guide (Clo
 - [whext.dll0017.receipt.line.handle.after.confirm](references/public_interfaces/ch55_process_extensions/whext.dll0017.receipt.line.handle.after.confirm.md)
 - [whext.dll0017.receipt.line.handle.before.confirm](references/public_interfaces/ch55_process_extensions/whext.dll0017.receipt.line.handle.before.confirm.md)
 - [whext.dll0018.outbound.advice.overdelivery.is.allowed](references/public_interfaces/ch55_process_extensions/whext.dll0018.outbound.advice.overdelivery.is.allowed.md)
+- [whext.dll0019.create.inbound.advice.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.create.inbound.advice.handle.before.check.md)
+- [whext.dll0019.create.outbound.advice.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.create.outbound.advice.handle.before.check.md)
+- [whext.dll0019.freeze.confirm.shipment.line.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.freeze.confirm.shipment.line.handle.before.check.md)
+- [whext.dll0019.process.adjustment.order.line.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.process.adjustment.order.line.handle.before.check.md)
+- [whext.dll0019.process.cycle.counting.order.line.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.process.cycle.counting.order.line.handle.before.check.md)
+- [whext.dll0019.put.away.inbound.advice.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.put.away.inbound.advice.handle.before.check.md)
+- [whext.dll0019.update.outbound.advice.handle.before.check](references/public_interfaces/ch55_process_extensions/whext.dll0019.update.outbound.advice.handle.before.check.md)
 - [whext.dll0020.receipt.handle.before.confirm](references/public_interfaces/ch55_process_extensions/whext.dll0020.receipt.handle.before.confirm.md)
 - [whext.dll0021.overrule.qty.to.advise](references/public_interfaces/ch55_process_extensions/whext.dll0021.overrule.qty.to.advise.md)
 - [whext.wmd0001.custom.shipment.line](references/public_interfaces/ch55_process_extensions/whext.wmd0001.custom.shipment.line.md)
-
-## public_interfaces (2)
-
-- [ch01_introduction](references/public_interfaces/ch01_introduction.md)
-- [zz_release_history](references/public_interfaces/zz_release_history.md)

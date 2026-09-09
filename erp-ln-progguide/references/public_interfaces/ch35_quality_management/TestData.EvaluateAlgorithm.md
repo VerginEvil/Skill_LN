@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for TestData
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1781-1782
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1800-1801
 
 ```baan
 DLL:   qmextptcapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long TestData.EvaluateAlgorithm(
 domain  qmptc.iorn       iInspectionOrder,
 domain  tcpono           iInspectionLine,
@@ -28,14 +28,14 @@ iSample
 : Sample for which the numeric value will be calculated.
 In case the sample is zero, all samples will be
 taken into account.
-Output  : oExceptionMessage                   - The last message if any message is
+Output  : oExceptionMessage     - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID          - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No Error.
-<> 0                                          - Error found.
+Return: 0                       - No Error.
+<> 0                    - Error found.
 ```

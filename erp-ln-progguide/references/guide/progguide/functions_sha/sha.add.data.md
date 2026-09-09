@@ -29,4 +29,5 @@ endwhile
 
 ## Related topics
 - [Secure Hash Algorithm overview](sha_overview.md)
+
 - [Secure Hash Algorithm synopsis](sha_synopsis.md)

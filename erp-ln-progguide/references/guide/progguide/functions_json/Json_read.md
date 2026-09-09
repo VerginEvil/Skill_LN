@@ -9,8 +9,6 @@ Reads JSON text from a stream, parses it and creates a JSON value from it. The s
 By default, the JSON text is interpreted as UTF-8 text.
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `long` | `stream` |  The stream to read the JSON text from.  |
@@ -25,4 +23,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

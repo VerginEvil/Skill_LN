@@ -2,7 +2,7 @@
 
 ## Syntax:
 `#include <bic_dal>`
-`function void with.old.object.values.do( string function_name, [ <type> ... ] )`
+`function void with.old.object.values.do( <function_name>, [ <type>... ] )`
 
 ## Description
 This executes the specified function for the current record, using the old values of the record. The record must have been previously modified.
@@ -11,7 +11,7 @@ You can call this function in the field hooks and the [before.save.object()](../
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `function_name` |  The name of the function that must be executed. The function must be of type void.  |
+| `<function_name>` |  | The name of the function that must be executed. The function must be of type void. |
 | `[ <type>` | `... ]` |  Use these optional arguments to pass one or more arguments to the specified function.  |
 
 ## Context
@@ -20,4 +20,5 @@ Note  It is not supported to use this function in a nested way.
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

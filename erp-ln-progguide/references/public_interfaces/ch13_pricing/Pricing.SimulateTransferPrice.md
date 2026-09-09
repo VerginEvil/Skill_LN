@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 517-518
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 519-520
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2024.03 (KB2319624  ).
+This function is available from 2024.03 (KB2319624).
 Syntax: long Pricing.SimulateTransferPrice(
 domain  tcncmp           iLogisticCompany,
 domain  tcncmp           iFinancialCompany,
@@ -51,58 +51,58 @@ Input:
 |***************************************************************
 |* Mandatory input arguments
 |***************************************************************
-iLogisticCompany                                      - Logictic Company
-iFinancialCompany                                     - Financial Company
-iBuyFromBusinessPartner                               - Buy-from Business Partner
-iSoldToBusinessPartner                                - Sold-to Business Partner
-iCurrency                                             - Currency
-iItem                                                 - Item
-iPriceType                                            - Price Type
-iRepairPrice                                          - Repair Price
-iSubcontracted                                        - Subcontracted
+iLogisticCompany                - Logictic Company
+iFinancialCompany               - Financial Company
+iBuyFromBusinessPartner         - Buy-from Business Partner
+iSoldToBusinessPartner          - Sold-to Business Partner
+iCurrency                       - Currency
+iItem                           - Item
+iPriceType                      - Price Type
+iRepairPrice                    - Repair Price
+iSubcontracted                  - Subcontracted
 |***************************************************************
 |* Optional input arguments; if not filled, defaults are
 |* retrieved
 |***************************************************************
-iInvoiceFromBusinessPartner                           - Invoice-from Business Partner
-iInvoiceToBusinessPartner                             - Invoice-to Business Partner
-iFinancialDepartment                                  - Financial Department
-iSite                                                 - Site
-iManufacturerPartNumber                               - Manufacturer Part Number
-iManufacturer                                         - Manufacturer
-iPriceGroup                                           - Price group
-iRateDate                                             - Rate Date; if zero, then Price
+iInvoiceFromBusinessPartner     - Invoice-from Business Partner
+iInvoiceToBusinessPartner       - Invoice-to Business Partner
+iFinancialDepartment            - Financial Department
+iSite                           - Site
+iManufacturerPartNumber         - Manufacturer Part Number
+iManufacturer                   - Manufacturer
+iPriceGroup                     - Price group
+iRateDate                       - Rate Date; if zero, then Price
 Date is used.
-iRateType                                             - Exchange Rate Type
-iQuantity                                             - Quantity
-iQuantityUnit                                         - Quantity Unit
-iQuantityUnitConversionFactor                         - Quantity Unit Conversion
+iRateType                       - Exchange Rate Type
+iQuantity                       - Quantity
+iQuantityUnit                   - Quantity Unit
+iQuantityUnitConversionFactor   - Quantity Unit Conversion
 Factor
-iPriceDate                                            - Price Date; if zero, then
+iPriceDate                      - Price Date; if zero, then
 current date and time is used
 Output:
 |***************************************************************
 |* Price Output
 |***************************************************************
-oPrice                                                - Price
-oPriceUnit                                            - Price Unit
-oPriceUnitConversionFactor                            - Price Unit Conversion Factor
-oPriceMatrixDefinition                                - Price Matrix Definition
-oPriceMatrixSequence                                  - Price Matrix Sequence
-oPriceBook                                            - Price Book
-oPriceOrigin                                          - Price Origin
-oPriceRetrieved                                       - Price Retrieved
+oPrice                          - Price
+oPriceUnit                      - Price Unit
+oPriceUnitConversionFactor      - Price Unit Conversion Factor
+oPriceMatrixDefinition          - Price Matrix Definition
+oPriceMatrixSequence            - Price Matrix Sequence
+oPriceBook                      - Price Book
+oPriceOrigin                    - Price Origin
+oPriceRetrieved                 - Price Retrieved
 |***************************************************************
 |* Technical Output
 |***************************************************************
-oExceptionMessage                                     - The last message if any message is
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                             - Price could be determined.
-<> 0                                                  - Error occurred.
+Return: 0                               - Price could be determined.
+<> 0                            - Error occurred.
 ```

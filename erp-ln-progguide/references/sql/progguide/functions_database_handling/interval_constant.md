@@ -10,7 +10,7 @@ The interval constant specifies an interval value. This can either be a number o
 ```
 
 ## Syntactical restrictions
-The value of the interval constant must lie in the range [–2147483647 .. +2147483647].
+The value of the interval constant must lie in the range [–2147483647.. +2147483647].
 
 ## Semantics
 The data type of an interval constant is *interval days* or *interval seconds*.

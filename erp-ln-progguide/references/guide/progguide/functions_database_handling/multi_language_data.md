@@ -1,6 +1,6 @@
 # Multi Language Data
 Infor Enterprise Server provides support to store multibyte strings - like descriptions - in multiple languages. For columns that are defined to be MLF (Multi Language Field) the database contains values in each defined data language.
-A process that performs SQL has a 'current data language'. All SQL operations (such as MAX, MIN, GROUP BY, ORDER BY, ...) work with the current data language, except selection of columns. When a column is selected from the database the value is retrieved in all data languages.
+A process that performs SQL has a 'current data language'. All SQL operations (such as MAX, MIN, GROUP BY, ORDER BY,...) work with the current data language, except selection of columns. When a column is selected from the database the value is retrieved in all data languages.
 
 ## function ml_one_lang
 If you want to select the value in the current data language only (this may occur in situations that are known to be very performance-critical) or if you want to select the value in a different data language than the 'current data language', then the function [ml_one_lang( )](ml_one_lang_function.md) can be used.
@@ -13,4 +13,5 @@ Alternatively, the [select.all.data.languages](../functions_dynamic_sql_queries/
 
 ## Related topics
 - [Infor Enterprise Server SQL](baan_sql.md)
+
 - [Multi Language Data overview](../functions_mle/overview.md)

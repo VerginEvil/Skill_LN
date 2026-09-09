@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SerialsByWarehouse
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1115-1118
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1125-1127
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2021.04 (KB2179943  ).
+This function is available from 2021.04 (KB2179943).
 Syntax: long SerialsByWarehouse.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,10 +31,10 @@ Warehouses (whltc5100m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -152,21 +152,17 @@ Mandatory when startfilter "byItemBusinessPartner" or
 "byItemWarehouseBusinessPartner" is used and the session
 is started in overview mode with start mode MODELESS
 Output: for iStartMode MODAL:
-oItem                                         - Selected Item.
-oSerialNumber                                 - Selected Serial Number.
-oWarehouse                                    - Selected Warehouse.
-oExceptionMessage                             - The last message if any message is
+oItem                   - Selected Item.
+oSerialNumber           - Selected Serial Number.
+oWarehouse              - Selected Warehouse.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for ItemLotSerialTransaction
-
-The following functions are available: ItemLotSerialTransaction.GetData ItemLotSerialTransactions.Get ItemLotSerialTransactions.StartOverview

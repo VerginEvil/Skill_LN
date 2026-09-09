@@ -56,4 +56,5 @@ ret = str.startswith(file, "C:\", true)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

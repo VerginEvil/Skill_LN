@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1182-1184
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1192-1194
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2026.07 (KB3668952  ).
+This function is available from 2026.07 (KB3668952).
 Syntax: long OutboundAdvice.Pick(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -60,38 +60,38 @@ When picking is not part of the procedure, this process applies
 to the outbound advice, as that is eventually also picked.
 Pre:    db.retry.point()
 Post:   commit/abort transaction.
-Input:  iOrderOrigin                          - Order Origin (Mandatory)
-iOrderNumber                                  - Order Number (Mandatory)
-iOrderSet                                     - Order Set (Mandatory)
-iOrderLine                                    - Order Line (Mandatory)
-iOrderSequence                                - Order Sequence (Optional)
-iAdviceLine                                   - Advice Line (Mandatory)
-iFromHandlingUnit                             - From Handling Unit (Optional)
-iToHandlingUnit                               - To Handling Unit (Optional)
-iSerial                                       - Serial Number (Optional)
-iLot                                          - Lot Code (Optional)
-iInventoryDate                                - Inventory Date (Optional)
-iQuantityPicked                               - Quantity Picked (Mandatory)
-iStorageUnit                                  - Storage Unit (Mandatory)
-iWarehouse                                    - Warehouse (Optional)
-iFromLocation                                 - From Location (Optional)
-iToLocation                                   - To Location (Optional)
-iFinalPick                                    - Final Pick (True/False)
-iNoLotsSerials                                - Number of Lots/Serials in arrays
-iBomLineArray                                 - BOM Line Array
-iLotSerialSequenceArray                       - Lot/Serial Sequence Array
-iLotArray                                     - Lot Array
-iSerialArray                                  - Serial Array
-iLotSerialQuantityPickedArray                       - Lot/Serial Quantity Picked
-iLotSerialStorageUnitArray                       - Lot/Serial Storage Unit
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iOrderOrigin            - Order Origin (Mandatory)
+iOrderNumber            - Order Number (Mandatory)
+iOrderSet               - Order Set (Mandatory)
+iOrderLine              - Order Line (Mandatory)
+iOrderSequence          - Order Sequence (Optional)
+iAdviceLine             - Advice Line (Mandatory)
+iFromHandlingUnit       - From Handling Unit (Optional)
+iToHandlingUnit         - To Handling Unit (Optional)
+iSerial                 - Serial Number (Optional)
+iLot                    - Lot Code (Optional)
+iInventoryDate          - Inventory Date (Optional)
+iQuantityPicked         - Quantity Picked (Mandatory)
+iStorageUnit            - Storage Unit (Mandatory)
+iWarehouse              - Warehouse (Optional)
+iFromLocation           - From Location (Optional)
+iToLocation             - To Location (Optional)
+iFinalPick              - Final Pick (True/False)
+iNoLotsSerials          - Number of Lots/Serials in arrays
+iBomLineArray           - BOM Line Array
+iLotSerialSequenceArray - Lot/Serial Sequence Array
+iLotArray               - Lot Array
+iSerialArray            - Serial Array
+iLotSerialQuantityPickedArray - Lot/Serial Quantity Picked
+iLotSerialStorageUnitArray - Lot/Serial Storage Unit
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     - Outbound Advice picked successfully
-<> 0                          - Picking failed
+Return: 0       - Outbound Advice picked successfully
+<> 0    - Picking failed
 ```

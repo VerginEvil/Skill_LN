@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RequestForQuote
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 410-411
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 412-413
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.04 (KB3654355  ).
+This function is available from 2026.04 (KB3654355).
 Syntax: long RequestForQuote.StartCancel(
 long             iStartMode,
 domain  tcqono           iRequestForQuote,
@@ -22,8 +22,8 @@ ref             long             oExceptionID )
 Usage:        Expl.:  This function starts the session Cancel Request for Quotation
 (tdpur1200m000). Depending on the input different instances of
 the Cancel Request for Quotation session can be started:
-| Field:                          \   Combination: |1|2|3|4|5|6
-|                      ----------------------------|---|---|---|---|---|---
+| Field:    \   Combination: |1|2|3|4|5|6
+|----------------------------|---|---|---|---|---|---
 | iRequestForQuote           | F | F | F | F | F | F
 | iRequestForQuoteLine       | E | F | F | E | F | F
 | iRequestForQuoteSequence   | E | E | E | E | F | E
@@ -39,15 +39,15 @@ Depending on the input, the following instance is started::
 6. Cancel Request for Quotation Response Preparations
 Pre:    N/A
 Post:   N/A
-Input:  iStartMode                            - Not used
-iRequestForQuote                              - Request for Quote (mandatory).
-iRequestForQuoteLine                          - Request for Quote Line (optional)
+Input:  iStartMode              - Not used
+iRequestForQuote        - Request for Quote (mandatory).
+iRequestForQuoteLine    - Request for Quote Line (optional)
 iRequestForQuoteSequence
--                                               Request For Quote Sequence (optional)
+- Request For Quote Sequence (optional)
 iRequestForQuoteAlternative
--                                               Request For Quote Alternative (optional)
-iRequestForQuoteBidder                        - Request for Quote Bidder (optional)
-iProcessingOptionSet                          - Processing Option Set (optional).
+- Request For Quote Alternative (optional)
+iRequestForQuoteBidder  - Request for Quote Bidder (optional)
+iProcessingOptionSet    - Processing Option Set (optional).
 If 0, the default options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -65,14 +65,14 @@ CancelReasonForRFQLines           domain tccdis         Empty
 CancelTypeForRFQLines             domain tccdis         Empty
 CancelReasonForRFQResponses       domain tccdis         Empty
 CancelTypeForRFQResponses         domain tccdis         Empty
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```

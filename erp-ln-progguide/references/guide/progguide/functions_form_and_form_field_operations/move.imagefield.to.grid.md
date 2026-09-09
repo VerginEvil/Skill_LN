@@ -26,4 +26,5 @@ Note  Use this function only in the after.form.read section.
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

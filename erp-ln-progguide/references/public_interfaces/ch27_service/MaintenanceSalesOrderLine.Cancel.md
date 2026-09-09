@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for MaintenanceSalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1478-1480
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1493-1494
 
 ```baan
 DLL:   tsextmscapi
-This function is available from     2026.02 (KB3649711  ).
+This function is available from 2026.02 (KB3649711).
 Syntax: long MaintenanceSalesOrderLine.Cancel(
 domain  tcorno           iMaintenanceSalesOrder,
 domain  tcpono           iMaintenanceSalesOrderLine,
@@ -25,9 +25,9 @@ iProcessingOptionSet.
 Post:   Commit/abort the transaction.
 Process Warehouse order lines.
 Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iMaintenanceSalesOrder                        - Maintenance Sales Order;
+Input:  iMaintenanceSalesOrder          - Maintenance Sales Order;
 mandatory
-iMaintenanceSalesOrderLine                            - Maintenance Sales Order Line;
+iMaintenanceSalesOrderLine      - Maintenance Sales Order Line;
 not mandatory
 iProcessingOptionSet
 Processing Option Set: a processing option set number
@@ -58,10 +58,10 @@ Note:
 This option does not apply to Calls that have been
 transferred to multiple Part Lines if one of these Part
 Lines still exists and is not (being) cancelled.
--                               If the other Part Line has status Free, Released or
+- If the other Part Line has status Free, Released or
 In Process, the status of that Call will never be
 changed.
--                               If the other Part Line has status Completed, Closed or
+- If the other Part Line has status Completed, Closed or
 Costed, the Call will always be set to solved, even if
 this option is No.
 CancelOrder             domain  tcyesno         no
@@ -69,7 +69,7 @@ When all lines have been canceled, the Maintenance
 Sales Order is canceled when this option is Yes.
 CancelWhenDispositionOfNonConformingReport
 domain  tcyesno         yes
-When Part Line is the Disposition of a Non                              -Conforming
+When Part Line is the Disposition of a Non-Conforming
 Report, it will not be canceled when this option is No.
 CancelWhenDispositionOfFracasDocument
 domain  tcyesno         yes
@@ -88,7 +88,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return  : 0                                   - No error; however, error messages can
+Return  : 0                     - No error; however, error messages can
 have been set.
-<> 0                                          - An error occurred
+<> 0                  - An error occurred
 ```

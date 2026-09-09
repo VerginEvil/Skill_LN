@@ -1,17 +1,16 @@
 # mess()
 
 ## Syntax:
-`function void mess( string messcode, long separate_window, [ void arg ... ] )`
+`function void mess( string messcode, long separate_window, [ void arg... ] )`
 
 ## Description
 This retrieves a message from the data dictionary and displays it on screen. Using this function makes your program script language independent.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `string` | `messcode` |  The message code (including the package code). The language code of the user is automatically added. Both the message code and the user language must be available in the data dictionary.  |
-| `long` | `separate_window` |  This specifies how the message can be removed:  |
-| `[ void` | `arg ... ]` |  The message string in the data dictionary can contain format characters for parameter substitution. The values which must be substituted are specified in the 3rd, 4th, ... arguments of the function. The number of these arguments is variable.  |
+| | |
+|---|---|
+| 1 | The message is displayed in a separate window and the user must click a button in that window to remove the message. In job mode the message is logged in the job history. |
+| 0 | The message is displayed on the status bar. The user cannot remove the message. It remains until removed by the [clean.mess()](clean.mess.md) function. In job mode the message is not logged in the job history. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in 4GL script types.
@@ -23,7 +22,7 @@ Note  In 3GL scripts when *separate_window* is 1, the variable *graphical.mode* 
 | Suppose there is a message code "pcgen00016" in the data
 | dictionary with the text "Error %d in file %s"
 
-mess("pcgen00016",1,e,filename$)   | Prompt for ENTER
+mess("pcgen00016",1,e,filename$)   | Prompt for <Enter>
 mess("pcgen00016",0,e,filename$)   | Display message and continue
                                    | (if there is a current form)
 ```

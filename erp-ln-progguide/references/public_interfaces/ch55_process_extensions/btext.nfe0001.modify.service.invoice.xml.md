@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BrazilianInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1980-1983
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1999-2002
 
 ```baan
 Syntax: long btext.nfe0001.modify.service.invoice.xml(
@@ -74,7 +74,7 @@ dummy.line,
 customer.order,
 compras.node,
 ret.val)
-|* Get the Invoice                      -to Business Partner field from the
+|* Get the Invoice-to Business Partner field from the
 |* invoice header. Do not use the index to do the query.
 select  btsli200.itbp:invoice.to.bp
 from    btsli200
@@ -138,13 +138,9 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    n.a.
 Post:   n.a.
-Input:  i.invoice.fiscal.reference                    - Invoice fiscal reference
-i.invoice.financial.company                           - Invoice financial company
-i.invoice.logistic.company                            - Invoice logistic company
-i.invoice.original.xml                                - Original NFSe XML
-Output: o.invoice.custom.xml                          - Custom NFSe XML
+Input:  i.invoice.fiscal.reference      - Invoice fiscal reference
+i.invoice.financial.company     - Invoice financial company
+i.invoice.logistic.company      - Invoice logistic company
+i.invoice.original.xml          - Original NFSe XML
+Output: o.invoice.custom.xml            - Custom NFSe XML
 ```
-
-## Process Extensions for CommissionsRebates
-
-The following process extension(s) is/are available: CommissionsRebates.DetermineTaxCountry CommissionsRebates.SkipCalculate

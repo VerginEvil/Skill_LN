@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPeggedInventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1221-1223
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1231-1233
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2023.04 (KB2286306  ).
+This function is available from 2023.04 (KB2286306).
 Syntax: long ProjectPeggedInventory.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -37,11 +37,11 @@ Usage:        Expl:   This public interface starts session Project Pegged Invent
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -112,34 +112,30 @@ Optional
 iCostComponent
 Optional
 Output:
-oWarehouse                                    - Warehouse of the selected record,
+oWarehouse              - Warehouse of the selected record,
 if iStartMode = MODAL.
-oProject                                      - Project of the selected record,
+oProject                - Project of the selected record,
 if iStartMode = MODAL.
-oItem                                         - Item of the selected record,
+oItem                   - Item of the selected record,
 if iStartMode = MODAL.
-oEffectivityUnit                              - Effectivity Unit of the selected
+oEffectivityUnit        - Effectivity Unit of the selected
 record, if iStartMode = MODAL.
-oElement                                      - Element of the selected record,
+oElement                - Element of the selected record,
 if iStartMode = MODAL.
-oActivity                                     - Activity of the selected record,
+oActivity               - Activity of the selected record,
 if iStartMode = MODAL.
-oExtension                                    - Extension of the selected record,
+oExtension              - Extension of the selected record,
 if iStartMode = MODAL.
-oCostComponent                                - Cost Component of the selected record,
+oCostComponent          - Cost Component of the selected record,
 if iStartMode = MODAL.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for OutboundOrderLineActivity
-
-The following functions are available: OutboundOrderLineActivity.Create OutboundOrderLineActivity.ModifyAutomaticProcessing

@@ -86,7 +86,7 @@ long
 |  | [Json.detach](Json_detach.md) | `( long json_value )` |
 |  | [Json.type](Json_type.md) | `( long json_value )` |
 |  | [Json.isJson](Json_isJson.md) | `( long json_value )` |
-|  | [Json.path](Json_path.md) | `( long json_value, ... )` |
+|  | [Json.path](Json_path.md) | `( long json_value,... )` |
 
 ## JSON object functions
 ```

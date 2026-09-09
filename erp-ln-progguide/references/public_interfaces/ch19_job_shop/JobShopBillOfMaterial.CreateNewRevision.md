@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 642-643
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 645-646
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2021.11 (KB2216214  ).
+This function is available from 2021.11 (KB2216214).
 Syntax: long JobShopBillOfMaterial.CreateNewRevision(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -43,6 +43,6 @@ An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                     - Function is executed successfully.
-<> 0                          - An error occurred. A new revision could not be created.
+Return: 0       - Function is executed successfully.
+<> 0    - An error occurred. A new revision could not be created.
 ```

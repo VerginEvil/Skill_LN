@@ -1,27 +1,48 @@
 # S3 functions overview
 
 ## Overview
-The S3 functions can be used to to deal with S3 paths, URIs and locations, as well as S3 objects and S3 folders.
+The S3 functions can be used to deal with S3 paths, URIs and locations, as well as S3 objects and S3 folders.
 
 ## S3 paths, URIs, buckets, keys and locations
 For each tenant, Infor LN supports 2 predefined S3 locations:
+
 - the *S3 appdata location*; this is meant for long term storage
-- the *S3 tmp location*; this is meant for short term storage   S3 stores objects in a *bucket*. Each object has a name which is called a *key*. The predefined S3 locations determine the bucket that is being accessed, as well as the first part of the key of the object, this is called the *prefix*. The bucket is different for each farm (Dev, QA, Pre-Prod, Prod), and the prefix of the key is tenant specific. In this way each tenant has its own unique S3 locations for storing objects.
+
+- the *S3 tmp location*; this is meant for short term storage
+
+S3 stores objects in a *bucket*. Each object has a name which is called a *key*. The predefined S3 locations determine the bucket that is being accessed, as well as the first part of the key of the object, this is called the *prefix*. The bucket is different for each farm (Dev, QA, Pre-Prod, Prod), and the prefix of the key is tenant specific. In this way each tenant has its own unique S3 locations for storing objects.
 An *S3 path* is a combination of a bucket and a key in the format: `<bucket>/<key>`. As the first part of the *key* is fixed, you can also say the format is: `<predefined-bucket>/<predefined-prefix>/<key>`. And as the combination of *predefined-bucket* and *predefined-prefix* is always one of the 2 supported S3 locations, you can also say the format is: `<predefined-location>/<key>`.
 To support these predefined locations in a convenient way, Infor LN supports the following symbolic names:
+
 - `${AWS_S3}`; this points to the S3 appdata location for the current tenant
+
 - `${AWS_S3_TMP}`; this points to the S3 tmp location for the current tenant
+
 - `AWS_S3`; this the File Manager way of referring to the S3 appdata location for the current tenant
-- `AWS_S3_admin/tmp`; this is the File Manager way of referring to the S3 tmp location for the current tenant   Some external applications that interact with S3 do not use S3 paths, but use the bucket and key. Other applications use S3 URIs, which are S3 paths prefixed with `s3://`. To support exchanging information with these external applications via S3, functions are available to:
+
+- `AWS_S3_admin/tmp`; this is the File Manager way of referring to the S3 tmp location for the current tenant
+
+Some external applications that interact with S3 do not use S3 paths, but use the bucket and key. Other applications use S3 URIs, which are S3 paths prefixed with `s3://`. To support exchanging information with these external applications via S3, functions are available to:
+
 - expand an S3 path containing symbolic names to an S3 path containing the real bucket and key
+
 - symbolize an S3 path containing a real bucket and key to an S3 path containing symbolic names
+
 - get the bucket and key of an S3 path
+
 - convert an S3 path to an S3 URI
-- convert an S3 URI to an S3 path  It is also possible to convert an S3 path to an S3 location indicator (this is a long, like `S3.location.appdata`) and S3 key and vice vera. These are used by portingset functions like [seq.s3.open.file](../functions_directory_file_operations/seq.s3.open.file.md).
+
+- convert an S3 URI to an S3 path
+
+It is also possible to convert an S3 path to an S3 location indicator (this is a long, like `S3.location.appdata`) and S3 key and vice vera. These are used by portingset functions like [seq.s3.open.file](../functions_directory_file_operations/seq.s3.open.file.md).
 All S3 functions that access S3 will normalize the S3 path before accessing S3. That means that e.g. the following paths are referring to the same S3 object:
+
 - `AWS_S3/documents/temp/../expenses.csv`
+
 - `${AWS_S3}/documents/./expenses.csv`
+
 - `AWS_S3/documents//expenses.csv`
+
 - `${AWS_S3}/documents/expenses.csv`
 
 ## S3 objects and folders

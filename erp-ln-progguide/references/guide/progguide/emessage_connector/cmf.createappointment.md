@@ -15,7 +15,7 @@ Creates a new Infor LN eMessage Connector appointment object.
 ## Return values
 | | |
 |---|---|
-| <> 0 | (Bshell wide) unique Infor LN eMessage Connector appointment object id.  |
+| <> 0 | (Bshell wide) unique Infor LN eMessage Connector appointment object id. |
 | 0 | Appointment object creation error. |
 
 ## Context
@@ -24,5 +24,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

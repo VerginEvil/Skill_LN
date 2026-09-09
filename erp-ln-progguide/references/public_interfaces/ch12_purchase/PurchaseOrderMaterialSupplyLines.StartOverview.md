@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderMaterialSupplyLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 477-478
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 479-480
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2025.07 (KB3605556  ).
+This function is available from 2025.07 (KB3605556).
 Syntax: long PurchaseOrderMaterialSupplyLines.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -32,16 +32,16 @@ Overview (tdpur4116m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used
 iSessionIndex
-Specifies the session                              -index that is to be used.
+Specifies the session-index that is to be used.
 Supported values:
 1: sort by Purchase Order, Line, Sequence, Material Sequence
 (default)
@@ -51,7 +51,7 @@ iQueryExtend
 A specific query to be used when zooming to this session.
 iPurchaseOrder
 Purchase Order
-Mandatory if iStartMode = MODELESS and session                              -index 1 is used.
+Mandatory if iStartMode = MODELESS and session-index 1 is used.
 iPurchaseOrderLine
 Purchase Order Line
 iPurchaseOrderLineSequence
@@ -60,7 +60,7 @@ iMaterialSequence
 Material Sequence
 iItem
 Item
-Mandatory if iStartMode = MODELESS and session                              -index 2 is used.
+Mandatory if iStartMode = MODELESS and session-index 2 is used.
 iSupplyOrder
 Supply Order
 iSupplyOrderLine
@@ -84,7 +84,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PurchaseOrderChangeRequest
-
-The following functions are available: PurchaseOrderChangeRequest.Approve PurchaseOrderChangeRequest.Cancel PurchaseOrderChangeRequest.Process

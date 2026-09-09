@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 873-875
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 883-885
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2022.01 (KB2203352  ).
+This function is available from 2022.01 (KB2203352).
 Syntax: long ProjectPCS.CalculateCost(
 domain  tccprj           iProject,
 boolean          iCalculateEstimatedCost,
@@ -21,7 +21,11 @@ boolean          iUpdateCOSDistribution,
 boolean          iRecalculateStandardParts,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
-Usage:        Expl:   This public interface will Calculate the PCS Project Cost for one
+Usage:        Expl:
+*** Warning ***
+This public interface is deprecated.
+use:    ProjectPCS.CalculateCostV2
+This public interface will Calculate the PCS Project Cost for one
 project, according to the logic of session Calculate Standard Costs
 by Project (tipcs3250m000).
 Note that even when the function returns 0 (indicating success),

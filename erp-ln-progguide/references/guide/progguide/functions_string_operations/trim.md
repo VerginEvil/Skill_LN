@@ -9,7 +9,7 @@ This returns a specified string without the leading and trailing spaces. The inp
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `str` |  |
+| `string` | `str` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -22,4 +22,5 @@ trim$("    ABC   ")      | result  "ABC"
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

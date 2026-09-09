@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for TimePhasedOrderPoint
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1290-1291
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1300-1301
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.12 (KB3533941  ).
+This function is available from 2024.12 (KB3533941).
 Syntax: long TimePhasedOrderPoint.GenerateOrders(
 domain  tcmcs.str15      iDevice,
 long             iProcessingOptionSet,
@@ -77,10 +77,6 @@ OrderTypePurchase       domain tccotp           Empty String
 SeriesSales             domain tcseri           Empty String
 OrderTypeSales          domain tccotp           Empty String
 Output: N.a.
-Return: 0               - Order(s) have been created successfully.
-DALHOOKERROR                       - Order could not be created.
+Return: 0 - Order(s) have been created successfully.
+DALHOOKERROR - Order could not be created.
 ```
-
-## Public Interfaces for PurchaseOrderAdvice
-
-The following functions are available: PurchaseOrderAdvice.Confirm PurchaseOrderAdvice.StartDetail PurchaseOrderAdvice.StartOverview PurchaseOrderAdvice.Transfer

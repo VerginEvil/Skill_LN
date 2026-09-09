@@ -30,7 +30,7 @@ void
 | | | |
 |---|---|---|
 |  | [clean.mess()](clean.mess.md) | `( )` |
-|  | [mess()](mess.md) | `( string messcode(14), long separate_window [, arg, ...] )` |
+|  | [mess()](mess.md) | `( string messcode(14), long separate_window [, arg,...] )` |
 
 ## Displaying messages
 Use these functions to display messages in a separate window.
@@ -48,9 +48,9 @@ void
 ```
 | | | |
 |---|---|---|
-|  | [mess()](mess.md) | `( string messcode(14), long separate_window [, arg, ...] )` |
-|  | [message()](message.md) | `( string mess_str [, arg, ...] )` |
-|  | [set.input.error()](set.input.error.md) | `( string mess.or.code [, ...] )` |
+|  | [mess()](mess.md) | `( string messcode(14), long separate_window [, arg,...] )` |
+|  | [message()](message.md) | `( string mess_str [, arg,...] )` |
+|  | [set.input.error()](set.input.error.md) | `( string mess.or.code [,...] )` |
 |  | [show.dal.messages()](show.dal.messages.md) | `( [long i.type] )` |
 
 ## Dal messages
@@ -117,7 +117,7 @@ void
 |  | [dal.get.first.message()](dal.get.first.message.md) | `( long i.type, ref string o.code, ref string o.text, [ref long o.type] )` |
 |  | [dal.peek.message()](dal.peek.message.md) | `( long i.type, long i.index, ref string o.code, ref string o.text, [ref long o.type] )` |
 |  | [dal.reset.messages()](dal.reset.messages.md) | `( long i.type, long i.count )` |
-|  | [dal.set.message()](dal.set.message.md) | `( long type, const string i.mess.or.code [, arg, ...] )` |
+|  | [dal.set.message()](dal.set.message.md) | `( long type, const string i.mess.or.code [, arg,...] )` |
 |  | [dal.set.messages.off()](dal.set.messages.off.md) | `( )` |
 |  | [dal.set.messages.on()](dal.set.messages.on.md) | `( )` |
 |  | [dal.clear.error.messages()](dal.clear.error.messages.md) | `( )` |
@@ -128,7 +128,7 @@ void
 |  | [dal.peek.error.message()](dal.peek.error.message.md) | `( long i.index )` |
 |  | [dal.peek.error.msgcode()](dal.peek.error.msgcode.md) | `( long i.index )` |
 |  | [dal.reset.error.messages()](dal.reset.error.messages.md) | `( long i.count )` |
-|  | [dal.set.error.message(), dal.set.warning.message(), dal.set.info.message()](dal.set.error.message.md) | `( const string i.mess.or.code [, arg ...] )` |
+|  | [dal.set.error.message(), dal.set.warning.message(), dal.set.info.message()](dal.set.error.message.md) | `( const string i.mess.or.code [, arg...] )` |
 
 ## General
 Use this function to retrieve a message from the Data Dictionary.

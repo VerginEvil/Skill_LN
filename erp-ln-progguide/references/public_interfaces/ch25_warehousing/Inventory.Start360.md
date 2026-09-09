@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 950-951
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 960-961
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2024.02 (KB2317999  ).
+This function is available from 2024.02 (KB2317999).
 Syntax: long Inventory.Start360(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -25,10 +25,10 @@ Usage:        Expl:   This function starts the session Inventory 360 (whwmd4300m
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -57,18 +57,14 @@ The Warehouse to be used with iSetFilterFields.
 iItem Group:
 The Item Group to be used with iSetFilterFields.
 iItem
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for SpecificationInventory
-
-The following functions are available: SpecificationInventory.GetUnallocatedAvailableQuantity

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1497-1498
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1512-1512
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2025.01 (KB3543185  ).
+This function is available from 2025.01 (KB3543185).
 Syntax: long WorkOrder.StartDetail(
 long             iStartMode,
 domain  tcorno           iWorkOrder,
@@ -19,10 +19,10 @@ Usage:        Expl:   This function starts the detail session Work Orders
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iWorkOrder

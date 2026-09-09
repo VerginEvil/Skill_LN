@@ -4,13 +4,13 @@
 `function void to.field( field field, [ long occ ] )`
 
 ## Description
-This transfers control of the 4GL engine to the specified field after input to or display of the current field. This overrides the TAB sequence of the form. You can specify the field by using the field number or a string containing the field name.
+This transfers control of the [4GL engine](../glossary/glossary.md#fourgl_engine) to the specified field after input to or display of the current field. This overrides the TAB sequence of the form. You can specify the field by using the field number or a string containing the field name.
 After handling the specified field, control passes to the next field in the TAB sequence.
 
 ## Arguments
 | | | |
 |---|---|---|
-| `field` | `field` |   |
+| `field` | `field` |    |
 | `[ long` | `occ ]` |  The occurrence number. (optional) This parameter is available from [TIV](../tiv/tiv_overview.md) [TIV 1900](../tiv/tiv_1900.md).  |
 
 ## Context
@@ -23,4 +23,5 @@ Note  In a well-designed GUI, users (and not the application) select and initiat
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

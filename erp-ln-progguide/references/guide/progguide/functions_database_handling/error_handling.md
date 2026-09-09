@@ -4,9 +4,14 @@ To keep the messages to be sent over the network to a minimum, database actions 
 
 ## Fatal and non-fatal errors
 There are fatal and non-fatal errors. Fatal errors terminate the session. Non-fatal errors are those that are temporary (for example, elocked), or that are caused by a multi-user situation (for example, a record is deleted by two processes, one process receiving enorec). Non-fatal errors cause the program to go back to the last retry point. If this is missing, the session is terminated. Fatal errors are errors caused by:
+
 - Errors in the (logical) database (for example, enotable, eddcorrupt, enoserver)
+
 - Errors in the underlying (R)DBMS (for example, ebadkey)
-- Program errors (for example, enotinrange)  The following error codes result in a return to the retry point:
+
+- Program errors (for example, enotinrange)
+
+The following error codes result in a return to the retry point:
 | | | |
 |---|---|---|
 | ELOCKED | (107) | record is locked |
@@ -85,7 +90,7 @@ DB.LOCK.NO.WAIT
 |  | return error code if reference does not exist |
 |  | return error code if record has been changed after delayed lock |
 |  | return error code if action has been disallowed because of change management |
-|  | Limited to [db.update()](../functions_db_operations/db.update.md). Immediately returns control to the caller if a lock exists. Available as of TIV 2130. And only applicable to databases that support SELECT FOR UPDATE NOWAIT or similar syntax (e.g. DB2 does not).  |
+|  | Limited to [db.update()](../functions_db_operations/db.update.md). Immediately returns control to the caller if a lock exists. Available as of TIV 2130. And only applicable to databases that support SELECT FOR UPDATE NOWAIT or similar syntax (e.g. DB2 does not). |
 * The program does not return to the retry point.
 Note that you can combine flags by using the '+' sign.
 
@@ -106,4 +111,5 @@ In this case, the flag 'DB.SKIP.DUPL' causes the system neither to go back to th
 
 ## Related topics
 - [Database handling overview](overview.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

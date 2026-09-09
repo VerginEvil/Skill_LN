@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BillableLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1955-1955
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1974-1974
 
 ```baan
 Syntax: long ciext.sli0002.check.billable.line.status.confirmed.allowed(
@@ -28,10 +28,10 @@ the standard.
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.line.status.confirmed.allowed               - Indicates whether the billable
+Output: o.line.status.confirmed.allowed - Indicates whether the billable
 line status may be set to
 'Confirmed'.
-Return: 0                                     - Success
-<> 0                                          - When an error occurs during checking;
+Return: 0                       - Success
+<> 0                    - When an error occurs during checking;
 status will not be set to 'Confirmed'.
 ```

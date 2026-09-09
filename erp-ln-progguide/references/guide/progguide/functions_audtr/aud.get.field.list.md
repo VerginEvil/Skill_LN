@@ -16,8 +16,8 @@ Use this function to get the field names of all fields logged for a database tab
 ## Return values
 | | |
 |---|---|
-| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid.  |
-| AUD_INCORRECT_TABLE_ID | *Table.Id* is invalid.  |
+| AUD_INCORRECT_SELECTION_ID | *Selection.id* is invalid. |
+| AUD_INCORRECT_TABLE_ID | *Table.Id* is invalid. |
 | AUD_OK | Names of all fields can be determined |
 
 ## Context
@@ -29,5 +29,7 @@ The function [aud.get.next.action()](aud.get.next.action.md) has to be called pr
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)
+
 - [Audit management examples](audit_management_examples.md)

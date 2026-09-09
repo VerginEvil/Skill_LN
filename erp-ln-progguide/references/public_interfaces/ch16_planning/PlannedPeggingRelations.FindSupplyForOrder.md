@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPeggingRelations
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 568-570
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 571-573
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2020.10 (KB2151080  ).
+This function is available from 2020.10 (KB2151080).
 Syntax: long PlannedPeggingRelations.FindSupplyForOrder(
 domain  cpcom.plnc       iPlanningScenario,
 domain  tckoor           iOrderType,
@@ -58,15 +58,15 @@ iOrderLine or iMaterialPosition cannot
 be filled both.
 Output: oParentTransactionArray Parent transaction numbers, as used in
 table Pegging Transactions (cprrp041).
-oParentCompanyArray     Parent companies (relevant in multi                      -
+oParentCompanyArray     Parent companies (relevant in multi-
 company scenarios).
-oParentScenarioArray    Parent scenarios (relevant in multi                      -
+oParentScenarioArray    Parent scenarios (relevant in multi-
 company scenarios).
 oChildTransactionArray  Child transaction numbers, as used in
 table Pegging Transactions (cprrp041).
-oChildCompanyArray      Child companies (relevant in multi                      -
+oChildCompanyArray      Child companies (relevant in multi-
 company scenarios).
-oChildScenarioArray     Child scenarios (relevant in multi                      -
+oChildScenarioArray     Child scenarios (relevant in multi-
 company scenarios).
 Example:
 A sales order for item A is supplied by 2 production

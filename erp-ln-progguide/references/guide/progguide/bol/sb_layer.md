@@ -5,7 +5,11 @@ The data communication between the layers is based on the getter/setter concept.
 
 ## Related topics
 - [Business Object Layer](overview.md)
+
 - [Interface Conversion Public Layer](sc_layer.md)
+
 - [Protected Layer](st_layer.md)
+
 - [Interface Conversion Protected Layer](sm_layer.md)
+
 - [Specific Methods Library](sf_layer.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FactoryTrackQuery
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1668-1670
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1687-1688
 
 ```baan
 DLL:   brextqryapi
-This function is available from     2020.09 (KB2143379  ).
+This function is available from 2020.09 (KB2143379).
 Syntax: long FactoryTrackQuery.GetElement(
 const           string           iElementID(),
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -56,29 +56,23 @@ TimeAttribute = "13:51:40".
 Pre:    N.A.
 Post:   N.A.
 Input:
-iElementID                                    - Mandatory. The name of the element
+iElementID              - Mandatory. The name of the element
 node to be read.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-... (1 to 3 arguments)                        - The data of the element node and
+... (1 to 3 arguments)  - The data of the element node and
 optionally the date and time in string
 format. Date and time can only be read
 if the date and time attributes are
 present in the element node.
 Return:
-0                                             - Success
-<> 0                                          - Failure
+0                       - Success
+<> 0                    - Failure
 ```
-
-## Chapter 33 Public Interfaces for Project
-
-## Public Interfaces for Project
-
-The following functions are available: Project.Activate Project.Copy Project.GetCostRateTask Project.Start360 Project.StartCopy Project.StartMultiMain Project.UpdateStatus Project.UpdateWorkAuthorizationStatus

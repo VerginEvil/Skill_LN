@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 543-545
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 547-548
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2024.06 (KB2311388  ).
+This function is available from 2024.06 (KB2311388).
 Syntax: long ItemOrderPlan.Generate(
 domain  cpcom.plnc       iScenario,
 domain  cpitem           iPlanItem,
@@ -29,11 +29,11 @@ ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl    : This function is used to carry out an order-planning for one
 plan item to generate orders of the following order types:
--                         Planned Production Order
--                         Planned Production Schedule
--                         Planned Purchase Order
--                         Planned Distribution Order
--                         Planned Subcontracting Order
+- Planned Production Order
+- Planned Production Schedule
+- Planned Purchase Order
+- Planned Distribution Order
+- Planned Subcontracting Order
 If repetitive manufacturing is used, production schedules and
 planned production schedules for repetitive items are
 generated. The production schedule horizon is used to
@@ -79,7 +79,7 @@ iUpdatePeggingRelations
 Control for updating Pegging Relations.
 iAutomaticOrderGrouping
 Control for rebuilding the
-Automatic                                              -update Order Groups.
+Automatic-update Order Groups.
 iUpdateResourceMasterPlan
 Control for updating the resource master
 plan for the resources involved in the

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 117-118
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 118-119
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2020.08 (KB2122836  ).
+This function is available from 2020.08 (KB2122836).
 Syntax: long BusinessPartner.CheckOverdueInvoices(
 domain  tcncmp           iFinancialCompany,
 domain  tccom.bpid       iInvoiceToBusinessPartner,
@@ -32,25 +32,25 @@ with 100% and then the full credit limit will be used.
 This of course requires that the credit limit has been set.
 Pre     : NA
 Post    : NA
-Input   : iFinancialCompany                   - financial company number (mandatory)
+Input   : iFinancialCompany     - financial company number (mandatory)
 iInvoiceToBusinessPartner
--                                               invoice-to business partner (mandatory)
-iDepartment                                   - department (optional)
+- invoice-to business partner (mandatory)
+iDepartment           - department (optional)
 iIncludeAnticipatedReceipts
--                                               anticipated receipts yes/no (mandatory)
-iDueDate                                      - date till which overdue invoices
+- anticipated receipts yes/no (mandatory)
+iDueDate              - date till which overdue invoices
 are calculated (mandatory)
 Output  : oOverdueAmountExceedsTolerance
--                                                'Yes' when total overdue amout
+- 'Yes' when total overdue amout
 exceeds tolerance else 'No'.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Total overdue amount determined.
-<> 0                                          - Error occurred.
+Return: 0                       - Total overdue amount determined.
+<> 0                    - Error occurred.
 ```

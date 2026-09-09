@@ -5,40 +5,40 @@ The value expression defines a value.
 ```
 
 <value expression>
-       ::= Operator + (add)
-         | Operator - (subtract)
-         | Operator * (multiply)
-         | Operator / (divide)
-         | Operator \ (modulo)
-         | Operator & (concatenation)
-         | ( <value expression> )
-         | Sub query
-         | Set function specification
-         | Substring and array indexing
-         | CASE expression (searched)
-         | CASE expression (simple)
-         | CAST expression
-         | TRIM function
-         | ml_one_lang function
-         | ENUM_DESCRIPTION function
-         | TEXT_CONTENT function
-         | Column reference
-         | Parameter
-         | Integer constant
-         | Real constant
-         | String constant
-         | Raw constant
-         | Date constant
-         | Timestamp constant
-         | Enumerate constant
-         | EMPTY constant
-         | CURRENT_DATE
-         | CURRENT_TIMESTAMP
+    ::= <value expression> + <value expression>
+      | <value expression> - <value expression>
+      | <value expression> * <value expression>
+      | <value expression> / <value expression>
+      | <value expression> \ <value expression>
+      | <value expression> & <value expression>
+      | ( <value expression> )
+      | <scalar subquery>
+      | <set function specification>
+      | <substring and array indexing>
+      | <searched case expression>
+      | <simple case expression>
+      | <cast expression>
+      | <trim function>
+      | <ml_one_lang function>
+      | <enum description function>
+      | <text content function>
+      | <column reference>
+      | <parameter>
+      | <integer constant>
+      | <real constant>
+      | <string constant>
+      | <raw constant>
+      | <date constant>
+      | <timestamp constant>
+      | <enumerate constant>
+      | <empty constant>
+      | <current date>
+      | <current timestamp>
 ```
 
 ## Syntactical restrictions
-*I.* The *<column reference>* shall not reference an array column and its *column name* shall not identify an index name (e.g. _index1), a combined column name (e.g. cmba) or be the identifier `_compnr`.
-*II.* The degree and cardinality of the *<scalar subquery>* both shall be 1.
+*I.* The *<**column reference**>* shall not reference an array column and its *column name* shall not identify an index name (e.g. _index1), a combined column name (e.g. cmba) or be the identifier `_compnr`.
+*II.* The [degree](sql_glossary.md#Degree) and [cardinality](sql_glossary.md#Cardinality) of the *<**scalar subquery**>* both shall be 1.
 
 ## Examples
 The following expression specifies the string 'City'.

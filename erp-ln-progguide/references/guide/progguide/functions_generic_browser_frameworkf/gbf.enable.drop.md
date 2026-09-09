@@ -17,8 +17,8 @@ Allow drop operation from objects dragged from the indicated composite child ses
 | | |
 |---|---|
 | 0 | Successful completion |
-| GBF.ILL.DLL | Illegal or unknown *dllname* specified  |
-| GBF.ILL.FUNCTION | Illegal or unknown *gbf.on.drop* function specified  |
+| GBF.ILL.DLL | Illegal or unknown *dllname* specified |
+| GBF.ILL.FUNCTION | Illegal or unknown *gbf.on.drop* function specified |
 | GBF.ILL.STATE | GBF is not in the right state to handle this function |
 | GBF.NO.MEMORY | not enough memory |
 
@@ -27,5 +27,7 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Composite Sessions overview](../functions_composite_sessions/overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FactoryTrackQuery
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1666-1667
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1685-1686
 
 ```baan
 DLL:   brextqryapi
-This function is available from     2020.09 (KB2143379  ).
+This function is available from 2020.09 (KB2143379).
 Syntax: long FactoryTrackQuery.CreateElement(
 const           string           iElementID(),
 const           string           iDomain(),
@@ -49,7 +49,7 @@ ExceptionID,
 InventoryDate,
 whinr140.idat)
 This will add the Element Node (assuming whinr140.idat contains
-date 04/25/2018 13:51:40 in UTC                      -long format)
+date 04/25/2018 13:51:40 in UTC-long format)
 <InventoryDate
 Type="String"
 Domain="tcmcs.str20"
@@ -59,11 +59,11 @@ EXT="yes">2018/04/25</InventoryDate>
 Pre:    N.A.
 Post:   N.A.
 Input:
-iElementID                                    - The name of the custom element:
+iElementID              - The name of the custom element:
 Mandatory. Dots are truncated.
-iDomain                                       - The domain of the custom element:
+iDomain                 - The domain of the custom element:
 Mandatory.
-... (1 or 2 arguments)                        - The value of the custom element and
+... (1 or 2 arguments)  - The value of the custom element and
 optionally the date and time in long
 format.
 If the date and time argument is
@@ -73,15 +73,15 @@ date and time argument equals zero,
 the date and time attributes will be
 empty.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - Success
-<> 0                                          - Failure
+0                       - Success
+<> 0                    - Failure
 ```

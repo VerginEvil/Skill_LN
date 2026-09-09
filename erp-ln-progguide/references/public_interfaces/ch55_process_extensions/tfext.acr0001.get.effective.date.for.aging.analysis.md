@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for AccountsReceivable
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1947-1948
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1966-1967
 
 ```baan
 Syntax: long tfext.acr0001.get.effective.date.for.aging.analysis(
@@ -27,7 +27,7 @@ Then in session Calculate Receivables Aging Analysis
 to calculate the age of an invoice/schedule.
 Pre:    N.A.
 Post:   N.A.
-Input:  i.schedule                            - This field indicates whether the function
+Input:  i.schedule              - This field indicates whether the function
 is called from an invoice or schedule line.
 If false this function is called from
 an invoice and the tfacr200 record
@@ -35,7 +35,7 @@ is current.
 If true this funtion is called from
 a schedule line and the tfacr201 record
 is current.
-IO:     io.effective.date                     - This field is standard filled already.
+IO:     io.effective.date       - This field is standard filled already.
 If the aging calculation is based on
 Document Date this field is filled with
 tfacr200.docd (Document Date).
@@ -45,11 +45,7 @@ tfacr200.dued or tfacr201.recd (Due Date).
 This field can be influenced by the
 process extension based on own logic
 e.g. a CDF on invoice or schedule line.
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in setting
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in setting
 the effective date.
 ```
-
-## Process Extensions for AdvanceInstallment
-
-The following process extension(s) is/are available: AdvanceInstallment.SkipPrintZ5Reporting

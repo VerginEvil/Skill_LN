@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 670-674
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 673-677
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2025.03 (KB3540107  ).
+This function is available from 2025.03 (KB3540107).
 Syntax: long ProductVariant.CreateWithOptions(
 domain  tcitem           iGenericItem,
 domain  tcreft           iReferenceType,
@@ -144,33 +144,33 @@ req.id = xmlNewDataElement("Note",i.note,feature)
 ***************************************************************
 Pre:    db.retry point must be set.
 Post:   Transaction must be aborted or committed.
-Input:  iGenericItem                          - Generic Item. (Mandatory).
-iReferenceType                                - Reference Type of Product Variant
+Input:  iGenericItem            - Generic Item. (Mandatory).
+iReferenceType          - Reference Type of Product Variant
 to be created.
 iItemConfigurationStructure
--                                               XML Structure with Sales Options
+- XML Structure with Sales Options
 for Product Variant to be created.
-iProcessingOptionSet                          - A Processing Option Set can be
+iProcessingOptionSet    - A Processing Option Set can be
 created via a call to
 ProcessingOptionSet.Create().
 If 0, then default values are
 applied (Optional).
 Processing Options are used for detailed specification of product
 variant settings.
-Order                                         - Sales Order Number of Item.
-OrderPosition                                 - Sales Order Position of Item.
+Order                   - Sales Order Number of Item.
+OrderPosition           - Sales Order Position of Item.
 AlternativeSalesQuotation
--                                               Alternative Sales Quotation of
+- Alternative Sales Quotation of
 Item.
-BusinessPartner                               - Business Partner of Sales Order.
-SalesCurrency                                 - Sales Currency of Sales Order.
-Quantity                                      - Quantity Ordered of Item.
-SalesPriceUnit                                - Sales Price Unit of Sales Order.
-ShipFromWarehouse                             - Warehouse from where the Item
+BusinessPartner         - Business Partner of Sales Order.
+SalesCurrency           - Sales Currency of Sales Order.
+Quantity                - Quantity Ordered of Item.
+SalesPriceUnit          - Sales Price Unit of Sales Order.
+ShipFromWarehouse       - Warehouse from where the Item
 will be shipped.
-ShipToAddress                                 - Address to which the Item will
+ShipToAddress           - Address to which the Item will
 be shipped.
-ReferenceDate                                 - Reference Date of Sales Order.
+ReferenceDate           - Reference Date of Sales Order.
 Processing Options which are not provided will be filled with default
 value.
 NAME                            TYPE                    DEFAULT
@@ -184,15 +184,15 @@ SalesPriceUnit                  domain  tccuni          ""
 ShipFromWarehouse               domain  tccwar          ""
 ShipToAddress                   domain  tccom.cadr      ""
 ReferenceDate                   domain  tiutcs          0
-Output: oCreatedProductVariant                - The created Product Variant.
-oExceptionMessage                             - The last message if any message is
+Output: oCreatedProductVariant  - The created Product Variant.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Product Variant is created.
-<> 0                                          - Otherwise.
+Return: 0                       - Product Variant is created.
+<> 0                    - Otherwise.
 ```

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 165-166
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 166-167
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2020.01 (KB2085127  ).
+This function is available from 2020.01 (KB2085127).
 Syntax: long Item.ConvertPlanItemToItem(
 domain  tcncmp           iLogisticCompany,
 domain  cpitem           iPlanItem,
@@ -16,7 +16,7 @@ ref     domain  tcitem           oItem,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This function determines the tcitem code for the given
-plan                      -item.
+plan-item.
 Pre:    None
 Post:   None
 Input:  iLogisticCompany        Logistic Company (Mandatory)

@@ -15,7 +15,7 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 
 ## Return values
 Directory information for path, or an empty string if path denotes a root directory or is empty, or if path does not contain directory information.
-In most cases, the string returned by this function consists of all characters in the path up to but not including the last ` [path.dir.separator()](path.dir.separator.md)`. If the path consists of a root directory, such as "c:\", an empty string is returned. Note that this method does not support paths using "file:". Because the returned path does not include the ` [path.dir.separator()](path.dir.separator.md)`, passing the returned path back into the `path.directory()` method will result in the truncation of one folder level per subsequent call on the result string. For example, passing the path "C:\Directory\SubDirectory\test.txt" into the `path.directory()` method will return "C:\Directory\SubDirectory". Passing that string, "C:\Directory\SubDirectory", into `path.directory()` will result in "C:\Directory".
+In most cases, the string returned by this function consists of all characters in the path up to but not including the last [path.dir.separator()](path.dir.separator.md). If the path consists of a root directory, such as "c:\", an empty string is returned. Note that this method does not support paths using "file:". Because the returned path does not include the [path.dir.separator()](path.dir.separator.md), passing the returned path back into the `path.directory()` method will result in the truncation of one folder level per subsequent call on the result string. For example, passing the path "C:\Directory\SubDirectory\test.txt" into the `path.directory()` method will return "C:\Directory\SubDirectory". Passing that string, "C:\Directory\SubDirectory", into `path.directory()` will result in "C:\Directory".
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -60,4 +60,5 @@ path = path.directory("", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

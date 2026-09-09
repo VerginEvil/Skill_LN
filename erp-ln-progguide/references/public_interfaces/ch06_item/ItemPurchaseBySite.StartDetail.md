@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemPurchaseBySite
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 200-201
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 201-201
 
 ```baan
 DLL:   tdextipuapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemPurchaseBySite.StartDetail(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -20,10 +20,10 @@ Usage:        Expl:   This function starts the detail session Items - Purchase
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Following input variables form the primary key, these fields
@@ -45,7 +45,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for ItemPurchaseBusinessPartner
-
-The following functions are available: ItemPurchaseBusinessPartner.CalculateLeadTimes ItemPurchaseBusinessPartner.GetSafetyTime ItemPurchaseBusinessPartner.StartDetail ItemPurchaseBusinessPartner.StartOverview

@@ -7,16 +7,34 @@
 This sets the access permissions for a specified file.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `const string` | `file` |  The name of the file.  |
-| `long` | `mode` |  The type of access permissions that must be set. This can be a combination of the following values: User/owner  |
+| | |
+|---|---|
+| S_IRWXU | read, write, execute |
+| S_IRUSR | read |
+| S_IWUSR | write |
+| S_IXUSR | execute, search |
+| S_ISUID | user id on execution |
+Group
+| | |
+|---|---|
+| S_IRWXG | read, write, execute |
+| S_IRGRP | read |
+| S_IWGRP | write |
+| S_IXGRP | execute, search |
+| S_ISGID | group id on execution |
+Other (UNIX only)
+| | |
+|---|---|
+| S_IRWXO | read, write, execute |
+| S_IROTH | read |
+| S_IWOTH | write |
+| S_IXOTH | execute, search |
 
 ## Return values
 | | |
 |---|---|
 | >= 0 | Success. |
-| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable.  |
+| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -25,4 +43,5 @@ Note  Setting file access permissions is a system-dependent feature. To enable a
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

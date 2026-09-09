@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 884-886
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 894-896
 
 ```baan
 DLL:   tiextpcsapi
-This function is available from     2024.04 (KB2299641  ).
+This function is available from 2024.04 (KB2299641).
 Syntax: long ProjectPCS.CopyStandardProductStructureToCustomizedStructure(
 domain  tcsite           iSite,
 domain  tcitem           iStandardItem,
@@ -86,7 +86,7 @@ Only customizable items in the
 product structure are copied.
 All: All items are copied.
 iCopyEitemRelationships
-To specify whether the E                              -item relationships are copied
+To specify whether the E-item relationships are copied
 to the customized structure.
 Mandatory when Site is not active.
 iIncludeAlternatives

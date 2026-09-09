@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for Receipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2196-2196
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2219-2219
 
 ```baan
 Syntax: long whext.dll0020.receipt.handle.before.confirm(
@@ -21,11 +21,7 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.receipt                             - Receipt
+Input:  i.receipt               - Receipt
 Output: N.a.
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for ReceiptLine
-
-The following process extension(s) is/are available: ReceiptLine.HandleConfirm

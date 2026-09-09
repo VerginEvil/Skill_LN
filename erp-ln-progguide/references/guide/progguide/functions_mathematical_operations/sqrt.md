@@ -9,7 +9,7 @@ This computes the non-negative square root of *x*. The *x* argument must not be 
 ## Arguments
 | | | |
 |---|---|---|
-| `double` | `x` |  |
+| `double` | `x` |    |
 
 ## Return values
 The non-negative square root of *x*.
@@ -19,4 +19,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Mathematical operations overview](overview.md)
+
 - [Mathematical operations synopsis](synopsis.md)

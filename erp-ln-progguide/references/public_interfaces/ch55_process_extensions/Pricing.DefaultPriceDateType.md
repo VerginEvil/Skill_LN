@@ -4,16 +4,16 @@
 >
 > Group: Process Extensions for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2112-2112
-
-Determine customer specific default Price Date Type. This process extension is available from 2025.06 ( KB3572014 ). Technical information for this process extension:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2135-2135
 
 ```baan
+Determine customer specific default Price Date Type.
+This process extension is available from 2025.06 (KB3572014).
+Technical information for this process extension:
 Usage:        With this Process Extension, it is possible to set a customer determined
 price date type from an extension to a value other than the defaulted
 value based on LN logic.
 This price date type (if valid) is then used in all flows where a
 price date type is defaulted.
-```
-
 To implement this process extension, you need to implement the following method(s):
+```

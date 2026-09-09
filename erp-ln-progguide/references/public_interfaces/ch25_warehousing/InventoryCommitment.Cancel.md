@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InventoryCommitment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 954-956
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 964-966
 
 ```baan
 DLL:   whextinpapi
-This function is available from     2026.07 (KB3676144  ).
+This function is available from 2026.07 (KB3676144).
 Syntax: long InventoryCommitment.Cancel(
 domain  whinp.corg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -39,8 +39,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iOrderNumber is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       OrderLineArray
+- selection range fields (From/To)
+- OrderLineArray
 The inventory commitments will then be canceled for the given
 iOrderOrigin, iOrderNumber (and specific iOrderLine, if filled).
 In case option OrderLineArray is set then the selection
@@ -117,8 +117,8 @@ Json.add(OrderLineArray, OrderLine)
 ReportName only needs to filled for customized reports, otherwise
 the standard report is automatically used.
 ReportName must start with an "r", e.g. "rwhinp220411001"
-Output: oDataProcessed                        - true:  Inventory commitments canceled
+Output: oDataProcessed          - true:  Inventory commitments canceled
 false: Nothing canceled.
-Return: 0                                     - No Error
-<> 0                                          - Error
+Return: 0                       - No Error
+<> 0                    - Error
 ```

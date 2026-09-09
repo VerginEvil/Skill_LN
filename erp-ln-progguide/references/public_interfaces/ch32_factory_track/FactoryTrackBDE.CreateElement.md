@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FactoryTrackBDE
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1663-1664
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1682-1683
 
 ```baan
 DLL:   brextbdeapi
-This function is available from     2021.04 (KB2181351  ).
+This function is available from 2021.04 (KB2181351).
 Syntax: long FactoryTrackBDE.CreateElement(
 const           string           iElementID(),
 const           string           iDomain(),
@@ -39,24 +39,24 @@ Domain="tcorno">AAA000001</OrderNumber>
 Pre:    N.A.
 Post:   N.A.
 Input:
-iElementID                                    - The name of the custom element:
+iElementID              - The name of the custom element:
 Mandatory. Dots are truncated.
-iDomain                                       - The domain of the custom element:
+iDomain                 - The domain of the custom element:
 Mandatory.
-iParentNode                                   - The parent XML node of the element
+iParentNode             - The parent XML node of the element
 that is being created: Mandatory.
-... (1 argument)                              - The value of the XML element:
+... (1 argument)        - The value of the XML element:
 Mandatory.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return:
-0                                             - Success
-<> 0                                          - Failure
+0                       - Success
+<> 0                    - Failure
 ```

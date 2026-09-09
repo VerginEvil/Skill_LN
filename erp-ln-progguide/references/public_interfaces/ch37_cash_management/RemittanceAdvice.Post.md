@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RemittanceAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1791-1793
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1810-1811
 
 ```baan
 DLL:   tfextcmgapi
-This function is available from     2025.04 (KB3568308  ).
+This function is available from 2025.04 (KB3568308).
 Syntax: long RemittanceAdvice.Post(
 domain  tcncmp           iFinancialCompany,
 domain  tfgld.date       iTransactionEntryDate,
@@ -36,38 +36,34 @@ a Bank Transaction line is created with Type of Transaction
 Note: via this function, it is not possible to add Sundry Costs
 or Factoring Commission to the Bank Transaction.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit or abort
+Post:   This function sets a retry-point and will commit or abort
 the transaction.
 Note that always a batch is created and committed.
 Input:
-iFinancialCompany                             - Financial Company in which batch(es)
+iFinancialCompany       - Financial Company in which batch(es)
 and bank transactions will be created.
 Mandatory.
-iTransactionEntryDate                         - Transaction Entry Date of the batch(es).
+iTransactionEntryDate   - Transaction Entry Date of the batch(es).
 Mandatory.
-iBatchReference                               - Reference of the batch(es).
+iBatchReference         - Reference of the batch(es).
 Optional.
-iDocumentDate                                 - Document Date of the Bank Transaction(s).
+iDocumentDate           - Document Date of the Bank Transaction(s).
 Mandatory.
-iNumberOfRemittances                          - Number of Remittances to be handled.
+iNumberOfRemittances    - Number of Remittances to be handled.
 Mandatory
-iRemittanceArray                              - Array with Remittances.
+iRemittanceArray        - Array with Remittances.
 Mandatory.
 Output:
 oNumberOfHandledRemittances
--                                               The number of successfully handled
+- The number of successfully handled
 Remittances.
-oHandledRemittanceArray                       - The successfully handled Remittances
-Return: 0                                     - All Remittances are successfully
+oHandledRemittanceArray - The successfully handled Remittances
+Return: 0                       - All Remittances are successfully
 handled for which Bank Transactions
 are created.
-<> 0                                          - Error occurred during Bank
+<> 0                    - Error occurred during Bank
 Transaction creation of one of the
 Remittances. Note that some are
 possibly handled correct (see the
 oHandledRemittanceArray).
 ```
-
-## Public Interfaces for BankTransaction
-
-The following functions are available: BankTransaction.CreateBankReconciliation

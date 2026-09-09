@@ -16,7 +16,7 @@ This deletes a specified directory on the client system.
 | | |
 |---|---|
 | 0 | Success. |
-| <> 0 | Error. Probably directory not empty or no permission.  |
+| <> 0 | Error. Probably directory not empty or no permission. |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,4 +25,5 @@ Notes  This function is not supported in LN UI. See the [Implementing LN UI supp
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ExceptionMessages
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 590-592
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 594-595
 
 ```baan
 DLL:   cpextraoapi
-This function is available from     2024.09 (KB3501698  ).
+This function is available from 2024.09 (KB3501698).
 Syntax: long ExceptionMessages.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -39,14 +39,14 @@ Usage:        Expl:   This function starts the session Exception Messages
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: sort by Plan Item, Order
@@ -88,7 +88,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for OrderPegging
-
-The following functions are available: OrderPegging.StartOrderDetails OrderPegging.StartSelect

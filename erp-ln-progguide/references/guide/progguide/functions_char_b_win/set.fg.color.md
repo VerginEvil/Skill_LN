@@ -14,8 +14,8 @@ This sets the foreground color of a specified ASCII window. The color argument c
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `wind_id` |  |
-| `long` | `color` |  |
+| `long` | `wind_id` |    |
+| `long` | `color` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

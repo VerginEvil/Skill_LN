@@ -49,7 +49,7 @@ This function is implemented in the porting set and can be used in all script ty
 | BC2D_SET_XUNIT(x) | set x-unit, valid range: 0x00 - 0xFF |
 | BC2D_SET_MULYUNIT(m) | set y-unit multiplier, valid range: 0x0 - 0xF |
 | BC2D_SET_COLUMNS(c) | set columns, valid range: 0x0 - 0xF |
-Multiple options can be combined with bit.or function or with + operator (e.g. if more than 2 options need to be combined). Note that not all options are applicable to all barcodes.
+Multiple options can be combined with [bit.or](../functions_bit/bit_and_exor_in_inv_or.md#bit_or) function or with + operator (e.g. if more than 2 options need to be combined). Note that not all options are applicable to all barcodes.
 
 ## Deprecated variants
 `string bc$( long type, long rows, string barcode )`
@@ -70,7 +70,9 @@ The calc_checksum and show_checkdigits arguments for the 5-argument variant of b
 | calc_checksum argument set to true | BC_CALCCHECKSUM, BC_AUTOPARITY |
 | show_checkdigits argument set to true | BC_SHOWCHKDIGIT |
 Some options are always set for the deprecated 3- and 5-argument variants of the bc$() function, but need to be set explicitly for the 4-argument of bc$() function:
+
 - If the provided barcode type is 5, then the BC_SHOWLIGHTMARGINS option is implicitly set. Pass BC_SHOWLIGHTMARGINS value in the options argument of the 4-argument variant of bc$() to get the same behavior.
+
 - The BC_SHOWTEXT and BC_TRANSPARENTBACKGRND options are always implicitly set for the 3- and 5-argument variant of the bc$() function. Pass these values in the options argument of the 4-argument variant of bc$() to get the same behavior.
 
 ## Example mapping to 4-argument bc$ variant
@@ -86,11 +88,18 @@ barcode.string = bc$(2, 3, "87291803", BC_SHOWCHKDIGIT + BC_SHOWTEXT + BC_TRANSP
 
 ## Remarks
 - The calc_checksum, show_checkdigits and options arguments are not used on non-Windows platforms.
+
 - The 3-argument variant of bc$() has a limitation to the barcode type, which need to be in range of 1-63.
+
 - The 3- and 5-argument variants of bc$() have a limitation to the barcode string length of 224 bytes.
+
 - 2D-barcodes are supported on Windows platform only, by BWPrint, starting with portingset 6.1c.09 (BW=B40c.95), 8.5a.02 and 8.5b.
+
 - Starting with these BWprint versions: a barcode.pdf file is supplied in the directory where BWprint is installed. This pdf contains information about the capabilities and allowed options for barcodes.
-- Do not use 1D-barcode options for 2D-barcodes. Do not use 2D-barcode options for 1D-barcodes.    Windows platform/BwPrint  The barcode type points to a barcode type. Check the barcode-1D and/or barcode-2D test in the Help menu of BwPrint for available barcode types. The number of available barcode types depend on the thirdparty software from dlSoft. This software is used to generate the barcode images.
+
+- Do not use 1D-barcode options for 2D-barcodes. Do not use 2D-barcode options for 1D-barcodes.
+
+Windows platform/BwPrint  The barcode type points to a barcode type. Check the barcode-1D and/or barcode-2D test in the Help menu of BwPrint for available barcode types. The number of available barcode types depend on the thirdparty software from dlSoft. This software is used to generate the barcode images.
 Non-Windows platforms  The barcode type points to a shell script that is used to generate the barcode. This script is printer and customer specific. The script is stored in the $BSE/lib/barcode directory. The script name has the form 'type *xx* ', where *xx* gets a leading zero for a barcode type with a value lower than 10. For example 'type02' or 'type100'. The script is called by the printer daemon/filter in the form (quotes are added, to surround the barcode caption): $BSE/lib/barcode/type *type* '*barcode* '*rows*.
 
 ## Example

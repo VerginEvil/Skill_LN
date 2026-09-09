@@ -11,9 +11,9 @@ The function gbf.create.context.menu() has to be called before the call to [gbf.
 ## Return values
 | | |
 |---|---|
-| >= 0 | Successful completion, returned value is the new popup menu.id  |
+| >= 0 | Successful completion, returned value is the new popup menu.id |
 | GBF.NO.MEMORY | Not enough memory |
-| GBF.ILL.STATE | GBF is not in the right state to deal with this function  |
+| GBF.ILL.STATE | GBF is not in the right state to deal with this function |
 | GBF.NOT.EXPECTED | Function called when GBF did not expect it |
 
 ## Context
@@ -21,10 +21,17 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

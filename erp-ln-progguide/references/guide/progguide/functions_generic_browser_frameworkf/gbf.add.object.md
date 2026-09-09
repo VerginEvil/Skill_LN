@@ -25,12 +25,12 @@ Adds a header, interior, or leaf node to the object tree.
 ## Return values
 | | |
 |---|---|
-| >= 0 | Successful completion, returned value is the new obj.id  |
+| >= 0 | Successful completion, returned value is the new obj.id |
 | GBF.NO.MEMORY | Not enough memory |
 | GBF.ILL.ICON | Illegal icon.set identification |
-| GBF.ILL.FUNCTION | Illegal default.function.id, help.function.id or drop.function.id identification  |
-| GBF.ILL.LENGTH | Length of object.key exceeds the stored key length in GBF  |
-| GBF.ILL.STATE | GBF is not in the correct state to deal with this function  |
+| GBF.ILL.FUNCTION | Illegal default.function.id, help.function.id or drop.function.id identification |
+| GBF.ILL.LENGTH | Length of object.key exceeds the stored key length in GBF |
+| GBF.ILL.STATE | GBF is not in the correct state to deal with this function |
 | GBF.NOT.EXPECTED | Function called when GBF did not expect this |
 
 ## Context
@@ -41,13 +41,23 @@ This function may only be called by the application when the GBF issues a gbf.ge
 
 ## Related topics
 - [gbf.add.header()](gbf.add.header.md)
+
 - [gbf.add.interior()](gbf.add.interior.md)
+
 - [gbf.add.leaf()](gbf.add.leaf.md)
+
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Generic Browser Framework (GBF) synopsis](synopsis.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

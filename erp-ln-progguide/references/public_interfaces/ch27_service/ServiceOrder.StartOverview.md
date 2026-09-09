@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1433-1435
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1446-1448
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long ServiceOrder.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -29,20 +29,20 @@ ProcessingOptionSet.Delete().
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
 Not Used.
 iSessionIndex
-Specifies the table                              -index that is to be used. (Optional)
+Specifies the table-index that is to be used. (Optional)
 Supported values:
 1: sort by Service Order
 2: sort by Project
-3: sort by Sold                               -to Business Partner
+3: sort by Sold-to Business Partner
 4: sort by Installation Group and (Serialized) Item
 5: sort by Service Office and Preferred Engineer
 6: sort by Order Status

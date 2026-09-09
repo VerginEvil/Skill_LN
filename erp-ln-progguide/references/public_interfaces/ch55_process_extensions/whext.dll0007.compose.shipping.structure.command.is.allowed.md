@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ComposeShippingStructure
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1991-1992
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2010-2010
 
 ```baan
 Syntax: boolean whext.dll0007.compose.shipping.structure.command.is.allowed(
@@ -22,38 +22,38 @@ It is not possible to  enable a command which is disabled by the
 standard.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.action               -      This argument determines the action which is
+Input:  i.action -      This argument determines the action which is
 performed.
 Possible values are:
--                                               FreezeLoad
--                                               FreezeShippingContainer
--                                               FreezeShipment
--                                               FreezeShipmentLine
--                                               ReopenLoad
--                                               ReopenShippingContainer
--                                               ReopenShipment
--                                               ReopenShipmentLine
--                                               ConfirmLoad
--                                               ConfirmShippingContainer
--                                               ConfirmShipment
--                                               ConfirmShipmentLine
--                                               SelectCarrierLoad
--                                               NewLoad
-i.load                        -       Load that is selected in the compose shipping
+- FreezeLoad
+- FreezeShippingContainer
+- FreezeShipment
+- FreezeShipmentLine
+- ReopenLoad
+- ReopenShippingContainer
+- ReopenShipment
+- ReopenShipmentLine
+- ConfirmLoad
+- ConfirmShippingContainer
+- ConfirmShipment
+- ConfirmShipmentLine
+- SelectCarrierLoad
+- NewLoad
+i.load  -       Load that is selected in the compose shipping
 structure tree. Only filled when either the
 Load or Shipping Container is selected
 i.shipping.container
--                                     Shipping Container that is selected in the
+-       Shipping Container that is selected in the
 compose shipping structure tree. Only filled
 when a Shipping Container is selected.
-i.shipment                       -    Shipment that is selected in the compose
+i.shipment -    Shipment that is selected in the compose
 shipping structure tree. Only filled when either
 the Shipment or Shipment Line is selected.
 i.shipment.line
--                                     Shipment Line that is selected in the compose
+-       Shipment Line that is selected in the compose
 shipping structure tree. Only filled when a
 Shipment Line is selected
 Output:
-Return: true                  --> command is allowed
-false                         --> command is not allowed
+Return: true    --> command is allowed
+false   --> command is not allowed
 ```

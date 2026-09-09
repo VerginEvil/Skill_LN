@@ -3,14 +3,14 @@ Note  Only the form.all section is relevant to dynamic forms. For dynamic forms,
 You use form sections to program actions that you want to be executed when forms are activated or ended. Form sections consist of a main section and a subsection. The main section specifies the particular form(s) for which the actions are to be executed. The subsections specify when the actions must be executed – for example, when the user navigates to a form (before.form), or navigates away from a form (after.form).
 
 ## Main sections
-*form.<form number>:*
+*form.**<**form number**>**:*
 The subsections associated with this section are executed for the specified form. The <form number> is only available for static forms and is the sequence number of the form, as defined in the session *Forms* when started from the session *Sessions* (ttadv2500m000).
 
 ## form.all:
 The subsections associated with this section are executed for all forms of the session.
 
 ## form.other:
-A subsection associated with this section is executed for all forms for which the particular subsection has not been programmed in a *form.<form number* section.
+A subsection associated with this section is executed for all forms for which the particular subsection has not been programmed in a *form.**<**form number* section.
 
 ## Subsections
 
@@ -40,5 +40,7 @@ before.form:
 
 ## Related topics
 - [Programming a UI Script overview](overview.md)
+
 - [4GL event sections](4gl_event_sections.md)
+
 - [Flow of 4GL engine](flow_of_standard_program.md)

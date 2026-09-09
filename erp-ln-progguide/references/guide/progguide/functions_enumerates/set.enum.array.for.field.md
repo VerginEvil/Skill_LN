@@ -19,7 +19,7 @@ This function should be used in the *before.display.object* section and/or in th
 This function is implemented in the 4GL Engine and can be used in 4GL script types.
 Notes  You can set enumerate values only for the current occurrence.
 If the existing value of an enumerated field in not included in the new set, the nearest valid enum value is selected by the 4GL Engine.
-If you want to *hide* any options in case of an optionset, use the function ` [set.initial.enum.array.for.field()](set.initial.enum.array.for.field.md)` in the *after.form.read* section.
+If you want to *hide* any options in case of an optionset, use the function [set.initial.enum.array.for.field()](set.initial.enum.array.for.field.md) in the *after.form.read* section.
 To set enum values for the *ask.enum()* function, use *set.ask.enum.values()*.
 
 ## Example
@@ -50,4 +50,5 @@ when.field.changes:
 
 ## Related topics
 - [Enumerates overview and synopsis](overview_and_synopsis.md)
+
 - [Enumerate and set constants](../3gl_features/enumerate_and_set_constants.md)

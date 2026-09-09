@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopRouting
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 664-665
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 667-667
 
 ```baan
 DLL:   tiextrouapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long JobShopRouting.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,10 +26,10 @@ Note that the session can only be started if the parameter
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -52,7 +52,3 @@ information.
 Return: 0                       Session started
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ItemRouting
-
-The following functions are available: ItemRoutings.StartOverview

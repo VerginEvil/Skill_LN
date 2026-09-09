@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 356-357
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 358-359
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.07 (KB3567247  ).
+This function is available from 2025.07 (KB3567247).
 Syntax: long SalesOrderLine.Split(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -33,21 +33,21 @@ order (it performs a straightforward approve; no recalculations
 etc.). The change request will have origin 'Manual'.
 2. This function does not trigger any automatic processing
 afterwards, if applicable.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales order (mandatory)
-iSalesOrderLine                               - Sales order line (mandatory)
-iSalesOrderLineSequence                       - Sales order line sequence
-iQuantityForNewDetail                         - The quantity that will be used for the
+Input:  iSalesOrder             - Sales order (mandatory)
+iSalesOrderLine         - Sales order line (mandatory)
+iSalesOrderLineSequence - Sales order line sequence
+iQuantityForNewDetail   - The quantity that will be used for the
 new detail line (mandatory)
-iPlannedDeliveryDateForNewDetail                      -
+iPlannedDeliveryDateForNewDetail-
 The planned delivery date that will be
 used for the new detail line (mandatory)
-iSiteForNewDetail                             - The site that will be used for the new detail
+iSiteForNewDetail       - The site that will be used for the new detail
 line (mandatory if Sites is implemented)
-iWarehouseForNewDetail                        - The warehouse that will be used for the new
+iWarehouseForNewDetail  - The warehouse that will be used for the new
 detail line (mandatory)
-iProcessingOptionSet                          - Processing Option Set (Optional).
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default options are applied.
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
@@ -75,14 +75,14 @@ approved and processed automatically.
 No:  Approval and processing of the
 change request (if any) is not done
 automatically.
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - The sales order line has been split.
-<> 0                                          - An error occurred
+Return: 0                       - The sales order line has been split.
+<> 0                    - An error occurred
 ```

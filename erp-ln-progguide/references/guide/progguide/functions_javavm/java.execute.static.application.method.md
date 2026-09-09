@@ -1,7 +1,7 @@
 # java.execute.static.application.method
 
 ## Syntax:
-`function long java.execute.static.application.method( long Handle, ref string JavaReturnValue, string class.name, string method.name, [ void ... ] )`
+`function long java.execute.static.application.method( long Handle, ref string JavaReturnValue, string class.name, string method.name, [ void... ] )`
 
 ## Description
 Executes a versioned, dynamically loaded, Java method. These Java mehods can also return a (string) value to the 3 GL.
@@ -22,12 +22,12 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 ## Return codes
 | | |
 |---|---|
-| 0 |  Success. The JavaReturnValue will contain the return value of the Java method. All return values are converted to a string (using toString() in Java) and returned to the bshell as a string. More complex interaction with Java can be achieved by means of message queues.  |
+| 0 | Success. The JavaReturnValue will contain the return value of the Java method. All return values are converted to a string (using toString() in Java) and returned to the bshell as a string. More complex interaction with Java can be achieved by means of message queues. |
 | -1 | Java not available or not licensed. |
 | -2 | Java virtual machine could not be started (resource problems). |
 | -3 | Invalid (unknown) handle specified. |
 | -4 | Internal (resource) problems handling a request. |
-| -5 | Invalid method (does not exist, bad signature, return type, etc) or error during execution of the method (Java exception).  |
+| -5 | Invalid method (does not exist, bad signature, return type, etc) or error during execution of the method (Java exception). |
 More detailed error information may be available in the log file.
 For an example, see [java.load.application](java.load.application.md)
 Note: Java applications can be debugged using the -tracelevel option of the Bshell. This is translated as follows:
@@ -54,5 +54,7 @@ Thrown exceptions will show up in the bshell trace file with an accompanying sta
 
 ## Related topics
 - [Java VM integration - Infor Enterprise Server 3GL](overview.md)
+
 - [java.load.application](java.load.application.md)
+
 - [java.unload.application](java.unload.application.md)

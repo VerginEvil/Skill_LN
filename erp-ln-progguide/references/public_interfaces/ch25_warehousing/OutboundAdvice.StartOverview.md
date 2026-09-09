@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1192-1195
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1202-1205
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.07 (KB2243668  ).
+This function is available from 2022.07 (KB2243668).
 Syntax: long OutboundAdvice.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -42,10 +42,10 @@ Usage:        Expl    This function starts the overview session Outbound Advice
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -130,24 +130,20 @@ Optional
 iUnit
 Optional
 Output: for iStartMode MODAL:
-oOrderOrigin                                  - Order Origin of selected record
-oOrderNumber                                  - Order Number of selected record
-oOrderSet                                     - Order Set of selected record
-oOrderLine                                    - Order Line of selected record
-oOrderSequence                                - Order Sequence of selected record
-oAdvice                                       - Advice of selected record
-oExceptionMessage                             - The last message if any message is
+oOrderOrigin    - Order Origin of selected record
+oOrderNumber    - Order Number of selected record
+oOrderSet       - Order Set of selected record
+oOrderLine      - Order Line of selected record
+oOrderSequence  - Order Sequence of selected record
+oAdvice         - Advice of selected record
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for OutboundRun
-
-The following functions are available: OutboundRun.HandlePickingList OutboundRun.StartAutomaticOutboundProcessing OutboundRun.UndoAdvice OutboundRun.UndoRelease

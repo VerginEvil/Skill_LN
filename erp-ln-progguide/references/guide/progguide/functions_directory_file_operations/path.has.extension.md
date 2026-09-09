@@ -15,7 +15,7 @@ If Infor Enterprise Server is running on UNIX, the given path is interpreted as 
 
 ## Return values
 true if the characters that follow the last directory separator (\ or /) in the path include a period (.) followed by one or more characters; otherwise, false.
-Starting from the end of path, this method searches for a period (.) followed by at least one character. If this pattern is found before a ` [path.dir.separator()](path.dir.separator.md)` character is encountered, this method returns true.
+Starting from the end of path, this method searches for a period (.) followed by at least one character. If this pattern is found before a [path.dir.separator()](path.dir.separator.md) character is encountered, this method returns true.
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -49,4 +49,5 @@ ret = path.has.extension("c:\temp.dir\test", OS_WINDOWS_NT)
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

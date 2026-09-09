@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 173-174
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 174-175
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2020.01 (KB2085127  ).
+This function is available from 2020.01 (KB2085127).
 Syntax: long Item.GetPlanningTimeFenceDate(
 domain  tcncmp           iLogisticCompany,
 domain  cpcom.plnc       iScenario,

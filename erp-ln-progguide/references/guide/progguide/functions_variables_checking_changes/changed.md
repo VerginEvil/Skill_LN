@@ -22,5 +22,7 @@ Note  When the 'keep.flag.raised' parameter is not used, this function returns T
 
 ## Related topics
 - [Variables (checking changes) overview](overview.md)
+
 - [Variables (checking changes) synopsis](synopsis.md)
+
 - [Variables (checking changes): sample program](example.md)

@@ -11,7 +11,7 @@ Gets the responsibility of the recipient identified by *recipient* and returns i
 | | | |
 |---|---|---|
 | `long` | `recipient` |  The recipient identification.  |
-| `ref string` | `responsibility` |  |
+| `ref string` | `responsibility` |    |
 
 ## Return values
 | | |
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

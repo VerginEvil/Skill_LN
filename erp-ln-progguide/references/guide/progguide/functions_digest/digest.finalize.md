@@ -16,11 +16,12 @@ After the last data has been fed into the hash-algorithm using [digest.update()]
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error. The specifics of the error are logged by the Bshell. The problem can be caused by the underlying OpenSSL function, a *result* string that is too small to hold the result or an invalid *handle*.  |
+| -1 | Error. The specifics of the error are logged by the Bshell. The problem can be caused by the underlying OpenSSL function, a *result* string that is too small to hold the result or an invalid *handle*. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2000.
 
 ## Related topics
 - [Secure Digest Functions overview](digest_overview.md)
+
 - [Secure Digest Functions synopsis](digest_synopsis.md)

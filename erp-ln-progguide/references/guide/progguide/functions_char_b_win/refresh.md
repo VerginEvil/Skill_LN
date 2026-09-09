@@ -11,7 +11,7 @@ If you specify a window ID, the specified window is refreshed. But the window se
 ## Arguments
 | | | |
 |---|---|---|
-| `[ long` | `wind_id ]` |  |
+| `[ long` | `wind_id ]` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

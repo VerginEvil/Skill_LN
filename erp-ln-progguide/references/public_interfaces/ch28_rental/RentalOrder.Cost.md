@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1544-1548
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1559-1562
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalOrder.Cost(
 domain  tcorno           iRentalOrder fixed,
 long             iProcessingOptionSet,
@@ -36,7 +36,7 @@ either have been aborted or committed).
 Call ProcessingOptionSet.Create() to obtain
 iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iRentalOrder               -
+Input:  iRentalOrder -
 Rental Order
 Mandatory.
 iProcessingOptionSet
@@ -123,14 +123,14 @@ LowerMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if
-the Sites                              -concept has been activated), then this
+the Sites-concept has been activated), then this
 is the lowest margin for which it is allowed to cost the
 given Rental Order.
 UpperMargin
 domain  tcprcg          0.0
 If margin control is applicable in the Service Order
 Parameters (or in the settings by service office if the
-Sites                              -concept has been activated), then this is the
+Sites-concept has been activated), then this is the
 highest margin for which it is allowed to cost the
 given Rental Order.
 InvoiceLineStatus
@@ -144,7 +144,7 @@ tcsli.stat.not.appl
 If the status is set to tcsli.stat.not.appl then this
 will mean that the system will default it again from
 either the Service Order Parameters or from the
-settings per office, if the Sites                              -concept has been
+settings per office, if the Sites-concept has been
 activated.
 Output: oExceptionMessage
 The last message if any message is found. If more than
@@ -156,8 +156,8 @@ functions in Exception to get all relevant information.
 Note that if the return value of this function is
 unequal zero, then the status of the Rental Order is
 not changed to Costed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Rental Order changed to Costed.
-<> 0                          -       The status of the Rental Order could
+<> 0    -       The status of the Rental Order could
 not be changed to Costed.
 ```

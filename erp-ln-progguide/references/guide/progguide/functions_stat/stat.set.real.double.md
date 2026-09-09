@@ -1,7 +1,7 @@
 # stat.set.real.double()
 
 ## Syntax:
-`function void stat.set.real.double( string i.domain(14), const double i.double )`
+`function long stat.set.real.double( string i.domain(14), const double i.double )`
 
 ## Description
 This function sets the real double value of a Stat-field.

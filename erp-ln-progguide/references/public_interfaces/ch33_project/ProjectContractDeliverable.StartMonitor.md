@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectContractDeliverable
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1693-1696
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1712-1714
 
 ```baan
 DLL:   tpextpdmapi
-This function is available from     2025.07 (KB3556268  ).
+This function is available from 2025.07 (KB3556268).
 Syntax: long ProjectContractDeliverable.StartMonitor(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -33,10 +33,10 @@ Monitor'(tppdm7100m400)
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -63,8 +63,8 @@ iFilterbyContractOrPlannedDeliveryDate
 In the grid the data is filtered by Contract or
 Planned Delivery Date.
 Allowed Values for TargetStatus are:
-tpctm.cdmf.ctdd                               - Contract Delivery Date; Default Value
-tpctm.cdmf.pldd                               - Planned Delivery Date
+tpctm.cdmf.ctdd - Contract Delivery Date; Default Value
+tpctm.cdmf.pldd - Planned Delivery Date
 iContractDeliveryDateFrom
 In the grid the data from this
 Contract Delivery Date will be considered if
@@ -101,18 +101,14 @@ iAtRisk
 In the grid the data for the status which are
 At Risk will be shown.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return:0                        - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for ProjectActivityBudget
-
-The following functions are available: ProjectActivityBudget.AddCPQConfiguration

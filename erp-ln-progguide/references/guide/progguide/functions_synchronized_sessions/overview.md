@@ -1,13 +1,15 @@
 # Synchronized sessions overview
 Infor Enterprise Server provides several mechanisms for starting one session from another – these are zoom fields, synchronized sessions, and the 4GL [start.session()](../functions_starting_and_stopping_programs/start.session.md) function. This section discusses synchronized sessions and associated functions.
 When two sessions are synchronized, actions performed on one session window have a direct effect on the other session window. Infor Enterprise Server implements two synchronization models:
+
 - Dialog synchronization
+
 - Child synchronization
 
 ## Dialog synchronization
 This synchronizes a multioccurrence parent session with a single-occurrence dialog session. Both sessions act on the same main table. The parent session can be a modeless multioccurrence display form or a modal multioccurrence zoom window.
-When the user double-clicks on an occurrence in the parent session, the 4GL engine automatically opens the synchronized dialog session (if it is not already open) and updates it with information from the selected record. Whether the dialog opens in edit or display mode depends on user authorization settings. The synchronized dialog is also opened automatically when the user initiates one of the following actions: insert record, edit record, or duplicate record.
-When a record is saved in the synchronized dialog, the 4GL engine automatically updates the occurrence in the parent window.
+When the user double-clicks on an occurrence in the parent session, the [4GL engine](../glossary/glossary.md#fourgl_engine) automatically opens the synchronized dialog session (if it is not already open) and updates it with information from the selected record. Whether the dialog opens in edit or display mode depends on user authorization settings. The synchronized dialog is also opened automatically when the user initiates one of the following actions: insert record, edit record, or duplicate record.
+When a record is saved in the synchronized dialog, the [4GL engine](../glossary/glossary.md#fourgl_engine) automatically updates the occurrence in the parent window.
 Parent and child forms must be of the following types:
 | | |
 |---|---|
@@ -30,5 +32,7 @@ With child synchronization, you can synchronize a parent session that uses the O
 
 ## Related topics
 - [Synchronized sessions illustration](synchronized_sessions_illustration.md)
+
 - [Synchronized sessions synopsis](synopsis.md)
+
 - [Child synchronization sample program](example.md)

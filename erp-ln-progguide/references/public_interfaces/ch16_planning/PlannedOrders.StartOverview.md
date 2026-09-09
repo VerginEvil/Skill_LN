@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 560-562
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 564-565
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long PlannedOrders.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -32,10 +32,10 @@ in overview mode.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -60,7 +60,7 @@ iPlanningCluster        Planning Cluster
 iSite                   Site
 iPlanner                Planner
 iBuyFromBusinessPartner
-Buy                                              -from Business Partner
+Buy-from Business Partner
 iBuyer                  Buyer
 Output: Variables below contain the values of the selected record.
 They are only filled if iStartMode is MODAL and 1 record has

@@ -10,7 +10,7 @@ Use this to position the cursor at a specified column in the current window. If 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `num_expr` |  |
+| `long` | `num_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

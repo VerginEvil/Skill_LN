@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1379-1381
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1391-1393
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2023.05 (KB2286841  ).
+This function is available from 2023.05 (KB2286841).
 Syntax: long Call.TransferToWorkOrder(
 domain  tcorno           iCall,
 domain  tcorno           iWorkOrder,
@@ -52,7 +52,7 @@ call must be blocked. When the call is set to blocked, the call
 cannot be transferred and output argument oCallIsBlocked
 will be set to Yes.
 Pre:    None.
-Post:   This function sets a retry              -point and will commit and/or abort
+Post:   This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iCall
 Call Number: Mandatory
@@ -83,11 +83,11 @@ iCreateNewOrderWhenMultipleOpenOrdersPresent
 When multiple open work orders are present, the next
 situations are distinguished:
 Value   | iWorkOrder    | Call transferred to
---------                              |---------------|--------------------
+--------|---------------|--------------------
 Yes     | ignored       | new work order
-No      | ""            | not tranferred                               --> error
+No      | ""            | not tranferred --> error
 No      | valid         | iWorkOrder
-No      | invalid       | not tranferred                               --> error
+No      | invalid       | not tranferred --> error
 (mandatory Yes/No)
 Output: oCallIsBlocked
 Indicates if the call is set to blocked.

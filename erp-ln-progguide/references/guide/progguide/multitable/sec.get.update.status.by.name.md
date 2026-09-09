@@ -26,4 +26,5 @@ The result uses the same defines as the value of the [update.status](../misc/pre
 
 ## Related topics
 - [Multi Table Overview](overview.md)
+
 - [Multi Table synopsis](synopsis.md)

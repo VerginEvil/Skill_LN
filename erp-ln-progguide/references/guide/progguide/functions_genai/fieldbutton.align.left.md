@@ -23,4 +23,4 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 Notes  This function should be called in the "after.form.read" section
 
 ## Related topics
-- [GenAI Functionality on Form Overview](overview_and_synopsis.md)
+- [GenAI Functionality on Form](overview_and_synopsis.md)

@@ -5,7 +5,7 @@ The NOT boolean operator evaluates to True if the search condition evaluates to 
 ```
 
 <not boolean operator>
-    ::= NOT Search condition
+    ::= NOT <search condition>
 ```
 
 ## Semantics
@@ -29,5 +29,7 @@ NOT EXISTS( select * from dbtst120 where salary > 50000 )
 
 ## Related topics
 - [AND boolean operator](and_sc.md)
+
 - [OR boolean operator](or_sc.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

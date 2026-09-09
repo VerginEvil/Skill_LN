@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Item
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 167-168
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 168-169
 
 ```baan
 DLL:   tcextibdapi
-This function is available from     2023.11 (KB2302509  ).
+This function is available from 2023.11 (KB2302509).
 Syntax: long Item.CopySiteData(
 domain  tcitem           iSourceItem,
 domain  tcsite           iSourceSite,
@@ -31,14 +31,14 @@ This parameter is for future use, so
 currently no processing options
 are available for this Public Interface.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Site Data was copied.
-<> 0                                          - Otherwise.
+Return: 0                       - Site Data was copied.
+<> 0                    - Otherwise.
 ```

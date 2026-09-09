@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 557-558
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 560-561
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2025.12 (KB3588102  ).
+This function is available from 2025.12 (KB3588102).
 Syntax: long PlannedOrder.GetUnconfirmedDemand(
 domain  cpcom.plnc       iPlanningScenario,
 domain  tckoor           iOrderType,

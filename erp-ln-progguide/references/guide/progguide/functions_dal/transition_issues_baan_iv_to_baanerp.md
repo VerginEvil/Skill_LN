@@ -2,19 +2,19 @@
 
 ## 4GL event sections
 This table lists the 4GL event sections that have been moved to the DAL in Infor Enterprise Server. It also lists the DAL methods that replace these sections.
-If a DAL script exists for a particular table, the 4GL engine calls the methods in the DAL to perform the relevant integrity checks. Any corresponding 4GL event sections in the UI script are ignored. If there is no DAL for the table, the 4GL event sections are executed.
+If a DAL script exists for a particular table, the [4GL engine](../glossary/glossary.md#fourgl_engine) calls the methods in the DAL to perform the relevant integrity checks. Any corresponding 4GL event sections in the UI script are ignored. If there is no DAL for the table, the 4GL event sections are executed.
 | | |
 |---|---|
 | 4GL event sections | DAL methods |
-|  field.< *x* >: check.input:  | function extern long < *x* >.check()  |
-|  main.table.io: before.read:  | function extern long before.get.object() |
-|  main.table.io: after.read:  | function extern long after.get.object() |
-|  main.table.io: before.write:  | function extern long before.save.object() |
-|  main.table.io: after.write:  | function extern long after.save.object() |
-|  main.table.io: before.rewrite:  | function extern long before.save.object() |
-|  main.table.io: after.rewrite:  | function extern long after.save.object() |
-|  main.table.io: before.delete:  | function extern long before.destroy.object() |
-|  main.table.io: after.delete:  | function extern long after.destroy.object() |
+| field.< *x* >: check.input: | function extern long < *x* >.check() |
+| main.table.io: before.read: | function extern long before.get.object() |
+| main.table.io: after.read: | function extern long after.get.object() |
+| main.table.io: before.write: | function extern long before.save.object() |
+| main.table.io: after.write: | function extern long after.save.object() |
+| main.table.io: before.rewrite: | function extern long before.save.object() |
+| main.table.io: after.rewrite: | function extern long after.save.object() |
+| main.table.io: before.delete: | function extern long before.destroy.object() |
+| main.table.io: after.delete: | function extern long after.destroy.object() |
 
 ## 4GL functions
 This table lists those 4GL UI functions that have DAL equivalents. If a DAL exists for a particular table, it is preferable to use the DAL functions instead of the 4GL UI functions.
@@ -23,9 +23,9 @@ This table lists those 4GL UI functions that have DAL equivalents. If a DAL exis
 | 4GL function | DAL function |
 | on.main.table() | with.object.set.do() |
 | on.old.occ() | with.old.object.values.do() |
-| set.input.error() |  dal.set.error.message() return(DALHOOKERROR)  |
-| skip.io() |  dal.set.error.message() return(DALHOOKERROR)  |
-| abort.io() |  dal.set.error.message() return(DALHOOKERROR)  |
+| set.input.error() | dal.set.error.message() return(DALHOOKERROR) |
+| skip.io() | dal.set.error.message() return(DALHOOKERROR) |
+| abort.io() | dal.set.error.message() return(DALHOOKERROR) |
 | db.update() | dal.update() |
 | db.delete() | dal.destroy() |
 | db.insert() | dal.new() |
@@ -52,4 +52,5 @@ When writing a Data Access Layer, you must include bic_dal. To use progress indi
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)

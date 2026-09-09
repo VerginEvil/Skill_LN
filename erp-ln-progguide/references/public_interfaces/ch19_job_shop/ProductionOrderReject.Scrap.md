@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrderReject
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 808-809
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 808-808
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2020.11 (KB2156939  ).
+This function is available from 2020.11 (KB2156939).
 Syntax: long ProductionOrderReject.Scrap(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -53,7 +53,3 @@ information.
 Return: 0                       Rejected quantity is scrapped
 <> 0                    Rejected quantity could not be scrapped
 ```
-
-## Public Interfaces for WorkCenter
-
-The following functions are available: WorkCenter.GetCalendar WorkCenters.StartOverview

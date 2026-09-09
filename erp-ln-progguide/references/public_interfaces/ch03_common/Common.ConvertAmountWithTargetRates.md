@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Common
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 100-101
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 101-102
 
 ```baan
 DLL:   tcextemmapi
-This function is available from     2023.11 (KB2303598  ).
+This function is available from 2023.11 (KB2303598).
 Syntax: long Common.ConvertAmountWithTargetRates(
 domain  tcncmp           iFinancialCompany,
 domain  tcamnt           iSourceAmount,
@@ -29,27 +29,27 @@ the iSourceRateDateUTC and iExchangeRateType.
 Pre:  Finanial Company must be a valid company.
 Post: None
 Input:
-iFinancialCompany                             - Financial Company: Mandatory
-iSourceAmount                                 - Source Amount
-iSourceCurrency                               - Source Currency: Mandatory
-iSourceRateDateUTC                            - Source Rate Date (UTC)
-iTargetRates                                  - Target Rates (array)
-itargetRateFactors                            - Target Rate Factors (array)
-iExchangeRateType                             - Target Rate Type,
+iFinancialCompany            - Financial Company: Mandatory
+iSourceAmount                - Source Amount
+iSourceCurrency              - Source Currency: Mandatory
+iSourceRateDateUTC           - Source Rate Date (UTC)
+iTargetRates                 - Target Rates (array)
+itargetRateFactors           - Target Rate Factors (array)
+iExchangeRateType            - Target Rate Type,
 if not filled, the Internal Rate Type
 will be used.
-iTargetCurrency                               - Target Currency: Mandatory
+iTargetCurrency              - Target Currency: Mandatory
 Output:
-oTargetAmount                                 - Target Amount, result of the
+oTargetAmount                - Target Amount, result of the
 conversion.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage            - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID                 - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return:    0                                  - Amount is converted.
-<> 0                                          - Otherwise.
+Return:    0                       - Amount is converted.
+<> 0                    - Otherwise.
 ```

@@ -4,6 +4,9 @@ The contents and layouts of reports are defined in the data dictionary. In addit
 
 ## Related topics
 - [Report script sections](sections.md)
+
 - [Predefined variables](predefined_variables.md)
+
 - [Report script functions](functions_in_report_scripts.md)
+
 - [Expanding text variables](expanding_text_variables.md)

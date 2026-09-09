@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ProjectPCS
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2160-2161
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2183-2184
 
 ```baan
 Syntax: long tiext.pcs0003.get.customer.defined.project.series(
@@ -39,10 +39,10 @@ return(0)
 }
 Pre:    N.A.
 Post:   N.A.
-Input:  i.project.series                      - The project series from the standard
+Input:  i.project.series        - The project series from the standard
 session.
-Output: o.project.series                      - The project series to use. May be left
+Output: o.project.series        - The project series to use. May be left
 empty, in that case the input Project
 series will be used for the processing.
-Return: 0                                     - Success.
+Return: 0                       - Success.
 ```

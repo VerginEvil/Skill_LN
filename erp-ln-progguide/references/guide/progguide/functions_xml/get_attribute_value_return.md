@@ -16,11 +16,12 @@ Get an attribute of an XML_ELEMENT or XML_DTD node.
 ## Return values
 | | |
 |---|---|
-|  | A temporary multibyte string with the value of the specified attribute.  |
+|  | A temporary multibyte string with the value of the specified attribute. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

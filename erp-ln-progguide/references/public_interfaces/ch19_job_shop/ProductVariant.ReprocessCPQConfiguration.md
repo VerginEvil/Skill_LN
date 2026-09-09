@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 683-684
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 686-687
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2025.04 (KB3561937  ).
+This function is available from 2025.04 (KB3561937).
 Syntax: long ProductVariant.ReprocessCPQConfiguration(
 domain  tccpva           iProductVariant,
 long             iProcessingOptionSet,
@@ -45,19 +45,19 @@ CheckStandardItemInventory      domain  tcyesno         tcyesno.yes
 UpdatePricesQuotationLines      domain  tcyesno         tcyesno.yes
 UpdatePricesSalesOrderLines     domain  tcyesno         tcyesno.yes
 Output: oProductVariantProcessed
--                                               True, If Product Variant is
+- True, If Product Variant is
 reprocessed successfully.
 False, If  Product Variant is
 not reprocessed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Reprocessed CPQ configuration
+Return: 0                       - Reprocessed CPQ configuration
 successfully.
-<> 0                                          - Otherwise.
+<> 0                    - Otherwise.
 ```

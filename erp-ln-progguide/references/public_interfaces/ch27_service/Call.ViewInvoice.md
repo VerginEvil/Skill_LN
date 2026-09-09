@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1381-1382
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1393-1394
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2026.08 (KB3676476  ).
+This function is available from 2026.08 (KB3676476).
 Syntax: long Call.ViewInvoice(
 domain  tcorno           iCall,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -29,7 +29,3 @@ functions in Exception to get all relevant information.
 Return: 0       Session started
 <> 0    An error occurred
 ```
-
-## Public Interfaces for ServiceContract
-
-The following functions are available: ServiceContract.Activate ServiceContract.ActivateV2 ServiceContract.Create ServiceContract.GenerateConfigurationLines ServiceContract.GetTotalSalesAmount ServiceContract.StartMultiMain ServiceContract.UnpackObjectReference

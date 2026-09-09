@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OrderRelation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1538-1540
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1553-1554
 
 ```baan
 DLL:   tsextmdmapi
-This function is available from     2026.09 (KB3689060  ).
+This function is available from 2026.09 (KB3689060).
 Syntax: long OrderRelation.GetLatestSequenceNumber(
 domain  tckoor           iOrderOrigin,
 domain  tcorno           iOrder,
@@ -25,8 +25,8 @@ This Sequence Number is necessary when calling Public Interface
 ProductAvailability.GetDeliveryDate.
 When there is no related order yet, the returned Sequence is
 set to 1.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:
 iOrderOrigin
 Origin / Order Type
@@ -65,9 +65,3 @@ functions in Exception to get all relevant information.
 Return: 0       No errors occurred.
 <> 0    Error(s) occurred.
 ```
-
-## Chapter 28 Public Interfaces for Rental
-
-## Public Interfaces for RentalOrder
-
-The following functions are available: RentalOrder.Cancel RentalOrder.Close RentalOrder.Complete RentalOrder.Cost RentalOrder.Generate RentalOrder.Plan RentalOrder.Release RentalOrder.StartMultiMain

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Shipment
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1151-1154
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1161-1164
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.12 (KB3621390  ).
+This function is available from 2025.12 (KB3621390).
 Syntax: long Shipment.ProcessInvoice(
 domain  whinh.shpm       iShipment,
 domain  tcsli.tinv       iTypeOfInvoice,
@@ -45,8 +45,8 @@ Pro Forma Invoice, Customs Invoice or
 Consigment Invoice.
 Ignored for Standard Invoice.
 iProcessInvoice         Mandatory,
-true                                                - Step 2 is performed.
-false                                               - Step 2 is not performed.
+true  - Step 2 is performed.
+false - Step 2 is not performed.
 iInvoiceDevice          Mandatory but will be overruled with
 predefined device if
 PrintToPredefinedDevice has value
@@ -60,8 +60,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iShipment is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       ShipmentArray
+- selection range fields (From/To)
+- ShipmentArray
 The invoice will then be processed for the given iShipment.
 In case option ShipmentArray is set then the selection range
 fields (From/To) of the iProcessingOptionSet will be ignored.
@@ -114,18 +114,18 @@ Json.add(ShipmentArray, Shipment)
 ReportName only needs to filled for customized error report, otherwise
 the report related to the session is automatically used.
 ReportName must start with an "r", e.g. "rwhinh427901001"
-Output: oSetNewRetryPoint                     - true:  New db.retry.point needs to be
+Output: oSetNewRetryPoint       - true:  New db.retry.point needs to be
 set.
 false: No new db.retry.point needs to
 be set.
-oErrorFound                                   - Error found
-oDataProcessed                                - true:  Invoice data is processed.
+oErrorFound             - Error found
+oDataProcessed          - true:  Invoice data is processed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 458-461
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 460-463
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2026.07 (KB3669194  ).
+This function is available from 2026.07 (KB3669194).
 Syntax: long PurchaseOrderLine.Generate(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iPurchaseOrderLine,
@@ -30,11 +30,11 @@ to create subsequent purchase order lines, where possible.
 This function does not start the execution of automatic order steps.
 A separate Public Interface can be used to start automatic order steps
 if necessary: 'PurchaseOrder.StartAutomaticProcessing'.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iPurchaseOrder                        - Purchase Order (Optional)
-iPurchaseOrderLine                            - Purchase Order Line (Optional)
-iProcessingOptionSet                          - Processing Option Set (Mandatory).
+Input:  iPurchaseOrder          - Purchase Order (Optional)
+iPurchaseOrderLine      - Purchase Order Line (Optional)
+iProcessingOptionSet    - Processing Option Set (Mandatory).
 A Processing Option Set can be created
 via a call to ProcessingOptionSet.Create()
 in DLL tcextextapi. After the call the
@@ -43,7 +43,7 @@ ProcessingOptionSet.Delete()
 The processing option "OriginOfPurchaseOrder" can have one of the following
 allowed
 values: 'Manual', 'Project' or 'External'.
-Discount              -related options can be defined in a dedicated sub processing option set
+Discount-related options can be defined in a dedicated sub processing option set
 named "SubProcessingOptionSetDiscounts", which must be included in the main
 processing option set.
 Any options that are not provided as processing options are defaulted, where
@@ -151,18 +151,18 @@ CarrierLSP                              domain  tccfrw          Determined by LN
 Settings
 PurchaseType                            domain  tcpsty          Determined by LN
 Settings
-Output: oPurchaseOrder                                - The generated purchase order
-oPurchaseOrderLine                                    - The generated purchase order line
-oPurchaseOrderLineSequence                            - The generated purchase order line
+Output: oPurchaseOrder                  - The generated purchase order
+oPurchaseOrderLine              - The generated purchase order line
+oPurchaseOrderLineSequence      - The generated purchase order line
 sequence
-oExceptionMessage                                     - The last message if any message is
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information
-Return: 0                                             - No error
-<> 0                                                  - Error occurred
+Return: 0                               - No error
+<> 0                            - Error occurred
 ```

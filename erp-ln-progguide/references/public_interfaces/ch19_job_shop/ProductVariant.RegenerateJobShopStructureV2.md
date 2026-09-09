@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 682-683
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 685-686
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2023.05 (KB2284269  ).
+This function is available from 2023.05 (KB2284269).
 Syntax: long ProductVariant.RegenerateJobShopStructureV2(
 domain  tccpva           iProductVariant,
 boolean          iUpdateOrderPrice,
@@ -28,15 +28,15 @@ iShipFromWarehouse      Warehouse for Project Part. This is
 typically the Warehouse of the Sales
 Order Line or Sales Quotation Line
 from which the goods are shipped.
-Output: oItem                                 - The created custom Item.
-oExceptionMessage                             - The last message if any message is
+Output: oItem                   - The created custom Item.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Structure regeneration completed.
-<> 0                                          - Otherwise.
+Return: 0                       - Structure regeneration completed.
+<> 0                    - Otherwise.
 ```

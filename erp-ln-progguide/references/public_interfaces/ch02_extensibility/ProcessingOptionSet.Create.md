@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProcessingOptionSet
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 82-83
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 83-84
 
 ```baan
 DLL:   tcextextapi
-This function is available from     2023.11 (KB2302509  ).
+This function is available from 2023.11 (KB2302509).
 Syntax: long ProcessingOptionSet.Create(
 ref             long             oProcessingOptionSet,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -42,22 +42,22 @@ ret = ProcessingOptionSet.Delete(
 my.copy.item.processing.option.set)
 .
 .
-Pre:                  -
+Pre:    -
 Post:   Use ProcessingOptionSet.Delete() to release memory for the
 allocated Processing Option Set.
-Input:  Variable Arguments               - repetition of pairs:
-OptionName                                    - option name of type string
-OptionValue                                   - option value, type as defined by
+Input:  Variable Arguments - repetition of pairs:
+OptionName              - option name of type string
+OptionValue             - option value, type as defined by
 Public Interface usage.
-Output: oProcessingOptionSet                  - reference to the processing option set
-oExceptionMessage                             - The last message if any message is
+Output: oProcessingOptionSet    - reference to the processing option set
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return:         0                             - successfully created
-<> 0                                          - failed.
+Return:         0               - successfully created
+<> 0            - failed.
 ```

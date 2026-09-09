@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Pricing
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 511-517
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 513-518
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2024.12 (KB3527699  ).
+This function is available from 2024.12 (KB3527699).
 Syntax: long Pricing.SimulateServicePrice(
 long             iProcessingOptionSet,
 ref     domain  tcpric           oPrice,
@@ -52,12 +52,12 @@ NAME                    TYPE                    DEFAULT
 TypeOfOrder             domain  tdpcg.tyor      tdpcg.tyor.sr
 The type of order to find a default price for.
 Allowed values:
--                               tdpcg.tyor.sr         General Service
--                               tdpcg.tyor.sr.msc     Maintenance Sales
--                               tdpcg.tyor.sr.quote   Service Quote
--                               tdpcg.tyor.sr.soc     (Field) Service
+- tdpcg.tyor.sr         General Service
+- tdpcg.tyor.sr.msc     Maintenance Sales
+- tdpcg.tyor.sr.quote   Service Quote
+- tdpcg.tyor.sr.soc     (Field) Service
 OrderNumber             domain  tcorno          ""
-The Order                              - or Quote number of the order to find a
+The Order- or Quote number of the order to find a
 default price for. This is only applicable and mandatory
 if TypeOfOrder is tdpcg.tyor.sr.msc, tdpcg.tyor.sr.quote
 or tdpcg.tyor.sr.soc.
@@ -75,15 +75,15 @@ Site                    domain  tcsite          ""
 The Site to find a default price for.
 SoldToBusinessPartner   domain  tccom.bpid      ""
 Mandatory.
-The Sold                              -to Business Partner to find a default price
+The Sold-to Business Partner to find a default price
 for.
 ShipToBusinessPartner   domain  tccom.bpid      ""
-The Ship                              -to Business Partner to find a default price
+The Ship-to Business Partner to find a default price
 for.
 InvoiceToBusinessPartner
 domain  tccom.bpid      ""
 Optional*
-The Invoice                              -to Business Partner to find a default price
+The Invoice-to Business Partner to find a default price
 for.
 PricingBusinessPartner  domain  tccom.bpid      ""
 The Pricing Business Partner to find a default price
@@ -222,6 +222,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

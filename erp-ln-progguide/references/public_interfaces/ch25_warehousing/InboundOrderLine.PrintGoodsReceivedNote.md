@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1078-1081
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1088-1091
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2024.03 (KB2322785  ).
+This function is available from 2024.03 (KB2322785).
 Syntax: long InboundOrderLine.PrintGoodsReceivedNote(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -24,8 +24,8 @@ using the defaults or options as provided in the
 iProcessingOptionSet.
 In case iOrderNumber is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       InboundOrderLineArray
+- selection range fields (From/To)
+- InboundOrderLineArray
 The goods received note will then be printed for the given
 iOrderOrigin, iOrderNumber, iOrderLine and iOrderSequence.
 In case option InboundOrderLineArray is set then the
@@ -131,16 +131,16 @@ Json.add(InboundOrderLineArray, InboundOrderLine)
 ReportName only needs to filled for customized reports, otherwise
 the report related to the SortOption is automatically used.
 ReportName must start with an "r", e.g. "rwhinh341211101"
-Output: oDataProcessed                        - true:  Goods Received Note Printed.
+Output: oDataProcessed          - true:  Goods Received Note Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```

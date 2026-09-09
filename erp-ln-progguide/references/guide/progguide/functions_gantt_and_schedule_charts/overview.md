@@ -5,5 +5,7 @@ For the end-user the difference is also big. The Gantt and Schedule charts have 
 
 ## Related topics
 - [Synopsis](synopsis.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)

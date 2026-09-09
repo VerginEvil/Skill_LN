@@ -19,7 +19,7 @@ The function fails if *node* is invalid or *namespaceOrURI* is invalid.
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The value of *node*.  |
+| <> 0 | Success; The value of *node*. |
 | 0 | Error. |
 
 ## Context
@@ -59,5 +59,7 @@ The *xml_envelope* node would serialize to the following XML. Note that the call
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

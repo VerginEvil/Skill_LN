@@ -10,8 +10,6 @@ As of [TIV 1700](../tiv/tiv_1700.md), *rpos()* can start the search at the speci
 As of [TIV 2200](../tiv/tiv_2200.md), an alternative to this function exists ( [str_rpos()](str_rpos.md)), which finds the same parts in the source string as *rpos()* does, but always returns a start position in the source which can be used as offset in the source string. For more information see [str_rpos()](str_rpos.md).
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `string` | `source` |  The string to search in  |
@@ -75,7 +73,11 @@ endwhile
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)
+
 - [pos()](pos.md)
+
 - [str_pos()](str_pos.md)
+
 - [str_rpos()](str_rpos.md)

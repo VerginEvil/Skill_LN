@@ -7,11 +7,16 @@ A general rule of thumb is that 4GL Sessions, GBF Sessions and sessions based on
 
 ## The following sections describe the deprecated API's:
 - [Deprecated low-level UI drawing API's](lowlevel_ui.md)
+
 - [Baan Automation is deprecated](baan_automation.md)
+
 - [Other deprecated predefined variables / functions](other_deprecated.md)
 
 ## The following sections describe other attention points:
 - [Functions that should be used with caution](caution.md)
+
 - [Some notes on the Generic Browser Framework (GBF)](gbf_notes.md)
+
 - [Exiting 3gl and messages](exiting_3gl.md)
+
 - [Using a Progress Indicator](progress_indicator.md)

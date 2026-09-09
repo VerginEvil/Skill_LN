@@ -9,8 +9,8 @@ This function returns a string containing the concatenation of *count* copies of
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `value$` |  |
-| `long` | `count` |  |
+| `string` | `value$` |    |
+| `long` | `count` |    |
 
 ## Return values
 A string containing the concatenation of *count* copies of *value$*.
@@ -30,4 +30,5 @@ st = string.set$( chr(135), 5 )    | st contains 5 graphic symbols
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

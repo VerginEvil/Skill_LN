@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalAgreement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1567-1569
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1582-1583
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalAgreement.Complete(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.acln       iAgreementLine,
@@ -36,14 +36,14 @@ If return warehouse orders are created, then the system will
 at the end also process the warehouse activities which are set
 to automatic.
 Note:
--                       When an Electronic Signature is required for completing a
+- When an Electronic Signature is required for completing a
 Rental Order and this is the last Agreement which
 is being set to Completed and the input argument
 SetRentalOrderToCompletedWhenLastAgreeementIsCompleted is set
 to Yes, then the header will not be set to Completed,
 because the electronic signature functionality is only
 available when completing from header level.
--                       When interactive counter reading reset rules are defined for
+- When interactive counter reading reset rules are defined for
 any of the Agreements, the session for resetting
 the counters is not started when this public interface is
 used. Resetting these counters can be done using LN UI.
@@ -99,8 +99,8 @@ Note that if the return value of this function is
 unequal zero, then we are dealing with an error
 situation and the status of the Agreement
 was not changed to Completed.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Agreement changed to Completed.
-<> 0                          -       The status of the Agreement could not be
+<> 0    -       The status of the Agreement could not be
 changed to Completed.
 ```

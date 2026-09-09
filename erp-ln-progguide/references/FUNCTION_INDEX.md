@@ -1,6 +1,6 @@
 # Baan/LN 4GL Function Index
 
-2366 functions. Grep this file, then Read the referenced .md file.
+2425 functions. Grep this file, then Read the referenced .md file.
 
 ## appl
 
@@ -87,6 +87,7 @@
 
 - **base64 decode** | `function long base64.decode( string data.in, ref string data.out )` -> `references/guide/progguide/functions_base64/base64.decode.md`
 - **base64 encode** | `function long base64.encode( string data.in, ref string data.out )` -> `references/guide/progguide/functions_base64/base64.encode.md`
+- **base64 validate** | `function boolean base64.validate( string data.in, ref long error.index )` -> `references/guide/progguide/functions_base64/base64.validate.md`
 - **base64_overview**  -> `references/guide/progguide/functions_base64/base64_overview.md`
 - **base64_synopsis**  -> `references/guide/progguide/functions_base64/base64_synopsis.md`
 ## bit
@@ -104,7 +105,7 @@
 - **db blob read xml ns** | `function long db.blob.read.xml.ns( const string blob.locator, long offset, ref long bytes.read, ref long xml.node, ref string error, long whitespacehandling )` -> `references/guide/progguide/functions_blob/db.blob.read.xml.ns.md`
 - **db blob size** | `function long db.blob.size( const string blob.locator, ref long num.bytes )` -> `references/guide/progguide/functions_blob/db.blob.size.md`
 - **overview**  -> `references/guide/progguide/functions_blob/overview.md`
-- **synopsis** | `long` -> `references/guide/progguide/functions_blob/synopsis.md`
+- **synopsis**  -> `references/guide/progguide/functions_blob/synopsis.md`
 ## boolean
 
 - **btol** | `function long btol( boolean boolean_value )` -> `references/guide/progguide/functions_boolean/btol.md`
@@ -133,7 +134,7 @@
 - **curl reset** | `function void curl.reset( )` -> `references/guide/progguide/functions_cURL/curl.reset.md`
 - **curl setopt** | `function long curl.setopt( )` -> `references/guide/progguide/functions_cURL/curl.setopt.md`
 - **curl slist append** | `function long curl.slist.append( ref long listId, const string text )` -> `references/guide/progguide/functions_cURL/curl.slist.append.md`
-- **curl slist append_encrypted** | `function long curl.slist.append_encrypted( ref long listId, const string headerName, ... )` -> `references/guide/progguide/functions_cURL/curl.slist.append_encrypted.md`
+- **curl slist append_encrypted** | `function long curl.slist.append_encrypted( ref long listId, const string headerName,... )` -> `references/guide/progguide/functions_cURL/curl.slist.append_encrypted.md`
 - **curl slist free all** | `function void curl.slist.free.all( ref long listId )` -> `references/guide/progguide/functions_cURL/curl.slist.free.all.md`
 - **curl slist iterate** | `function boolean curl.slist.iterate( long listId, ref long IterId, ref string value )` -> `references/guide/progguide/functions_cURL/curl.slist.iterate.md`
 - **curl sso user encode$** | `function string curl.sso.user.encode$( const string User )` -> `references/guide/progguide/functions_cURL/curl.sso.user.encode$.md`
@@ -152,7 +153,7 @@
 
 - **copy cdf** | `function long copy.cdf( long dest.table.id, long src.table.id )` -> `references/guide/progguide/functions_cdf/copy.cdf.md`
 - **overview**  -> `references/guide/progguide/functions_cdf/overview.md`
-- **synopsis** | `long` -> `references/guide/progguide/functions_cdf/synopsis.md`
+- **synopsis**  -> `references/guide/progguide/functions_cdf/synopsis.md`
 ## char_b_win
 
 - **bg** | `function string bg$( )` -> `references/guide/progguide/functions_char_b_win/bg.md`
@@ -357,7 +358,8 @@
 - **chm hooks**  -> `references/guide/progguide/functions_dal/chm.hooks.md`
 - **communication_with_stp_and_cdas**  -> `references/guide/progguide/functions_dal/communication_with_stp_and_cdas.md`
 - **dal any parent changed** | `function boolean dal.any.parent.changed( )` -> `references/guide/progguide/functions_dal/dal.any.parent.changed.md`
-- **dal field depends on** | `function void dal.field.depends.on( const string fieldname, long hook.list, const string parent.fld.name, ..., [ long hook.list, const string parent.fieldname, ... ] )` -> `references/guide/progguide/functions_dal/dal.field.depends.on.md`
+- **dal field depends on** | `function void dal.field.depends.on( const string fieldname, long hook.list, const string parent.fld.name,..., [ long hook.list, const string parent.fieldname,... ] )` -> `references/guide/progguide/functions_dal/dal.field.depends.on.md`
+- **dal field update error cannot be made valid** | `function void dal.field.update.error.cannot.be.made.valid( )` -> `references/guide/progguide/functions_dal/dal.field.update.error.cannot.be.made.valid.md`
 - **dal require field** | `function void dal.require.field( const string fieldname, [ long element, ref boolean field.changed ] )` -> `references/guide/progguide/functions_dal/dal.require.field.md`
 - **dal2_4gle**  -> `references/guide/progguide/functions_dal/dal2_4gle.md`
 - **dal2_bm_hooks**  -> `references/guide/progguide/functions_dal/dal2_bm_hooks.md`
@@ -379,7 +381,6 @@
 - **field is never applicable** | `function boolean field.is.never.applicable( )` -> `references/guide/progguide/functions_dal/field.is.never.applicable.md`
 - **field is readonly** | `function boolean field.is.readonly( [ long mode, long element ] )` -> `references/guide/progguide/functions_dal/field.is.readonly.md`
 - **field is valid** | `function boolean field.is.valid( [ long mode, long element ] )` -> `references/guide/progguide/functions_dal/field.is.valid.md`
-- **field update error cannot be made valid** | `function void field.update.error.cannot.be.made.valid( )` -> `references/guide/progguide/functions_dal/field.update.error.cannot.be.made.valid.md`
 - **field update** | `function [void|long] field.update( [ long mode, long element ] )` -> `references/guide/progguide/functions_dal/field.update.md`
 - **fieldname check** | `function long field.check( long has_changed, [ long element ] )` -> `references/guide/progguide/functions_dal/fieldname.check.md`
 - **fieldname make valid** | `function long field.make.valid( long mode, [ long element ] )` -> `references/guide/progguide/functions_dal/fieldname.make.valid.md`
@@ -400,61 +401,61 @@
 - **transition_issues_baan_iv_to_baanerp**  -> `references/guide/progguide/functions_dal/transition_issues_baan_iv_to_baanerp.md`
 ## database_handling
 
-- **and_sc** | `<and boolean operator> ::= Search condition AND Search condition` -> `references/guide/progguide/functions_database_handling/and_sc.md`
+- **and_sc** | `<and boolean operator> ::= <search condition> AND <search condition>` -> `references/guide/progguide/functions_database_handling/and_sc.md`
 - **baan_sql**  -> `references/guide/progguide/functions_database_handling/baan_sql.md`
-- **between_pred** | `<between predicate> ::= Row value constructor [NOT] BETWEEN Row value constructor AND Row value constructor` -> `references/guide/progguide/functions_database_handling/between_pred.md`
-- **cast_expression** | `<cast expression> ::= CAST ( Parameter AS <parameter cast type> ) <parameter cast type> ::= INTEGER | REAL | DATE | TIMESTAMP | STRING | RAW` -> `references/guide/progguide/functions_database_handling/cast_expression.md`
-- **column_reference** | `<column reference> ::= <table name>.<column name> | <correlation name>.<column name> | <column name> <table name> ::= !! a valid table name <column name> ::= !! a valid column name <correlation name> ::= Identifier` -> `references/guide/progguide/functions_database_handling/column_reference.md`
+- **between_pred** | `<between predicate> ::= <row value constructor> [NOT] BETWEEN <row value constructor> AND <row value constructor>` -> `references/guide/progguide/functions_database_handling/between_pred.md`
+- **cast_expression** | `<cast expression> ::= CAST ( <parameter> AS <parameter cast type> ) <parameter cast type> ::= INTEGER | REAL | DATE | TIMESTAMP | STRING | RAW` -> `references/guide/progguide/functions_database_handling/cast_expression.md`
+- **column_reference** | `<column reference> ::= <table name>.<column name> | <correlation name>.<column name> | <column name> <table name> ::= !! a valid table name <column name> ::= !! a valid column name <correlation name> ::= <identifier>` -> `references/guide/progguide/functions_database_handling/column_reference.md`
 - **company_nr_pred**  -> `references/guide/progguide/functions_database_handling/company_nr_pred.md`
 - **company_numbers**  -> `references/guide/progguide/functions_database_handling/company_numbers.md`
 - **comparable_datatypes**  -> `references/guide/progguide/functions_database_handling/comparable_datatypes.md`
-- **comparison_pred** | `<comparison predicate> ::= Row value constructor <comparison operator> Row value constructor <comparison operator> ::= < | <= | = | >= | > | <> | != | #< | #<= | #>= | #>` -> `references/guide/progguide/functions_database_handling/comparison_pred.md`
-- **compnr_pred** | `<compnr predicate> ::= <compnr column reference> = <compnr value> <compnr column reference> ::= !! a Column reference whose column name is _compnr <compnr value> ::= Integer constant | Parameter` -> `references/guide/progguide/functions_database_handling/compnr_pred.md`
+- **comparison_pred** | `<comparison predicate> ::= <row value constructor> <comparison operator> <row value constructor> <comparison operator> ::= = | <> | != | < | <= | > | >= | #< | #<= | #> | #>=` -> `references/guide/progguide/functions_database_handling/comparison_pred.md`
+- **compnr_pred** | `<compnr predicate> ::= <compnr column reference> = <compnr value> <compnr column reference> ::= !! a <column reference> whose column name is _compnr <compnr value> ::= <integer constant> | <parameter>` -> `references/guide/progguide/functions_database_handling/compnr_pred.md`
 - **current_date** | `<current date> ::= CURRENT_DATE` -> `references/guide/progguide/functions_database_handling/current_date.md`
 - **current_timestamp** | `<current timestamp> ::= CURRENT_TIMESTAMP` -> `references/guide/progguide/functions_database_handling/current_timestamp.md`
 - **date_constant** | `<date constant> ::= DATE '<year>-<month>-<day>' | DATE "<year>-<month>-<day>" <year> ::= <digit>... <month> ::= <digit>... <day> ::= <digit>...` -> `references/guide/progguide/functions_database_handling/date_constant.md`
 - **dynamic_sql**  -> `references/guide/progguide/functions_database_handling/dynamic_sql.md`
-- **embedded_sql** | `[ @sql.statement(cSqlAnnotation_SelectAllDataLanguages) ] SELECT < set definition (= actual query, see SELECT statement) > [ SELECTBIND ( number, var) ] ... [ WHEREBIND (number, expression) ] ... [ SELECTDO < operation(s) on all selected records > ] [ SELECTEOS < operation(s) after last selected record > ] [ SELECTEMPTY < operation(s) if nothing has been selected > ] [ SELECTERROR < operation(s) in case of an error condition > ] ENDSELECT` -> `references/guide/progguide/functions_database_handling/embedded_sql.md`
+- **embedded_sql**  -> `references/guide/progguide/functions_database_handling/embedded_sql.md`
 - **empty_constant** | `<empty constant> ::= EMPTY` -> `references/guide/progguide/functions_database_handling/empty_constant.md`
-- **enum_description_function** | `<enum description function> ::= ENUM_DESCRIPTION ( Column reference [ , String constant ] )` -> `references/guide/progguide/functions_database_handling/enum_description_function.md`
-- **enumerate_constant** | `<enumerate constant> ::= Identifier` -> `references/guide/progguide/functions_database_handling/enumerate_constant.md`
+- **enum_description_function** | `<enum description function> ::= ENUM_DESCRIPTION ( <column reference> [ , <string constant> ] )` -> `references/guide/progguide/functions_database_handling/enum_description_function.md`
+- **enumerate_constant** | `<enumerate constant> ::= <identifier>` -> `references/guide/progguide/functions_database_handling/enumerate_constant.md`
 - **error_handling**  -> `references/guide/progguide/functions_database_handling/error_handling.md`
-- **exists_pred** | `<exists predicate> ::= EXISTS ( Sub query )` -> `references/guide/progguide/functions_database_handling/exists_pred.md`
-- **from** | `<from clause> ::= FROM <table reference> [{, <table reference>}...] <table reference> ::= <table name> [[AS] <correlation name>] [FOR UPDATE] | <joined table> | <derived table> <joined table> ::= <table reference> LEFT [OUTER] JOIN <table reference> ON Search condition | <table reference> RIGHT [OUTER] JOIN <table reference> ON Search condition | <table reference> FULL [OUTER] JOIN <table reference> ON Search condition | <table reference> [INNER] JOIN <table reference> ON Search condition | ( <joined table> ) <table name> ::= !! a valid table name <derived table> ::= ( Query expression ) [AS] <correlation name> <correlation name> ::= Identifier` -> `references/guide/progguide/functions_database_handling/from.md`
-- **group_by** | `<group by clause> ::= GROUP BY Column reference { , Column reference }...` -> `references/guide/progguide/functions_database_handling/group_by.md`
-- **having** | `<having clause> ::= HAVING Search condition` -> `references/guide/progguide/functions_database_handling/having.md`
+- **exists_pred** | `<exists predicate> ::= EXISTS ( <subquery> )` -> `references/guide/progguide/functions_database_handling/exists_pred.md`
+- **from** | `<from clause> ::= FROM <table reference> [ { , <table reference> }... ] <table reference> ::= <table name> [ [AS] <correlation name> ] [FOR UPDATE] | <joined table> | <derived table> <joined table> ::= <table reference> LEFT [OUTER] JOIN <table reference> ON <search condition> | <table reference> RIGHT [OUTER] JOIN <table reference> ON <search condition> | <table reference> FULL [OUTER] JOIN <table reference> ON <search condition> | <table reference> [INNER] JOIN <table reference> ON <search condition> | ( <joined table> ) <table name> ::= !! a valid table name <derived table> ::= ( <query expression> ) [AS] <correlation name> <correlation name> ::= <identifier>` -> `references/guide/progguide/functions_database_handling/from.md`
+- **group_by** | `<group by clause> ::= GROUP BY <column reference> [ { , <column reference> }... ]` -> `references/guide/progguide/functions_database_handling/group_by.md`
+- **having** | `<having clause> ::= HAVING <search condition>` -> `references/guide/progguide/functions_database_handling/having.md`
 - **hints_for_using_db retry point**  -> `references/guide/progguide/functions_database_handling/hints_for_using_db.retry.point.md`
 - **hints_for_using_sql**  -> `references/guide/progguide/functions_database_handling/hints_for_using_sql.md`
-- **identifier** | `<identifier> ::= <letter>[<letter> | <digit>]... <letter> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z | _ | . <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9` -> `references/guide/progguide/functions_database_handling/identifier.md`
-- **in_pred** | `<in predicate> ::= Value expression [NOT] IN ( Sub query ) | Value expression [NOT] IN ( <in value list> ) <in value list> ::= Value expression [ { , Value expression }... ]` -> `references/guide/progguide/functions_database_handling/in_pred.md`
-- **inrange_pred** | `<inrange predicate> ::= Row value constructor [NOT] INRANGE Row value constructor AND Row value constructor` -> `references/guide/progguide/functions_database_handling/inrange_pred.md`
+- **identifier** | `<identifier> ::= <letter>[{<letter>|<digit>}...] <letter> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z | _ | . <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9` -> `references/guide/progguide/functions_database_handling/identifier.md`
+- **in_pred** | `<in predicate> ::= <value expression> [NOT] IN ( <subquery> ) | <value expression> [NOT] IN ( <in value list> ) <in value list> ::= <value expression> [ { , <value expression> }... ]` -> `references/guide/progguide/functions_database_handling/in_pred.md`
+- **inrange_pred** | `<inrange predicate> ::= <row value constructor> [NOT] INRANGE <row value constructor> AND <row value constructor>` -> `references/guide/progguide/functions_database_handling/inrange_pred.md`
 - **integer_constant** | `<integer constant> ::= [-]<digit>...` -> `references/guide/progguide/functions_database_handling/integer_constant.md`
-- **is_null_pred** | `<is null predicate> ::= Value expression IS [NOT] NULL | Column reference IS [NOT] NULL` -> `references/guide/progguide/functions_database_handling/is_null_pred.md`
-- **like_pred** | `<like predicate> ::= <ansi-like predicate> | <regexp-like predicate> <ansi-like predicate> ::= Value expression [NOT] ALIKE String constant [ESCAPE String constant] <regexp-like predicate> ::= Value expression [NOT] LIKE String constant` -> `references/guide/progguide/functions_database_handling/like_pred.md`
+- **is_null_pred** | `<is null predicate> ::= <value expression> IS [NOT] NULL | <array column reference> IS [NOT] NULL` -> `references/guide/progguide/functions_database_handling/is_null_pred.md`
+- **like_pred** | `<like predicate> ::= <ansi-like predicate> | <regexp-like predicate> <ansi-like predicate> ::= <value expression> [NOT] ALIKE <string constant> [ ESCAPE <string constant> ] <regexp-like predicate> ::= <value expression> [NOT] LIKE <string constant>` -> `references/guide/progguide/functions_database_handling/like_pred.md`
 - **locking**  -> `references/guide/progguide/functions_database_handling/locking.md`
-- **ml_one_lang_function** | `<ml_one_lang function> ::= ml_one_lang ( <column> [, <data language> | <parameter>] ) <column> ::= Column reference <data language> ::= String constant <parameter> ::= Parameter` -> `references/guide/progguide/functions_database_handling/ml_one_lang_function.md`
+- **ml_one_lang_function** | `<ml_one_lang function> ::= ml_one_lang ( <column> [ , <data language> | <parameter> ] ) <column> ::= <column reference> <data language> ::= <string constant> <parameter> ::= <parameter>` -> `references/guide/progguide/functions_database_handling/ml_one_lang_function.md`
 - **multi_language_data**  -> `references/guide/progguide/functions_database_handling/multi_language_data.md`
-- **not_sc** | `<not boolean operator> ::= NOT Search condition` -> `references/guide/progguide/functions_database_handling/not_sc.md`
-- **or_sc** | `<or boolean operator> ::= Search condition OR Search condition` -> `references/guide/progguide/functions_database_handling/or_sc.md`
-- **order_by** | `<order by clause> ::= ORDER BY <order by item> { , <order by item> }... [ WITH RETRY clause [ REPEAT LAST ROW ] ] <order by item> ::= Column reference [ <sort direction> ] | <unsigned integer> [ <sort direction> ] <unsigned integer> ::= Integer constant <sort direction> ::= ASC | DESC` -> `references/guide/progguide/functions_database_handling/order_by.md`
+- **not_sc** | `<not boolean operator> ::= NOT <search condition>` -> `references/guide/progguide/functions_database_handling/not_sc.md`
+- **or_sc** | `<or boolean operator> ::= <search condition> OR <search condition>` -> `references/guide/progguide/functions_database_handling/or_sc.md`
+- **order_by** | `<order by clause> ::= ORDER BY <order by item> [ { , <order by item> }... ] [ WITH RETRY [REPEAT LAST ROW] ] <order by item> ::= <column reference> [ <sort direction> ] | <unsigned integer> [ <sort direction> ] <unsigned integer> ::= <integer constant> <sort direction> ::= ASC | DESC` -> `references/guide/progguide/functions_database_handling/order_by.md`
 - **overview**  -> `references/guide/progguide/functions_database_handling/overview.md`
 - **parameter** | `<parameter> ::= ? | :<digit>... | :<identifier>` -> `references/guide/progguide/functions_database_handling/parameter.md`
-- **query_expression** | `<query expression> ::= Query specification | Query specification UNION operator <query expression>` -> `references/guide/progguide/functions_database_handling/query_expression.md`
-- **query_specification** | `<query specification> ::= SELECT clause <select list> FROM clause <from list> [ WHERE clause Search condition ] [ GROUP BY clause <group list> [ HAVING clause Search condition ] ]` -> `references/guide/progguide/functions_database_handling/query_specification.md`
-- **raw_constant** | `<raw constant> ::= x'<hex digit>[<hex digit>...]' | x"<hex digit>[<hex digit>...]" <hex digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F | a | b | c | d | e | f` -> `references/guide/progguide/functions_database_handling/raw_constant.md`
+- **query_expression** | `<query expression> ::= <query specification> | <query expression> UNION [ALL] <query specification>` -> `references/guide/progguide/functions_database_handling/query_expression.md`
+- **query_specification** | `<query specification> ::= <select clause> <from clause> [ <where clause> ] [ <group by clause> [ <having clause> ] ]` -> `references/guide/progguide/functions_database_handling/query_specification.md`
+- **raw_constant** | `<raw constant> ::= x'<hex digit>...' | x"<hex digit>..." <hex digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F | a | b | c | d | e | f` -> `references/guide/progguide/functions_database_handling/raw_constant.md`
 - **real_constant** | `<real constant> ::= [-]<mantissa>[<exponent>] <mantissa> ::= <unsigned integer>.<unsigned integer> | .<unsigned integer> <exponent> ::= e[-|+]<unsigned integer> <unsigned integer> ::= <digit>...` -> `references/guide/progguide/functions_database_handling/real_constant.md`
 - **references**  -> `references/guide/progguide/functions_database_handling/references.md`
-- **refers_to_pred** | `<refers to predicate> ::= Row value constructor REFERS TO <to> [ PATH <ref path> ] [ UNREF <unref mode> ] <to> ::= <table name> | <correlation name> | !! qualified column name <ref path> ::= <path element> {,<path element>}... <path element> ::= <table name>.<column name> <table name> ::= !! a valid table name <column name> ::= !! a valid column name <correlation name> ::= Identifier <unref mode> ::= CLEAR | SETUNREF | CLEARUNREF | SKIP` -> `references/guide/progguide/functions_database_handling/refers_to_pred.md`
+- **refers_to_pred** | `<refers to predicate> ::= <row value constructor> REFERS TO <to> [ PATH <ref path> ] [ UNREF <unref mode> ] <to> ::= <table name> | <correlation name> | !! qualified column name <ref path> ::= <path element> { , <path element> }... <path element> ::= <table name>.<column name> <table name> ::= !! a valid table name <column name> ::= !! a valid column name <correlation name> ::= <identifier> <unref mode> ::= CLEAR | SETUNREF | CLEARUNREF | SKIP` -> `references/guide/progguide/functions_database_handling/refers_to_pred.md`
 - **retry_points**  -> `references/guide/progguide/functions_database_handling/retry_points.md`
-- **row_value_constructor** | `<row value constructor> ::= Column reference | Value expression | { Value expression [ , Value expression ]... }` -> `references/guide/progguide/functions_database_handling/row_value_constructor.md`
-- **search_condition** | `<search condition> ::= <search condition> AND <search condition> | <search condition> OR <search condition> | NOT <search condition> | ( <search condition> ) | <comparison predicate> | <row value constructor> [NOT] BETWEEN <row value constructor> AND <row value constructor> | <row value constructor> [NOT] INRANGE <row value constructor> AND <row value constructor> | <value expression> IS NULL predicate | <like predicate> | <in predicate> | EXISTS ( <sub query> )` -> `references/guide/progguide/functions_database_handling/search_condition.md`
-- **searched_case** | `<searched case expression> ::= CASE WHEN Search condition THEN <result> [{ WHEN Search condition THEN <result> }...] [ ELSE <result> ] ENDCASE <result> ::= Value expression | NULL` -> `references/guide/progguide/functions_database_handling/searched_case.md`
-- **select** | `<select clause> ::= SELECT [<set quantifier>] [FOR UPDATE] <select list> <set quantifier> ::= DISTINCT | ALL <select list> ::= * | <select item> {, <select item> }... <select item> ::= <qualifier>.* | Value expression [ [AS] <alias name>] | <array column reference> [ [AS] <alias name>] <array column reference> ::= Column reference <qualifier> ::= <table name> | <correlation name> <table name> ::= !! a valid table name <correlation name> ::= Identifier <alias name> ::= Identifier` -> `references/guide/progguide/functions_database_handling/select.md`
-- **select_statement** | `<select statement> ::= Query expression [ Query hints overview ... ] [ ORDER BY clause [ WITH RETRY [REPEAT LAST ROW] ] ] [ SET specification ] [ Query hints overview ... ]` -> `references/guide/progguide/functions_database_handling/select_statement.md`
-- **set_function_specification** | `<set function specification> ::= COUNT(*) | <set function type> ( Value expression ) <set function type> ::= MIN | MAX | SUM | COUNT | AVG` -> `references/guide/progguide/functions_database_handling/set_function_specification.md`
-- **set_specification** | `<set specification> ::= AS PREPARED SET | AS [PREPARED] SET WITH Integer constant ROWS` -> `references/guide/progguide/functions_database_handling/set_specification.md`
-- **simple_case** | `<simple case expression> ::= CASE <case operand> WHEN Value expression THEN <result> [{ WHEN Value expression THEN <result> }...] [ ELSE <result> ] ENDCASE <case operand> ::= Value expression <result> ::= Value expression | NULL` -> `references/guide/progguide/functions_database_handling/simple_case.md`
-- **simplest_comparison_predicate** | `<simplest comparison predicate> ::= Value expression <comparison operator> Value expression <comparison operator> ::= < | <= | = | >= | > | <> | !=` -> `references/guide/progguide/functions_database_handling/simplest_comparison_predicate.md`
+- **row_value_constructor** | `<row value constructor> ::= <value expression> | { <value expression> [ , <value expression> ]... }` -> `references/guide/progguide/functions_database_handling/row_value_constructor.md`
+- **search_condition** | `<search condition> ::= <comparison predicate> | <between predicate> | <inrange predicate> | <is null predicate> | <like predicate> | <in predicate> | <exists predicate> | <refers to predicate> | <_compnr predicate> | <search condition> AND <search condition> | <search condition> OR <search condition> | NOT <search condition> | ( <search condition> )` -> `references/guide/progguide/functions_database_handling/search_condition.md`
+- **searched_case** | `<searched case expression> ::= CASE { WHEN <search condition> THEN <result> }... [ ELSE <result> ] ENDCASE <result> ::= <value expression> | NULL` -> `references/guide/progguide/functions_database_handling/searched_case.md`
+- **select** | `<select clause> ::= SELECT [ <set quantifier> ] [FOR UPDATE] <select list> <set quantifier> ::= DISTINCT | ALL <select list> ::= * | <select item> [ { , <select item> }... ] <select item> ::= <qualifier>.* | <value expression> [ [AS] <alias name> ] | <array column reference> [ [AS] <alias name> ] <array column reference> ::= <column reference> <qualifier> ::= <table name> | <correlation name> <table name> ::= !! a valid table name <correlation name> ::= <identifier> <alias name> ::= <identifier>` -> `references/guide/progguide/functions_database_handling/select.md`
+- **select_statement** | `<select statement> ::= <query expression> [ <hint clause> ... ] [ <order by clause> ] [ <set specification> ] [ <hint clause> ... ]` -> `references/guide/progguide/functions_database_handling/select_statement.md`
+- **set_function_specification** | `<set function specification> ::= COUNT(*) | <set function type> ( <value expression> ) <set function type> ::= MIN | MAX | SUM | COUNT | AVG` -> `references/guide/progguide/functions_database_handling/set_function_specification.md`
+- **set_specification** | `<set specification> ::= AS PREPARED SET | AS [PREPARED] SET WITH <integer constant> ROWS` -> `references/guide/progguide/functions_database_handling/set_specification.md`
+- **simple_case** | `<simple case expression> ::= CASE <case operand> { WHEN <value expression> THEN <result> }... [ ELSE <result> ] ENDCASE <case operand> ::= <value expression> <result> ::= <value expression> | NULL` -> `references/guide/progguide/functions_database_handling/simple_case.md`
+- **simplest_comparison_predicate** | `<simplest comparison predicate> ::= <value expression> <comparison operator> <value expression> <comparison operator> ::= = | <> | != | < | <= | > | >=` -> `references/guide/progguide/functions_database_handling/simplest_comparison_predicate.md`
 - **sql_and_combined_fields**  -> `references/guide/progguide/functions_database_handling/sql_and_combined_fields.md`
 - **sql_and_delayed_locks**  -> `references/guide/progguide/functions_database_handling/sql_and_delayed_locks.md`
 - **sql_data_types**  -> `references/guide/progguide/functions_database_handling/sql_data_types.md`
@@ -464,23 +465,23 @@
 - **sql_subqueries**  -> `references/guide/progguide/functions_database_handling/sql_subqueries.md`
 - **sql_trace_options**  -> `references/guide/progguide/functions_database_handling/sql_trace_options.md`
 - **string_constant** | `<string constant> ::= '[<non single quoted character>...]' | "[<non double quoted character>...]" <non double quoted character> ::= !! any (TSS) character except " and new line | "" <non single quoted character> ::= !! any (TSS) character except ' and new line | ''` -> `references/guide/progguide/functions_database_handling/string_constant.md`
-- **sub_query** | `<sub query> ::= Query expression` -> `references/guide/progguide/functions_database_handling/sub_query.md`
-- **substring_and_array_indexing** | `<substring and array indexing> | <array column reference> <array indexing> | Column reference <substring> | <array column reference> <array indexing with substring> | String constant <substring> | Raw constant <substring> | Parameter <substring> <array column reference> ::= Column reference <substring> ::= ( <start> [; <length> ] ) <array indexing> ::= ( <index> ) <array indexing with substring> ::= ( <index>, <start> [; <length> ] ) <start> ::= Value expression <length> ::= Value expression <index> ::= Value expression` -> `references/guide/progguide/functions_database_handling/substring_and_array_indexing.md`
-- **text_content_function** | `<text content function> ::= TEXT_CONTENT ( Column reference [ , String constant ] )` -> `references/guide/progguide/functions_database_handling/text_content_function.md`
+- **subquery** | `<subquery> ::= <query expression>` -> `references/guide/progguide/functions_database_handling/subquery.md`
+- **substring_and_array_indexing** | `<substring and array indexing> ::= <array column reference> <array indexing> | <column reference> <substring> | <array column reference> <array indexing with substring> | <string constant> <substring> | <raw constant> <substring> | <parameter> <substring> <array column reference> ::= <column reference> <substring> ::= ( <start> [; <length> ] ) <array indexing> ::= ( <index> ) <array indexing with substring> ::= ( <index>, <start> [; <length> ] ) <start> ::= <value expression> <length> ::= <value expression> <index> ::= <value expression>` -> `references/guide/progguide/functions_database_handling/substring_and_array_indexing.md`
+- **text_content_function** | `<text content function> ::= TEXT_CONTENT ( <column reference> [ , <string constant> ] )` -> `references/guide/progguide/functions_database_handling/text_content_function.md`
 - **timestamp_constant** | `<timestamp constant> ::= TIMESTAMP '<timestamp string>' | TIMESTAMP "<timestamp string>" <timestamp string> ::= <year>-<month>-<day> <hours>:<minutes>:<seconds>[<timezone offset>] <year> ::= <digit>... <month> ::= <digit>... <day> ::= <digit>... <hours> ::= <digit>... <minutes> ::= <digit>... <seconds> ::= <digit>... <timezone offset> ::= <sign><hours_offset>:<minutes_offset> <sign> ::= - | + <hours_offset> ::= <digit>... <minutes_offset> ::= <digit>...` -> `references/guide/progguide/functions_database_handling/timestamp_constant.md`
 - **transaction_handling**  -> `references/guide/progguide/functions_database_handling/transaction_handling.md`
-- **trim_function** | `<trim function> ::= TRIM ( [ [<trim specification>] [<trim character>] FROM ] <trim source> ) <trim source> ::= Value expression <trim character> ::= Value expression <trim specification> ::= LEADING | TRAILING | BOTH` -> `references/guide/progguide/functions_database_handling/trim_function.md`
-- **union** | `<UNION operator> ::= Query expression UNION [ALL] Query expression` -> `references/guide/progguide/functions_database_handling/union.md`
-- **using_program_variables** | `select firstnme:<program variable name>` -> `references/guide/progguide/functions_database_handling/using_program_variables.md`
-- **value_expression** | `<value expression> ::= Operator + (add) | Operator - (subtract) | Operator * (multiply) | Operator / (divide) | Operator \ (modulo) | Operator & (concatenation) | ( <value expression> ) | Sub query | Set function specification | Substring and array indexing | CASE expression (searched) | CASE expression (simple) | CAST expression | TRIM function | ml_one_lang function | ENUM_DESCRIPTION function | TEXT_CONTENT function | Column reference | Parameter | Integer constant | Real constant | String constant | Raw constant | Date constant | Timestamp constant | Enumerate constant | EMPTY constant | CURRENT_DATE | CURRENT_TIMESTAMP` -> `references/guide/progguide/functions_database_handling/value_expression.md`
-- **ve_add** | `<operator +> ::= Value expression + Value expression` -> `references/guide/progguide/functions_database_handling/ve_add.md`
-- **ve_concat** | `<operator &> ::= Value expression & Value expression` -> `references/guide/progguide/functions_database_handling/ve_concat.md`
-- **ve_divide** | `<operator /> ::= Value expression / Value expression` -> `references/guide/progguide/functions_database_handling/ve_divide.md`
-- **ve_modulo** | `<operator \> ::= Value expression \ Value expression` -> `references/guide/progguide/functions_database_handling/ve_modulo.md`
-- **ve_multiply** | `<operator *> ::= Value expression * Value expression` -> `references/guide/progguide/functions_database_handling/ve_multiply.md`
-- **ve_subtract** | `<operator -> ::= Value expression - Value expression` -> `references/guide/progguide/functions_database_handling/ve_subtract.md`
-- **where** | `<where clause> ::= WHERE Search condition` -> `references/guide/progguide/functions_database_handling/where.md`
-- **with_retry** | `<with retry clause> ::= WITH RETRY [ REPEAT LAST ROW ]` -> `references/guide/progguide/functions_database_handling/with_retry.md`
+- **trim_function** | `<trim function> ::= TRIM ( [ [<trim specification>] [<trim character>] FROM ] <trim source> ) <trim source> ::= <value expression> <trim character> ::= <value expression> <trim specification> ::= LEADING | TRAILING | BOTH` -> `references/guide/progguide/functions_database_handling/trim_function.md`
+- **union** | `<UNION operator> ::= <query expression> UNION [ALL] <query expression>` -> `references/guide/progguide/functions_database_handling/union.md`
+- **using_program_variables**  -> `references/guide/progguide/functions_database_handling/using_program_variables.md`
+- **value_expression** | `<value expression> ::= <value expression> + <value expression> | <value expression> - <value expression> | <value expression> * <value expression> | <value expression> / <value expression> | <value expression> \ <value expression> | <value expression> & <value expression> | ( <value expression> ) | <scalar subquery> | <set function specification> | <substring and array indexing> | <searched case expression> | <simple case expression> | <cast expression> | <trim function> | <ml_one_lang function> | <enum description function> | <text content function> | <column reference> | <parameter> | <integer constant> | <real constant> | <string constant> | <raw constant> | <date constant> | <timestamp constant> | <enumerate constant> | <empty constant> | <current date> | <current timestamp>` -> `references/guide/progguide/functions_database_handling/value_expression.md`
+- **ve_add** | `<operator +> ::= <value expression> + <value expression>` -> `references/guide/progguide/functions_database_handling/ve_add.md`
+- **ve_concat** | `<operator &> ::= <value expression> & <value expression>` -> `references/guide/progguide/functions_database_handling/ve_concat.md`
+- **ve_divide** | `<operator /> ::= <value expression> / <value expression>` -> `references/guide/progguide/functions_database_handling/ve_divide.md`
+- **ve_modulo** | `<operator \> ::= <value expression> \ <value expression>` -> `references/guide/progguide/functions_database_handling/ve_modulo.md`
+- **ve_multiply** | `<operator *> ::= <value expression> * <value expression>` -> `references/guide/progguide/functions_database_handling/ve_multiply.md`
+- **ve_subtract** | `<operator -> ::= <value expression> - <value expression>` -> `references/guide/progguide/functions_database_handling/ve_subtract.md`
+- **where** | `<where clause> ::= WHERE <search condition>` -> `references/guide/progguide/functions_database_handling/where.md`
+- **with_retry** | `<with retry clause> ::= WITH RETRY [REPEAT LAST ROW]` -> `references/guide/progguide/functions_database_handling/with_retry.md`
 ## date_time_zones
 
 - **choose time zone from list** | `function long choose.time.zone.from.list( ref string new.timezone )` -> `references/guide/progguide/functions_date_time_zones/choose.time.zone.from.list.md`
@@ -522,7 +523,7 @@
 - **week to utc** | `function domain ttutc week.to.utc( long weekno, long yearno, long week_dayno, long hours, long minutes, long seconds )` -> `references/guide/progguide/functions_date_time_zones/week.to.utc.md`
 ## db_operations
 
-- **abort io** | `function void abort.io( string mesg(14), [ ... ] )` -> `references/guide/progguide/functions_db_operations/abort.io.md`
+- **abort io** | `function void abort.io( string mesg(14), [... ] )` -> `references/guide/progguide/functions_db_operations/abort.io.md`
 - **abort transaction** | `function long abort.transaction( )` -> `references/guide/progguide/functions_db_operations/abort.transaction.md`
 - **activate search** | `function void activate.search( )` -> `references/guide/progguide/functions_db_operations/activate.search.md`
 - **commit transaction** | `function long commit.transaction( )` -> `references/guide/progguide/functions_db_operations/commit.transaction.md`
@@ -535,7 +536,7 @@
 - **dal execute hook** | `function void dal.execute.hook( string set_id, string name, ref long retval, long mode, long elem )` -> `references/guide/progguide/functions_db_operations/dal.execute.hook.md`
 - **dal get context** | `function long dal.get.context( )` -> `references/guide/progguide/functions_db_operations/dal.get.context.md`
 - **dal get field mode** | `function long dal.get.field.mode( string tbl.name, [ long element ] )` -> `references/guide/progguide/functions_db_operations/dal.get.field.mode.md`
-- **dal get object** | `function long dal.get.object( string tbl.name, long lock, [ string key_field1, string key_value1 ], ... )` -> `references/guide/progguide/functions_db_operations/dal.get.object.md`
+- **dal get object** | `function long dal.get.object( string tbl.name, long lock, [ string key_field1, string key_value1 ],... )` -> `references/guide/progguide/functions_db_operations/dal.get.object.md`
 - **dal get property flag** | `function long dal.get.property.flag( string tbl.name, long object_set, string prop_name )` -> `references/guide/progguide/functions_db_operations/dal.get.property.flag.md`
 - **dal is copy active** | `function boolean dal.is.copy.active( )` -> `references/guide/progguide/functions_db_operations/dal.is.copy.active.md`
 - **dal is field changed** | `function boolean dal.is.field.changed( string fld.name, [ long element ] )` -> `references/guide/progguide/functions_db_operations/dal.is.field.changed.md`
@@ -551,7 +552,7 @@
 - **dal set property** | `function long dal.set.property( string tbl.name, long object_set, string prop_name, void value, long mode )` -> `references/guide/progguide/functions_db_operations/dal.set.property.md`
 - **dal set property with check** | `function long dal.set.property.with.check( string tbl.name, long object_set, const string proper_name, void value )` -> `references/guide/progguide/functions_db_operations/dal.set.property.with.check.md`
 - **dal skip never applicable checks** | `function void dal.skip.never.applicable.checks( [ boolean keep_old_data ] )` -> `references/guide/progguide/functions_db_operations/dal.skip.never.applicable.checks.md`
-- **dal start business method** | `function void dal.start.business.method( string set_id, string name, ref long retval, [ ... ] )` -> `references/guide/progguide/functions_db_operations/dal.start.business.method.md`
+- **dal start business method** | `function void dal.start.business.method( string set_id, string name, ref long retval, [... ] )` -> `references/guide/progguide/functions_db_operations/dal.start.business.method.md`
 - **dal store cdf fields** | `function long dal.store.cdf.fields( string tbl.name )` -> `references/guide/progguide/functions_db_operations/dal.store.cdf.fields.md`
 - **dal submit** | `function long dal.submit( const string tbl.name )` -> `references/guide/progguide/functions_db_operations/dal.submit.md`
 - **dal undo check out** | `function long dal.undo.check.out( const string tbl.name )` -> `references/guide/progguide/functions_db_operations/dal.undo.check.out.md`
@@ -603,20 +604,20 @@
 - **db unbind** | `function long db.unbind( long table_id )` -> `references/guide/progguide/functions_db_operations/db.unbind.md`
 - **db update** | `function long db.update( long table_id, [ long mode, long eflag ] )` -> `references/guide/progguide/functions_db_operations/db.update.md`
 - **for each record in view do** | `function void for.each.record.in.view.do( string callback_function )` -> `references/guide/progguide/functions_db_operations/for.each.record.in.view.do.md`
-- **on main table** | `function void on.main.table( string function_name, [ string ... ] )` -> `references/guide/progguide/functions_db_operations/on.main.table.md`
+- **on main table** | `function void on.main.table( <function_name>, [ string... ] )` -> `references/guide/progguide/functions_db_operations/on.main.table.md`
 - **overview**  -> `references/guide/progguide/functions_db_operations/overview.md`
 - **restore rcd main** | `function void restore.rcd.main( long occurrence )` -> `references/guide/progguide/functions_db_operations/restore.rcd.main.md`
 - **set limits off** | `function void set.limits.off( )` -> `references/guide/progguide/functions_db_operations/set.limits.off.md`
 - **set transaction readonly** | `function long set.transaction.readonly( )` -> `references/guide/progguide/functions_db_operations/set.transaction.readonly.md`
-- **skip io** | `function void skip.io( string mesg, [ string ... ] )` -> `references/guide/progguide/functions_db_operations/skip.io.md`
+- **skip io** | `function void skip.io( string mesg, [ string... ] )` -> `references/guide/progguide/functions_db_operations/skip.io.md`
 - **store occ maxmin** | `function void store.occ.max( )` -> `references/guide/progguide/functions_db_operations/store.occ.maxmin.md`
 - **store restore examples**  -> `references/guide/progguide/functions_db_operations/store.restore.examples.md`
-- **sum records in view** | `function void sum.records.in.view( const string column1.var, double result1.var, [ const string, double ..., ... ] )` -> `references/guide/progguide/functions_db_operations/sum.records.in.view.md`
-- **synopsis** | `void` -> `references/guide/progguide/functions_db_operations/synopsis.md`
+- **sum records in view** | `function void sum.records.in.view( const string column1.var, double result1.var, [ const string, double...,... ] )` -> `references/guide/progguide/functions_db_operations/sum.records.in.view.md`
+- **synopsis**  -> `references/guide/progguide/functions_db_operations/synopsis.md`
 - **this dal** | `function string this.dal( )` -> `references/guide/progguide/functions_db_operations/this.dal.md`
 - **to key** | `function void to.key( long key_number, [ long nr.view.fields ] )` -> `references/guide/progguide/functions_db_operations/to.key.md`
-- **with object set do** | `function void with.object.set.do( string function_name, [ <type> ... ] )` -> `references/guide/progguide/functions_db_operations/with.object.set.do.md`
-- **with old object values do** | `function void with.old.object.values.do( string function_name, [ <type> ... ] )` -> `references/guide/progguide/functions_db_operations/with.old.object.values.do.md`
+- **with object set do** | `function void with.object.set.do( <function_name>, [ <type>... ] )` -> `references/guide/progguide/functions_db_operations/with.object.set.do.md`
+- **with old object values do** | `function void with.old.object.values.do( <function_name>, [ <type>... ] )` -> `references/guide/progguide/functions_db_operations/with.old.object.values.do.md`
 ## dbcm
 
 - **dbcm checked out objects present** | `function boolean dbcm.checked.out.objects.present( long comp, [ string tbl.name$ ] )` -> `references/guide/progguide/functions_dbcm/dbcm.checked.out.objects.present.md`
@@ -637,7 +638,7 @@
 - **dbcm get user** | `function long dbcm.get.user( const string toid$, ref string user$ )` -> `references/guide/progguide/functions_dbcm/dbcm.get.user.md`
 - **dbcm get workflow definition** | `function long dbcm.get.workflow.definition( const string toid$, ref string wf.def$ )` -> `references/guide/progguide/functions_dbcm/dbcm.get.workflow.definition.md`
 - **dbcm get workflow id** | `function long dbcm.get.workflow.id( const string toid$, ref string wf.id$ )` -> `references/guide/progguide/functions_dbcm/dbcm.get.workflow.id.md`
-- **dbcm get workflow status description** | `function long dbcm.get.workflow.status.description( const string tbl.name$, ref string wf.status.desc$, [ const string fld.name, void fld.value, ... ] )` -> `references/guide/progguide/functions_dbcm/dbcm.get.workflow.status.description.md`
+- **dbcm get workflow status description** | `function long dbcm.get.workflow.status.description( const string tbl.name$, ref string wf.status.desc$, [ const string fld.name, void fld.value,... ] )` -> `references/guide/progguide/functions_dbcm/dbcm.get.workflow.status.description.md`
 - **dbcm is action active** | `function boolean dbcm.is.action.active( )` -> `references/guide/progguide/functions_dbcm/dbcm.is.action.active.md`
 - **dbcm is cm active** | `function boolean dbcm.is.cm.active( const string tbl.name$, [ long comp ] )` -> `references/guide/progguide/functions_dbcm/dbcm.is.cm.active.md`
 - **dbcm is deployed root table** | `function boolean dbcm.is.deployed.root.table( const string tbl.name$, [ long comp ] )` -> `references/guide/progguide/functions_dbcm/dbcm.is.deployed.root.table.md`
@@ -706,7 +707,7 @@
 - **sig sign set visual representation position** | `function void sig.sign.set.visual.representation.position( long i.request, long i.visual.representation, long i.xpos, long i.ypos, [ long i.width, long i.height ] )` -> `references/guide/progguide/functions_digital_signatures/sig.sign.set.visual.representation.position.md`
 - **sig sign set visual representation text color** | `function void sig.sign.set.visual.representation.text.color( long i.request, long i.visual.representation, long i.foreground, long i.background )` -> `references/guide/progguide/functions_digital_signatures/sig.sign.set.visual.representation.text.color.md`
 - **sig sign set visual representation text font** | `function long sig.sign.set.visual.representation.text.font( long i.request, long i.visual.representation, string i.name, long i.size, boolean i.bold, boolean i.italic, boolean i.underline )` -> `references/guide/progguide/functions_digital_signatures/sig.sign.set.visual.representation.text.font.md`
-- **sig sign set visual representation text position** | `function void sig.sign.set.visual.representation.text.position( long i.request, long i.visual.representation, string i.horizontal.alignment, string i.position )` -> `references/guide/progguide/functions_digital_signatures/sig.sign.set.visual.representation.text.position.md`
+- **sig sign set visual representation text position** | `function void sig.sign.set.visual.representation.text.position( long i.request, long i.visual.representation, string i.horizontal.alignment, string i.position, [ string i.vertical.alignment ] )` -> `references/guide/progguide/functions_digital_signatures/sig.sign.set.visual.representation.text.position.md`
 - **synopsis**  -> `references/guide/progguide/functions_digital_signatures/synopsis.md`
 ## directory_file_operations
 
@@ -733,7 +734,7 @@
 - **mkdir** | `function long mkdir( string path_name$, [ long access_level ] )` -> `references/guide/progguide/functions_directory_file_operations/mkdir.md`
 - **overview**  -> `references/guide/progguide/functions_directory_file_operations/overview.md`
 - **path change extension** | `function string path.change.extension( const string path, const string extension, [ long os.type ] )` -> `references/guide/progguide/functions_directory_file_operations/path.change.extension.md`
-- **path combine** | `function string path.combine( const string path, ..., long os.type )` -> `references/guide/progguide/functions_directory_file_operations/path.combine.md`
+- **path combine** | `function string path.combine( const string path,..., long os.type )` -> `references/guide/progguide/functions_directory_file_operations/path.combine.md`
 - **path dir separator** | `function string path.dir.separator( [ long os.type ] )` -> `references/guide/progguide/functions_directory_file_operations/path.dir.separator.md`
 - **path directory** | `function string path.directory( const string path, [ long os.type ] )` -> `references/guide/progguide/functions_directory_file_operations/path.directory.md`
 - **path exists** | `function boolean path.exists( const string path, [ long access_level ] )` -> `references/guide/progguide/functions_directory_file_operations/path.exists.md`
@@ -795,8 +796,8 @@
 - **zipinfo next** | `function boolean zipinfo.next( long handle, ref string entry, ref long type )` -> `references/guide/progguide/functions_directory_file_operations/zipinfo.next.md`
 ## dll
 
-- **exec_dll_function** | `function long exec_dll_function( string dll_name, string function_name, [ ref void return_value, void ... ] )` -> `references/guide/progguide/functions_dll/exec_dll_function.md`
-- **exec_function** | `function long exec_function( long dll_id, long funct_id, [ ref void return_value, void ... ] )` -> `references/guide/progguide/functions_dll/exec_function.md`
+- **exec_dll_function** | `function long exec_dll_function( string dll_name, string function_name, [ ref void return_value, void... ] )` -> `references/guide/progguide/functions_dll/exec_dll_function.md`
+- **exec_function** | `function long exec_function( long dll_id, long funct_id, [ ref void return_value, void... ] )` -> `references/guide/progguide/functions_dll/exec_function.md`
 - **get_function** | `function long get_function( long dll_id, string funct_name )` -> `references/guide/progguide/functions_dll/get_function.md`
 - **load_dll** | `function long load_dll( string dll_name, [ long overload ] )` -> `references/guide/progguide/functions_dll/load_dll.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_dll/overview_and_synopsis.md`
@@ -815,7 +816,7 @@
 - **dms dochub filter set filename** | `function [long] dms.dochub.filter.set.filename( long i.filter, string i.filename )` -> `references/guide/progguide/functions_document_handling/dms.dochub.filter.set.filename.md`
 - **dms dochub filter set mimetype** | `function [long] dms.dochub.filter.set.mimetype( long i.filter, string i.mimetype )` -> `references/guide/progguide/functions_document_handling/dms.dochub.filter.set.mimetype.md`
 - **dms dochub list add application attribute** | `function [long] dms.dochub.list.add.application.attribute( long i.attr.list, string i.attr.name, string i.attr.value )` -> `references/guide/progguide/functions_document_handling/dms.dochub.list.add.application.attribute.md`
-- **dms dochub query documents** | `function long dms.dochub.query.documents( string i.ln.table, string i.document.type, long i.attr.list, long i.filter, long o.nr.documents, long o.documents, string o.error.mesg )` -> `references/guide/progguide/functions_document_handling/dms.dochub.query.documents.md`
+- **dms dochub query documents** | `function long dms.dochub.query.documents( string i.ln.table, string i.document.type, long i.attr.list, long i.filter, long o.documents, string o.error.mesg, [ ref long o.nr.documents ] )` -> `references/guide/progguide/functions_document_handling/dms.dochub.query.documents.md`
 - **dms dochub query response get first document** | `function long dms.dochub.query.response.get.first.document( long i.documents )` -> `references/guide/progguide/functions_document_handling/dms.dochub.query.response.get.first.document.md`
 - **dms dochub query response get next document** | `function long dms.dochub.query.response.get.next.document( long i.document )` -> `references/guide/progguide/functions_document_handling/dms.dochub.query.response.get.next.document.md`
 - **dms dochub upload document** | `function long dms.dochub.upload.document( string i.ln.table, string i.document.type, long i.attr.list, string i.filename, string i.display.name, string i.mimetype, boolean i.create.revision, long o.document, string o.error.mesg )` -> `references/guide/progguide/functions_document_handling/dms.dochub.upload.document.md`
@@ -833,7 +834,7 @@
 - **dms idm filter set filename** | `function [long] dms.idm.filter.set.filename( long i.filter, string i.filename )` -> `references/guide/progguide/functions_document_handling/dms.idm.filter.set.filename.md`
 - **dms idm filter set mimetype** | `function [long] dms.idm.filter.set.mimetype( long i.filter, string i.mimetype )` -> `references/guide/progguide/functions_document_handling/dms.idm.filter.set.mimetype.md`
 - **dms idm list add doctype attribute** | `function [long] dms.idm.list.add.doctype.attribute( long i.attr.list, string i.attr.name, string i.attr.value, boolean i.attr.is.ident, boolean i.attr.is.multi )` -> `references/guide/progguide/functions_document_handling/dms.idm.list.add.doctype.attribute.md`
-- **dms idm query documents** | `function long dms.idm.query.documents( string i.document.type, long i.attr.list, long i.filter, long o.nr.documents, long o.documents, string o.error.mesg )` -> `references/guide/progguide/functions_document_handling/dms.idm.query.documents.md`
+- **dms idm query documents** | `function long dms.idm.query.documents( string i.document.type, long i.attr.list, long i.filter, long o.documents, string o.error.mesg, [ ref long o.nr.documents ] )` -> `references/guide/progguide/functions_document_handling/dms.idm.query.documents.md`
 - **dms idm query response get first document** | `function long dms.idm.query.response.get.first.document( long i.documents )` -> `references/guide/progguide/functions_document_handling/dms.idm.query.response.get.first.document.md`
 - **dms idm query response get next document** | `function long dms.idm.query.response.get.next.document( long i.document )` -> `references/guide/progguide/functions_document_handling/dms.idm.query.response.get.next.document.md`
 - **dms idm upload document** | `function long dms.idm.upload.document( string i.document.type, long i.attr.list, string i.filename, string i.display.name, string i.mimetype, boolean i.create.revision, long o.document, string o.error.mesg )` -> `references/guide/progguide/functions_document_handling/dms.idm.upload.document.md`
@@ -845,11 +846,12 @@
 ## donut
 
 - **donut add segment** | `function long donut.add.segment( long i.donutid, const string i.segmentname, const string i.title, long | double i.value, Color The color of the segment, one of the available colors in the color, long i.tint )` -> `references/guide/progguide/functions_donut/donut.add.segment.md`
+- **donut add tooltipline** | `function long donut.add.tooltipline( long i.donutid, const string i.tooltip )` -> `references/guide/progguide/functions_donut/donut.add.tooltipline.md`
 - **donut new** | `function long donut.new( const string i.future.use, const string i.legendpos, boolean i.animate )` -> `references/guide/progguide/functions_donut/donut.new.md`
 - **donut set field** | `function long donut.set.field( const string i.fieldname, long i.width, long i.height )` -> `references/guide/progguide/functions_donut/donut.set.field.md`
 - **donut set innersubtitle** | `function long donut.set.innersubtitle( long i.donutid, const string i.donutsubtitle, [ long i.size, const string i.style ] )` -> `references/guide/progguide/functions_donut/donut.set.innersubtitle.md`
 - **donut set innertitle** | `function long donut.set.innertitle( long i.donutid, const string i.donuttitle, [ long i.size, const string i.style ] )` -> `references/guide/progguide/functions_donut/donut.set.innertitle.md`
-- **donutsegment add tooltipline** | `function long donuttsegment.add.tooltipline( long i.segmentid, const string i.tooltip )` -> `references/guide/progguide/functions_donut/donutsegment.add.tooltipline.md`
+- **donutsegment add tooltipline** | `function long donutsegment.add.tooltipline( long i.segmentid, const string i.tooltip )` -> `references/guide/progguide/functions_donut/donutsegment.add.tooltipline.md`
 - **donutsegment set clickable** | `function long donutsegment.set.clickable( long i.segmentid, boolean i.is.clickable )` -> `references/guide/progguide/functions_donut/donutsegment.set.clickable.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_donut/overview_and_synopsis.md`
 ## dynamic_sql_queries
@@ -860,7 +862,7 @@
 - **sql exec** | `function long sql.exec( long sql_id )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.exec.md`
 - **sql fetch** | `function long sql.fetch( long sql_id )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.fetch.md`
 - **sql get select all data languages** | `function boolean sql.get.select.all.data.languages( )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.get.select.all.data.languages.md`
-- **sql parse** | `function long sql.parse( string query(.), [ long mode, ref string err.msg, ref long err.line, const string annotation, ... ] )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.parse.md`
+- **sql parse** | `function long sql.parse( string query(.), [ long mode, ref string err.msg, ref long err.line, const string annotation,... ] )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.parse.md`
 - **sql select bind** | `function long sql.select.bind( long sql_id, long pseudo_var, varname var_name(.) )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.select.bind.md`
 - **sql set rds full** | `function long sql.set.rds.full( long sql_id, long size )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.set.rds.full.md`
 - **sql set select all data languages** | `function boolean sql.set.select.all.data.languages( boolean select.all.data.languages )` -> `references/guide/progguide/functions_dynamic_sql_queries/sql.set.select.all.data.languages.md`
@@ -871,25 +873,25 @@
 - **overview**  -> `references/guide/progguide/functions_electronic_signature/overview.md`
 - **signature finish request** | `function long signature.finish.request( boolean i.succeeded )` -> `references/guide/progguide/functions_electronic_signature/signature.finish.request.md`
 - **signature is required** | `function boolean signature.is.required( domain ttesg.docm i.docm, long i.compnr )` -> `references/guide/progguide/functions_electronic_signature/signature.is.required.md`
-- **signature start request** | `function long signature.start.request( domain ttesg.docm i.docm, [ const string key_field1, const string | long | double key_value1 ], ... )` -> `references/guide/progguide/functions_electronic_signature/signature.start.request.md`
+- **signature start request** | `function long signature.start.request( domain ttesg.docm i.docm, [ const string key_field1, const string | long | double key_value1 ],... )` -> `references/guide/progguide/functions_electronic_signature/signature.start.request.md`
 - **signed document add extra field** | `function long signed.document.add.extra.field( long i.document.xml, const string i.table.name, const string i.key.reference, const string i.label, const string i.value )` -> `references/guide/progguide/functions_electronic_signature/signed.document.add.extra.field.md`
 - **signed document add field desc** | `function long signed.document.add.field.desc( long i.document.xml, const string i.table.field.name, const string i.key.reference, const string i.label, const string i.desc, [ long element ] )` -> `references/guide/progguide/functions_electronic_signature/signed.document.add.field.desc.md`
 - **signed document add record** | `function long signed.document.add.record( long i.document.xml, const string i.table.name )` -> `references/guide/progguide/functions_electronic_signature/signed.document.add.record.md`
 - **synopsis**  -> `references/guide/progguide/functions_electronic_signature/synopsis.md`
 ## enumerates
 
-- **ask enum** | `function bset ask.enum( string quescode, bset default_enumval, [ void arg, ... ] )` -> `references/guide/progguide/functions_enumerates/ask.enum.md`
+- **ask enum** | `function bset ask.enum( string quescode, bset default_enumval, [ void arg,... ] )` -> `references/guide/progguide/functions_enumerates/ask.enum.md`
 - **enum descr** | `function string enum.descr$( string domain_code(12), enum_expr, [ string language_code ] )` -> `references/guide/progguide/functions_enumerates/enum.descr.md`
 - **etol** | `function long etol( domain domain_value )` -> `references/guide/progguide/functions_enumerates/etol.md`
 - **ltoe** | `function domain ltoe( long long_value )` -> `references/guide/progguide/functions_enumerates/ltoe.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_enumerates/overview_and_synopsis.md`
 - **set ask enum values** | `function void set.ask.enum.values( enum_constant,... enum_constant )` -> `references/guide/progguide/functions_enumerates/set.ask.enum.values.md`
 - **set enum array for field** | `function void set.enum.array.for.field( const string field.name, const long size, const long values )` -> `references/guide/progguide/functions_enumerates/set.enum.array.for.field.md`
-- **set enum values for field** | `function void set.enum.values.for.field( const string field.name, [ long ALL_ENUMS_EXCEPT, enum enum_value, ... ] )` -> `references/guide/progguide/functions_enumerates/set.enum.values.for.field.md`
+- **set enum values for field** | `function void set.enum.values.for.field( const string field.name, [ long ALL_ENUMS_EXCEPT, enum enum_value,... ] )` -> `references/guide/progguide/functions_enumerates/set.enum.values.for.field.md`
 - **set enum values** | `function void set.enum.values( enum_constant enum_constant,... )` -> `references/guide/progguide/functions_enumerates/set.enum.values.md`
 - **set initial enum array for field** | `function void set.initial.enum.array.for.field( const string field.name, long size, const long values )` -> `references/guide/progguide/functions_enumerates/set.initial.enum.array.for.field.md`
-- **set initial enum values for field** | `function void set.initial.enum.values.for.field( const string field.name, long ALL_ENUMS_EXCEPT, enum enum_value, ... )` -> `references/guide/progguide/functions_enumerates/set.initial.enum.values.for.field.md`
-- **set initial enum values for workflow status field** | `function void set.initial.enum.values.for.workflow.status.field( long ALL_ENUMS_EXCEPT, enum workflow_status, ... )` -> `references/guide/progguide/functions_enumerates/set.initial.enum.values.for.workflow.status.field.md`
+- **set initial enum values for field** | `function void set.initial.enum.values.for.field( const string field.name, long ALL_ENUMS_EXCEPT, enum enum_value,... )` -> `references/guide/progguide/functions_enumerates/set.initial.enum.values.for.field.md`
+- **set initial enum values for workflow status field** | `function void set.initial.enum.values.for.workflow.status.field( long ALL_ENUMS_EXCEPT, enum workflow_status,... )` -> `references/guide/progguide/functions_enumerates/set.initial.enum.values.for.workflow.status.field.md`
 ## expressions_runtime
 
 - **d expr** | `function double d.expr( long expr_id, [ void value, boolean suppressError ] )` -> `references/guide/progguide/functions_expressions_runtime/d.expr.md`
@@ -900,9 +902,9 @@
 - **s expr** | `function string s.expr$( long expr_id, [ void value, boolean suppressError ] )` -> `references/guide/progguide/functions_expressions_runtime/s.expr.md`
 ## form_and_form_field_operations
 
-- **add sync fields** | `function void add.sync.fields( const string satelliteSessionCode, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.md`
-- **add sync fields nokey** | `function void add.sync.fields.nokey( const string satelliteSessionCode, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.nokey.md`
-- **add sync fields once** | `function void add.sync.fields.once( const string satelliteSessionCode, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.once.md`
+- **add sync fields** | `function void add.sync.fields( const string satelliteSessionCode, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.md`
+- **add sync fields nokey** | `function void add.sync.fields.nokey( const string satelliteSessionCode, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.nokey.md`
+- **add sync fields once** | `function void add.sync.fields.once( const string satelliteSessionCode, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.sync.fields.once.md`
 - **add variable to defaults** | `function void add.variable.to.defaults( string var_name, long var_type )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.variable.to.defaults.md`
 - **add view field** | `function void add.view.field( long index.nr, const string fname )` -> `references/guide/progguide/functions_form_and_form_field_operations/add.view.field.md`
 - **blank all** | `function void blank.all( )` -> `references/guide/progguide/functions_form_and_form_field_operations/blank.all.md`
@@ -913,16 +915,18 @@
 - **change satellite label** | `function void change.satellite.label( const string session.code, const string description )` -> `references/guide/progguide/functions_form_and_form_field_operations/change.satellite.label.md`
 - **check all input** | `function void check.all.input( )` -> `references/guide/progguide/functions_form_and_form_field_operations/check.all.input.md`
 - **choice again** | `function void choice.again( )` -> `references/guide/progguide/functions_form_and_form_field_operations/choice.again.md`
+- **clear easy filter** | `function void clear.easy.filter( )` -> `references/guide/progguide/functions_form_and_form_field_operations/clear.easy.filter.md`
 - **defaults saved** | `function boolean defaults.saved( )` -> `references/guide/progguide/functions_form_and_form_field_operations/defaults.saved.md`
 - **disable checkmark** | `function void disable.checkmark( string field [,occurrence],... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.checkmark.md`
-- **disable commands** | `function void disable.commands( const string command, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.commands.md`
+- **disable commands** | `function void disable.commands( const string command, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.commands.md`
 - **disable fields** | `function void disable.fields( [ long mode ], string field [,occurrence],... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.fields.md`
 - **disable group** | `function void disable.group( long group.nr, [ long type, long occurrence ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.group.md`
 - **disable pagemode** | `function void disable.pagemode( )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.pagemode.md`
 - **disable personalize form** | `function void disable.personalize.form( )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.personalize.form.md`
 - **disable personalize view** | `function void disable.personalize.view( )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.personalize.view.md`
-- **disable quick flow** | `function void disable.quick.flow( const string frmcmd, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.quick.flow.md`
+- **disable quick flow** | `function void disable.quick.flow( const string frmcmd, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.quick.flow.md`
 - **disable satellite** | `function void disable.satellite( const string session.code )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.satellite.md`
+- **disable save on occ change** | `function void disable.save.on.occ.change( )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.save.on.occ.change.md`
 - **disable zoom buttons** | `function void disable.zoom.buttons( string field [,occurrence],... )` -> `references/guide/progguide/functions_form_and_form_field_operations/disable.zoom.buttons.md`
 - **display all** | `function void display.all( )` -> `references/guide/progguide/functions_form_and_form_field_operations/display.all.md`
 - **display curr occ** | `function void display.curr.occ( )` -> `references/guide/progguide/functions_form_and_form_field_operations/display.curr.occ.md`
@@ -930,20 +934,20 @@
 - **display** | `function void display( string field )` -> `references/guide/progguide/functions_form_and_form_field_operations/display.md`
 - **display occ** | `function void display.occ( long occurrence )` -> `references/guide/progguide/functions_form_and_form_field_operations/display.occ.md`
 - **display total fields** | `function void display.total.fields( string fieldname1, void value1, string fieldname2,..., void value2,... )` -> `references/guide/progguide/functions_form_and_form_field_operations/display.total.fields.md`
-- **do all occ** | `function void do.all.occ( function_name function_name, function_name ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.all.occ.md`
-- **do occ** | `function void do.occ( long occurrence, function_name function_name, function_name ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.occ.md`
-- **do occ without update** | `function long do.occ.without.update( long occurrence, function_name function_name, function_name ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.occ.without.update.md`
-- **do selection** | `function void do.selection( long mode, function_name function_name, [ function_name ... ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.selection.md`
-- **enable commands** | `function void enable.commands( const string command, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.commands.md`
+- **do all occ** | `function void do.all.occ( <function_name>, [ <type>... ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.all.occ.md`
+- **do occ** | `function void do.occ( long occurrence, <function_name>, [ <type>... ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.occ.md`
+- **do occ without update** | `function long do.occ.without.update( long occurrence, function_name function_name, [ <type>... ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.occ.without.update.md`
+- **do selection** | `function void do.selection( long mode, <function_name>, [ <type>... ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/do.selection.md`
+- **enable commands** | `function void enable.commands( const string command, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.commands.md`
 - **enable fields** | `function void enable.fields( [ long mode ], string field [,occurrence],... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.fields.md`
 - **enable group** | `function void enable.group( long group.nr, [ long occurrence ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.group.md`
-- **enable quick flow** | `function void enable.quick.flow( const string frmcmd, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.quick.flow.md`
+- **enable quick flow** | `function void enable.quick.flow( const string frmcmd, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.quick.flow.md`
 - **enable satellite** | `function void enable.satellite( const string session.code )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.satellite.md`
 - **enable save on occ change** | `function void enable.save.on.occ.change( )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.save.on.occ.change.md`
 - **enable zoom buttons** | `function void enable.zoom.buttons( string field [,occurrence],... )` -> `references/guide/progguide/functions_form_and_form_field_operations/enable.zoom.buttons.md`
 - **execute form command** | `function void execute.form.command( const string form.command )` -> `references/guide/progguide/functions_form_and_form_field_operations/execute.form.command.md`
 - **execute** | `function void execute( long command )` -> `references/guide/progguide/functions_form_and_form_field_operations/execute.md`
-- **field hidden** | `function void field.hidden( const string i.field.name, ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/field.hidden.md`
+- **field hidden** | `function void field.hidden( const string i.field.name,... )` -> `references/guide/progguide/functions_form_and_form_field_operations/field.hidden.md`
 - **fields autocomplete** | `function void fields.autocomplete( boolean try.autocomplete,..., [ string fieldname(18) ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/fields.autocomplete.md`
 - **get active satellite** | `function string get.active.satellite( [ ref long satellite.nr ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/get.active.satellite.md`
 - **get current field label** | `function long get.current.field.label( const string fname, long element, ref string label1 to label3 )` -> `references/guide/progguide/functions_form_and_form_field_operations/get.current.field.label.md`
@@ -971,9 +975,9 @@
 - **make current** | `function void make.current( )` -> `references/guide/progguide/functions_form_and_form_field_operations/make.current.md`
 - **mark occ** | `function void mark.occ( long occurence )` -> `references/guide/progguide/functions_form_and_form_field_operations/mark.occ.md`
 - **move imagefield to grid** | `function long move.imagefield.to.grid( const string image.field )` -> `references/guide/progguide/functions_form_and_form_field_operations/move.imagefield.to.grid.md`
-- **occ independent stat fields** | `function long occ.independent.stat.fields( ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/occ.independent.stat.fields.md`
+- **occ independent stat fields** | `function long occ.independent.stat.fields( boolean independent.state )` -> `references/guide/progguide/functions_form_and_form_field_operations/occ.independent.stat.fields.md`
 - **occ independent view field** | `function void occ.independent.view.field( string field.name )` -> `references/guide/progguide/functions_form_and_form_field_operations/occ.independent.view.field.md`
-- **on old occ** | `function void on.old.occ( const string function_name, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/on.old.occ.md`
+- **on old occ** | `function void on.old.occ( <function_name>, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/on.old.occ.md`
 - **overview**  -> `references/guide/progguide/functions_form_and_form_field_operations/overview.md`
 - **print const** | `function void print.const( )` -> `references/guide/progguide/functions_form_and_form_field_operations/print.const.md`
 - **publish webpart message** | `function void publish.webpart.message( const string type, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/publish.webpart.message.md`
@@ -984,21 +988,21 @@
 - **remove field from view** | `function void remove.field.from.view( const string fname )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.field.from.view.md`
 - **remove form commands** | `function void remove.form.commands( string command,... )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.form.commands.md`
 - **remove mark** | `function void remove.mark( )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.mark.md`
-- **remove quick flow** | `function void remove.quick.flow( const string frmcmd, const string ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.quick.flow.md`
+- **remove quick flow** | `function void remove.quick.flow( const string frmcmd, const string... )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.quick.flow.md`
 - **remove session index** | `function long remove.session.index( long session.index )` -> `references/guide/progguide/functions_form_and_form_field_operations/remove.session.index.md`
 - **satellite invisible** | `function void satellite.invisible( const string session.code )` -> `references/guide/progguide/functions_form_and_form_field_operations/satellite.invisible.md`
 - **set checked command** | `function void set.checked.command( string command, boolean checked )` -> `references/guide/progguide/functions_form_and_form_field_operations/set.checked.command.md`
 - **set fields default** | `function void set.fields.default( )` -> `references/guide/progguide/functions_form_and_form_field_operations/set.fields.default.md`
 - **set list values for field** | `function void set.list.values.for.field( const string field.name.string, long no.list.values, const string list.values(,) )` -> `references/guide/progguide/functions_form_and_form_field_operations/set.list.values.for.field.md`
 - **set starting satellite** | `function void set.starting.satellite( const string satelliteSessionCode )` -> `references/guide/progguide/functions_form_and_form_field_operations/set.starting.satellite.md`
-- **standard commands off** | `function void standard.commands.off( long command, ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/standard.commands.off.md`
+- **standard commands off** | `function void standard.commands.off( long command,... )` -> `references/guide/progguide/functions_form_and_form_field_operations/standard.commands.off.md`
 - **synchronize satellite** | `function void synchronize.satellite( const string [satelliteSessionCode]* )` -> `references/guide/progguide/functions_form_and_form_field_operations/synchronize.satellite.md`
 - **synopsis**  -> `references/guide/progguide/functions_form_and_form_field_operations/synopsis.md`
 - **to field** | `function void to.field( field field, [ long occ ] )` -> `references/guide/progguide/functions_form_and_form_field_operations/to.field.md`
 - **to form** | `function void to.form( long form_number )` -> `references/guide/progguide/functions_form_and_form_field_operations/to.form.md`
 - **to group** | `function boolean to.group( long group_number )` -> `references/guide/progguide/functions_form_and_form_field_operations/to.group.md`
 - **to satellite** | `function void to.satellite( long selected.tab )` -> `references/guide/progguide/functions_form_and_form_field_operations/to.satellite.md`
-- **unlink from maintable** | `function void unlink.from.maintable( string field, ... )` -> `references/guide/progguide/functions_form_and_form_field_operations/unlink.from.maintable.md`
+- **unlink from maintable** | `function void unlink.from.maintable( string field,... )` -> `references/guide/progguide/functions_form_and_form_field_operations/unlink.from.maintable.md`
 - **update occ** | `function void update.occ( )` -> `references/guide/progguide/functions_form_and_form_field_operations/update.occ.md`
 ## formatting_io
 
@@ -1007,9 +1011,9 @@
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_formatting_io/overview_and_synopsis.md`
 - **reset numformat symbols** | `function void reset.numformat.symbols( )` -> `references/guide/progguide/functions_formatting_io/reset.numformat.symbols.md`
 - **set numformat symbols** | `function void set.numformat.symbols( string decimal(1), string grouping(1) )` -> `references/guide/progguide/functions_formatting_io/set.numformat.symbols.md`
-- **sprintf** | `function string sprintf$( string format, [ void ... ] )` -> `references/guide/progguide/functions_formatting_io/sprintf.md`
-- **string scan** | `function long string.scan( string value$, string format$, [ void ... ] )` -> `references/guide/progguide/functions_formatting_io/string.scan.md`
-- **vsprintf** | `function string vsprintf$( string format, [ void ... ] )` -> `references/guide/progguide/functions_formatting_io/vsprintf.md`
+- **sprintf** | `function string sprintf$( string format, [ void... ] )` -> `references/guide/progguide/functions_formatting_io/sprintf.md`
+- **string scan** | `function long string.scan( string value$, string format$, [ void... ] )` -> `references/guide/progguide/functions_formatting_io/string.scan.md`
+- **vsprintf** | `function string vsprintf$( string format, [ void... ] )` -> `references/guide/progguide/functions_formatting_io/vsprintf.md`
 ## gantt_and_schedule_charts
 
 - **example**  -> `references/guide/progguide/functions_gantt_and_schedule_charts/example.md`
@@ -1064,9 +1068,13 @@
 
 - **fieldbutton align left** | `function void fieldbutton.align.left( const string i.command )` -> `references/guide/progguide/functions_genai/fieldbutton.align.left.md`
 - **genai processing ready** | `function void genai.processing.ready( )` -> `references/guide/progguide/functions_genai/genai.processing.ready.md`
+- **genai processing start** | `function void genai.processing.start( )` -> `references/guide/progguide/functions_genai/genai.processing.start.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_genai/overview_and_synopsis.md`
-- **session set genai** | `function void session.set.genai( )` -> `references/guide/progguide/functions_genai/session.set.genai.md`
-- **set genai commands** | `function void set.genai.commands( const string i.command, [ const string ... ] )` -> `references/guide/progguide/functions_genai/set.genai.commands.md`
+- **session set genai icon** | `function long session.set.genai.icon( const string i.GenAI.icon )` -> `references/guide/progguide/functions_genai/session.set.genai.icon.md`
+- **session set genai** | `function void session.set.genai( [ boolean i.show.as.AI.dialog ] )` -> `references/guide/progguide/functions_genai/session.set.genai.md`
+- **set genai command icon** | `function long set.genai.command.icon( string i.command, const string i.GenAI.icon )` -> `references/guide/progguide/functions_genai/set.genai.command.icon.md`
+- **set genai commands** | `function void set.genai.commands( const string i.command,... )` -> `references/guide/progguide/functions_genai/set.genai.commands.md`
+- **set genai field** | `function void set.genai.field( const string i.form.field )` -> `references/guide/progguide/functions_genai/set.genai.field.md`
 ## generic_browser_frameworkf
 
 - **allowed_functions**  -> `references/guide/progguide/functions_generic_browser_frameworkf/allowed_functions.md`
@@ -1081,7 +1089,7 @@
 - **gbf create context menu** | `function long gbf.create.context.menu( )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.create.context.menu.md`
 - **gbf current library** | `function string gbf.current.library( )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.current.library.md`
 - **gbf delete object** | `function long gbf.delete.object( long obj.id )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.delete.object.md`
-- **gbf desc to column** | `function string gbf.desc.to.column( const string column1, const string ... )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.desc.to.column.md`
+- **gbf desc to column** | `function string gbf.desc.to.column( const string column1, const string... )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.desc.to.column.md`
 - **gbf drag drop** | `function long gbf.drag.drop( long drag.obj, const string drag.key(), long drag.value, long drag.type, long drop.obj, const string drop.key(), long drop.value, long drop.type, long button.mode )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.drag.drop.md`
 - **gbf enable drop** | `function long gbf.enable.drop( const string session.code, const string dllname, const string gbf.on.drop )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.enable.drop.md`
 - **gbf error string** | `function string gbf.error.string( long error )` -> `references/guide/progguide/functions_generic_browser_frameworkf/gbf.error.string.md`
@@ -1200,13 +1208,13 @@
 ## http_client
 
 - **examples**  -> `references/guide/progguide/functions_http_client/examples.md`
-- **http connect** | `function long http.connect( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.connect.md`
+- **http connect** | `function long http.connect( const string url,... )` -> `references/guide/progguide/functions_http_client/http.connect.md`
 - **http cookie delete** | `function void http.cookie.delete( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.delete.md`
 - **http cookie domain** | `function string http.cookie.domain( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.domain.md`
 - **http cookie expires** | `function long http.cookie.expires( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.expires.md`
 - **http cookie httponly** | `function boolean http.cookie.httponly( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.httponly.md`
 - **http cookie name** | `function string http.cookie.name( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.name.md`
-- **http cookie new** | `function long http.cookie.new( ... )` -> `references/guide/progguide/functions_http_client/http.cookie.new.md`
+- **http cookie new** | `function long http.cookie.new(... )` -> `references/guide/progguide/functions_http_client/http.cookie.new.md`
 - **http cookie next** | `function long http.cookie.next( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.next.md`
 - **http cookie parse** | `function long http.cookie.parse( const string format, const string cookie_string )` -> `references/guide/progguide/functions_http_client/http.cookie.parse.md`
 - **http cookie path** | `function string http.cookie.path( long cookie )` -> `references/guide/progguide/functions_http_client/http.cookie.path.md`
@@ -1220,9 +1228,9 @@
 - **http cookiejar load** | `function long http.cookiejar.load( ref long cookiejar, const string file )` -> `references/guide/progguide/functions_http_client/http.cookiejar.load.md`
 - **http cookiejar new** | `function long http.cookiejar.new( )` -> `references/guide/progguide/functions_http_client/http.cookiejar.new.md`
 - **http cookiejar save** | `function long http.cookiejar.save( long cookiejar, const string file )` -> `references/guide/progguide/functions_http_client/http.cookiejar.save.md`
-- **http delete** | `function long http.delete( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.delete.md`
-- **http get** | `function long http.get( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.get.md`
-- **http head** | `function long http.head( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.head.md`
+- **http delete** | `function long http.delete( const string url,... )` -> `references/guide/progguide/functions_http_client/http.delete.md`
+- **http get** | `function long http.get( const string url,... )` -> `references/guide/progguide/functions_http_client/http.get.md`
+- **http head** | `function long http.head( const string url,... )` -> `references/guide/progguide/functions_http_client/http.head.md`
 - **http header name** | `function string http.header.name( long header )` -> `references/guide/progguide/functions_http_client/http.header.name.md`
 - **http header next** | `function long http.header.next( long header )` -> `references/guide/progguide/functions_http_client/http.header.next.md`
 - **http header value** | `function string header.value( long header )` -> `references/guide/progguide/functions_http_client/http.header.value.md`
@@ -1232,25 +1240,25 @@
 - **http headerlist first** | `function long http.headerlist.first( long headerlist )` -> `references/guide/progguide/functions_http_client/http.headerlist.first.md`
 - **http headerlist get** | `function long http.headerlist.get( long headerlist, const string name )` -> `references/guide/progguide/functions_http_client/http.headerlist.get.md`
 - **http headerlist get_all** | `function long http.headerlist.get_all( long headerlist, const string name )` -> `references/guide/progguide/functions_http_client/http.headerlist.get_all.md`
-- **http headerlist new** | `function long http.headerlist.new( ... )` -> `references/guide/progguide/functions_http_client/http.headerlist.new.md`
+- **http headerlist new** | `function long http.headerlist.new(... )` -> `references/guide/progguide/functions_http_client/http.headerlist.new.md`
 - **http mimepart delete** | `function void http.mimepart.delete( long mimepart )` -> `references/guide/progguide/functions_http_client/http.mimepart.delete.md`
-- **http mimepart new** | `function long http.mimepart.new( ... )` -> `references/guide/progguide/functions_http_client/http.mimepart.new.md`
+- **http mimepart new** | `function long http.mimepart.new(... )` -> `references/guide/progguide/functions_http_client/http.mimepart.new.md`
 - **http mimepartlist add** | `function void http.mimepartlist.add( long mimepartlist, long http.mimepart )` -> `references/guide/progguide/functions_http_client/http.mimepartlist.add.md`
 - **http mimepartlist add_list** | `function void http.mimepartlist.add_list( long mimepartlist, long other_mimepartlist )` -> `references/guide/progguide/functions_http_client/http.mimepartlist.add_list.md`
 - **http mimepartlist delete** | `function void http.mimepartlist.delete( long http.mimepartlist )` -> `references/guide/progguide/functions_http_client/http.mimepartlist.delete.md`
 - **http mimepartlist new** | `function long http.mimepartlist.new( )` -> `references/guide/progguide/functions_http_client/http.mimepartlist.new.md`
 - **http oauth1params delete** | `function void http.oauth1params.delete( long oauth1params )` -> `references/guide/progguide/functions_http_client/http.oauth1params.delete.md`
-- **http oauth1params new** | `function long http.oauth1params.new( ... )` -> `references/guide/progguide/functions_http_client/http.oauth1params.new.md`
+- **http oauth1params new** | `function long http.oauth1params.new(... )` -> `references/guide/progguide/functions_http_client/http.oauth1params.new.md`
 - **http oauth2params delete** | `function void http.oauth2params.delete( long oauth2params )` -> `references/guide/progguide/functions_http_client/http.oauth2params.delete.md`
-- **http oauth2params new** | `function long http.oauth2params.new( ... )` -> `references/guide/progguide/functions_http_client/http.oauth2params.new.md`
-- **http options** | `function long http.options( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.options.md`
-- **http patch** | `function long http.patch( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.patch.md`
-- **http post** | `function long http.post( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.post.md`
-- **http put** | `function long http.put( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.put.md`
+- **http oauth2params new** | `function long http.oauth2params.new(... )` -> `references/guide/progguide/functions_http_client/http.oauth2params.new.md`
+- **http options** | `function long http.options( const string url,... )` -> `references/guide/progguide/functions_http_client/http.options.md`
+- **http patch** | `function long http.patch( const string url,... )` -> `references/guide/progguide/functions_http_client/http.patch.md`
+- **http post** | `function long http.post( const string url,... )` -> `references/guide/progguide/functions_http_client/http.post.md`
+- **http put** | `function long http.put( const string url,... )` -> `references/guide/progguide/functions_http_client/http.put.md`
 - **http queryparamlist add** | `function void http.queryparamlist.add( long queryparamlist, const string name, const string value )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.add.md`
 - **http queryparamlist add_list** | `function void http.queryparamlist.add_list( long queryparamlist, long other_queryparamlist )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.add_list.md`
 - **http queryparamlist delete** | `function void http.queryparamlist.delete( long queryparamlist )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.delete.md`
-- **http queryparamlist new** | `function long http.queryparamlist.new( ... )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.new.md`
+- **http queryparamlist new** | `function long http.queryparamlist.new(... )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.new.md`
 - **http queryparamlist to_string** | `function string http.queryparamlist.to_string( long queryparamlist, [ string sep(1) ] )` -> `references/guide/progguide/functions_http_client/http.queryparamlist.to_string.md`
 - **http response bodystream** | `function long http.response.bodystream( long response )` -> `references/guide/progguide/functions_http_client/http.response.bodystream.md`
 - **http response curlcode** | `function long http.response.curlcode( long response )` -> `references/guide/progguide/functions_http_client/http.response.curlcode.md`
@@ -1264,9 +1272,10 @@
 - **http routeparamlist add** | `function void http.routeparamlist.add( long routeparamlist, const string name, const string value )` -> `references/guide/progguide/functions_http_client/http.routeparamlist.add.md`
 - **http routeparamlist add_list** | `function void http.routeparamlist.add_list( long routeparamlist, long other_routeparamlist )` -> `references/guide/progguide/functions_http_client/http.routeparamlist.add_list.md`
 - **http routeparamlist delete** | `function void http.routeparamlist.delete( long routeparamlist )` -> `references/guide/progguide/functions_http_client/http.routeparamlist.delete.md`
-- **http routeparamlist new** | `function void http.routeparamlist.new( ... )` -> `references/guide/progguide/functions_http_client/http.routeparamlist.new.md`
-- **http send** | `function long http.send( const string method, const string url, ... )` -> `references/guide/progguide/functions_http_client/http.send.md`
-- **http trace** | `function long http.trace( const string url, ... )` -> `references/guide/progguide/functions_http_client/http.trace.md`
+- **http routeparamlist new** | `function void http.routeparamlist.new(... )` -> `references/guide/progguide/functions_http_client/http.routeparamlist.new.md`
+- **http send** | `function long http.send( const string method, const string url,... )` -> `references/guide/progguide/functions_http_client/http.send.md`
+- **http service info** | `function string http.service.info( const string service, const string info )` -> `references/guide/progguide/functions_http_client/http.service.info.md`
+- **http trace** | `function long http.trace( const string url,... )` -> `references/guide/progguide/functions_http_client/http.trace.md`
 - **overview**  -> `references/guide/progguide/functions_http_client/overview.md`
 - **synopsis**  -> `references/guide/progguide/functions_http_client/synopsis.md`
 ## images
@@ -1276,9 +1285,10 @@
 - **copy image** | `function long copy.image( string source.guid, string source.tablename, string target.guid, string target.tablename, [ boolean overwrite ] )` -> `references/guide/progguide/functions_images/copy.image.md`
 - **copy image to company** | `function long copy.image.to.company( long source.company, string source.guid, string source.tablename, long target.company, string target.guid, string target.tablename, [ boolean overwrite, boolean omit.transaction ] )` -> `references/guide/progguide/functions_images/copy.image.to.company.md`
 - **copy image to file** | `function long copy.image.to.file( long source.company, string source.guid, string source.tablename, string target.file )` -> `references/guide/progguide/functions_images/copy.image.to.file.md`
-- **delete image** | `function boolean delete.image( string guid, long company )` -> `references/guide/progguide/functions_images/delete.image.md`
+- **delete image** | `function boolean delete.image( string guid, long company, [ boolean no.transaction ] )` -> `references/guide/progguide/functions_images/delete.image.md`
 - **discard changed image** | `function void discard.changed.image( string fieldname )` -> `references/guide/progguide/functions_images/discard.changed.image.md`
 - **examples**  -> `references/guide/progguide/functions_images/examples.md`
+- **get image last modified date** | `function domain ttutc get.image.last.modified.date( string guid, long sequence, [ string tablename ] )` -> `references/guide/progguide/functions_images/get.image.last.modified.date.md`
 - **get image path** | `function string get.image.path( string guid, long sequ, [ string tablename, long width, long height ] )` -> `references/guide/progguide/functions_images/get.image.path.md`
 - **is image changed** | `function boolean is.image.changed( string fieldname )` -> `references/guide/progguide/functions_images/is.image.changed.md`
 - **is image dropped** | `function boolean is.image.dropped( string fieldname )` -> `references/guide/progguide/functions_images/is.image.dropped.md`
@@ -1353,8 +1363,8 @@
 - **ibucket_interface**  -> `references/guide/progguide/functions_javavm/ibucket_interface.md`
 - **iqueuelistener_interface**  -> `references/guide/progguide/functions_javavm/iqueuelistener_interface.md`
 - **java destroy queue** | `function long java.destroy.queue( long Queue.id )` -> `references/guide/progguide/functions_javavm/java.destroy.queue.md`
-- **java execute static application method** | `function long java.execute.static.application.method( long Handle, ref string JavaReturnValue, string class.name, string method.name, [ void ... ] )` -> `references/guide/progguide/functions_javavm/java.execute.static.application.method.md`
-- **java execute static method sync** | `function long java.execute.static.method.sync( string class.name, string method.name, [ void ... ] )` -> `references/guide/progguide/functions_javavm/java.execute.static.method.sync.md`
+- **java execute static application method** | `function long java.execute.static.application.method( long Handle, ref string JavaReturnValue, string class.name, string method.name, [ void... ] )` -> `references/guide/progguide/functions_javavm/java.execute.static.application.method.md`
+- **java execute static method sync** | `function long java.execute.static.method.sync( string class.name, string method.name, [ void... ] )` -> `references/guide/progguide/functions_javavm/java.execute.static.method.sync.md`
 - **java get bucket** | `function long java.get.bucket( long Queue.id, ref string body, long length, [ ref string header ] )` -> `references/guide/progguide/functions_javavm/java.get.bucket.md`
 - **java install listener** | `function long java.install.listener( long Queue.id, [ long become.owner ] )` -> `references/guide/progguide/functions_javavm/java.install.listener.md`
 - **java load application** | `function long java.load.application( string Application.Name )` -> `references/guide/progguide/functions_javavm/java.load.application.md`
@@ -1386,7 +1396,7 @@
 - **Json_double** | `function double Json.double( long json_value )` -> `references/guide/progguide/functions_json/Json_double.md`
 - **Json_doubleAt** | `function double Json.doubleAt( long json_array, long idx )` -> `references/guide/progguide/functions_json/Json_doubleAt.md`
 - **Json_get** | `function long Json.get( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_get.md`
-- **Json_getBoolean** | `function long Json.getBoolean( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_getBoolean.md`
+- **Json_getBoolean** | `function boolean Json.getBoolean( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_getBoolean.md`
 - **Json_getDouble** | `function double Json.getDouble( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_getDouble.md`
 - **Json_getLong** | `function long Json.getLong( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_getLong.md`
 - **Json_getNumber** | `function double Json.getNumber( long json_object, const string key )` -> `references/guide/progguide/functions_json/Json_getNumber.md`
@@ -1397,7 +1407,7 @@
 - **Json_insertDouble** | `function long Json.insertDouble( [long] json_array, long idx, double value )` -> `references/guide/progguide/functions_json/Json_insertDouble.md`
 - **Json_insertLong** | `function long Json.insertLong( [long] json_array, long idx, long value )` -> `references/guide/progguide/functions_json/Json_insertLong.md`
 - **Json_insertNull** | `function long Json.insertNull( [long] json_array, long idx )` -> `references/guide/progguide/functions_json/Json_insertNull.md`
-- **Json_insertNumber** | `function long Json.insertNumber( [long] json_array, long idx, ... value )` -> `references/guide/progguide/functions_json/Json_insertNumber.md`
+- **Json_insertNumber** | `function long Json.insertNumber( [long] json_array, long idx,... value )` -> `references/guide/progguide/functions_json/Json_insertNumber.md`
 - **Json_insertString** | `function long Json.insertString( [long] json_array, long idx, string value )` -> `references/guide/progguide/functions_json/Json_insertString.md`
 - **Json_isJson** | `function boolean Json.isJson( long json_value )` -> `references/guide/progguide/functions_json/Json_isJson.md`
 - **Json_isNull** | `function boolean Json.isNull( long json_value )` -> `references/guide/progguide/functions_json/Json_isNull.md`
@@ -1417,13 +1427,13 @@
 - **Json_newString** | `function long Json.newString( const string value )` -> `references/guide/progguide/functions_json/Json_newString.md`
 - **Json_number** | `function double Json.number( long json_value )` -> `references/guide/progguide/functions_json/Json_number.md`
 - **Json_numberAt** | `function double Json.numberAt( long json_array, long idx )` -> `references/guide/progguide/functions_json/Json_numberAt.md`
-- **Json_path** | `function long Json.path( long json_value, string|long ... )` -> `references/guide/progguide/functions_json/Json_path.md`
+- **Json_path** | `function long Json.path( long json_value, string|long... )` -> `references/guide/progguide/functions_json/Json_path.md`
 - **Json_put** | `function [long] Json.put( long json_array, long idx, long json_value )` -> `references/guide/progguide/functions_json/Json_put.md`
 - **Json_putBoolean** | `function [long] Json.putBoolean( long json_array, long idx, boolean value )` -> `references/guide/progguide/functions_json/Json_putBoolean.md`
 - **Json_putDouble** | `function long Json.putDouble( [long] json_array, long idx, double value )` -> `references/guide/progguide/functions_json/Json_putDouble.md`
 - **Json_putLong** | `function long Json.putLong( [long] json_array, long idx, long value )` -> `references/guide/progguide/functions_json/Json_putLong.md`
 - **Json_putNull** | `function long Json.putNull( [long] json_array, long idx )` -> `references/guide/progguide/functions_json/Json_putNull.md`
-- **Json_putNumber** | `function long Json.putNumber( [long] json_array, long idx, ... value )` -> `references/guide/progguide/functions_json/Json_putNumber.md`
+- **Json_putNumber** | `function long Json.putNumber( [long] json_array, long idx,... value )` -> `references/guide/progguide/functions_json/Json_putNumber.md`
 - **Json_putString** | `function long Json.putString( [long] json_array, long idx, string value )` -> `references/guide/progguide/functions_json/Json_putString.md`
 - **Json_read** | `function long Json.read( long stream, ref string error_str, [ long options ] )` -> `references/guide/progguide/functions_json/Json_read.md`
 - **Json_readFile** | `function long Json.readFile( const string path, ref string error_str, [ long options ] )` -> `references/guide/progguide/functions_json/Json_readFile.md`
@@ -1460,19 +1470,21 @@
 ## maps
 
 - **examples**  -> `references/guide/progguide/functions_maps/examples.md`
+- **map add arrow** | `function long map.add.arrow( long mid, const string start.pointid, const string end.pointid, long arrow.direction, [ long i.arrow.weight, long i.arrow.colort, boolean is.clickable, const string arrowid ] )` -> `references/guide/progguide/functions_maps/map.add.arrow.md`
 - **map add circle** | `function void map.add.circle( long rpid, double radius, string color, double opacity )` -> `references/guide/progguide/functions_maps/map.add.circle.md`
-- **map add info** | `function long map.add.info( long rpid, string title )` -> `references/guide/progguide/functions_maps/map.add.info.md`
+- **map add info** | `function long map.add.info( long i.onmapobjectid, string i.title )` -> `references/guide/progguide/functions_maps/map.add.info.md`
 - **map add infoline** | `function void map.add.infoline( long infoid, string label, string value )` -> `references/guide/progguide/functions_maps/map.add.infoline.md`
 - **map add legendline** | `function void map.add.legendline( long mid, string label, string icontype, [ string color ] )` -> `references/guide/progguide/functions_maps/map.add.legendline.md`
-- **map add point** | `function long map.add.point( long mid, double lat, double lon, string icontype )` -> `references/guide/progguide/functions_maps/map.add.point.md`
+- **map add point** | `function long map.add.point( long mid, double lat, double lon, string icontype, [ boolean is.clickable, const string pointid ] )` -> `references/guide/progguide/functions_maps/map.add.point.md`
 - **map create** | `function long map.create( )` -> `references/guide/progguide/functions_maps/map.create.md`
 - **map delete** | `function void map.delete( long mid )` -> `references/guide/progguide/functions_maps/map.delete.md`
 - **map disable route** | `function void map.disable.route( long mid )` -> `references/guide/progguide/functions_maps/map.disable.route.md`
 - **map getroutedistance** | `function double map.getroutedistance( long mid )` -> `references/guide/progguide/functions_maps/map.getroutedistance.md`
+- **map is active** | `function boolean map.is.active( )` -> `references/guide/progguide/functions_maps/map.is.active.md`
 - **map set shapecolor** | `function void map.set.shapecolor( long rpid, string color )` -> `references/guide/progguide/functions_maps/map.set.shapecolor.md`
 - **map set shapeicon** | `function void map.set.shapeicon( long rpid, string image )` -> `references/guide/progguide/functions_maps/map.set.shapeicon.md`
 - **map set shapetext** | `function void map.set.shapetext( long rpid, string text )` -> `references/guide/progguide/functions_maps/map.set.shapetext.md`
-- **map show** | `function void map.show( long mid, string title )` -> `references/guide/progguide/functions_maps/map.show.md`
+- **map show** | `function void map.show( long mid, string title, [ boolean sync.only ] )` -> `references/guide/progguide/functions_maps/map.show.md`
 - **overview**  -> `references/guide/progguide/functions_maps/overview.md`
 - **synopsis**  -> `references/guide/progguide/functions_maps/synopsis.md`
 ## mathematical_operations
@@ -1504,12 +1516,12 @@
 - **sinh** | `function double sinh( double x )` -> `references/guide/progguide/functions_mathematical_operations/sinh.md`
 - **sqrt** | `function double sqrt( double x )` -> `references/guide/progguide/functions_mathematical_operations/sqrt.md`
 - **synopsis**  -> `references/guide/progguide/functions_mathematical_operations/synopsis.md`
-- **table round** | `function void table.round( [ void field [, field] ..., string table [, table] ... ] )` -> `references/guide/progguide/functions_mathematical_operations/table.round.md`
+- **table round** | `function void table.round( [ void field [, field]..., string table [, table]... ] )` -> `references/guide/progguide/functions_mathematical_operations/table.round.md`
 - **tan** | `function double tan( double x )` -> `references/guide/progguide/functions_mathematical_operations/tan.md`
 - **tanh** | `function double tanh( double x )` -> `references/guide/progguide/functions_mathematical_operations/tanh.md`
 ## memory_operations
 
-- **alloc mem** | `function long alloc.mem( ref variable, long dimension1, [ long dimension2, ... ] )` -> `references/guide/progguide/functions_memory_operations/alloc.mem.md`
+- **alloc mem** | `function long alloc.mem( ref variable, long dimension1, [ long dimension2,... ] )` -> `references/guide/progguide/functions_memory_operations/alloc.mem.md`
 - **array get size in bytes** | `function long array.get.size.in.bytes( void var )` -> `references/guide/progguide/functions_memory_operations/array.get.size.in.bytes.md`
 - **array info** | `function void array.info( void var, ref long nr.dims, ref long dim.info(), [ ref long declared.length ] )` -> `references/guide/progguide/functions_memory_operations/array.info.md`
 - **cmp mem** | `function long cmp.mem( void var1, void var2, [ long count ] )` -> `references/guide/progguide/functions_memory_operations/cmp.mem.md`
@@ -1536,15 +1548,15 @@
 - **dal peek message** | `function void dal.peek.message( long i.type, long i.index, ref string o.code, ref string o.text, [ ref long o.type ] )` -> `references/guide/progguide/functions_message_handling/dal.peek.message.md`
 - **dal reset error messages** | `function void dal.reset.error.messages( long amt )` -> `references/guide/progguide/functions_message_handling/dal.reset.error.messages.md`
 - **dal reset messages** | `function void dal.reset.messages( long i.type, long i.count )` -> `references/guide/progguide/functions_message_handling/dal.reset.messages.md`
-- **dal set error message** | `function void dal.set.error.message( string mess.or.code, [ void arg ... ] )` -> `references/guide/progguide/functions_message_handling/dal.set.error.message.md`
-- **dal set message** | `function void dal.set.message( long i.type, const string i.mess.or.code, [ void arg ... ] )` -> `references/guide/progguide/functions_message_handling/dal.set.message.md`
+- **dal set error message** | `function void dal.set.error.message( string mess.or.code, [ void arg... ] )` -> `references/guide/progguide/functions_message_handling/dal.set.error.message.md`
+- **dal set message** | `function void dal.set.message( long i.type, const string i.mess.or.code, [ void arg... ] )` -> `references/guide/progguide/functions_message_handling/dal.set.message.md`
 - **dal set messages off** | `function void dal.set.messages.off( )` -> `references/guide/progguide/functions_message_handling/dal.set.messages.off.md`
 - **dal set messages on** | `function void dal.set.messages.on( )` -> `references/guide/progguide/functions_message_handling/dal.set.messages.on.md`
 - **form text** | `function string form.text$( string messcode, [ string language_code ] )` -> `references/guide/progguide/functions_message_handling/form.text.md`
-- **mess** | `function void mess( string messcode, long separate_window, [ void arg ... ] )` -> `references/guide/progguide/functions_message_handling/mess.md`
-- **message** | `function void message( string mess_str, [ void arg ... ] )` -> `references/guide/progguide/functions_message_handling/message.md`
+- **mess** | `function void mess( string messcode, long separate_window, [ void arg... ] )` -> `references/guide/progguide/functions_message_handling/mess.md`
+- **message** | `function void message( string mess_str, [ void arg... ] )` -> `references/guide/progguide/functions_message_handling/message.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_message_handling/overview_and_synopsis.md`
-- **set input error** | `function void set.input.error( string mess.or.code, [ void arg ... ] )` -> `references/guide/progguide/functions_message_handling/set.input.error.md`
+- **set input error** | `function void set.input.error( string mess.or.code, [ void arg... ] )` -> `references/guide/progguide/functions_message_handling/set.input.error.md`
 - **show dal messages** | `function void show.dal.messages( [ long i.type ] )` -> `references/guide/progguide/functions_message_handling/show.dal.messages.md`
 - **status del** | `function void status.del( )` -> `references/guide/progguide/functions_message_handling/status.del.md`
 - **status mess** | `function void status.mess( string strg )` -> `references/guide/progguide/functions_message_handling/status.mess.md`
@@ -1567,12 +1579,12 @@
 - **monitor_add_tag** | `function long monitor_add_tag( long event_class_id, const string tag_name, const string tag_value )` -> `references/guide/progguide/functions_monitoring/monitor_add_tag.md`
 - **monitor_define_event_class** | `function long monitor_define_event_class( const string event_class_name )` -> `references/guide/progguide/functions_monitoring/monitor_define_event_class.md`
 - **monitor_define_interval_class** | `function long monitor_define_interval_class( const string interval_class_name )` -> `references/guide/progguide/functions_monitoring/monitor_define_interval_class.md`
-- **monitor_event** | `function long monitor_event( long event_class_id, void ... )` -> `references/guide/progguide/functions_monitoring/monitor_event.md`
+- **monitor_event** | `function long monitor_event( long event_class_id, void... )` -> `references/guide/progguide/functions_monitoring/monitor_event.md`
 - **monitor_remove_event_class** | `function long monitor_remove_event_class( long event_class_id )` -> `references/guide/progguide/functions_monitoring/monitor_remove_event_class.md`
 - **monitor_remove_interval** | `function long monitor_remove_interval( long interval_id )` -> `references/guide/progguide/functions_monitoring/monitor_remove_interval.md`
 - **monitor_remove_interval_class** | `function long monitor_remove_interval_class( long interval_class_id )` -> `references/guide/progguide/functions_monitoring/monitor_remove_interval_class.md`
 - **monitor_start_interval** | `function long monitor_start_interval( long interval_class_id )` -> `references/guide/progguide/functions_monitoring/monitor_start_interval.md`
-- **monitor_stop_interval** | `function long monitor_stop_interval( long interval_id, [ void ... ] )` -> `references/guide/progguide/functions_monitoring/monitor_stop_interval.md`
+- **monitor_stop_interval** | `function long monitor_stop_interval( long interval_id, [ void... ] )` -> `references/guide/progguide/functions_monitoring/monitor_stop_interval.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_monitoring/overview_and_synopsis.md`
 ## multi_tenant
 
@@ -1667,7 +1679,7 @@
 - **menu_object**  -> `references/guide/progguide/functions_plan_chart_manager/menu_object.md`
 - **overview**  -> `references/guide/progguide/functions_plan_chart_manager/overview.md`
 - **pcm activate session** | `function long pcm.activate.session( ref string session, string title )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.activate.session.md`
-- **pcm change** | `function void pcm.change( long plan_id, ..., long flag, long value )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.change.md`
+- **pcm change** | `function void pcm.change( long plan_id,..., long flag, long value )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.change.md`
 - **pcm change object** | `function void pcm.change.object( long plan_id, long object_id, [ long flag, long value, ] )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.change.object.md`
 - **pcm create** | `function long pcm.create( [ long flag, long value,... ] )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.create.md`
 - **pcm create object** | `function long pcm.create.object( long plan_id, long object_type, [ long flag, long value, long flag, value ] )` -> `references/guide/progguide/functions_plan_chart_manager/pcm.create.object.md`
@@ -1702,8 +1714,8 @@
 - **synopsis**  -> `references/guide/progguide/functions_process_groups/synopsis.md`
 ## processes
 
-- **act and sleep** | `function long act.and.sleep( string procname(.), [ string arg1, arg2, ... ] )` -> `references/guide/progguide/functions_processes/act.and.sleep.md`
-- **activate** | `function long activate( string procname(.), [ string arg1, arg2, ... ] )` -> `references/guide/progguide/functions_processes/activate.md`
+- **act and sleep** | `function long act.and.sleep( string procname(.), [ string arg1, arg2,... ] )` -> `references/guide/progguide/functions_processes/act.and.sleep.md`
+- **activate** | `function long activate( string procname(.), [ string arg1, arg2,... ] )` -> `references/guide/progguide/functions_processes/activate.md`
 - **argc** | `function long argc( )` -> `references/guide/progguide/functions_processes/argc.md`
 - **argv** | `function string argv$( long num_expr )` -> `references/guide/progguide/functions_processes/argv.md`
 - **bshell pid** | `function long bshell.pid( )` -> `references/guide/progguide/functions_processes/bshell.pid.md`
@@ -1714,36 +1726,53 @@
 - **signal** | `function void signal( long type, long action )` -> `references/guide/progguide/functions_processes/signal.md`
 - **sleep** | `function void sleep( long processno )` -> `references/guide/progguide/functions_processes/sleep.md`
 - **suspend** | `function void suspend( long msec )` -> `references/guide/progguide/functions_processes/suspend.md`
-- **wait and activate** | `function long wait.and.activate( string procname(.), [ long arg1, arg2, ... ] )` -> `references/guide/progguide/functions_processes/wait.and.activate.md`
+- **wait and activate** | `function long wait.and.activate( string procname(.), [ long arg1, arg2,... ] )` -> `references/guide/progguide/functions_processes/wait.and.activate.md`
 - **wait** | `function string wait( ref long process_id, long option )` -> `references/guide/progguide/functions_processes/wait.md`
 ## programmable_dialogs
 
-- **chart add data point** | `function long chart.add.data.point( long series, (long|string|double) x, (long|double) y )` -> `references/guide/progguide/functions_programmable_dialogs/chart.add.data.point.md`
+- **chart add data point** | `function long chart.add.data.point( long series, (long|string|double) x, (long|double) y, string pointid )` -> `references/guide/progguide/functions_programmable_dialogs/chart.add.data.point.md`
 - **chart add line series** | `function long chart.add.line.series( long chart, const string title )` -> `references/guide/progguide/functions_programmable_dialogs/chart.add.line.series.md`
 - **chart add series** | `function long chart.add.series( long chart, const string title )` -> `references/guide/progguide/functions_programmable_dialogs/chart.add.series.md`
 - **chart clear data** | `function long chart.clear.data( long chart )` -> `references/guide/progguide/functions_programmable_dialogs/chart.clear.data.md`
+- **chart datapoint add tooltipline** | `function long chart.datapoint.add.tooltipline( long series, const string pointid, const string tooltip )` -> `references/guide/progguide/functions_programmable_dialogs/chart.datapoint.add.tooltipline.md`
 - **chart delete** | `function long chart.delete( long type )` -> `references/guide/progguide/functions_programmable_dialogs/chart.delete.md`
+- **chart line series set curving** | `function long chart.line.series.set.curving( long line.series, string curving )` -> `references/guide/progguide/functions_programmable_dialogs/chart.line.series.set.curving.md`
+- **chart line series set marker** | `function long chart.line.series.set.marker( long line.series, string marker )` -> `references/guide/progguide/functions_programmable_dialogs/chart.line.series.set.marker.md`
 - **chart new** | `function long chart.new( long type, [ long width, long height ] )` -> `references/guide/progguide/functions_programmable_dialogs/chart.new.md`
+- **chart series add tooltipline** | `function long chart.series.add.tooltipline( long series, const string tooltip )` -> `references/guide/progguide/functions_programmable_dialogs/chart.series.add.tooltipline.md`
+- **chart series set clickable** | `function long chart.series.set.clickable( long series, boolean is.clickable, string seriesname )` -> `references/guide/progguide/functions_programmable_dialogs/chart.series.set.clickable.md`
+- **chart series set color** | `function long chart.series.set.color( long series, const string color, [ long tint ] )` -> `references/guide/progguide/functions_programmable_dialogs/chart.series.set.color.md`
 - **chart set axis title** | `function long chart.set.axis.title( long chart, long axis, const string title )` -> `references/guide/progguide/functions_programmable_dialogs/chart.set.axis.title.md`
 - **chart set axis type** | `function long chart.set.axis.type( long chart, long axis, long type )` -> `references/guide/progguide/functions_programmable_dialogs/chart.set.axis.type.md`
+- **chart set dual yaxis** | `function long chart.set.dual.yaxis( long chart, long type, [ string title ] )` -> `references/guide/progguide/functions_programmable_dialogs/chart.set.dual.yaxis.md`
+- **chart set legend position** | `function long chart.set.legend.position( long chart, string legendpos )` -> `references/guide/progguide/functions_programmable_dialogs/chart.set.legend.position.md`
 - **chart set title** | `function long chart.set.title( long chart, const string title, [ const string subtitle ] )` -> `references/guide/progguide/functions_programmable_dialogs/chart.set.title.md`
 - **chart write** | `function long chart.write( long type, string file, long width, long height )` -> `references/guide/progguide/functions_programmable_dialogs/chart.write.md`
 - **dialog add button** | `function long dialog.add.button( long dlg, const string btnFunction(), const string btnLabel )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.button.md`
 - **dialog add chart** | `function long dialog.add.chart( long dlg, long initial.type, [ long allowed.types ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.chart.md`
 - **dialog add field** | `function long dialog.add.field( long dlg, const string fldName(), const string fldLabel(), [ long attribute, value,... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.field.md`
 - **dialog add listbox** | `function long dialog.add.listbox( long dlg, const string fldName(), const string fldLabel(), const long no.items, long enum.vals(), string enum.desc(,), [ string attribute, value,... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.listbox.md`
-- **dialog add text** | `function long dialog.add.text( long dlg, string text(), [ long attribute, value, ... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.text.md`
-- **dialog new** | `function long dialog.new( string dialogName, [ long attribute, value, ... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.new.md`
+- **dialog add text** | `function long dialog.add.text( long dlg, string text(), [ long attribute, value,... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.add.text.md`
+- **dialog new** | `function long dialog.new( string dialogName, [ long attribute, value,... ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.new.md`
 - **dialog refresh field** | `function long dialog.refresh.field( long dlg, const string fldName() )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.refresh.field.md`
-- **dialog set initial enum values for field** | `function long dialog.set.initial.enum.values.for.field( long dlg, const string field.name, long ALL_ENUMS_EXCEPT, enum enum_value, ... )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.set.initial.enum.values.for.field.md`
+- **dialog set initial enum values for field** | `function long dialog.set.initial.enum.values.for.field( long dlg, const string field.name, long ALL_ENUMS_EXCEPT, enum enum_value,... )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.set.initial.enum.values.for.field.md`
 - **dialog show** | `function long dialog.show( long dlg, [ long previous_window, long load_defaults ] )` -> `references/guide/progguide/functions_programmable_dialogs/dialog.show.md`
 - **example**  -> `references/guide/progguide/functions_programmable_dialogs/example.md`
 - **examplechart**  -> `references/guide/progguide/functions_programmable_dialogs/examplechart.md`
 - **synopsis**  -> `references/guide/progguide/functions_programmable_dialogs/synopsis.md`
+## progress_bar
+
+- **overview_and_synopsis**  -> `references/guide/progguide/functions_progress_bar/overview_and_synopsis.md`
+- **progressbar add segment** | `function long progressbar.add.segment( long i.percentage, const string i.color )` -> `references/guide/progguide/functions_progress_bar/progressbar.add.segment.md`
+- **progressbar add tooltipline** | `function long progressbar.add.tooltipline( const string i.tooltip )` -> `references/guide/progguide/functions_progress_bar/progressbar.add.tooltipline.md`
+- **progressbar set clickable** | `function long progressbar.set.clickable( boolean i.is.clickable )` -> `references/guide/progguide/functions_progress_bar/progressbar.set.clickable.md`
+- **progressbar set field** | `function long progressbar.set.field( const string i.fieldname, [ const string i.title, const string i.subtitle, boolean i.is.mirrored ] )` -> `references/guide/progguide/functions_progress_bar/progressbar.set.field.md`
+- **progressbar set subtitle** | `function long progressbar.set.subtitle( const string i.title )` -> `references/guide/progguide/functions_progress_bar/progressbar.set.subtitle.md`
+- **progressbar set title** | `function long progressbar.set.title( const string i.title )` -> `references/guide/progguide/functions_progress_bar/progressbar.set.title.md`
 ## progress_indicators
 
 - **change progress delay** | `function void change.progress.delay( long delay )` -> `references/guide/progguide/functions_progress_indicators/change.progress.delay.md`
-- **change progress indicator** | `function long change.progress.indicator( long perc, [ string message, ... ] )` -> `references/guide/progguide/functions_progress_indicators/change.progress.indicator.md`
+- **change progress indicator** | `function long change.progress.indicator( long perc, [ string message,... ] )` -> `references/guide/progguide/functions_progress_indicators/change.progress.indicator.md`
 - **change progress title** | `function void change.progress.title( string title )` -> `references/guide/progguide/functions_progress_indicators/change.progress.title.md`
 - **create progress indicator** | `function long create.progress.indicator( string title, [ long mode ] )` -> `references/guide/progguide/functions_progress_indicators/create.progress.indicator.md`
 - **destroy progress indicator** | `function void destroy.progress.indicator( )` -> `references/guide/progguide/functions_progress_indicators/destroy.progress.indicator.md`
@@ -1763,7 +1792,7 @@
 - **logging**  -> `references/guide/progguide/functions_query_hints/logging.md`
 - **no_hints_hint**  -> `references/guide/progguide/functions_query_hints/no_hints_hint.md`
 - **ordered_hint**  -> `references/guide/progguide/functions_query_hints/ordered_hint.md`
-- **overview** | `<hint clause> ::= hint <hint first set> [{<hint fixctl set>}...] <hint first set> ::= <hint list> | <hint fixctl set> <hint fixctl set> ::= when fixctl <identifier> is on <hint list> <hint list> ::= <hint> | <hint> and <hint list> <hint> ::= use index <nr list> on <table name> [asc|desc] | array fetching | no array fetching | array size <n> | all rows | first rows | buffer <n> rows | <string literal> | ordered | no hints <nr list> ::= <n> | <n> ',' <nr_list> <n> ::= a positive integer <table name> ::= the name of a table or a table name alias. <string literal> ::= string enclosed in double quotes` -> `references/guide/progguide/functions_query_hints/overview.md`
+- **overview** | `<hint clause> ::= hint <hint first set> [ { <hint fixctl set> }... ] <hint first set> ::= <hint list> | <hint fixctl set> <hint fixctl set> ::= when fixctl <identifier> is on <hint list> <hint list> ::= <hint> | <hint> and <hint list> <hint> ::= use index <nr list> on <table name> [asc|desc] | array fetching | no array fetching | array size <n> | all rows | first rows | buffer <n> rows | <string literal> | ordered | no hints <nr list> ::= <n> | <n> ',' <nr_list> <n> ::= a positive integer <table name> ::= the name of a table or a table name alias. <string literal> ::= string enclosed in double quotes` -> `references/guide/progguide/functions_query_hints/overview.md`
 - **row_mode_hint**  -> `references/guide/progguide/functions_query_hints/row_mode_hint.md`
 - **string_hint**  -> `references/guide/progguide/functions_query_hints/string_hint.md`
 ## random_number_generator
@@ -1782,9 +1811,12 @@
 - **rbhp query extend from** | `function void rbhp.query.extend.from( const string from.extension )` -> `references/guide/progguide/functions_rbhp/rbhp.query.extend.from.md`
 - **rbhp query extend select** | `function void rbhp.query.extend.select( const string select.extension )` -> `references/guide/progguide/functions_rbhp/rbhp.query.extend.select.md`
 - **rbhp query extend where** | `function void rbhp.query.extend.where( const string where.extension )` -> `references/guide/progguide/functions_rbhp/rbhp.query.extend.where.md`
-- **rbhp set error message** | `function void rbhp.set.error.message( const string mess.or.code, [ void arg ... ] )` -> `references/guide/progguide/functions_rbhp/rbhp.set.error.message.md`
+- **rbhp set error message** | `function void rbhp.set.error.message( const string mess.or.code, [ void arg... ] )` -> `references/guide/progguide/functions_rbhp/rbhp.set.error.message.md`
 - **rbhp set session** | `function void rbhp.set.session( const string session.code, long mode, long company, [ long session.index ] )` -> `references/guide/progguide/functions_rbhp/rbhp.set.session.md`
 - **synopsis**  -> `references/guide/progguide/functions_rbhp/synopsis.md`
+## report_scripts
+
+- **functions_in_report_scripts**  -> `references/guide/progguide/report_scripts/functions_in_report_scripts.md`
 ## reports
 
 - **brp close** | `function void brp.close( long brp_id )` -> `references/guide/progguide/functions_reports/brp.close.md`
@@ -1803,7 +1835,7 @@
 - **rsc font spec** | `function string rsc.font.spec( long font_weight, long font_slant, long font_height, long font_points, long font_spacing, long font_width, long font_charwidth )` -> `references/guide/progguide/functions_resource_sets/rsc.font.spec.md`
 - **rsc get** | `function void rsc.get( ref string values(), string package_code(2), string resource_set(16), string resource_id(24),... )` -> `references/guide/progguide/functions_resource_sets/rsc.get.md`
 - **rsc many** | `function void rsc.boolean( string variable )` -> `references/guide/progguide/functions_resource_sets/rsc.many.md`
-- **rsc put** | `function void rsc.put( string package_code(2), string resource_set(16), string resource_id(16), value(40) , [ string resource_id(16), value(40) . . . ] )` -> `references/guide/progguide/functions_resource_sets/rsc.put.md`
+- **rsc put** | `function void rsc.put( string package_code(2), string resource_set(16), string resource_id(16), value(40), [ string resource_id(16), value(40)... ] )` -> `references/guide/progguide/functions_resource_sets/rsc.put.md`
 - **rsc setmany** | `function void rsc.setboolean( string variable, string value(40) )` -> `references/guide/progguide/functions_resource_sets/rsc.setmany.md`
 - **synopsis**  -> `references/guide/progguide/functions_resource_sets/synopsis.md`
 ## runtime_dictionary_information
@@ -1813,7 +1845,7 @@
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_runtime_dictionary_information/overview_and_synopsis.md`
 - **rdi audit hosts** | `function long rdi.audit.hosts( string table_name(9), long comp_nr, ref string hosts() )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.audit.hosts.md`
 - **rdi column combined** | `function long rdi.column.combined( string column_name(18), string ref child_colums(18, 32) )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.column.combined.md`
-- **rdi column** | `function long rdi.column( string column_name(18), ref string domain_name(14), ref long offset, ref long size, ref long dept, ref long type, ref long flag, ref string default_value(.) )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.column.md`
+- **rdi column** | `function long rdi.column( string column_name(17), ref string domain_name(14), ref long offset, ref long size, ref long dept, ref long type, ref long flag, ref string default_value(.) )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.column.md`
 - **rdi ctoe** | `function long rdi.ctoe( string domain_name(14), string enum_name )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.ctoe.md`
 - **rdi date input format** | `function string rdi.date.input.format$( string date_format(7), [ ref string display_format() ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.date.input.format.md`
 - **rdi domain byte** | `function long rdi.domain.byte( string domain_name(14), ref long digits )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.byte.md`
@@ -1828,7 +1860,7 @@
 - **rdi domain** | `function long rdi.domain( string domain_name(14), ref string oformat(.), ref string lechar(.), ref string ilchar(.), ref long adjust, ref string errmess(.), ref long range_expr_id, [ ref long plen, ref string iformat(.) ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.md`
 - **rdi domain raw** | `function long rdi.domain.raw( string domain_name(14), ref long length )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.raw.md`
 - **rdi domain set** | `function long rdi.domain.set( string domain_name(14), ref long no_enum_items )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.set.md`
-- **rdi domain set value** | `function long rdi.domain.set.value( string domain_name(14), long enum_item, string language, ref string keyword(.), string descr(.), ref string value )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.set.value.md`
+- **rdi domain set value** | `function long rdi.domain.set.value( string domain_name(14), long enum_item, string language, ref string keyword(.), string descr(.), ref long value )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.set.value.md`
 - **rdi domain string** | `function long rdi.domain.string( string domain_name(14), ref long length, ref long convert )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.string.md`
 - **rdi domain text** | `function long rdi.domain.text( string domain_name(14), ref long digits )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.domain.text.md`
 - **rdi etoc** | `function string rdi.etoc$( string domain_name(14), long enum_value as long )` -> `references/guide/progguide/functions_runtime_dictionary_information/rdi.etoc.md`
@@ -1857,7 +1889,7 @@
 - **tt device** | `function boolean tt.device( string device(9), ref string desc() mb, ref long device_type )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.device.md`
 - **tt field desc** | `function string tt.field.desc( string field(17), ref string desc() mb )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.field.desc.md`
 - **tt index desc** | `function string tt.index.desc( string tabl(8), long indexnr, [ ref string desc() mb ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.index.desc.md`
-- **tt init vars** | `function void tt.init.vars( ref void variable, [ ... ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.init.vars.md`
+- **tt init vars** | `function void tt.init.vars( ref void variable, [... ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.init.vars.md`
 - **tt is domain separated** | `function boolean tt.is.domain.separated( const string a_domain(), [ ref long numberOfSeparators, ref string separatorCharacter() ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.is.domain.separated.md`
 - **tt label desc by lang** | `function string tt.label.desc.by.lang( string label_code(19), string language(1), [ long label_width, long label_height, domain ttadv.cont label_context ] )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.label.desc.by.lang.md`
 - **tt label desc** | `function string tt.label.desc( string label_code(19), domain ttadv.cont label_context, ref string desc )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.label.desc.md`
@@ -1875,7 +1907,7 @@
 - **tt session present** | `function long tt.session.present( string session(13) )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.session.present.md`
 - **tt short field desc** | `function string tt.short.field.desc( string field(17), long length, ref string desc() mb )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.short.field.desc.md`
 - **tt table desc** | `function string tt.table.desc( string table(8), ref string desc() mb )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.table.desc.md`
-- **tt user data** | `function boolean tt.user.data( string user(12), long property, ... )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.user.data.md`
+- **tt user data** | `function boolean tt.user.data( string user(12), long property,... )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.user.data.md`
 - **tt user** | `function boolean tt.user( string user(12), ref string name() mb )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt.user.md`
 - **tt_chm appl desc** | `function long tt.chm.appl.desc( string appl(40), ref string desc() mb )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt_chm.appl.desc.md`
 - **tt_chm application** | `function boolean tt.chm.application( string appl )` -> `references/guide/progguide/functions_runtime_dictionary_information/tt_chm.application.md`
@@ -1898,7 +1930,9 @@
 - **s3 location to path$** | `function string s3.location.to.path$( long s3.location, const string s3.key$, [ long symbolize.mode ] )` -> `references/guide/progguide/functions_s3/s3.location.to.path$.md`
 - **s3 move folder** | `function long s3.move.folder( const string source.s3.path$, const string target.s3.path$, [ const string progress.callback.dll$, const string progress.callback.function$, long progress.callback.data ] )` -> `references/guide/progguide/functions_s3/s3.move.folder.md`
 - **s3 move object** | `function long s3.move.object( const string source.s3.path$, const string target.s3.path$ )` -> `references/guide/progguide/functions_s3/s3.move.object.md`
+- **s3 object modification date** | `function long s3.object.modification.date( const string s3.path$ )` -> `references/guide/progguide/functions_s3/s3.object.modification.date.md`
 - **s3 object size** | `function long s3.object.size( const string s3.path$ )` -> `references/guide/progguide/functions_s3/s3.object.size.md`
+- **s3 object stat** | `function long s3.object.stat( const string s3.path$, ref long size, [ ref long modification.date ] )` -> `references/guide/progguide/functions_s3/s3.object.stat.md`
 - **s3 open object** | `function long s3.open.object( const string s3.path$, string mode$(1), [ long bufsz ] )` -> `references/guide/progguide/functions_s3/s3.open.object.md`
 - **s3 path as folder$** | `function string s3.path.as.folder$( const string s3.path$ )` -> `references/guide/progguide/functions_s3/s3.path.as.folder$.md`
 - **s3 path bucket$** | `function string s3.path.bucket$( const string s3.path$ )` -> `references/guide/progguide/functions_s3/s3.path.bucket$.md`
@@ -1918,6 +1952,36 @@
 - **s3 upload object** | `function long s3.upload.object( const string s3.path$, const string file.path$, [ long compress.method ] )` -> `references/guide/progguide/functions_s3/s3.upload.object.md`
 - **s3 uri to path$** | `function string s3.uri.to.path$( const string s3.uri$ )` -> `references/guide/progguide/functions_s3/s3.uri.to.path$.md`
 - **synopsis**  -> `references/guide/progguide/functions_s3/synopsis.md`
+## s3_transfer
+
+- **overview**  -> `references/guide/progguide/functions_s3_transfer/overview.md`
+- **s3 transfer cancel** | `function [long] s3.transfer.cancel( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.cancel.md`
+- **s3 transfer copy directory** | `function long s3.transfer.copy.directory( const string s3.source, const string s3.target, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.copy.directory.md`
+- **s3 transfer copy** | `function long s3.transfer.copy( const string s3.source, const string s3.target, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.copy.md`
+- **s3 transfer current source** | `function string s3.transfer.current.source( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.current.source.md`
+- **s3 transfer current target** | `function string s3.transfer.current.target( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.current.target.md`
+- **s3 transfer delete** | `function void s3.transfer.delete( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.delete.md`
+- **s3 transfer description** | `function string s3.transfer.description( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.description.md`
+- **s3 transfer download directory** | `function long s3.transfer.download.directory( const string s3.directory, const string directory, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.download.directory.md`
+- **s3 transfer download** | `function long s3.transfer.download( const string s3.file, const string file, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.download.md`
+- **s3 transfer finished** | `function string s3.transfer.finished( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.finished.md`
+- **s3 transfer percentage complete** | `function double s3.transfer.percentage.complete( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.percentage.complete.md`
+- **s3 transfer progress listener** | `function long s3.transfer.progress.listener( )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.progress.listener.md`
+- **s3 transfer result** | `function long s3.transfer.result( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.result.md`
+- **s3 transfer start copy directory** | `function long s3.transfer.start.copy.directory( const string s3.source, const string s3.target, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.copy.directory.md`
+- **s3 transfer start copy** | `function long s3.transfer.start.copy( const string s3.source, const string s3.target, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.copy.md`
+- **s3 transfer start download directory** | `function long s3.transfer.start.download.directory( const string s3.directory, const string directory, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.download.directory.md`
+- **s3 transfer start download** | `function long s3.transfer.start.download( const string s3.file, const string file, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.download.md`
+- **s3 transfer start upload directory** | `function long s3.transfer.start.upload.directory( const string s3.directory, const string directory, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.upload.directory.md`
+- **s3 transfer start upload** | `function long s3.transfer.start.upload( const string s3.file, const string file, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.start.upload.md`
+- **s3 transfer status** | `function long s3.transfer.status( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.status.md`
+- **s3 transfer total bytes** | `function long s3.transfer.total.bytes( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.total.bytes.md`
+- **s3 transfer transferred bytes** | `function long s3.transfer.transferred.bytes( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.transferred.bytes.md`
+- **s3 transfer type** | `function long s3.transfer.type( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.type.md`
+- **s3 transfer upload directory** | `function long s3.transfer.upload.directory( const string s3.directory, const string directory, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.upload.directory.md`
+- **s3 transfer upload** | `function long s3.transfer.upload( const string s3.file, const string file, long progress.listener, long timeout.ms )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.upload.md`
+- **s3 transfer wait until finished** | `function [long] s3.transfer.wait.until.finished( long transfer )` -> `references/guide/progguide/functions_s3_transfer/s3.transfer.wait.until.finished.md`
+- **synopsis**  -> `references/guide/progguide/functions_s3_transfer/synopsis.md`
 ## searching_sorting_data
 
 - **example**  -> `references/guide/progguide/functions_searching_sorting_data/example.md`
@@ -1930,6 +1994,7 @@
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_secondary_toolbars/overview_and_synopsis.md`
 ## security
 
+- **get saml document** | `function string get.saml.document( )` -> `references/guide/progguide/functions_security/get.saml.document.md`
 - **hmac hash** | `function long hmac.hash( long type, const string key, long keysize, const string data, long size, ref string hash )` -> `references/guide/progguide/functions_security/hmac.hash.md`
 - **oauth1_signature** | `function long oauth1_signature( const string method, const string uri, const string consumer_secret, const string token_secret, ref string signature, long protocol_parameters, [long form_parameters] )` -> `references/guide/progguide/functions_security/oauth1_signature.md`
 - **rsa create signature$** | `function string rsa.create.signature$()( const string message, const string scrambled.private.key, [ ref long signlen, ref string errormsg ] )` -> `references/guide/progguide/functions_security/rsa.create.signature$.md`
@@ -1940,7 +2005,7 @@
 ## selection
 
 - **cookbook**  -> `references/guide/progguide/functions_selection/cookbook.md`
-- **do parent selection** | `function void do.parent.selection( long function_name, [ ... ] )` -> `references/guide/progguide/functions_selection/do.parent.selection.md`
+- **do parent selection** | `function void do.parent.selection( <function_name>, [... ] )` -> `references/guide/progguide/functions_selection/do.parent.selection.md`
 - **ncrs is session empty** | `function boolean ncrs.is.session.empty( )` -> `references/guide/progguide/functions_selection/ncrs.is.session.empty.md`
 - **overview**  -> `references/guide/progguide/functions_selection/overview.md`
 - **sel add parent tables** | `function boolean sel.add.parent.tables( long group_id, string parent_table )` -> `references/guide/progguide/functions_selection/sel.add.parent.tables.md`
@@ -1963,32 +2028,32 @@
 - **overview**  -> `references/guide/progguide/functions_simple_json_validation/overview.md`
 - **sjv alpha** | `function string sjv.alpha( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.alpha.md`
 - **sjv alphanum** | `function string sjv.alphanum( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.alphanum.md`
-- **sjv any** | `function string sjv.any( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.any.md`
-- **sjv array** | `function string sjv.array( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.array.md`
+- **sjv any** | `function string sjv.any( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.any.md`
+- **sjv array** | `function string sjv.array( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.array.md`
 - **sjv base64** | `function string sjv.base64( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.base64.md`
-- **sjv boolean** | `function string sjv.boolean( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.boolean.md`
-- **sjv date** | `function string sjv.date( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.date.md`
-- **sjv domain** | `function string sjv.domain( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.domain.md`
-- **sjv double** | `function string sjv.double( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.double.md`
+- **sjv boolean** | `function string sjv.boolean( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.boolean.md`
+- **sjv date** | `function string sjv.date( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.date.md`
+- **sjv domain** | `function string sjv.domain( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.domain.md`
+- **sjv double** | `function string sjv.double( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.double.md`
 - **sjv email** | `function string sjv.email( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.email.md`
-- **sjv enum** | `function string sjv.enum( const string value, ... )` -> `references/guide/progguide/functions_simple_json_validation/sjv.enum.md`
-- **sjv fields** | `function string sjv.fields( const string name1, const string type1, [ const string name2, const string type2, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.fields.md`
+- **sjv enum** | `function string sjv.enum( const string value,... )` -> `references/guide/progguide/functions_simple_json_validation/sjv.enum.md`
+- **sjv fields** | `function string sjv.fields( const string name1, const string type1, [ const string name2, const string type2,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.fields.md`
 - **sjv filled** | `function string sjv.filled( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.filled.md`
 - **sjv hex** | `function string sjv.hex( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.hex.md`
 - **sjv isodate** | `function string sjv.isodate( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.isodate.md`
 - **sjv isodatetime** | `function string sjv.isodatetime( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.isodatetime.md`
 - **sjv length** | `function string sjv.length( long length )` -> `references/guide/progguide/functions_simple_json_validation/sjv.length.md`
-- **sjv long** | `function string sjv.long( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.long.md`
+- **sjv long** | `function string sjv.long( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.long.md`
 - **sjv max** | `function string sjv.max( [ long|double value ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.max.md`
 - **sjv min** | `function string sjv.min( [ long|double value ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.min.md`
 - **sjv nullable** | `function string sjv.nullable( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.nullable.md`
 - **sjv numeric** | `function string sjv.numeric( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.numeric.md`
-- **sjv object** | `function string sjv.object( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.object.md`
+- **sjv object** | `function string sjv.object( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.object.md`
 - **sjv required** | `function string sjv.required( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.required.md`
-- **sjv string** | `function string sjv.string( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.string.md`
-- **sjv tuple** | `function string sjv.tuple( const string aspect, ... )` -> `references/guide/progguide/functions_simple_json_validation/sjv.tuple.md`
+- **sjv string** | `function string sjv.string( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.string.md`
+- **sjv tuple** | `function string sjv.tuple( const string aspect,... )` -> `references/guide/progguide/functions_simple_json_validation/sjv.tuple.md`
 - **sjv url** | `function string sjv.url( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.url.md`
-- **sjv utc** | `function string sjv.utc( [ const string aspect, ... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.utc.md`
+- **sjv utc** | `function string sjv.utc( [ const string aspect,... ] )` -> `references/guide/progguide/functions_simple_json_validation/sjv.utc.md`
 - **sjv uuid** | `function string sjv.uuid( )` -> `references/guide/progguide/functions_simple_json_validation/sjv.uuid.md`
 - **sjv validate** | `function long sjv.validate( long json, const string definition )` -> `references/guide/progguide/functions_simple_json_validation/sjv.validate.md`
 - **synopsis**  -> `references/guide/progguide/functions_simple_json_validation/synopsis.md`
@@ -2022,7 +2087,7 @@
 - **column_filtering**  -> `references/guide/progguide/functions_sql_query_extensions/column_filtering.md`
 - **example**  -> `references/guide/progguide/functions_sql_query_extensions/example.md`
 - **overview**  -> `references/guide/progguide/functions_sql_query_extensions/overview.md`
-- **query define sort order** | `function long query.define.sort.order( long table.index, const string field.var, direction.var, [ const string ..., ... ] )` -> `references/guide/progguide/functions_sql_query_extensions/query.define.sort.order.md`
+- **query define sort order** | `function long query.define.sort.order( long table.index, const string field.var, direction.var, [ const string...,... ] )` -> `references/guide/progguide/functions_sql_query_extensions/query.define.sort.order.md`
 - **query extend fld from** | `function long query.extend.fld.from( string select_column, string extension_string )` -> `references/guide/progguide/functions_sql_query_extensions/query.extend.fld.from.md`
 - **query extend fld parm** | `function long query.extend.fld.parm( string select_column, string parameter )` -> `references/guide/progguide/functions_sql_query_extensions/query.extend.fld.parm.md`
 - **query extend fld select** | `function long query.extend.fld.select( string select_column, string select_expression )` -> `references/guide/progguide/functions_sql_query_extensions/query.extend.fld.select.md`
@@ -2043,8 +2108,8 @@
 - **end** | `function void end( )` -> `references/guide/progguide/functions_starting_and_stopping_programs/end.md`
 - **exit** | `function void exit( [ void exitvalue ] )` -> `references/guide/progguide/functions_starting_and_stopping_programs/exit.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_starting_and_stopping_programs/overview_and_synopsis.md`
-- **run baan prog** | `function long run.baan.prog( const string progname, const string arguments, long mode, [ string stdin, string stdout, string stderr ] )` -> `references/guide/progguide/functions_starting_and_stopping_programs/run.baan.prog.md`
-- **run prog** | `function long run.prog( const string progname, const string arguments, long mode, [ string stdin, string stdout, string stderr ] )` -> `references/guide/progguide/functions_starting_and_stopping_programs/run.prog.md`
+- **run baan prog** | `function long run.baan.prog( const string progname, const string arguments, long mode, [ string stdin, string stdout, string stderr, ref long os.pid ] )` -> `references/guide/progguide/functions_starting_and_stopping_programs/run.baan.prog.md`
+- **run prog** | `function long run.prog( const string progname, const string arguments, long mode, [ string stdin, string stdout, string stderr, ref long os.pid ] )` -> `references/guide/progguide/functions_starting_and_stopping_programs/run.prog.md`
 - **shell** | `function long shell( string command, long mode )` -> `references/guide/progguide/functions_starting_and_stopping_programs/shell.md`
 - **start session** | `function string start.session( long mode, const string session.code, const string zoomname, const string returnfld )` -> `references/guide/progguide/functions_starting_and_stopping_programs/start.session.md`
 - **stop** | `function void stop( )` -> `references/guide/progguide/functions_starting_and_stopping_programs/stop.md`
@@ -2053,18 +2118,18 @@
 
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_stat/overview_and_synopsis.md`
 - **stat add tooltipline** | `function void stat.add.tooltipline( const string i.tooltip )` -> `references/guide/progguide/functions_stat/stat.add.tooltipline.md`
-- **stat set field** | `function void stat.set.field( const string i.fieldname, boolean i.selectable, [ const string i.title, const string i.commandname ] )` -> `references/guide/progguide/functions_stat/stat.set.field.md`
+- **stat set field** | `function long stat.set.field( const string i.fieldname, boolean i.selectable, [ const string i.title, const string i.commandname ] )` -> `references/guide/progguide/functions_stat/stat.set.field.md`
 - **stat set iconstatus** | `function void stat.set.iconstatus( const string i.iconstatus )` -> `references/guide/progguide/functions_stat/stat.set.iconstatus.md`
-- **stat set real double** | `function void stat.set.real.double( string i.domain(14), const double i.double )` -> `references/guide/progguide/functions_stat/stat.set.real.double.md`
-- **stat set real long** | `function void stat.set.real.long( const long i.long )` -> `references/guide/progguide/functions_stat/stat.set.real.long.md`
-- **stat set real string** | `function void stat.set.real.string( string i.domain(14), const string i.string )` -> `references/guide/progguide/functions_stat/stat.set.real.string.md`
-- **stat set real utc** | `function void stat.set.real.utc( const long i.utc )` -> `references/guide/progguide/functions_stat/stat.set.real.utc.md`
+- **stat set real double** | `function long stat.set.real.double( string i.domain(14), const double i.double )` -> `references/guide/progguide/functions_stat/stat.set.real.double.md`
+- **stat set real long** | `function long stat.set.real.long( const long i.long )` -> `references/guide/progguide/functions_stat/stat.set.real.long.md`
+- **stat set real string** | `function long stat.set.real.string( string i.domain(14), const string i.string )` -> `references/guide/progguide/functions_stat/stat.set.real.string.md`
+- **stat set real utc** | `function long stat.set.real.utc( const long i.utc )` -> `references/guide/progguide/functions_stat/stat.set.real.utc.md`
 - **stat set selected** | `function void stat.set.selected( boolean i.selected )` -> `references/guide/progguide/functions_stat/stat.set.selected.md`
 - **stat set value** | `function void stat.set.value( const string i.value )` -> `references/guide/progguide/functions_stat/stat.set.value.md`
 ## string_operations
 
 - **bytes2hex** | `function string bytes2hex( const string bytes, long length )` -> `references/guide/progguide/functions_string_operations/bytes2hex.md`
-- **concat** | `function string concat$( string separator, void value ... )` -> `references/guide/progguide/functions_string_operations/concat.md`
+- **concat** | `function string concat$( string separator, void value... )` -> `references/guide/progguide/functions_string_operations/concat.md`
 - **filter infrastructural details** | `function string filter.infrastructural.details( const string unfiltered_text )` -> `references/guide/progguide/functions_string_operations/filter.infrastructural.details.md`
 - **hex2bytes** | `function long hex2bytes( const string hex, ref string bytes )` -> `references/guide/progguide/functions_string_operations/hex2bytes.md`
 - **isdigit** | `function boolean isdigit( string str_expr )` -> `references/guide/progguide/functions_string_operations/isdigit.md`
@@ -2110,7 +2175,7 @@
 - **str isnumeric** | `function boolean str.isnumeric( const string string$ )` -> `references/guide/progguide/functions_string_operations/str.isnumeric.md`
 - **str isurl** | `function boolean str.isurl( const string string$ )` -> `references/guide/progguide/functions_string_operations/str.isurl.md`
 - **str isuuid** | `function boolean str.isuuid( const string string$ )` -> `references/guide/progguide/functions_string_operations/str.isuuid.md`
-- **str join** | `function string str.join$( const string separator$, void ... )` -> `references/guide/progguide/functions_string_operations/str.join.md`
+- **str join** | `function string str.join$( const string separator$, void... )` -> `references/guide/progguide/functions_string_operations/str.join.md`
 - **str** | `function string str$( void input.value )` -> `references/guide/progguide/functions_string_operations/str.md`
 - **str remove** | `function string str.remove$( const string string$, long offset, long nchars )` -> `references/guide/progguide/functions_string_operations/str.remove.md`
 - **str replace$** | `function string str.replace$( const string string$, const string oldstr$, const string newstr$ )` -> `references/guide/progguide/functions_string_operations/str.replace$.md`
@@ -2156,7 +2221,7 @@
 
 - **example**  -> `references/guide/progguide/functions_substitute_sessions/example.md`
 - **overview**  -> `references/guide/progguide/functions_substitute_sessions/overview.md`
-- **substitute session** | `function long substitute.session( long old.pid, string new.session, long new.pid, [ void ... ] )` -> `references/guide/progguide/functions_substitute_sessions/substitute.session.md`
+- **substitute session** | `function long substitute.session( long old.pid, string new.session, long new.pid, [ void... ] )` -> `references/guide/progguide/functions_substitute_sessions/substitute.session.md`
 - **synopsis**  -> `references/guide/progguide/functions_substitute_sessions/synopsis.md`
 ## synchronized_sessions
 
@@ -2165,7 +2230,7 @@
 - **refresh list detail list** | `function void refresh.list.detail.list( )` -> `references/guide/progguide/functions_synchronized_sessions/refresh.list.detail.list.md`
 - **refresh parent** | `function long refresh.parent( long occurrence )` -> `references/guide/progguide/functions_synchronized_sessions/refresh.parent.md`
 - **refresh tree detail tree** | `function void refresh.tree.detail.tree( )` -> `references/guide/progguide/functions_synchronized_sessions/refresh.tree.detail.tree.md`
-- **set dynamic synchronized dialog** | `function void set.dynamic.synchronized.dialog( const string sessioncode, [ const string parent.field, const string child.field, ... ] )` -> `references/guide/progguide/functions_synchronized_sessions/set.dynamic.synchronized.dialog.md`
+- **set dynamic synchronized dialog** | `function void set.dynamic.synchronized.dialog( const string sessioncode, [ const string parent.field, const string child.field,... ] )` -> `references/guide/progguide/functions_synchronized_sessions/set.dynamic.synchronized.dialog.md`
 - **set insert in detail session** | `function void set.insert.in.detail.session( string sess_code, [ string parent.var child.var ] )` -> `references/guide/progguide/functions_synchronized_sessions/set.insert.in.detail.session.md`
 - **set list session** | `function void set.list.session( string sess_code )` -> `references/guide/progguide/functions_synchronized_sessions/set.list.session.md`
 - **set synchronized dialog** | `function void set.synchronized.dialog( string sess_code, [ boolean editable.grid, boolean use.dialog.for.insert ] )` -> `references/guide/progguide/functions_synchronized_sessions/set.synchronized.dialog.md`
@@ -2201,8 +2266,9 @@
 - **user exists** | `function boolean user.exists( const string username )` -> `references/guide/progguide/functions_system_and_user_information/user.exists.md`
 ## text_fields
 
+- **copy to clipboard** | `function void copy.to.clipboard( const string text )` -> `references/guide/progguide/functions_text_fields/copy.to.clipboard.md`
 - **overview**  -> `references/guide/progguide/functions_text_fields/overview.md`
-- **remove textfields** | `function void remove.textfields( const string field.name.string, [ const string ... ] )` -> `references/guide/progguide/functions_text_fields/remove.textfields.md`
+- **remove textfields** | `function void remove.textfields( const string field.name.string, [ const string... ] )` -> `references/guide/progguide/functions_text_fields/remove.textfields.md`
 - **set file for textfield** | `function void set.file.for.textfield( const string field.name.string, string filename )` -> `references/guide/progguide/functions_text_fields/set.file.for.textfield.md`
 - **set multiline text in html mode** | `function long set.multiline.text.in.html.mode( string text_field )` -> `references/guide/progguide/functions_text_fields/set.multiline.text.in.html.mode.md`
 - **synopsis**  -> `references/guide/progguide/functions_text_fields/synopsis.md`
@@ -2220,10 +2286,10 @@
 - **text read** | `function long text.read( string text_field, string lang, string kw1, string kw2, string kw3, string kw4, ref string tgroup, ref string edit_opt, string tmp_file, long lock, [ string rtf_file ] )` -> `references/guide/progguide/functions_text_fields/text.read.md`
 - **text rewrite** | `function long text.rewrite( string text_field, string lang, string kw1, string kw2, string kw3, string kw4, string tgroup, string edit_opt, string tmp_file, [ long bidi, string rtf_file ] )` -> `references/guide/progguide/functions_text_fields/text.rewrite.md`
 - **text set keywords** | `function boolean text.set.keywords( string text_field, string keyword1, string keyword2, string keyword3, string keyword4 )` -> `references/guide/progguide/functions_text_fields/text.set.keywords.md`
-- **text set language** | `function boolean text.set.language( string text_field, string language, void ... )` -> `references/guide/progguide/functions_text_fields/text.set.language.md`
+- **text set language** | `function boolean text.set.language( string text_field, string language, void... )` -> `references/guide/progguide/functions_text_fields/text.set.language.md`
 - **text to buf** | `function long text.to.buf( string text_field, string lang, long nr_lines, ref string buf(,), [ long rtf.text ] )` -> `references/guide/progguide/functions_text_fields/text.to.buf.md`
 - **text window** | `function long text.window( string edit_opt, ref long start_column, ref long start_row, ref long number_columns, ref long number_rows )` -> `references/guide/progguide/functions_text_fields/text.window.md`
-- **text write** | `function long text.write( string text_field, string lang, string kw1, string kw2, string kw3, string kw4, string tgroup, string edit_opt, string tmp_file, [ long bidi, string rtf_file ] )` -> `references/guide/progguide/functions_text_fields/text.write.md`
+- **text write** | `function long text.write( string text_field, string lang, string kw1, string kw2, string kw3, string kw4, string tgroup, string edit_opt, string tmp_file, [ long bidi, string rtf_file, long word.wrap ] )` -> `references/guide/progguide/functions_text_fields/text.write.md`
 - **textfield to buf** | `function long textfield.to.buf( string text_field, string buffer )` -> `references/guide/progguide/functions_text_fields/textfield.to.buf.md`
 - **textfield to database** | `function long textfield.to.database( string text_field )` -> `references/guide/progguide/functions_text_fields/textfield.to.database.md`
 ## timers
@@ -2302,9 +2368,9 @@
 - **change object** | `function void change.object( long object_id, long attribute, void value, [ long size ] )` -> `references/guide/progguide/functions_user_interface_objects/change.object.md`
 - **change sub object** | `function void change.sub.object( long object, long sub_object_id, long attribute, void value, long size )` -> `references/guide/progguide/functions_user_interface_objects/change.sub.object.md`
 - **compress pixmap** | `function long compress.pixmap( long colormap, long num_colors, string pixmap(), long width, long height, ref string buffer, ref long buffer_length )` -> `references/guide/progguide/functions_user_interface_objects/compress.pixmap.md`
-- **create object** | `function long create.object( long type, long parent_object, [ long attribute, value [, size] ], ... )` -> `references/guide/progguide/functions_user_interface_objects/create.object.md`
+- **create object** | `function long create.object( long type, long parent_object, [ long attribute, value [, size] ],... )` -> `references/guide/progguide/functions_user_interface_objects/create.object.md`
 - **create sub object by id** | `function long create.sub.object.by.id( long object, long sub_object_id, long type, long attribute, void value, [ long size ] )` -> `references/guide/progguide/functions_user_interface_objects/create.sub.object.by.id.md`
-- **create sub object** | `function long create.sub.object( long object, long type, [ long attribute, value [, size] ], ... )` -> `references/guide/progguide/functions_user_interface_objects/create.sub.object.md`
+- **create sub object** | `function long create.sub.object( long object, long type, [ long attribute, value [, size] ],... )` -> `references/guide/progguide/functions_user_interface_objects/create.sub.object.md`
 - **decompress pixmap** | `function long decompress.pixmap( string buffer, ref long colormap, ref string pixmap )` -> `references/guide/progguide/functions_user_interface_objects/decompress.pixmap.md`
 - **destroy object** | `function void destroy.object( long object_id )` -> `references/guide/progguide/functions_user_interface_objects/destroy.object.md`
 - **destroy sub object** | `function void destroy.sub.object( long object, long sub_object_id )` -> `references/guide/progguide/functions_user_interface_objects/destroy.sub.object.md`
@@ -2374,8 +2440,8 @@
 - **uuid_synopsis**  -> `references/guide/progguide/functions_uuid/uuid_synopsis.md`
 ## variables_based
 
-- **at base1** | `function long at.base( <ref|const> <type> basic_value, [ long position, ... ], <ref|const> <type> based_variable, [ long length, ... ] )` -> `references/guide/progguide/functions_variables_based/at.base1.md`
-- **at base2** | `function long at.base( long process_id, string basic_variable_name, void unused, [ long position, ... ], <ref|const> <type> based_variable, [ long length, ... ] )` -> `references/guide/progguide/functions_variables_based/at.base2.md`
+- **at base1** | `function long at.base( <ref|const> <type> basic_value, [ long position,... ], <ref|const> <type> based_variable, [ long length,... ] )` -> `references/guide/progguide/functions_variables_based/at.base1.md`
+- **at base2** | `function long at.base( long process_id, string basic_variable_name, void unused, [ long position,... ], <ref|const> <type> based_variable, [ long length,... ] )` -> `references/guide/progguide/functions_variables_based/at.base2.md`
 - **overview_and_synopsis**  -> `references/guide/progguide/functions_variables_based/overview_and_synopsis.md`
 ## variables_checking_changes
 
@@ -2515,7 +2581,7 @@
 - **set_data_of_a_node** | `function long xmlSetData( long node, string data )` -> `references/guide/progguide/functions_xml/set_data_of_a_node.md`
 - **set_name_of_a_node** | `function long xmlSetName( long node, string name )` -> `references/guide/progguide/functions_xml/set_name_of_a_node.md`
 - **synopsis**  -> `references/guide/progguide/functions_xml/synopsis.md`
-- **synopsis_namespace** | `long` -> `references/guide/progguide/functions_xml/synopsis_namespace.md`
+- **synopsis_namespace**  -> `references/guide/progguide/functions_xml/synopsis_namespace.md`
 - **unlink_and_add_nodes** | `function long xmlAdd( long destinationNode, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_xml/unlink_and_add_nodes.md`
 - **unlink_and_append_nodes** | `function long xmlAppend( long destinationNode, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_xml/unlink_and_append_nodes.md`
 - **unlink_and_append_nodes_to_children** | `function long xmlAppendToChilds( long parentNode, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_xml/unlink_and_append_nodes_to_children.md`
@@ -2534,7 +2600,7 @@
 - **xmlAttributePrefix$** | `function string xmlAttributePrefix$( long node, long attributeNr, [ const string default.value ] )` -> `references/guide/progguide/functions_xml/xmlAttributePrefix$.md`
 - **xmlAttributeQualifiedName$** | `function string xmlAttributeQualifiedName$( long node, long attributeNr, [ const string default.value ] )` -> `references/guide/progguide/functions_xml/xmlAttributeQualifiedName$.md`
 - **xmlAttributeURI$** | `function string xmlAttributeURI$( long node, long attributeNr, [ const string default.value ] )` -> `references/guide/progguide/functions_xml/xmlAttributeURI$.md`
-- **xmlBuildNamespaceList$** | `function string xmlBuildNamespaceList$( const string prefix, const string URI, [ ... ] )` -> `references/guide/progguide/functions_xml/xmlBuildNamespaceList$.md`
+- **xmlBuildNamespaceList$** | `function string xmlBuildNamespaceList$( const string prefix, const string URI, [... ] )` -> `references/guide/progguide/functions_xml/xmlBuildNamespaceList$.md`
 - **xmlDataElementNs$** | `function string xmlDataElementNs$( long node, void namespaceOrURI, const string name, [ const string default.value, const string data.separator, const string element.separator ] )` -> `references/guide/progguide/functions_xml/xmlDataElementNs$.md`
 - **xmlDeleteAttributeNs** | `function long xmlDeleteAttributeNs( long node, void namespaceOrURI, const string name )` -> `references/guide/progguide/functions_xml/xmlDeleteAttributeNs.md`
 - **xmlFindFirstMatchNs** | `function long xmlFindFirstMatchNs( string pattern, const string namespaceList, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_xml/xmlFindFirstMatchNs.md`
@@ -2577,6 +2643,3 @@
 - **xmlSetNamespace** | `function long xmlSetNamespace( long node, long namespace )` -> `references/guide/progguide/functions_xml/xmlSetNamespace.md`
 - **xmlURI$** | `function string xmlURI$( long node, [ const string default.value ] )` -> `references/guide/progguide/functions_xml/xmlURI$.md`
 - **xmlduplicatetoprocess** | `function long xmlDuplicateToProcess( long processId, long fromNode, [ long toNode ] )` -> `references/guide/progguide/functions_xml/xmlduplicatetoprocess.md`
-## in_report_scripts.md
-
-- **functions_in_report_scripts**  -> `references/guide/progguide/report_scripts/functions_in_report_scripts.md`

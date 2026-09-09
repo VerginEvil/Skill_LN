@@ -18,8 +18,8 @@ Get the value of an attribute of the specified node. If an attribute with the sp
 ## Return values
 | | |
 |---|---|
-| 0 | Success; The *basedString* contains the value if the *node* is valid, and the node has an attribute with the specified *attributeName* and with a namespace whose URI matches the URI specified by *namespaceOrURI*. It contains the *default.value*, or when this is omitted, the empty string otherwise.  |
-| -1 | The *basedString* is not declared *based*.  |
+| 0 | Success; The *basedString* contains the value if the *node* is valid, and the node has an attribute with the specified *attributeName* and with a namespace whose URI matches the URI specified by *namespaceOrURI*. It contains the *default.value*, or when this is omitted, the empty string otherwise. |
+| -1 | The *basedString* is not declared *based*. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -43,5 +43,7 @@ ret = xmlAllocAttributeNs( value, xml_envelope, "http://www.w3.org/2001/12/soap-
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)
+
 - [XML object synopsis (namespace support)](synopsis_namespace.md)

@@ -38,4 +38,5 @@ print customer
 
 ## Related topics
 - [Dynamic SQL queries overview](overview.md)
+
 - [Dynamic SQL queries synopsis](synopsis.md)

@@ -19,11 +19,9 @@ For example, the following code retrieves the BLOB locator that refers to a cert
 ```
 
 ## Arguments
-| | | |
-|---|---|---|
-| `const string` | `blob.locator` |  The BLOB locator, which is fetched from the database by e.g. *db.eq* or by a SQL statement  |
-| `[ long` | `mode ]` |  This has one possible value:  |
-| `[ long` | `eflag ]` |  For some errors, it is possible to indicate the action the system must perform when the error occurs. You use this argument to specify the required action(s). See [Error handling](../functions_database_handling/error_handling.md)  |
+| | |
+|---|---|
+| DB.RETRY | Set this value if retry points are being used. The function can now jump to the retry point under the usual conditions. |
 
 ## Return values
 | | |
@@ -36,4 +34,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [BLOB handling overview](overview.md)
+
 - [BLOB handling synopsis](synopsis.md)

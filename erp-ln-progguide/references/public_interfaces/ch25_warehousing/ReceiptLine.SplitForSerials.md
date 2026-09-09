@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1249-1251
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1259-1261
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2022.05 (KB2237101  ).
+This function is available from 2022.05 (KB2237101).
 Syntax: long ReceiptLine.SplitForSerials(
 domain  whinh.shpm       iReceipt,
 domain  tcpono           iReceiptLine,
@@ -34,9 +34,9 @@ For executing this public interface the same constraints apply
 as for the corresponding option in the Infor LN Application.
 If execution is not allowed a specified error message is returned.
 Example:
--                       Receipt line, 3 pcs, Serial In Inventory
--                       Consolidate Stock Points in one Receipt Line = No
--                       iGenerateSerials = true
+- Receipt line, 3 pcs, Serial In Inventory
+- Consolidate Stock Points in one Receipt Line = No
+- iGenerateSerials = true
 Split Line for Serials:
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
@@ -45,9 +45,9 @@ Split Line for Serials:
 | 20    SERIAL2 1 pcs      |    SERIAL2 1 pcs
 | 30    SERIAL3 1 pcs      |    SERIAL3 1 pcs
 Example:
--                       Receipt line, 3 pcs, Serial In Inventory
--                       Consolidate Stock Points in one Receipt Line = No
--                       iGenerateSerials = false
+- Receipt line, 3 pcs, Serial In Inventory
+- Consolidate Stock Points in one Receipt Line = No
+- iGenerateSerials = false
 Split Line for Serials:
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
@@ -56,9 +56,9 @@ Split Line for Serials:
 | 20    " "     1 pcs      |    " "     1 pcs
 | 30    " "     1 pcs      |    " "     1 pcs
 Example:
--                       Receipt line, 3 pcs, Serial In Inventory
--                       Consolidate Stock Points in one Receipt Line = Yes
--                       iGenerateSerials = true
+- Receipt line, 3 pcs, Serial In Inventory
+- Consolidate Stock Points in one Receipt Line = Yes
+- iGenerateSerials = true
 Split Line for Serials:
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
@@ -67,9 +67,9 @@ Split Line for Serials:
 |                          |    SERIAL2 1 pcs
 |                          |    SERIAL3 1 pcs
 Example:
--                       Receipt line, 3 pcs, Serial In Inventory
--                       Consolidate Stock Points in one Receipt Line = Yes
--                       iGenerateSerials = false
+- Receipt line, 3 pcs, Serial In Inventory
+- Consolidate Stock Points in one Receipt Line = Yes
+- iGenerateSerials = false
 Split Line for Serials:
 ---------------------------------------------------------------
 | Receipt Line (whinh312)  |    Stock Point Details (whinh320)
@@ -83,20 +83,20 @@ function will allocate the memory.
 Post:   Commit the transaction in case of success
 Abort the transaction in case of failure
 After the oReceiptLineArray is used, free the memory.
-Input:  iReceipt                              - Mandatory
-iReceiptLine                                  - Mandatory
-iGenerateSerials                              - If true, (empty) serial numbers
+Input:  iReceipt                - Mandatory
+iReceiptLine            - Mandatory
+iGenerateSerials        - If true, (empty) serial numbers
 will be generated per receipt line
 and/or stock point detail split.
-Output: oNumberOfReceiptLines                 - Number of receipt lines in array
+Output: oNumberOfReceiptLines   - Number of receipt lines in array
 after split.
-oReceiptLineArray                             - Array of created receipt lines during
+oReceiptLineArray       - Array of created receipt lines during
 splitting (excluding iReceiptLine).
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

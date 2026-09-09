@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Inventory
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 932-934
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 942-944
 
 ```baan
 DLL:   whextinaapi
-This function is available from     2024.06 (KB3501684  ).
+This function is available from 2024.06 (KB3501684).
 Syntax: long Inventory.ChangeMAUCCostDetails(
 domain  whina.mcby       iMAUCCorrectionBy,
 domain  tccwar           iWarehouse,
@@ -92,20 +92,20 @@ iNewMAUHArray()                 Used when iSetNewMAUH is True
 iOnlyByWarehouseValuationGroup  Mandatory
 iOnlyWithMethodMAUC             Mandatory
 iIncludeServiceRejectWarehouses Mandatory
-Output: oDataProcessed                        - true:  MAUC has changed.
+Output: oDataProcessed          - true:  MAUC has changed.
 false: MAUC is not changed.
 oReportCurrency
 oHomeCurrencyArray
-oOldMAUC                                      - MAUC value before correction in
+oOldMAUC                - MAUC value before correction in
 home or option set currency.
-oOldHomeMAUCArray                             - MAUC values per home currency before
+oOldHomeMAUCArray       - MAUC values per home currency before
 correction.
-oOldMAUH                                      - MAUH value before correction.
-oNewMAUC                                      - MAUC value after correction in
+oOldMAUH                - MAUH value before correction.
+oNewMAUC                - MAUC value after correction in
 home or option set currency.
-oNewHomeMAUCArray                             - MAUC values per home currency after
+oNewHomeMAUCArray       - MAUC values per home currency after
 correction.
-oNewMAUH                                      - MAUH value after correction.
+oNewMAUH                - MAUH value after correction.
 oNumberOfCostComponents
 oCostCompArray
 oOldCostCompMAUCReportCurrencyArray
@@ -118,11 +118,11 @@ oNewCostCompMAUCHomeCurrency1Array
 oNewCostCompMAUCHomeCurrency2Array
 oNewCostCompMAUCHomeCurrency3Array
 oNewCostCompMAUHArray
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

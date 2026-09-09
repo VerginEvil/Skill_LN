@@ -12,4 +12,5 @@ Note  This function is deprecated, as page mode is no longer supported.
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

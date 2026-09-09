@@ -20,6 +20,8 @@ For the same character, different calls of this function can give different resu
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
-- [TSS Encoding](../misc/tss.md), especially the items about Unification and Unicode
+- [TSS Encoding](../misc/tss.md)
+
 - [mb.locale.enumerate()](mb.locale.enumerate.md)
+
 - [Multibyte strings overview and synopsis](overview_and_synopsis.md)

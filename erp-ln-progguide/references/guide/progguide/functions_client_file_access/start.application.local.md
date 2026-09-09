@@ -8,9 +8,6 @@
 *Deprecated.* This starts the client application specified in the *commandline* argument.
 
 ## Arguments
-1.
-1.
-1.
 | | | |
 |---|---|---|
 | `string` | `commandline` |  This specifies the command that starts the application. If *commandline* does not include a directory path, Windows searches for the executable file in the following directories, in the order shown below: The Windows system directory. The Windows directory. The directories listed in the PATH environment variable. This argument may also contain the full pathname of a local document. In this case the application associated with this document extension will be started. The *commandline* parameter may one or more times include the string ${BSE_TMP} which indicates the ${BSE}\tmp directory in case of Baan Windows or Windows temp directory in case of WebUI.  |
@@ -31,4 +28,5 @@ Notes  This function is not supported in LN UI. See the [Implementing LN UI supp
 
 ## Related topics
 - [Client file access overview](overview.md)
+
 - [Client file access synopsis](synopsis.md)

@@ -8,12 +8,12 @@ Use this hook to program logical integrity rules for a specified field. The func
 | | |
 |---|---|
 | Insert a new object | Update an existing object |
-|  Does the property check for all fields. The has_changed flag is *always* set to DAL_NEW. Also for fields that are not changed!  |  Does the property check for all fields. The has_changed flag is *only* set to DAL_UPDATE for changed fields. For unchanged fields, the flag is cleared.  |
+| Does the property check for all fields. The has_changed flag is *always* set to DAL_NEW. Also for fields that are not changed! | Does the property check for all fields. The has_changed flag is *only* set to DAL_UPDATE for changed fields. For unchanged fields, the flag is cleared. |
 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `has_changed` |  |
+| `long` | `has_changed` |    |
 | `[ long` | `element ]` |  This is set for array fields only. It indicates the index of the array element that must be checked.  |
 
 ## Return values
@@ -46,5 +46,7 @@ function extern long tdsls040.oqua.check(long has_changed)
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [DAL hooks](dal_hooks.md)

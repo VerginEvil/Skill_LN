@@ -7,17 +7,25 @@
 This opens a specified file. It uses the file $BSE/lib/fd *ver.pack_combination* to find the file. *ver* refers to a particular release of the software; *pack_combination* refers to a particular package combination (see [pathname()](pathname.md)).
 
 ## Arguments
-| | | |
-|---|---|---|
-| `string` | `file` |  The file name.  |
-| `string` | `openmode` |  The mode in which the file must be opened. This can be one of the following options:  |
-| `[ ref string` | `pathnm ]` |  This returns the full path to the file.  |
+| | |
+|---|---|
+| "r" | Open for reading. The current file position is placed at the *start* of the file. |
+| "w" | Open for writing. The file is created if it does not already exist. The current file position is placed at the *start* of the file. |
+| "a" | Open for writing. The file is created if it does not already exist. The current file position is placed at the *end* of the file. The file position is placed at end of the file before every write statement, even if the previous file action was a [seq.seek()](seq.seek.md). |
+| "x" | Open for writing. This is the same as "w", except that the function fails if the file already exists. |
+| "r+" | Same as "r", but the file can also be written to. |
+| "w+" | Same as "w", but the file can also be read. |
+| "a+" | Same as "a", but the file can also be read. |
+| "x+" | Same as "x", but the file can also be read. |
+| Use the following modes to indicate whether the file is a binary or a text file. You can combine one of these modes with any one of the previous modes (for example, "rt+"). |  |
+| "b" | Use for binary files. This is the default mode and need not be specified. |
+| "t" | The line separator(s) for text-files are different on Windows NT and UNIX systems. CRLF on the former; LF only on the latter. In addition, a Windows NT text file can include an EOF-character (^Z) that indicates the end of the file. This character should not be returned to a program reading the file. So, you *must* specify the "t" option when reading from or writing to a text file on Windows NT systems (for example, "at+".) This ensures that line separators and EOF characters are handled correctly. Never use the "t" option when opening a binary file; on Windows NT systems this will corrupt the file data. The "t" option has no effect on UNIX systems. |
 
 ## Return values
 | | |
 |---|---|
-| >= 1 | Success; File pointer returned for use in subsequent operations.  |
-| < 1 | Error; that is, the negative value of the system error (for example, for a permission error, the system returns 13 and the function returns -13, or if the internal table is full, the function returns -EAGAIN).  |
+| >= 1 | Success; File pointer returned for use in subsequent operations. |
+| < 1 | Error; that is, the negative value of the system error (for example, for a permission error, the system returns 13 and the function returns -13, or if the internal table is full, the function returns -EAGAIN). |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -28,4 +36,5 @@ The character `";"` is not supported in a file name. The `";"` is used as a path
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

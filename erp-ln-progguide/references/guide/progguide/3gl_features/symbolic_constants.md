@@ -10,4 +10,5 @@ FALSE and TRUE may only be used as boolean values (for example, as a result of e
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Constants](constants.md)

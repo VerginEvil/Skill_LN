@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 750-752
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 750-751
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.02 (KB2300944  ).
+This function is available from 2024.02 (KB2300944).
 Syntax: long ProductionOrder.Regenerate(
 domain  tcsite           iSite,
 domain  tcorno           iProductionOrder,
@@ -35,26 +35,26 @@ the function.
 Input:  iSite                   Site. Mandatory when the Site concept
 is active.
 iProductionOrder        Production Order. Mandatory, must be
-in iSite. ›¼                                              
-iRevisionSelection ›¼                        ›¼   Specify the method for selection of
+in iSite. ›¼•
+iRevisionSelection ›¼•  ›¼•   Specify the method for selection of
 Job Shop Bom and Job Shop
 Routing revisions.
-Keep Revisions                                                 - No changes
-Automatic                                                 --  Select based on
+Keep Revisions - No changes
+Automatic --  Select based on
 current date
-Manual                                                 ---    Select based on
+Manual ---    Select based on
 Effective Date
 Mandatory when Job Shop by Site is
-active. ›¼                                              
+active. ›¼•
 iEffectiveDate          Effective Date for selection of Job Shop
 Bom and Job Shop Routing.
 Mandatory when Job Shop by Site is
 active and iRevisionSelection is Manual.
-iUpdateWhenNetChange ›¼                        ›¼ Update only when a net change in product
-structure of the produced item exists. ›¼                                                ›¼
+iUpdateWhenNetChange ›¼•  ›¼• Update only when a net change in product
+structure of the produced item exists. ›¼•  ›¼•
 Only used when Job Shop by Site is not
 active.
-iUpdateReferenceDate ›¼                        ›¼ Update Reference Date of
+iUpdateReferenceDate ›¼•  ›¼• Update Reference Date of
 Production Order.
 Only used when Job Shop by Site is not
 active.

@@ -15,11 +15,12 @@ This deletes a specified local or remote file. The *path* argument must include 
 | | |
 |---|---|
 | >= 0 | Success. |
-| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable.  |
+| < 0 | Error. The [error code](../errors/overview.md) is stored in the *e* variable. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

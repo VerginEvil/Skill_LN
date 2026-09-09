@@ -21,8 +21,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - Parameter 'json_object' is a JSON value of type JSON_TYPE_OBJECT.
+
 - Parameter 'iter' is an iterator pointing to a member of parameter 'json_object'.
 
 ## Related topics
 - [JSON overview](JSon_object_overview.md)
+
 - [JSON synopsis](synopsis.md)

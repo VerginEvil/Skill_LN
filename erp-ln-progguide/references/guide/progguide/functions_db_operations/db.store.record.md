@@ -44,5 +44,7 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)
+
 - [Storing, restoring record buffers - Examples](store.restore.examples.md)

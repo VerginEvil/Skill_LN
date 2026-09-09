@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1638-1639
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1657-1657
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.04 (KB2044306  ).
+This function is available from 2019.04 (KB2044306).
 Syntax: long BOD.ConvertToERPItem(
 domain  tcmcs.str50      iBODItem,
 ref     domain  tcitem           oERPItem,
@@ -33,19 +33,19 @@ Project = PR1
 "         BIKE"         "         BIKE"
 "BIKE"                  "         BIKE"
 Project = ""
-Pre     :               -
-Post    :               -
-Input   : iBODItem                            - CBO item (e.g. "BIKE"). Mandatory.
-Output  : oERPItem                            - LN item
+Pre     : -
+Post    : -
+Input   : iBODItem              - CBO item (e.g. "BIKE"). Mandatory.
+Output  : oERPItem              - LN item
 (e.g. "         BIKE              ")
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage     - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID          - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return  : 0                                   - iBODItem converted to oERPItem
-<> 0                                          - Otherwise.
+Return  : 0                     - iBODItem converted to oERPItem
+<> 0                  - Otherwise.
 ```

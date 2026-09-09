@@ -318,9 +318,6 @@ long
 ```
 ```
 
-```
-```
-
 long
 ```
 ```
@@ -340,9 +337,6 @@ long
 ```
 ```
 long
-```
-```
-
 ```
 ```
 
@@ -380,7 +374,7 @@ long
 |  | [gbf.current.library()](gbf.current.library.md) | `()` |
 |  | [gbf.create.context.menu()](gbf.create.context.menu.md) | `()` |
 |  | [gbf.delete.object()](gbf.delete.object.md) | `(long obj.id)` |
-|  | [gbf.desc.to.column()](gbf.desc.to.column.md) | `(string column1, ...)` |
+|  | [gbf.desc.to.column()](gbf.desc.to.column.md) | `(string column1,...)` |
 |  | [gbf.enable.drop()](gbf.enable.drop.md) | `(const string session.code, const string dllname, const string gbf.on.drop)` |
 |  | [gbf.error.string()](gbf.error.string.md) | `(long error)` |
 |  | [gbf.file.to.library()](gbf.file.to.library.md) | `(const string filename())` |
@@ -528,9 +522,15 @@ long
 
 ## Related topics
 - [Generic Browser Framework (GBF) overview](overview.md)
+
 - [Typical usage](typical_usage.md)
+
 - [Getting started](getting_started.md)
+
 - [Example](example.md)
+
 - [Generic Browser Framework error codes and return values](error_codes_and_return_values.md)
+
 - [standard menu items and function keys](standard_menu_items_and_function_keys.md)
+
 - [Messages and questions](messages_and_questions.md)

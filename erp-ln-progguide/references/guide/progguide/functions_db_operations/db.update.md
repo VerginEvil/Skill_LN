@@ -7,11 +7,11 @@
 This rewrites the current record. When updating a record with this function, you are permitted to update the primary key of the record.
 
 ## Arguments
-| | | |
-|---|---|---|
-| `long` | `table_id` |  The table ID, as returned by [db.bind()](db.bind.md).  |
-| `[ long` | `mode ]` |  This has three possible values:  |
-| `[ long` | `eflag ]` |  For some errors, it is possible to indicate the action the system must perform when the error occurs. You use this argument to specify the required action(s). See [Error handling](../functions_database_handling/error_handling.md)  |
+| | |
+|---|---|
+| DB.RETRY | Set this value if retry points and the SELECT FOR UPDATE statement are being used. The actual database action is postponed until the transaction is committed. |
+| DB.DELAYED.LOCK | This option is available only for records for which a delayed lock has been set with [db.eq()](db.eq.md). |
+| 0 | When the record is locked with DB.LOCK mode with one of the db functions like [db.eq()](db.eq.md), [db.next()](db.next.md) etc. This is default value. |
 
 ## Return values
 | | |
@@ -24,4 +24,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

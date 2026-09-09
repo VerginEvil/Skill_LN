@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SupplierClaim
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1534-1535
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1549-1549
 
 ```baan
 DLL:   tsextcmmapi
-This function is available from     2023.06 (KB2294949  ).
+This function is available from 2023.06 (KB2294949).
 Syntax: long SupplierClaim.SetRMAReceived(
 domain  tcorno           iSupplierClaim,
 domain  tcpono           iClaimLine,
@@ -43,10 +43,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No error
-<> 0                          - An error occurred
+Return: 0       - No error
+<> 0    - An error occurred
 ```
-
-## Public Interfaces for SupplierClaimLine
-
-The following functions are available: SupplierClaimLine.Approve SupplierClaimLine.Reject SupplierClaimLine.Settle

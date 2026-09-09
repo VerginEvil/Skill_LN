@@ -25,10 +25,10 @@ This function is implemented in the porting set and can be used in all script ty
 Domain: tcynna
 | | | |
 |---|---|---|
-| `Constant` | `Constant Name` | `Description` |
-| `1` | `yes` | `Yes` |
-| `2` | `no` | `No` |
-| `3` | `not.app` | `Not Applicable` |
+| `Constant` | `Constant Name` |  `Description`  |
+| `1` | `yes` |  `Yes`  |
+| `2` | `no` |  `No`  |
+| `3` | `not.app` |  `Not Applicable`  |
 ```
 
 domain tcynna	enum_val

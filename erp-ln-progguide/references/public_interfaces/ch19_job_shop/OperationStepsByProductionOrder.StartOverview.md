@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OperationStepsByProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 821-822
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 824-825
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2025.05 (KB3559434  ).
+This function is available from 2025.05 (KB3559434).
 Syntax: long OperationStepsByProductionOrder.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -30,14 +30,14 @@ operation of a specific production order.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used.
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: sort by Production Order, Operation,
@@ -66,9 +66,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for
-
-## WhereUsedJobShopListOfMaterial
-
-The following functions are available: WhereUsedJobShopListOfMaterial.StartOverview

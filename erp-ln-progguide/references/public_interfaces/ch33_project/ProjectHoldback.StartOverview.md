@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProjectHoldback
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1739-1741
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1758-1759
 
 ```baan
 DLL:   tpextpinapi
-This function is available from     2024.10 (KB3532922  ).
+This function is available from 2024.10 (KB3532922).
 Syntax: long ProjectHoldback.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -27,11 +27,11 @@ Usage:        Expl:   This function starts the session
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -58,19 +58,15 @@ Approved for Invoicing. (Yes/No) Optional
 iTransferredToInvoicing
 Transferred to Invoicing. (Yes/No) Optional
 Output: for iStartMode MODAL :
-oHoldbackSequenceNumber                       - The selected Holdback Sequence Number.
-oExceptionMessage                             - The last message if any message is
+oHoldbackSequenceNumber - The selected Holdback Sequence Number.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for ProjectPhysicalProgress
-
-The following functions are available: ProjectPhysicalProgress.CopyToActivityOrCostObject

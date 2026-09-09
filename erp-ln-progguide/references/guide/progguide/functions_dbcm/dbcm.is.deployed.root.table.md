@@ -25,4 +25,5 @@ Availability  This function is available from bshell TIV 2470 (Porting set 9.4h)
 
 ## Related topics
 - [Database Change Management (DBCM) overview](overview.md)
+
 - [Database Change Management operations synopsis](synopsis.md)

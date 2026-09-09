@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for OrderPlanning
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2088-2089
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2111-2112
 
 ```baan
 Syntax: long cpext.rrp0001.get.customer.defined.routing(
@@ -23,7 +23,7 @@ Note:
 then LN will use the standard routing(i.routing).
 External variables available for use by this process extension
 function:
--                       proc_ext_ord_plan_rou_cluster
+- proc_ext_ord_plan_rou_cluster
 [type: domain tcemm.clus]
 Planning cluster for which the routing is determined.
 Example:
@@ -39,14 +39,10 @@ endif
 return(0)
 Pre:    NA
 Post:   NA
-Input:  i.routing                             - Routing
-i.order.quantity                              - Order Quantity
-i.item                                        - Item
-i.effectivity.unit                            - Effectivity Unit
-Output: o.routing                             - Custom Routing
-Return: 0                                     - Success
+Input:  i.routing               - Routing
+i.order.quantity        - Order Quantity
+i.item                  - Item
+i.effectivity.unit      - Effectivity Unit
+Output: o.routing               - Custom Routing
+Return: 0                       - Success
 ```
-
-## Process Extensions for OutboundAdvice
-
-The following process extension(s) is/are available: OutboundAdvice.AllowOverdelivery OutboundAdvice.SkipGeneratePickingList OutboundAdvice.SkipPrint OutboundAdvice.SkipReleaseAdvice

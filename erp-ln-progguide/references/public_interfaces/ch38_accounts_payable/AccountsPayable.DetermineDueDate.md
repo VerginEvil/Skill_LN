@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for AccountsPayable
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1797-1798
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1817-1818
 
 ```baan
 DLL:   tfextacpapi
-This function is available from     2023.04 (KB2286742  ).
+This function is available from 2023.04 (KB2286742).
 Syntax: long AccountsPayable.DetermineDueDate(
 domain  tcncmp           iFinancialCompany,
 const   domain  tccom.bpid       iPayToBusinessPartner,
@@ -21,25 +21,21 @@ Usage:        Expl:   This function determines a due date based on the given inp
 parameters.
 Pre:    NA
 Post:   NA
-Input:  iFinancialCompany                     - Financial Company       - mandatory
-iPayToBusinessPartner                         - Pay-to Business Partner
-iPaymentTerms                                 - Payment Terms
-iDocumentDate                                 - Document Date
+Input:  iFinancialCompany       - Financial Company       - mandatory
+iPayToBusinessPartner   - Pay-to Business Partner
+iPaymentTerms           - Payment Terms
+iDocumentDate           - Document Date
 eg. Invoice date or
 Invoice Receipt date
-Output: oDueDate                              - Determined Due Date
-oExceptionMessage                             - The last message if any message is
+Output: oDueDate                - Determined Due Date
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK
-<> 0                                          - on errors
+Return: 0                       - OK
+<> 0                    - on errors
 ```
-
-## Public Interfaces for ReceivedPurchaseInvoice
-
-The following functions are available: ReceivedPurchaseInvoice.Cancel

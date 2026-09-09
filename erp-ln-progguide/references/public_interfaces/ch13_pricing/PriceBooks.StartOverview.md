@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PriceBook
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 525-526
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 527-527
 
 ```baan
 DLL:   tdextpcgapi
-This function is available from     2026.05 (KB3664998  ).
+This function is available from 2026.05 (KB3664998).
 Syntax: long PriceBooks.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -45,7 +45,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for PriceBookLine
-
-The following functions are available: PriceBookLines.StartDetail PriceBookLines.StartOverview

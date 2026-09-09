@@ -2,20 +2,32 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.fields( const string name1, const string type1, [ const string name2, const string type2, ... ] )`
+`function string sjv.fields( const string name1, const string type1, [ const string name2, const string type2,... ] )`
 
 ## Description
 Defines one or more fields of a JSON object. Each field has a name followed by a type. The following field types can be specified:
-- ` [sjv.string()](sjv.string.md)`- the field is a JSON string
-- ` [sjv.long()](sjv.long.md)`- the field is a JSON number containing a long value
-- ` [sjv.double()](sjv.double.md)`- the field is a JSON number containing a double value
-- ` [sjv.boolean()](sjv.boolean.md)`- the field is a JSON boolean
-- ` [sjv.date()](sjv.date.md)`- the field is a JSON number containing a date value expressed in days since 0001-01-01
-- ` [sjv.utc()](sjv.utc.md)`- the field is a JSON number containing a UTC value expressed in seconds since 1970-01-01 00:00:00 UTC
-- ` [sjv.object()](sjv.object.md)`- the field is a JSON object
-- ` [sjv.fields()](sjv.fields.md)`- the field is a JSON array of which all elements have the same type
-- ` [sjv.tuple()](sjv.tuple.md)`- the field is a JSON array of fixed length is expected of which the elements may be of different types
-- ` [sjv.domain()](sjv.domain.md)`- the field is a JSON value that has a type that is in accordance with the type of the domain   Example:
+
+- [sjv.string()](sjv.string.md)- the field is a JSON string
+
+- [sjv.long()](sjv.long.md)- the field is a JSON number containing a long value
+
+- [sjv.double()](sjv.double.md)- the field is a JSON number containing a double value
+
+- [sjv.boolean()](sjv.boolean.md)- the field is a JSON boolean
+
+- [sjv.date()](sjv.date.md)- the field is a JSON number containing a date value expressed in days since 0001-01-01
+
+- [sjv.utc()](sjv.utc.md)- the field is a JSON number containing a UTC value expressed in seconds since 1970-01-01 00:00:00 UTC
+
+- [sjv.object()](sjv.object.md)- the field is a JSON object
+
+- [sjv.array()](sjv.array.md)- the field is a JSON array of which all elements have the same type
+
+- [sjv.tuple()](sjv.tuple.md)- the field is a JSON array of fixed length and of which the elements may be of different types
+
+- [sjv.domain()](sjv.domain.md)- the field is a JSON value that has a type that is in accordance with the type of the domain
+
+Example:
 ```
 
 string  object.def(1) based
@@ -85,6 +97,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

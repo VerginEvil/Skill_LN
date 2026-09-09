@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 346-347
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 348-348
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.04 (KB2285765  ).
+This function is available from 2023.04 (KB2285765).
 Syntax: long SalesOrderLine.CreateSalesDelivery(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -18,14 +18,14 @@ ref     domain  tcpono           oSalesDeliverySequence,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   This functions handles the creation of a Sales Delivery Line.
-Pre:    Caller must set retry              -point.
+Pre:    Caller must set retry-point.
 Post:   * Caller must commit/abort transaction
 * Function SalesOrder.FinalizeBlocking must be called
 afterwards, in a new transaction, because a Blocking record
 may need to be created for Price Stage blocking.
-Input:  iSalesOrder                                   - Sales Order (Mandatory)
-iSalesOrderLine                                       - Sales Order Line (Mandatory)
-iSalesOrderSequence                                   - Sales Sequence
+Input:  iSalesOrder                     - Sales Order (Mandatory)
+iSalesOrderLine                 - Sales Order Line (Mandatory)
+iSalesOrderSequence             - Sales Sequence
 (must be >= 0)
 iConfirm                true: The created sales delivery line
 will also be confirmed.

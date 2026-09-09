@@ -11,7 +11,7 @@ Static pictures stored on the server can be displayed on a form. Pictures can be
 |---|---|---|
 | `const string` | `fname` |  The name of the field whose picture must be set.  |
 | `const string` | `icon` |  Name of the icon in icongroup "form_pp" where 'pp' is the package-code of the form.  |
-| `[ const string` | `absolute.file ]` |  The file name (including the path) in which a picture is stored. The picture being displayed must be of type .gif when displaying in Worktop. Webtop, LN-Ui and later supports .gif, .jpg, .png. When the file name is passed as an argument, the icon argument is ignored.  |
+| `[ const string` | `absolute.file ]` |  The file name (including the path) in which a picture is stored. The picture being displayed must be of type.gif when displaying in Worktop. Webtop, LN-Ui and later supports.gif,.jpg,.png. When the file name is passed as an argument, the icon argument is ignored.  |
 
 ## Return values
 | | |
@@ -38,4 +38,5 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

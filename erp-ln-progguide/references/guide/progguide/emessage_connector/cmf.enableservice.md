@@ -11,7 +11,7 @@ Checks in the Services (ttcmf030) table if service is enabled (ttcmf030.enab = y
 | | | |
 |---|---|---|
 | `domain ttcmf.prov` | `service` |  The service identification.  |
-| `long` | `enable` |  |
+| `long` | `enable` |    |
 
 ## Return values
 | | |
@@ -19,7 +19,7 @@ Checks in the Services (ttcmf030) table if service is enabled (ttcmf030.enab = y
 | 2 | service is enabled. |
 | 1 | service is disabled. |
 | 0 | nothing changed. |
-| -1 | service not found in table Services (ttcmf030).  |
+| -1 | service not found in table Services (ttcmf030). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -27,5 +27,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

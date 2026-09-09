@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.02 (KB2310061  ).
+This function is available from 2024.02 (KB2310061).
 Syntax: long ProductionOrder.ReportProductWithHandlingUnits(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -51,9 +51,9 @@ if the status is 'Completed'. When false, then
 additional processing of the warehouse orders
 is required.
 iSetStatusToCompleted is not allowed when:
--                       the production order requires backflushing and
--                       backflushing is not automatic and
--                       actual costing is used.
+- the production order requires backflushing and
+- backflushing is not automatic and
+- actual costing is used.
 Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
@@ -124,6 +124,6 @@ information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0                       The reported quantities and / or
-status change is succssfully processed.
+status change is successfully processed.
 <> 0                    Errors occurred.
 ```

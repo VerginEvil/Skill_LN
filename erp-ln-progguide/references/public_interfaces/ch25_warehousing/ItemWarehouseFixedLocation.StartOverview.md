@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemWarehouseFixedLocation
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 912-914
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 922-923
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long ItemWarehouseFixedLocation.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -26,10 +26,10 @@ Usage:        Expl:   This function starts the overview session Fixed Locations
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -65,23 +65,17 @@ Mandatory when iStartFilter "byItemWarehouse" or
 used or iSessionIndex 1 or 3 and iStartMode
 is MODELESS.
 Output: for iStartMode MODAL:
-oWarehouse                                    - Warehouse of selected fixed location.
-oItem                                         - Item of selected fixed location.
-oLocation                                     - Location of selected fixed location.
-oExceptionMessage                             - The last message if any message is
+oWarehouse              - Warehouse of selected fixed location.
+oItem                   - Item of selected fixed location.
+oLocation               - Location of selected fixed location.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```
-
-## Public Interfaces for
-
-## ItemWarehouseInventoryTransaction
-
-The following functions are available: ItemWarehouseInventoryTransaction.StartDetail ItemWarehouseInventoryTransaction.StartOverview

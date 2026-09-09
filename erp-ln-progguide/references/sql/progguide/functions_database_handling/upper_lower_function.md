@@ -5,15 +5,15 @@ With the UPPER and LOWER functions you can convert string expressions to upper a
 ```
 
 <upper lower function>
-    ::= UPPER ( Value expression )
-      | LOWER ( Value expression )
+    ::= UPPER ( <value expression> )
+      | LOWER ( <value expression> )
 ```
 
 ## Syntactical restrictions
-The type of *<value expression>* shall be *string*.
+The type of *<**value expression**>* shall be *string*.
 
 ## Semantics
-If the *<value expression>* is NULL, then the result of the UPPER and LOWER functions is also NULL.
+If the *<**value expression**>* is NULL, then the result of the UPPER and LOWER functions is also NULL.
 The data type of the result of the UPPER and LOWER functions is a string.
 Note  Note: folding extended ASCII characters may give unexpected results. In particular converting the β (scharf-s, iso88591 code point 0xdf) to upper case, leaves the character as it is (while Unicode specifies that it should be replaced by “SS”). Converting the ÿ (iso88591 code point 0xff) to upper case on Microsoft SQL server results in Ÿ (code point 0x9f), but in iso88591 this character is unused.
 
@@ -31,4 +31,5 @@ LOWER ( 'ABC' )
 
 ## Related topics
 - [Value expression](value_expression.md)
+
 - [Infor Enterprise Server SQL](baan_sql.md)

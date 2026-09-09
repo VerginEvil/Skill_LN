@@ -9,7 +9,7 @@ You can fill a string with or without specifying a start position. If you specif
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `string_var` |  |
+| `string` | `string_var` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -36,4 +36,5 @@ buf       = "***"    | buf contains "*** ***"           (length = 7)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

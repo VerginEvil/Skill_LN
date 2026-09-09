@@ -6,11 +6,18 @@ In Application Studio (build 8.6.0.0178 or later), you can generate Infor Enterp
 
 ## Use the generated Infor Enterprise Server library code
 To use the generated Infor Enterprise Server library, you need to call the following functions from that library to carry out the following steps:
+
 - Instantiate service
+
 - Build the request data
+
 - Execute the service
+
 - Get the response data
-- Cleanup  This is illustrated by the following code example for a simple WSDL (Currency Convertor from http://www.webservicex.net):
+
+- Cleanup
+
+This is illustrated by the following code example for a simple WSDL (Currency Convertor from http://www.webservicex.net):
 ```
 
 long    service     | XML
@@ -49,8 +56,12 @@ For a more sophisticated WSDL, functions are generated to build up XML structure
 
 ## Create XML Object
 To create an XML object to use it in the request (or as property for another XML object), do the following:
+
 - Call the constructor
-- Sets the properties  Code example:
+
+- Sets the properties
+
+Code example:
 ```
 
 long    param   | XML
@@ -59,8 +70,12 @@ ParameterValue.SetName(param, "Age")
 ParameterValue.SetValue(param, "17")
 ```
 For collections, do the following:
+
 - Call the constructor
-- Call the Add function for every instance to be added  Code example:
+
+- Call the Add function for every instance to be added
+
+Code example:
 ```
 
 long param.coll | XML
@@ -71,8 +86,12 @@ It is not needed to include the cleanup in your code, because the XML object is 
 
 ## Retrieve from XML Object
 To retrieve data from an XML object from the response (or from another XML object), call the getter for every property that is needed. The getter has name *Objectname*.Get *Property*, e.g. ValidValue.GetLabel. The getter functions come in two flavors:
+
 - For mandatory fields, it only has the XML object as argument and returns the property value.
-- For optional fields, it has the XML object as input argument and the property value as output argument. It returns a boolean indicating if the property is present within the XML structure.   Code example:
+
+- For optional fields, it has the XML object as input argument and the property value as output argument. It returns a boolean indicating if the property is present within the XML structure.
+
+Code example:
 ```
 
 long     value      | XML containing a ValidValue
@@ -84,8 +103,12 @@ if ValidValue.GetLabel(value, label) then | Label is optional
 endif
 ```
 For collections:
+
 - Call the get first function: this will retrieve the first element from the collection
-- Call the get next function repeatedly until the return value = 0  Code example
+
+- Call the get next function repeatedly until the return value = 0
+
+Code example
 ```
 
 long    response    | XML containing the response from ReportExecutionService

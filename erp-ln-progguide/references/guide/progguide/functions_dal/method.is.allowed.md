@@ -9,7 +9,7 @@ This is a special hook for handling centralized authorizations. Use it to perfor
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `method` |  |
+| `long` | `method` |    |
 
 ## Return values
 TRUE if the method is permitted
@@ -19,12 +19,18 @@ FALSE if the method is not permitted
 This function is implemented in the 4GL Engine and can be used in DAL script types.
 
 ## When called
-The hook can be called from the UI script, but it is also called from the 4GL engine to check whether certain operations are allowed.
-For [Extended DAL (DAL2)](dal2_overview.md), the 4GL engine will call this hook also to determine whether the standard commands ADD.SET, DUPL.OCCUR, MODIFY.SET and MARK.DELETE have to be disabled. This is done just before calling the following UI script sections:
+The hook can be called from the UI script, but it is also called from the [4GL engine](../glossary/glossary.md#fourgl_engine) to check whether certain operations are allowed.
+For [Extended DAL (DAL2)](dal2_overview.md), the [4GL engine](../glossary/glossary.md#fourgl_engine) will call this hook also to determine whether the standard commands ADD.SET, DUPL.OCCUR, MODIFY.SET and MARK.DELETE have to be disabled. This is done just before calling the following UI script sections:
+
 - *before.display.object*
+
 - *when.field.changes*
+
 - *read.view* subevent of the *main.table.io*
-- *after.choice* subevent of the *choice.mark.occur*  This hook is also called by the [dal.save.object()](../functions_db_operations/dal.save.object.md) and [dal.destroy.object()](../functions_db_operations/dal.destroy.object.md) functions.
+
+- *after.choice* subevent of the *choice.mark.occur*
+
+This hook is also called by the [dal.save.object()](../functions_db_operations/dal.save.object.md) and [dal.destroy.object()](../functions_db_operations/dal.destroy.object.md) functions.
 
 ## The DAL_NEW method
 When this hook is called for the DAL_UPDATE and DAL_DESTROY methods, then you can check current record values to determine whether these methods are permitted. However, when this hook is called for the DAL_NEW method then you should *not* check current record values, but e.g. parameter settings or data from other tables, or a parent record. The reason is that a record itself cannot tell whether records may be added to the table.
@@ -56,5 +62,7 @@ function extern boolean method.is.allowed(long method)
 
 ## Related topics
 - [Data Access Layer](overview.md)
+
 - [DAL terminology](dal_glossary.md)
+
 - [Object hooks](object_hooks.md)

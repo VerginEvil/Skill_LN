@@ -9,7 +9,7 @@ Retrieves the permission of the session ( *session*) in a bit pattern (see retur
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `session(13)` |  |
+| `string` | `session(13)` |    |
 
 ## Return values
 SESSION_NO_PERMISSION

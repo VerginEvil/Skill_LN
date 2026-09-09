@@ -33,4 +33,5 @@ If the %D002 format for language 3 is MDY, the string returned is "06171991" (th
 
 ## Related topics
 - [Dates, times, time zones synopsis](synopsis.md)
+
 - [Dates, times, time zones overview](overview.md)

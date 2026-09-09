@@ -5,8 +5,8 @@ The arguments of a function are the variables declared in the function header. A
 | | |
 |---|---|
 | Point of declaration | In the function between the brackets { }. |
-| Syntax of declaration |  [ref|reference] <type> name Note that array subscripts must be empty for reference arguments.  |
-| Initialization |  At function call. For value arguments (see below), the values of the function call are copied. For reference arguments, the same variable (or the same memory area) is used as occupied by the variable submitted to the function call.  |
+| Syntax of declaration | [ref|reference] <type> name Note that array subscripts must be empty for reference arguments. |
+| Initialization | At function call. For value arguments (see below), the values of the function call are copied. For reference arguments, the same variable (or the same memory area) is used as occupied by the variable submitted to the function call. |
 | Scope (validity and time) | Only during function execution. |
 
 ## Value arguments
@@ -28,7 +28,7 @@ FUNCTION MAIN()
 Reference arguments must be declared in the function header with the keyword REFERENCE or REF.
 In the function call a variable (or indexed array variable) must be supplied for each reference argument in the function header. Such a variable must not be declared as CONST.
 A reference argument has the same memory space as the variable used in the function call. Consequently, all changes made to a reference argument within the function block are also accessible after the function call in the variable used in the function call.
-If the declaration of a reference argument has array subscripts, these must be empty as the contents and size of the call variable are used. If strings or large arrays are used, it is preferable to use reference arguments instead of returning them with the return statement. This avoids copy actions.
+If the declaration of a reference argument has array subscripts, these must be empty as the contents and size of the call variable are used. If strings or large arrays are used, it is preferable to use reference arguments rather than returning them with the return statement. This avoids copy actions.
 
 ## Example 1
 Note that in this example, the array subscript in the declaration of the reference argument is empty.
@@ -77,7 +77,7 @@ FUNCTION MAIN()
 
 ## Constant arguments
 Constant arguments must be declared with the keyword CONST in the function header. These are similar to reference arguments in that the same memory space is used for the constant argument and the value used in the function call. However, with constant arguments, it is possible to use any value within the function call. The value of the argument after the function call is not returned in the calling function.
-You cannot use a constant argument to modify the value used in the function call. E.g. a constant argument is not allowed as the left hand side operand of an [assignment operator](assignment_operator.md). Also, it is not allowed to use a constant argument as the call variable for a reference argument in another function call.
+In the body of a function it is not allowed to modify any of the function's constant arguments. E.g. it is not allowed to use a constant function argument as the left hand side of an [assignment](assignment_operator.md). Also, it is not allowed to use a constant function argument as the call variable for a reference argument in another function call.
 The array subscript in the declaration of the constant argument must be empty because the size of the function call value is used. For example:
 ```
 
@@ -101,4 +101,5 @@ It is possible to pass an (as yet) unspecified number of arguments to a function
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Functions](functions.md)

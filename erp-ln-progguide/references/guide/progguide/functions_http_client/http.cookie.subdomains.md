@@ -6,7 +6,7 @@
 
 ## Description
 Returns whether an http.cookie object only applies to a single host or multiple hosts in the domain.
-If the domain does not start with a dot (e.g. www.example.com), the subdomains flag is false. If the domain starts with a dot (e.g. .example.com), the subdomains flag is true.
+If the domain does not start with a dot (e.g. www.example.com), the subdomains flag is false. If the domain starts with a dot (e.g..example.com), the subdomains flag is true.
 
 ## Arguments
 | | | |
@@ -24,4 +24,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

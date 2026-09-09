@@ -18,8 +18,10 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 - parameter 'http.mimepartlist' must be a valid http.mimepartlist object
+
 - parameter 'http.mimepart' must be a valid http.mimepart object
 
 ## Related topics
 - [HTTP Client overview](overview.md)
+
 - [HTTP Client synopsis](synopsis.md)

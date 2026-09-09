@@ -13,7 +13,7 @@ In order to notify the DAL about a change to the value of a property, you must u
 | `string` | `tbl.name` |  A string containing the name of the DAL.  |
 | `long` | `object_set` |  The ID of an open object set (if this ID is not known, use the table ID).  |
 | `const string` | `proper_name` |  The name of the property whose value must be changed.  |
-| `void` | `value` |  |
+| `void` | `value` |    |
 
 ## Return values
 The return value of the property check.
@@ -35,4 +35,5 @@ See [dal.set.property()](dal.set.property.md)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

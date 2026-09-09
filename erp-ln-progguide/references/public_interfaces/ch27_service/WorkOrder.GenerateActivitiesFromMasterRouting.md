@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1491-1492
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1506-1507
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2021.11 (KB2211358  ).
+This function is available from 2021.11 (KB2211358).
 Syntax: long WorkOrder.GenerateActivitiesFromMasterRouting(
 const   domain  tcorno           iWorkOrder fixed,
 const   domain  tsacm.cact       iMasterRouting fixed,
@@ -65,6 +65,6 @@ oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
 Output  : N.A.
-Return  : 0                                           - No error
-<> 0                                                  - An error occurred
+Return  : 0                             - No error
+<> 0                          - An error occurred
 ```

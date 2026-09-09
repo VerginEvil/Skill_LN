@@ -10,7 +10,7 @@ This signals to the Business Chart Manager that it must start (re)drawing the ch
 ## Arguments
 | | | |
 |---|---|---|
-| `[ double` | `cat_from_value ]` |  |
+| `[ double` | `cat_from_value ]` |    |
 
 ## Return values
 | | |
@@ -24,6 +24,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

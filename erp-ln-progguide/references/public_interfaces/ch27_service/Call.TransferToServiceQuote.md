@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Call
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1378-1379
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1390-1391
 
 ```baan
 DLL:   tsextclmapi
-This function is available from     2025.09 (KB3614350  ).
+This function is available from 2025.09 (KB3614350).
 Syntax: long Call.TransferToServiceQuote(
 domain  tcorno           iCall,
 long             iProcessingOptionSet,
@@ -18,8 +18,8 @@ ref     domain  tcpono           oQuoteRevision,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this function to:
--                       Transfer a Call to a Quote for a Service Order
--                       Transfer a Call to a Quote for Part Maintenance
+- Transfer a Call to a Quote for a Service Order
+- Transfer a Call to a Quote for Part Maintenance
 This function handles the transfer of a call to a service quote.
 Before transferring the call, based on the blocking settings
 defined in the Call Management parameters, it is checked if the
@@ -28,7 +28,7 @@ cannot be transferred and output argument oCallIsBlocked will
 be set to Yes.
 Pre:    Call ProcessingOptionSet.Create() to obtain iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete()
-This function sets a retry                      -point and will commit and/or abort
+This function sets a retry-point and will commit and/or abort
 the transaction.
 Input:  iCall
 Call Number: Mandatory

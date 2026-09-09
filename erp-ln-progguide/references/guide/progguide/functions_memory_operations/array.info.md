@@ -59,7 +59,6 @@ array.info( b4, nr.dims, dim.info )
         |  dim.info(3) = 0
         |  dim.info(4) = 0
 ```
-**
 
 ## Related topics
 - [Memory operations overview and synopsis](overview_and_synopsis.md)

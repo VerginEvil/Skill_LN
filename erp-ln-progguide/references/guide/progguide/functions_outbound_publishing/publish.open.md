@@ -24,4 +24,5 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Outbound Publishing functions overview](overview.md)
+
 - [Outbound Publishing functions synopsis](synopsis.md)

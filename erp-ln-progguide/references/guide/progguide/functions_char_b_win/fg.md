@@ -15,7 +15,7 @@ The color argument can have the following values:
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `color` |  |
+| `long` | `color` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

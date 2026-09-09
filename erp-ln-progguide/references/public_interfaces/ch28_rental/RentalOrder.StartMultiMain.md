@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1563-1564
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1578-1579
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2026.09 (KB3693226  ).
+This function is available from 2026.09 (KB3693226).
 Syntax: long RentalOrder.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -21,10 +21,10 @@ Usage:        Expl:   This function starts the Multi-Main session Rental Order
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
@@ -43,7 +43,3 @@ information.
 Return: 0                       Session started
 <> 0                    An error occurred
 ```
-
-## Public Interfaces for RentalAgreement
-
-The following functions are available: RentalAgreement.Cancel RentalAgreement.Complete RentalAgreement.Cost RentalAgreement.Plan RentalAgreement.Release

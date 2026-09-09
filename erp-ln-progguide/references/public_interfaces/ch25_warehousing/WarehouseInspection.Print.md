@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WarehouseInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1264-1266
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1274-1276
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.06 (KB3566665  ).
+This function is available from 2025.06 (KB3566665).
 Syntax: long WarehouseInspection.Print(
 domain  tcorno           iInspection,
 domain  tcpono           iInspectionSequence,
@@ -34,8 +34,8 @@ via a call to function
 ProcessingOptionSet.Create().
 In case iInspection is filled then the following options
 of the iProcessingOptionSet will be ignored:
--                       selection range fields (From/To)
--                       InspectionArray
+- selection range fields (From/To)
+- InspectionArray
 The warehouse inspections will then be printed for the given
 iInspection (and specific iInspectionSequence, if filled).
 In case option InspectionArray is set then the selection
@@ -86,7 +86,7 @@ InspectionArray                 domain ttjson           0
 ReportNumber                    domain tcmcs.long       1
 ReportName                      domain tcmcs.str16      Empty String
 Possible values of ReportNumber are:
-1                       - Warehouse Inspections
+1 - Warehouse Inspections
 JSON Object InspectionArray has the following structure:
 "InspectionArray": [
 {
@@ -111,13 +111,13 @@ Json.add(InspectionArray, Inspection)
 ReportName only needs to filled for customized reports,
 otherwise the standard report is used based on the ReportNumber.
 ReportName must start with an "r", e.g. "rwhinh342211001"
-Output: oDataProcessed                        - true:  Data Printed.
+Output: oDataProcessed          - true:  Data Printed.
 false: Nothing Printed.
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

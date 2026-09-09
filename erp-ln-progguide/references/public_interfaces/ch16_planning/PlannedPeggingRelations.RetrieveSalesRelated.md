@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlannedPeggingRelations
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 573-574
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 577-578
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2025.10 (KB3605562  ).
+This function is available from 2025.10 (KB3605562).
 Syntax: long PlannedPeggingRelations.RetrieveSalesRelated(
 const           string           iScenario(),
 domain  tcitem           iItem,
@@ -51,15 +51,15 @@ Mandatory.
 Output: oParentTransactionArray
 Parent transaction numbers, as used in
 table Pegging Transactions (cprrp041).
-oParentCompanyArray     Parent companies (relevant in multi                      -
+oParentCompanyArray     Parent companies (relevant in multi-
 company scenarios).
-oParentScenarioArray    Parent scenarios (relevant in multi                      -
+oParentScenarioArray    Parent scenarios (relevant in multi-
 company scenarios).
 oChildTransactionArray  Child transaction numbers, as used in
 table Pegging Transactions (cprrp041).
-oChildCompanyArray      Child companies (relevant in multi                      -
+oChildCompanyArray      Child companies (relevant in multi-
 company scenarios).
-oChildScenarioArray     Child scenarios (relevant in multi                      -
+oChildScenarioArray     Child scenarios (relevant in multi-
 company scenarios).
 oArraySize              Size of allocated Output arrays.
 oExceptionMessage       The last message if any message is
@@ -74,7 +74,3 @@ Return: 0                       Sales related pegging relationships
 retrieved successfully.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ProductAvailability
-
-The following functions are available: ProductAvailability.GetDeliveryDate ProductAvailability.GetWhenAvailableSchedule

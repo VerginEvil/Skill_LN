@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalAgreement
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1576-1581
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1591-1596
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.11 (KB3532033  ).
+This function is available from 2024.11 (KB3532033).
 Syntax: long RentalAgreement.Release(
 domain  tcorno           iRentalOrder fixed,
 domain  tsmdm.acln       iAgreementLine,
@@ -157,7 +157,7 @@ Indicator whether the ATP check is performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 Furthermore the IncludeOrdersWithStatus
 Free should also have the value Yes.
 PerformPlannedAvailableCheck
@@ -167,7 +167,7 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 PerformOnHandAvailableCheck
 domain  tcyesno         tcyesno.no
 Indicator whether the On Hand Inventory check is
@@ -175,14 +175,14 @@ performed.
 Note: value Yes will be ignored and converted to
 No if material availability is not present in the
 Service Order Parameters (or site specific record, if
-the Sites                              -concept has been implemented).
+the Sites-concept has been implemented).
 SkipBlockedInventory
 domain  tcyesno         tcyesno.no
 Indicator whether Blocked Inventory has to be considered
 during the various material availability checks.
 Note: value Yes only allowed if material availability
 is present in the Service Order Parameters
-(or site specific record, if the Sites                              -concept has
+(or site specific record, if the Sites-concept has
 been implemented). Furthermore, at least one of the
 input arguments PerformPlannedAvailableCheck or
 PerformOnHandAvailableCheck should have the value
@@ -252,12 +252,8 @@ changed to Released.
 If the return value = 0 (so not an error), the
 oExceptionID can still contain information about the
 process.
-Return: 0                     -       No Error and the status of the given
+Return: 0       -       No Error and the status of the given
 Rental Agreement changed to Released.
-<> 0                          -       The status of the Rental Agreement could not be
+<> 0    -       The status of the Rental Agreement could not be
 changed to Released.
 ```
-
-## Public Interfaces for RentalOrderCostLine
-
-The following functions are available: RentalOrderCostLine.Cost

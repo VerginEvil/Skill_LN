@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundInspection
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1076-1078
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1086-1088
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.05 (KB2117931  ).
+This function is available from 2020.05 (KB2117931).
 Syntax: long InboundInspection.StartAutomaticInboundProcessing(
 domain  tcorno           iInspection,
 domain  tcpono           iInspectionSequence,
@@ -68,19 +68,15 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iInspection                           - Mandatory
-iInspectionSequence                           - Mandatory
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iInspection             - Mandatory
+iInspectionSequence     - Mandatory
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
 Return: 0: OK, <> 0: Error
 ```
-
-## Public Interfaces for InboundOrderLine
-
-The following functions are available: InboundOrderLine.PrintGoodsReceivedNote InboundOrderLine.Receive InboundOrderLine.StartAutomaticInboundProcessing InboundOrderLine.StartPrintGoodsReceivedNote

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for StandardCosts
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 605-607
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 608-610
 
 ```baan
 DLL:   tiextcprapi
-This function is available from     2024.04 (KB2328014  ).
+This function is available from 2024.04 (KB2328014).
 Syntax: long StandardCosts.CalculateAndGetStandardCostV2(
 domain  tccpcc           iCalculationCode,
 domain  tcitem           iItem,

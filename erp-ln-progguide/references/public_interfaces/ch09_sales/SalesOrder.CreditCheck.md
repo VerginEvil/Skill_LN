@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 317-318
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 319-320
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.05 (KB3565482  ).
+This function is available from 2025.05 (KB3565482).
 Syntax: long SalesOrder.CreditCheck(
 domain  tcorno           iSalesOrder,
 long             iPhaseNumber,
@@ -28,27 +28,27 @@ Signalling and/or blocking depends on the setup.
 When concept "Change Request" is implemented and for the given sales
 order an open sales order change request exists, that change request
 should be used as input argument for "iSalesOrder".
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales Order (mandatory)
-iPhaseNumber                                  - Phase Number to check
+Input:  iSalesOrder             - Sales Order (mandatory)
+iPhaseNumber            - Phase Number to check
 1 = 1st phase credit check (order entry)
 2 = 2nd phase credit check (release to
 warehouse)
 3 = 3rd phase credit check (confirm shipment)
-iBlock                                        - Indicates if the sales order should be blocked
+iBlock                  - Indicates if the sales order should be blocked
 or only a message should be given (based
 on sales parameters and/or settings).
-Output: oBlocked                              - True: Sales order is (already) blocked
--                                               False: Sales order is not blocked
-oExceptionMessage                             - The last message if any message is
+Output: oBlocked                - True: Sales order is (already) blocked
+- False: Sales order is not blocked
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error
-<> 0                                          - Error occurred
+Return: 0                       - No error
+<> 0                    - Error occurred
 ```

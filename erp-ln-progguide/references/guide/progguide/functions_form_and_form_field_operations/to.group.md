@@ -10,7 +10,7 @@ In a well-designed GUI, users (and not the application) select and initiate the 
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `group_number` |   |
+| `long` | `group_number` |    |
 
 ## Return values
 true success
@@ -21,4 +21,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

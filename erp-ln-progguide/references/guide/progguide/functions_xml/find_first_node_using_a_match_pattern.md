@@ -27,13 +27,13 @@ Parent         ::=   "parent"
 | | | |
 |---|---|---|
 | `string` | `pattern` |  The parameter *pattern* is a string which should conform to the following syntax: Attribute values should be surrounded by double quotes. When the text inside a tag starts with a stand alone identifier (not followed by an equals sign '='), then, according to the above syntax, it is ambiguous whether it is an element name or an attribute name. In fact, it is interpreted as an element name. When an attribute name is meant, it should in this case be followed by an equals sign '='. This is not necessary for further attributes. For an example see [Example XML parsing](example_xml_parsing.md). See also [XML object API](api.md).  |
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node.  |
+| <> 0 | Success; The new tree containing references to the found nodes. In case no match is found the tree consists of a single node. |
 | 0 | Error. |
 
 ## Context
@@ -41,4 +41,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

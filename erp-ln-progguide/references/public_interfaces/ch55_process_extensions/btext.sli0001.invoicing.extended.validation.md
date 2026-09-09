@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for BRA.BrazilianInvoice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1972-1974
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1991-1993
 
 ```baan
 Syntax: long btext.sli0001.invoicing.extended.validation(
@@ -119,12 +119,8 @@ End of Example of Implementation
 ----------------------------------------------------------------
 Pre:    n.a.
 Post:   n.a.
-Input:  i.invoice.fiscal.reference                    - Invoice fiscal reference
-i.invoice.financial.company                           - Invoice financial company
-i.invoice.logistic.company                            - Invoice logistic company
+Input:  i.invoice.fiscal.reference      - Invoice fiscal reference
+i.invoice.financial.company     - Invoice financial company
+i.invoice.logistic.company      - Invoice logistic company
 Output: n.a.
 ```
-
-## Process Extensions for BRA.WarehouseOrder
-
-The following process extension(s) is/are available: BRA.WarehouseOrder.GetBusinessPartner

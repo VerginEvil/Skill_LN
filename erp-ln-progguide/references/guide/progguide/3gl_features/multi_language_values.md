@@ -4,4 +4,5 @@ A Multi Language Value denotes the contents of a multibyte string variable. When
 
 ## Related topics
 - [Multi Language Data overview](../functions_mle/overview.md)
+
 - [Variables](variables.md)

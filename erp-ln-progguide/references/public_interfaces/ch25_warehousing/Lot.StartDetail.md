@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Lot
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1106-1107
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1116-1116
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2021.04 (KB2179943  ).
+This function is available from 2021.04 (KB2179943).
 Syntax: long Lot.StartDetail(
 long             iStartMode,
 domain  tcitem           iItem,
@@ -20,11 +20,11 @@ Usage:        Expl:   This function starts the detail session Item - Lot
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, in case of a
-multi                                              -occurrence the session will be
+multi-occurrence the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Following input variables form the primary key, these fields
@@ -34,14 +34,14 @@ be started.
 Primary Key Fields:
 iItem
 iLot
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error
+Return: 0                       - Session started
+<> 0                    - Error
 ```

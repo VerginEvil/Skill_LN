@@ -4,15 +4,16 @@
 >
 > Group: Process Extensions for PaymentAdvice
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2095-2096
-
-Skips processing of a payment batch. This process extension is available from 2023.06 ( KB2280730 ). To implement this process extension, you can use the information below:
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2118-2119
 
 ```baan
+Skips processing of a payment batch.
+This process extension is available from 2023.06 (KB2280730).
+To implement this process extension, you can use the information below:
 Usage:        PaymentAdvice.SkipPaymentBatch can be used to skip a payment batch
 during Process Payments(tfcmg1240m000).
 Fields that are available to be used in this Process Extension:
--               Key field of tfcmg109 - tfcmg109.btno (Payment Batch)
+- Key field of tfcmg109 - tfcmg109.btno (Payment Batch)
 This field can be used to read table tfcmg109 (binded)
 Pseudocode:
 Below you can find an example:

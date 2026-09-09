@@ -8,15 +8,11 @@ Returns a substring from the specified string. The substring starts at the speci
 Note that when using the `var(x;y)` construction, the `y` is the size of the substring, but when calling `str.substring$(var, x, y)`, the `y` is the end position in `var`. See the example code below to see the difference.
 
 ## Arguments
--
--
 | | | |
 |---|---|---|
 | `const string` | `string$` |  a string  |
 | `long` | `beginpos` |  the begin position, inclusive; note that: if `beginpos <= 0`, then `beginpos` is set to 1 if `beginpos > len(string$)`, then an empty string is returned  |
 | `[ long` | `endpos ]` |  optional, the end position, exclusive; note that: if `endpos <= beginpos`, then an empty string is returned if `endpos > len(string$)`, then `endpos` is not taken into account  |
--
--
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.
@@ -67,4 +63,5 @@ substr = str.substring$(source, p1, p2)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 452-453
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 454-455
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2021.12 (KB2218711  ).
+This function is available from 2021.12 (KB2218711).
 Syntax: long PurchaseOrderLine.Approve(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -25,7 +25,7 @@ This function does not start the execution of automatic
 order steps. A separate Public Interface can be used to
 start automatic order steps if necessary:
 'PurchaseOrder.StartAutomaticProcessing'
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
 Input:  iPurchaseOrder          Purchase Order (Mandatory)
 iOrderLine              Purchase Order Line (Mandatory)

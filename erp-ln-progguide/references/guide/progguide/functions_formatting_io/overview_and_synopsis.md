@@ -23,9 +23,9 @@ string
 | | | |
 |---|---|---|
 |  | [edit$](edit.md) | `( expression, string format(.) )` |
-|  | [sprintf$](sprintf.md) | `( string format(.) [, expression, ...] )` |
-|  | [string.scan](string.scan.md) | `( str_expr, string format(.) [, variable, ...] )` |
-|  | [vsprintf$](vsprintf.md) | `( string format(.) [, ...] )` |
+|  | [sprintf$](sprintf.md) | `( string format(.) [, expression,...] )` |
+|  | [string.scan](string.scan.md) | `( str_expr, string format(.) [, variable,...] )` |
+|  | [vsprintf$](vsprintf.md) | `( string format(.) [,...] )` |
 The following functions are only available as of TIV 1640:
 ```
 

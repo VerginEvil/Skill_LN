@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PurchaseOrderReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 467-469
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 469-471
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2024.04 (KB2326238  ).
+This function is available from 2024.04 (KB2326238).
 Syntax: long PurchaseOrderReceipt.ConfirmV2(
 domain  tcorno           iPurchaseOrder,
 domain  tcpono           iOrderLine,
@@ -41,10 +41,10 @@ This function does not start the execution of automatic
 order steps. A separate Public Interface can be used to
 start automatic order steps if necessary:
 'PurchaseOrder.StartAutomaticProcessing'
-Pre:    Setting a retry              -point depends on 'iHandleTransaction':
-true:   No need to set a retry                              -point. This will be taken
+Pre:    Setting a retry-point depends on 'iHandleTransaction':
+true:   No need to set a retry-point. This will be taken
 care of by the Public Interface.
-false:  Caller must set retry                              -point
+false:  Caller must set retry-point
 Post:   Committing/aborting the transaction depends on 'iHandleTransaction':
 true:   No need to commit/abort. This will be taken
 care of by the Public Interface.
@@ -56,12 +56,12 @@ iReceiptSequence        Purchase Order Line Receipt Sequence
 (Mandatory)
 iHandleTransaction      Handling of transaction management.
 Possible values:
--                                               true: Transaction management
+- true: Transaction management
 will be taken care of by the
 Public Interface.
--                                               false:
+- false:
 Caller must handle the transaction
-management: set a retry                                                      -point
+management: set a retry-point
 and commit/abort the transaction.
 Output: oExceptionMessage       The last message. This can also be filled
 if the return value equals 0.

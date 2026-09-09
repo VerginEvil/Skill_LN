@@ -2,15 +2,22 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.utc( [ const string aspect, ... ] )`
+`function string sjv.utc( [ const string aspect,... ] )`
 
 ## Description
 Indicates a JSON number is expected that contains a UTC value (expressed in seconds since 1970-01-01 00:00:00 UTC). By default, the UTC value is optional (i.e., does not have to appear in the JSON), can also be 0 (1970-01-01 00:00:00 UTC), but may not be null. The following aspects can be specified:
-- ` [sjv.min()](sjv.min.md)`- specifies the minimum value allowed expressed in seconds since 1970-01-01 00:00:00 UTC
-- ` [sjv.max()](sjv.max.md)`- specifies the maximum value allowed expressed in seconds since 1970-01-01 00:00:00 UTC
-- ` [sjv.required()](sjv.required.md)`- specifies the UTC value is required
-- ` [sjv.nullable()](sjv.nullable.md)`- specifies the UTC valueis nullable
-- ` [sjv.filled()](sjv.filled.md)`- specifies the UTC value may not be 0 (i.e., 1970-01-01 00:00:00 UTC)   Example:
+
+- [sjv.min()](sjv.min.md)- specifies the minimum value allowed expressed in seconds since 1970-01-01 00:00:00 UTC
+
+- [sjv.max()](sjv.max.md)- specifies the maximum value allowed expressed in seconds since 1970-01-01 00:00:00 UTC
+
+- [sjv.required()](sjv.required.md)- specifies the UTC value is required
+
+- [sjv.nullable()](sjv.nullable.md)- specifies the UTC valueis nullable
+
+- [sjv.filled()](sjv.filled.md)- specifies the UTC value may not be 0 (i.e., 1970-01-01 00:00:00 UTC)
+
+Example:
 ```
 
 string  utc.def(1) based
@@ -45,7 +52,7 @@ result = sjv.validate(json, utc.def)
 ## Arguments
 | | | |
 |---|---|---|
-| `[ const string` | `aspect, ... ]` |  a list of aspects the JSON number is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.nullable()](sjv.nullable.md), and [sjv.max()](sjv.max.md)  |
+| `[ const string` | `aspect,... ]` |  a list of aspects the JSON number is expected to have; e.g., [sjv.required()](sjv.required.md), [sjv.nullable()](sjv.nullable.md), and [sjv.max()](sjv.max.md)  |
 
 ## Return values
 a definition string to build a JSON validation definition that can be passed to [sjv.validate()](sjv.validate.md)
@@ -55,6 +62,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

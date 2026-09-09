@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SourcingStrategy
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 233-234
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 235-235
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.07 (KB2329980  ).
+This function is available from 2024.07 (KB2329980).
 Syntax: long SourcingStrategy.StartDetail(
 long             iStartMode,
 domain  cpcom.plnc       iPlanningScenario,
@@ -24,10 +24,10 @@ Usage:        Expl:   This function starts the session Sourcing Strategy
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 Primary Key Fields:

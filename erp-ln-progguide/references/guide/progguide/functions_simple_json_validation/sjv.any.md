@@ -2,11 +2,14 @@
 
 ## Syntax:
 `#include <bic_sjv>`
-`function string sjv.any( [ const string aspect, ... ] )`
+`function string sjv.any( [ const string aspect,... ] )`
 
 ## Description
 Indicates a JSON value is expected that can be of any type, including null. By default, the value is optional (i.e., does not have to appear in the JSON). The following aspect can be specified:
-- ` [sjv.required()](sjv.required.md)`- specifies the value is required   Example:
+
+- [sjv.required()](sjv.required.md)- specifies the value is required
+
+Example:
 ```
 
 string  any.def(1) based
@@ -39,7 +42,7 @@ result = sjv.validate(json, any.def)
 ## Arguments
 | | | |
 |---|---|---|
-| `[ const string` | `aspect, ... ]` |  a list of aspects the JSON value is expected to have; currently only [sjv.required()](sjv.required.md) is supported  |
+| `[ const string` | `aspect,... ]` |  a list of aspects the JSON value is expected to have; currently only [sjv.required()](sjv.required.md) is supported  |
 
 ## Return values
 a definition string to build a JSON validation definition that can be passed to [sjv.validate()](sjv.validate.md)
@@ -49,6 +52,9 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [Overview](overview.md)
+
 - [Synopsis](synopsis.md)
+
 - [Examples](examples.md)
+
 - [sjv.validate()](sjv.validate.md)

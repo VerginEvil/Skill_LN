@@ -11,13 +11,13 @@ Gets the busystatus of the appointment identified by *apid* and return string in
 | | | |
 |---|---|---|
 | `long` | `apid` |  The appointment identification.  |
-| `ref string` | `busystatus` |  |
+| `ref string` | `busystatus` |    |
 
 ## Return values
 | | |
 |---|---|
 | 0 | Success. |
-| -1 | Error (most likely invalid object id or element not present).  |
+| -1 | Error (most likely invalid object id or element not present). |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -25,5 +25,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [eMessage Connector overview](overview.md)
+
 - [eMessage Connector synopsis](synopsis.md)
+
 - [eMessage Connector examples](examples.md)

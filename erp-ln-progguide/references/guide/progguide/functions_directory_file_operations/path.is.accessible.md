@@ -14,8 +14,8 @@ This checks if *path_name* exists and is available for writing.
 ## Return values
 | | |
 |---|---|
-| false | *path_name* does not exist or is not available for writing.  |
-| true | *path_name* exists and is available for writing.  |
+| false | *path_name* does not exist or is not available for writing. |
+| true | *path_name* exists and is available for writing. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 2410.
@@ -38,4 +38,5 @@ before.zoom:
 
 ## Related topics
 - [Directory and file operations overview](overview.md)
+
 - [Directory and file operations synopsis](synopsis.md)

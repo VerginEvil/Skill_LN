@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 347-348
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 349-350
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2025.05 (KB3569018  ).
+This function is available from 2025.05 (KB3569018).
 Syntax: long SalesOrderLine.GenerateProductionOrder(
 domain  tcorno           iSalesOrder,
 domain  tcpono           iSalesOrderLine,
@@ -21,12 +21,12 @@ Usage:        Expl. : This function generates a production order for the item of
 specific sales order line.
 The execution of automatic order steps is not started. Function
 SalesOrderLine.StartAutomaticProcessing can be used for this.
-Pre:    Caller must set retry              -point
+Pre:    Caller must set retry-point
 Post:   Caller must commit/abort transaction
-Input:  iSalesOrder                           - Sales order (Mandatory)
-iSalesOrderLine                               - Sales order line (Mandatory)
-iSalesOrderLineSequence                       - Sales order line sequence
-iProcessingOptionSet                          - Processing Option Set (Optional).
+Input:  iSalesOrder             - Sales order (Mandatory)
+iSalesOrderLine         - Sales order line (Mandatory)
+iSalesOrderLineSequence - Sales order line sequence
+iProcessingOptionSet    - Processing Option Set (Optional).
 If 0, the default options of session
 "Generate Production Orders" are applied.
 A Processing Option Set can be created
@@ -51,15 +51,15 @@ ProcessDeliveryTypeProduction           domain tcyesno          tcyesno.yes
 ProcessDeliveryTypeWarehouse            domain tcyesno          tcyesno.yes
 ConsiderAllocatedToInventory            domain tcyesno          tcyesno.yes
 ConsiderDemandPeggedToSupplyOrders      domain tcyesno          tcyesno.yes
-Output: oProductionOrder                              - The generated production order
-oExceptionMessage                                     - The last message if any message is
+Output: oProductionOrder                - The generated production order
+oExceptionMessage               - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID
-oExceptionID                                          - An ID that refers to the exception
+oExceptionID                    - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information
-Return: 0                                             - No error
-<> 0                                                  - Error occurred
+Return: 0                               - No error
+<> 0                            - Error occurred
 ```

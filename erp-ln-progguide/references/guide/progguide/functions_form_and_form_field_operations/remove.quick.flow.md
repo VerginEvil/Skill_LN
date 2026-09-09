@@ -1,7 +1,7 @@
 # remove.quick.flow()
 
 ## Syntax:
-`function void remove.quick.flow( const string frmcmd, const string ... )`
+`function void remove.quick.flow( const string frmcmd, const string... )`
 
 ## Description
 This function can be used in the after.form.read section to remove the quick.flow support for one or more form commands. In this way the application script can decide to not support quick.flow based on a paremaeter.
@@ -23,4 +23,5 @@ remove.quick.flow( "ttadv3500m000" )
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

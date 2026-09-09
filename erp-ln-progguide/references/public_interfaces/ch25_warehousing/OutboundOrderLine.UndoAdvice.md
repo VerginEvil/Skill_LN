@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for OutboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1234-1234
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1244-1244
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.12 (KB3613235  ).
+This function is available from 2025.12 (KB3613235).
 Syntax: long OutboundOrderLine.UndoAdvice(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -25,15 +25,15 @@ in the oExceptionID and the last message is present in
 oExceptionMessage.
 Pre:    NA
 Post:   NA
-Input:  iOrderOrigin                          - Order Origin (Mandatory)
-iOrderNumber                                  - Order Number (Mandatory)
-iOrderLine                                    - Order Line (Optional)
-iOrderSequence                                - Order Line Sequence (Optional)
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iOrderOrigin            - Order Origin (Mandatory)
+iOrderNumber            - Order Number (Mandatory)
+iOrderLine              - Order Line (Optional)
+iOrderSequence          - Order Line Sequence (Optional)
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

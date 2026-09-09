@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Kanban
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1289-1290
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1299-1299
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.10 (KB3629008  ).
+This function is available from 2025.10 (KB3629008).
 Syntax: long Kanban.StartGenerate(
 domain  tckbid           iKanbanSignal,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -21,7 +21,3 @@ generated.
 Output: N.a.
 Return: 0 / DALHOOKERROR
 ```
-
-## Public Interfaces for TimePhasedOrderPoint
-
-The following functions are available: TimePhasedOrderPoint.GenerateOrders

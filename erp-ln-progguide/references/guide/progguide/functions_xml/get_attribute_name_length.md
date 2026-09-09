@@ -17,11 +17,12 @@ This function may be used to determine the required size of the *argumentName* a
 | | |
 |---|---|
 | >= 0 | Success; Length of the attribute name |
-| -1 | Error, or the indicated attribute does not exist.  |
+| -1 | Error, or the indicated attribute does not exist. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

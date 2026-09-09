@@ -10,7 +10,7 @@ This retrieves information about a specified axis from the Business Chart Manage
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `axis_name` |  |
+| `long` | `axis_name` |    |
 | `ref long` | `logarithmic` |  This returns true if the axis uses logarithmic scaling, or false if it uses linear scaling.  |
 | `ref long` | `log_base` |  If *logarithmic* returns true, this argument returns the log base used.  |
 | `ref long` | `divisions` |  This returns the number of divisions into which the axis is divided.  |
@@ -30,6 +30,9 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Chart manager overview](overview.md)
+
 - [Chart manager synopsis](synopsis.md)
+
 - [Creating a chart manager client application](creating_a_chart_manager_client_application.md)
+
 - [Chart manager example](example.md)

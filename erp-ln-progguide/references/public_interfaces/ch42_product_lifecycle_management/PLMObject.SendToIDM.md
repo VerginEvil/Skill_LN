@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PLMObject
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1830-1831
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1850-1851
 
 ```baan
 DLL:   pdextpdmapi
-This function is available from     2024.04 (KB2328014  ).
+This function is available from 2024.04 (KB2328014).
 Syntax: long PLMObject.SendToIDM(
 domain  pdobjt           iObjectType,
 domain  pdokey           iKey,
@@ -23,21 +23,21 @@ Pre:    The transaction must have been already committed prior to
 calling this function. This function internally performs
 transaction handling.
 Post:   None
-Input:  iObjectType                   - Object Type
+Input:  iObjectType     - Object Type
 Possible values are:
--                                               pdobjt.item (Item)
--                                               pdobjt.document (Document)
--                                               pdobjt.file (File)
-iKey                                          - Object Key
-iRevision                                     - Object Revision
-iERPCompany                                   - ERP Company
-iProject                                      - PCS project
-Output: oExceptionMessage                     - The error message if the return value is not
+- pdobjt.item (Item)
+- pdobjt.document (Document)
+- pdobjt.file (File)
+iKey                    - Object Key
+iRevision               - Object Revision
+iERPCompany             - ERP Company
+iProject                - PCS project
+Output: oExceptionMessage       - The error message if the return value is not
 equal to 0. A warning message if filled and the
 return value is 0.
-oExceptionID                          -       An ID that refers to all error information. Use
+oExceptionID    -       An ID that refers to all error information. Use
 the XML functions in Exception to get all relevant
 information.
-Return: long                          - 0      if success
--                                       <> 0  if fail
+Return: long            - 0      if success
+- <> 0  if fail
 ```

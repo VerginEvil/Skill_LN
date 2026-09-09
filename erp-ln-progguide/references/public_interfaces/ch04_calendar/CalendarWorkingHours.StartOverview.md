@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for CalendarWorkingHour
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 155-157
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 156-157
 
 ```baan
 DLL:   tcextccpapi
-This function is available from     2024.11 (KB3522436  ).
+This function is available from 2024.11 (KB3522436).
 Syntax: long CalendarWorkingHours.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -31,14 +31,14 @@ overview mode (tcccp0120m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not Used.
-iSessionIndex           Specifies the table                      -index that is to
+iSessionIndex           Specifies the table-index that is to
 be used.
 Standard supported values:
 3. Sort by Calendar Code, Availability
@@ -71,9 +71,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Chapter 5 Public Interfaces for IntercompanyTrade
-
-## Public Interfaces for IntercompanyTradeOrder
-
-The following functions are available: IntercompanyTradeOrder.CalculateCommercialPrice IntercompanyTradeOrder.CalculateEstimates IntercompanyTradeOrder.PostTransactionLine IntercompanyTradeOrder.PresentForWarehouseOrderLine

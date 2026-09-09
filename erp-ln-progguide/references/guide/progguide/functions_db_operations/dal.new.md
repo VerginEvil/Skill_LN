@@ -24,4 +24,5 @@ Note  It is advised to use [dal.new.object()](dal.new.object.md) and [dal.save.o
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

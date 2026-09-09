@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 749-750
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 748-749
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2023.11 (KB2302401  ).
+This function is available from 2023.11 (KB2302401).
 Syntax: long ProductionOrder.ProcessReturn(
 domain  tcsite           iSite,
 domain  tcorno           iProductionOrder,
@@ -32,20 +32,20 @@ Input:
 iSite
 Site (Mandatory when the Site concept is active).
 iProductionOrder
-Production Order                               - Mandatory.
+Production Order - Mandatory.
 iPosition
-Position                               - Production Warehouse Order position.
+Position - Production Warehouse Order position.
 Position 0 always refers to the main item of the order.
 iSequenceNumber
-Sequence Number                               - Mandatory.
+Sequence Number - Mandatory.
 iTransactionType
 Mandatory. The Transaction Type must
 have one of the following values:
-tcinh.ittp.receipt                                    - Receipt
-tcinh.ittp.issue                                      - Issue
-tcinh.ittp.transfer                                   - Transfer
+tcinh.ittp.receipt      - Receipt
+tcinh.ittp.issue        - Issue
+tcinh.ittp.transfer     - Transfer
 iQuantityToReturn
-Quantity to return                               - Mandatory.
+Quantity to return - Mandatory.
 iReturnOrderType
 Order Type to be used for return processing.
 iReason

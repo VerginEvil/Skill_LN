@@ -16,7 +16,7 @@ Get the data of a node. When *node* is of type XML_DATA or XML_PI, only the data
 ## Return values
 | | |
 |---|---|
-| <> 0 | Success; Value of parameter *node* when successful.  |
+| <> 0 | Success; Value of parameter *node* when successful. |
 | 0 | Error. |
 
 ## Context
@@ -31,4 +31,5 @@ long	xmlAllocData( ref string basedString(), long node, [ const string default.v
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

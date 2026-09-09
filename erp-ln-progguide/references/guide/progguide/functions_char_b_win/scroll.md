@@ -10,7 +10,7 @@ This enables scrolling for the specified window. By default, windows do not scro
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `wind_id` |  |
+| `long` | `wind_id` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

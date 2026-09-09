@@ -4,4 +4,5 @@ Special attention must be paid when concatenating or splitting strings. When bid
 
 ## Related topics
 - [3GL programming language features: overview](overview.md)
+
 - [Variables](variables.md)

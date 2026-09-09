@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ShipmentLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1168-1170
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1178-1180
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2021.11 (KB2211254  ).
+This function is available from 2021.11 (KB2211254).
 Syntax: long ShipmentLine.Split(
 domain  whinh.shpm       iShipment,
 domain  tcpono           iShipmentLine,
@@ -30,14 +30,14 @@ ref             long             oExceptionID )
 Usage:        Expl:   This public interface supports splitting of a shipment line and
 moving of the splitted stock points.
 Split quantity followed by storage unit must be passed for all
-shipment line                       - stock point details records, which must be
+shipment line - stock point details records, which must be
 split.
 Total split quantity iSplitQuantity in inventory units must
 be equal to the sum of the split quantities in stock point
 details.
 Based on combiantion of ioDestinationShipment and
 ioDestinationLoad the following actions will be executed:
-|                      --------------------------------------------------------------
+|--------------------------------------------------------------
 |ioDestShipment | ioDestLoad    | Action
 | Filled        | Empty         | Splitted part of shipment line
 |               |               | moved to the shipment
@@ -52,7 +52,7 @@ ioDestinationLoad the following actions will be executed:
 |               |               | shipment.
 | Empty         | Empty         | New shipment and load will be
 |               |               | generated.
-|                      -------------------------------------------------------------
+|-------------------------------------------------------------
 If parameter iAcceptWarnings is set to True and destination
 shipment or destination load is passed to the public interface a
 mismatch between the source shipment and the destination
@@ -98,31 +98,31 @@ Pre:    db.retry.point()
 Split quantities in the shipment line stock point details are
 zero.
 Post:   abort/commit transaction
-Input:  iShipment                             - Shipment (mandatory)
-iShipmentLine                                 - Shipment Line (mandatory)
-iBomLine                                      - BOM line (optional)
-iSplitQuantity                                - Split Quantity in Inventory Units
+Input:  iShipment               - Shipment (mandatory)
+iShipmentLine           - Shipment Line (mandatory)
+iBomLine                - BOM line (optional)
+iSplitQuantity          - Split Quantity in Inventory Units
 (mandatory)
-iNumberStockPoints                            - Number of Shipment Line stock point
+iNumberStockPoints      - Number of Shipment Line stock point
 details to be split (mandatory)
-iSerialArray                                  - Array of serials (optional)
-iLotArray                                     - Array of lots (optional)
-iInventoryDateArray                           - Array of inventory dates (optional)
-iEffectivityUnitArray                         - Array of effectivity units (optional)
-iSplitQuantityArray                           - Array of split quantities (mandatory)
-iSplitUnitArray                               - Array of storage units (mandatory)
-ioDestinationShipment                         - Destination Shipment (optional)
-ioDestinationLoad                             - Destination Load (optional)
-iReason                                       - Compose Reason; Mandatory if
+iSerialArray            - Array of serials (optional)
+iLotArray               - Array of lots (optional)
+iInventoryDateArray     - Array of inventory dates (optional)
+iEffectivityUnitArray   - Array of effectivity units (optional)
+iSplitQuantityArray     - Array of split quantities (mandatory)
+iSplitUnitArray         - Array of storage units (mandatory)
+ioDestinationShipment   - Destination Shipment (optional)
+ioDestinationLoad       - Destination Load (optional)
+iReason                 - Compose Reason; Mandatory if
 destination load is planned by FM.
-iAcceptWarnings                               - Accept warnings; (mandatory)
-Output: ioDestinationShipment                 - Shipment, Split quanity is moved to.
-ioDestinationLoad                             - Load, Split quanity is moved to.
-oExceptionMessage                             - The last message if any message is
+iAcceptWarnings         - Accept warnings; (mandatory)
+Output: ioDestinationShipment   - Shipment, Split quanity is moved to.
+ioDestinationLoad       - Load, Split quanity is moved to.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductVariant
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 676-677
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 679-679
 
 ```baan
 DLL:   tiextpcfapi
-This function is available from     2024.12 (KB3539640  ).
+This function is available from 2024.12 (KB3539640).
 Syntax: long ProductVariant.GenerateProductStructureWithoutProjectV2(
 domain  tccpva           iProductVariant,
 domain  tcdate           iReferenceDate,
@@ -25,21 +25,21 @@ ProductVariant.StartConfigurator or via the Product Configurator
 Pre:    Db.retry point must be set
 Product Variant must be configured.
 Post:   Transaction must be aborted or committed.
-Input:  iProductVariant                       - Product Variant (Mandatory). Cannot be
+Input:  iProductVariant         - Product Variant (Mandatory). Cannot be
 for an Assembly Item
-iReferenceDate                                - Reference Date (Optional). If empty,
+iReferenceDate          - Reference Date (Optional). If empty,
 the current date is used.
-iRegenerate                                   - If yes, an existing structure for the
+iRegenerate             - If yes, an existing structure for the
 Product Variant will be regenerated.
-Output: oItem                                 - The created custom Item.
-oExceptionMessage                             - The last message if any message is
+Output: oItem                   - The created custom Item.
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Structure generation completed.
-<> 0                                          - Otherwise.
+Return: 0                       - Structure generation completed.
+<> 0                    - Otherwise.
 ```

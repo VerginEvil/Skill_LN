@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for FactoryTrackQuery
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2011-2014
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2030-2033
 
 ```baan
 Syntax: long brext.qry0001.custom.query(
@@ -22,7 +22,7 @@ used to create custom elements in the current query output row.
 Example implementation:
 IWMStdQuery 100001 lists the warehouses which have inventory on
 hand for some item, ordered by descending quantity.
-IWMStdQuery 100002 returns the buy                      -from business partner for
+IWMStdQuery 100002 returns the buy-from business partner for
 some lot code.
 #pragma used dll obrextqryapi
 #include <bic_dam>
@@ -146,12 +146,12 @@ return(0)
 Pre:    NA
 Post:   NA
 Input:
-i.query.bde                                   - The called query bde
-i.query.number                                - The called query number
-i.query.input                                 - The query input
+i.query.bde             - The called query bde
+i.query.number          - The called query number
+i.query.input           - The query input
 Output:
-o.error.message                               - The error message in case of an error
+o.error.message         - The error message in case of an error
 Return:
-0                                             - Success
-<> 0                                          - Error
+0                       - Success
+<> 0                    - Error
 ```

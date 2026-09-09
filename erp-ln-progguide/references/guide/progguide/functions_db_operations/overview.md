@@ -9,9 +9,9 @@ In Infor Enterprise Server, certain 4GL functions have Data Access Layer (DAL) e
 | 4GL function | DAL function |
 | on.main.table() | with.object.set.do() |
 | on.old.occ() | with.old.object.values.do() |
-| set.input.error() |  dal.set.error.message() return(DALHOOKERROR)  |
-| skip.io() |  dal.set.error.message() return(DALHOOKERROR)  |
-| abort.io() |  dal.set.error.message() return(DALHOOKERROR)  |
+| set.input.error() | dal.set.error.message() return(DALHOOKERROR) |
+| skip.io() | dal.set.error.message() return(DALHOOKERROR) |
+| abort.io() | dal.set.error.message() return(DALHOOKERROR) |
 | db.update() | dal.update() |
 | db.delete() | dal.destroy() |
 | db.insert() | dal.new() |
@@ -44,12 +44,17 @@ In Infor Enterprise Server, there are two main categories of errors: operating s
 Normally, a program can detect only four of the database errors: EDUPL, EENDFILE, ENOREC, and EROWCHANGED. When other errors occur, an error message is displayed on screen. However, you can call the function [db.set.error.bypass.on()](db.set.error.bypass.on.md) to set the predefined variable *error.bypass* to suppress error messages and enable a program to detect some or all errors instead. This variable can have the following values:
 | | |
 |---|---|
-| false |  This is the default value. The program can detect the following database errors: EDUPL, EENDFILE, ENOREC, and EROWCHANGED. Some fatal errors cause a direct abort of the application. When this happens, the message 'Cannot continue' is displayed. If you attempt to lock a record or table that is already locked by another process, the program returns to the retry point automatically a number of times (by default, 10 times) before stopping the session and displaying the error message.  |
-| true | The program can detect all errors, except those listed below. If the error can be detected no database error messages are displayed on screen, and the application must handle the error.  |
+| EDEADLOCKVICTIM, EABORT | If a db.retry.point() is set, the application returns automatically to it for a number of times. If this number is exceeded or no db.retry.point() is set, the application is aborted. Other applications in the same bshell are unaffected. |
+| EDBCONNECTIONLOST | All applications in the bshell are terminated, followed by termination of the bshell itself. |
+| EMEMORY | The application is aborted. Other applications in the same bshell are unaffected. |
 A program can detect database errors in the following ways:
-- Test return values. For example: `if db.insert( tpctst999 ) = EENDFILE then ...`
-- Use [db.error()](db.error.md). For example: `db.insert( tpctst999 ) if db.error( tpctst999 ) = EENDFILE then ...`
-- Use the predefined variable *e*. For example: `db.insert( tpctst999 ) if e = EENDFILE then ...`
+
+- Test return values. For example: `if db.insert( tpctst999 ) = EENDFILE then...`
+
+- Use [db.error()](db.error.md). For example: `db.insert( tpctst999 ) if db.error( tpctst999 ) = EENDFILE then...`
+
+- Use the predefined variable *e*. For example: `db.insert( tpctst999 ) if e = EENDFILE then...`
+
 - The ENDSELECT and SELECTEMPTY statements automatically detect the EENDFILE and ENOREC errors respectively.
 
 ## Related topics

@@ -28,4 +28,5 @@
 
 ## Related topics
 - [Synchronized sessions overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)

@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ServiceContractConfigurationLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1398-1400
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1410-1412
 
 ```baan
 DLL:   tsextctmapi
-This function is available from     2025.10 (KB3627884  ).
+This function is available from 2025.10 (KB3627884).
 Syntax: long ServiceContractConfigurationLine.GetContractCoverageDetails(
 domain  tsbsc.clst       iInstallationGroup,
 domain  tcitem           iItem,
@@ -30,7 +30,7 @@ Usage:        Expl.:  This function will check if the specified Configuration is
 covered by any Service Contract. The details of the most
 specific contract that is found are then returned.
 Searching for a contract will be done in the following order:
--                       If a Serial Number is provided:
+- If a Serial Number is provided:
 1. Search for a Contract for the Serialized Item.
 2. Search for a Contract for the Parent Serialized Items
 in the Physical Breakdown Tree, if any.
@@ -44,15 +44,15 @@ Serialized Item, if any.
 6. Search for a Contract for just the Item codes of the
 Parent Serialized Items in the Physical Breakdown Tree,
 if any.
--                       If no Serial Number is provided, but an Installation Group is:
+- If no Serial Number is provided, but an Installation Group is:
 1. Search for a Contract for the given Installation Group
 and the Item code, if any.
 2. Search for a Contract for the given Installation Group.
 3. Search for a Contract for just the Item code.
--                       If no Serial Number or Installation Group are provided:
+- If no Serial Number or Installation Group are provided:
 1. Search for a Contract for just the Item code.
 Note: In this case, a Business Partner is necessary.
--                       If not enough information is provided:
+- If not enough information is provided:
 1. No search will be done.
 Pre:    Installation Group, Item or Serial must be provided.
 If only Item is provided, a Business Partner must be provided as
@@ -62,11 +62,11 @@ enabled for that Serialized Item.
 Call ProcessingOptionSet.Create() to obtain
 iProcessingOptionSet.
 Post:   Delete the option set by calling ProcessingOptionSet.Delete().
-Input:  iInstallationGroup                    - Installation group to check coverage
+Input:  iInstallationGroup      - Installation group to check coverage
 for.
-iItem                                         - Item to check coverage for.
-iSerialNumber                                 - Configuration to check coverage for.
-iSoldToBusinessPartner                        - Search for contracts for this business
+iItem                   - Item to check coverage for.
+iSerialNumber           - Configuration to check coverage for.
+iSoldToBusinessPartner  - Search for contracts for this business
 partner only when the given
 configuration only consists of an Item
 code, or when the Constracts parameter
@@ -76,11 +76,11 @@ Groups in Service Parameters.
 Note:   iInstallationGroup, iItem, or iSerialNumber is Mandatory.
 If only an item is provided, then iSoldToBusinessPartner
 is Mandatory as well.
-iCoverageTime                                 - The date at which the Contract (change)
+iCoverageTime           - The date at which the Contract (change)
 must be (or have been) active.
 Mandatory.
 iProcessingOptionSet
--                                               Processing Option Set: a processing
+- Processing Option Set: a processing
 option set number referring to a
 processing option set containing at
 least one valid option. Mandatory.
@@ -118,10 +118,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No error; however, error messages can have been set.
-<> 0                          - An error occurred
+Return: 0       - No error; however, error messages can have been set.
+<> 0    - An error occurred
 ```
-
-## Public Interfaces for ServiceContractInstallment
-
-The following functions are available: ServiceContractInstallment.Cancel ServiceContractInstallment.SwitchStatus ServiceContractInstallment.Transfer

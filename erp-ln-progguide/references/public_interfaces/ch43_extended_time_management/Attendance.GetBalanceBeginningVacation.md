@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Attendance
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1858-1859
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1878-1879
 
 ```baan
 DLL:   bpextxtmapi
-This function is available from     2022.11 (KB2268271  ).
+This function is available from 2022.11 (KB2268271).
 Syntax: long Attendance.GetBalanceBeginningVacation(
 ref     domain  bpxtm.days       oBalanceBeginningVacationDays,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
@@ -21,15 +21,15 @@ Post:
 Input:
 Output:
 oBalanceBeginningVacationDays
--                                               Number of balance vacation beginning
+- Number of balance vacation beginning
 days
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Data read
+Return: 0                       - Data read
 ```

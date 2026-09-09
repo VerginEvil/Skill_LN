@@ -1,7 +1,7 @@
 # do.parent.selection()
 
 ## Syntax:
-`function void do.parent.selection( long function_name, [ ... ] )`
+`function void do.parent.selection( <function_name>, [... ] )`
 
 ## Description
 This function can be used to process records selected in a parent session. For example: in a print session only print the records that are selected in the parent.
@@ -10,7 +10,7 @@ If updating the records is needed, then this should be done in the function "fun
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `function_name` |  The name of the function that must be executed for each marked occurrence. The function must be of type long.  |
+| `<function_name>` |  | The name of the function that must be executed for each marked occurrence. The function must be of type long. |
 | `[` | `... ]` |  Use these optional arguments to pass one or more arguments to the specified function. Use commas (,) to separate the arguments.  |
 
 ## Context
@@ -54,5 +54,7 @@ on.choice:
 
 ## Related topics
 - [Record selection Overview](overview.md)
+
 - [Record selection Synopsis](synopsis.md)
+
 - [Improved Record selection Cookbook](cookbook.md)

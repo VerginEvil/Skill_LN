@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Contact
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 115-116
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 116-117
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2023.02 (KB2277108  ).
+This function is available from 2023.02 (KB2277108).
 Syntax: long Contact.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Usage:        Expl:   This function starts session Contacts - tccom4540m000 (Ove
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -42,22 +42,18 @@ the session index will match the value of this variable.
 iQueryExtend
 Optional
 A specific query to be used when zooming to this session.
-iContact                                      - Contact               Not Mandatory
-iSearchKey                                    - Search Key            Not Mandatory
+iContact                - Contact               Not Mandatory
+iSearchKey              - Search Key            Not Mandatory
 Output: for iStartMode MODAL:
-oContact                                      - Selected Contact
-oExceptionMessage                             - The last message if any message is
+oContact        - Selected Contact
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Otherwise.
+Return: 0                       - Session started
+<> 0                    - Otherwise.
 ```
-
-## Public Interfaces for BusinessPartner
-
-The following functions are available: BusinessPartner.BankAccountByPayToSubmit BusinessPartner.CheckOverdueInvoices BusinessPartner.GetBuyFromData BusinessPartner.GetCreditLimitAndBalances BusinessPartner.GetGeneralData BusinessPartner.GetInvoiceFromData BusinessPartner.GetInvoiceToData BusinessPartner.GetPayByData BusinessPartner.GetPayToData BusinessPartner.GetShipFromData BusinessPartner.GetShipToData BusinessPartner.GetSoldToData BusinessPartner.StartEasyEntry BusinessPartner.StartMultiMain BusinessPartner.StartOverview

@@ -10,7 +10,7 @@ Use this to insert the result of *string_expr* on a new line, above the current 
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `string_expr` |  |
+| `string` | `string_expr` |    |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.

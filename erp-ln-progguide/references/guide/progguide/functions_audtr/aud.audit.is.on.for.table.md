@@ -16,7 +16,7 @@ This function checks whether audit is on for a specific database table.
 | | |
 |---|---|
 | True | Audit is on for the specified table. |
-| False | Audit is not on for the specified table, or an error occurred.  |
+| False | Audit is not on for the specified table, or an error occurred. |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.
@@ -37,4 +37,5 @@ retval = aud.audit.is.on.for.table("tdsls400", 200)
 
 ## Related topics
 - [Audit management overview](audit_management_overview.md)
+
 - [Audit management synopsis](audit_management_synopsis.md)

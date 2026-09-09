@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for FreightShipmentBuilding
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2024-2026
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2043-2044
 
 ```baan
 Syntax: long fmext.dll0001.custom.shipment.building.constraints(
@@ -47,17 +47,11 @@ bind the table fields to local variables to prevent disturbing
 the standard flow.
 Pre:    N.a.
 Post:   N.a.
-Input:  i.found.shipment                      - Shipment that is found during shipment
+Input:  i.found.shipment        - Shipment that is found during shipment
 building
-i.freight.order                               - Freight Order
-i.freight.order.line                          - Freight Order Line
-Output: o.use.found.shipment                  - Indicator if the found shipment should
+i.freight.order         - Freight Order
+i.freight.order.line    - Freight Order Line
+Output: o.use.found.shipment    - Indicator if the found shipment should
 be used (true/false)
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for
-
-## GenerateFieldChangeOrderLine
-
-The following process extension(s) is/are available: GenerateFieldChangeOrderLine.SkipSerializedItem

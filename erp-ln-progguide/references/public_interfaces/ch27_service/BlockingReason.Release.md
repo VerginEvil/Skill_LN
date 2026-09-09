@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BlockingReason
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1341-1342
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1353-1354
 
 ```baan
 DLL:   tsextmdmapi
-This function is available from     2026.09 (KB3689761  ).
+This function is available from 2026.09 (KB3689761).
 Syntax: long BlockingReason.Release(
 domain  tsmdm.orig       iOrigin,
 domain  tcorno           iOrder,
@@ -24,9 +24,9 @@ Input:
 iOrigin
 Origin / Order Type
 Supported Origins are:
-tsmdm.orig.call                               - Call
-tsmdm.orig.msc                                - Maintenance Sales Order
-tsmdm.orig.orno                               - Service Order or Rental Order
+tsmdm.orig.call - Call
+tsmdm.orig.msc  - Maintenance Sales Order
+tsmdm.orig.orno - Service Order or Rental Order
 Mandatory.
 iOrder
 Order
@@ -50,7 +50,3 @@ functions in Exception to get all relevant information.
 Return: 0       No errors occurred.
 <> 0    Error(s) occurred.
 ```
-
-## Public Interfaces for InstallationGroup
-
-The following functions are available: InstallationGroup.ViewStructure

@@ -38,4 +38,5 @@ db.first(ttcmcs001)
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

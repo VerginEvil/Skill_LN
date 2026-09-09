@@ -30,4 +30,5 @@ For tables which are configured for selection of all languages of its multi lang
 
 ## Related topics
 - [Dynamic SQL queries overview](overview.md)
+
 - [Dynamic SQL queries synopsis](synopsis.md)

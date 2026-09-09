@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for EngineeringBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 261-262
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 263-264
 
 ```baan
 DLL:   tiextedmapi
-This function is available from     2025.10 (KB3554678  ).
+This function is available from 2025.10 (KB3554678).
 Syntax: long EngineeringBillOfMaterial.StartOverview(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -30,14 +30,14 @@ material of the engineering item revision.
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a Zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter            Not used
-iSessionIndex           Specifies the table                      -index that is to be
+iSessionIndex           Specifies the table-index that is to be
 used.
 Standard supported values:
 1: Sort by Engineering Item, Revision,

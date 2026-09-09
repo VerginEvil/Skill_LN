@@ -9,7 +9,7 @@ This function returns the type of the specified argument.
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `arg_no` |  The sequence number of an argument supplied to the currently executing function (i.e. the function in which *get.arg.type()* is called). The allowed range for this sequence number is 1 ... *get.argc()*.  |
+| `long` | `arg_no` |  The sequence number of an argument supplied to the currently executing function (i.e. the function in which *get.arg.type()* is called). The allowed range for this sequence number is 1... *get.argc()*.  |
 
 ## Return values
 The function can return any of the following values:
@@ -18,8 +18,8 @@ The function can return any of the following values:
 | VAR.TYPE.LONG | The specified argument is of type long or boolean. |
 | VAR.TYPE.DOUBLE | The specified argument is of type double. |
 | VAR.TYPE.STRING | The specified argument is of type string. |
-| VAR.TYPE.MULTIBYTE | The specified argument is of type multibyte string.  |
-| VAR.TYPE.UNKNOWN | *arg_no* is out of range, or the specified argument is not of one of the allowed types.  |
+| VAR.TYPE.MULTIBYTE | The specified argument is of type multibyte string. |
+| VAR.TYPE.UNKNOWN | *arg_no* is out of range, or the specified argument is not of one of the allowed types. |
 For historic reasons, these values are defined in terms of other named constants. The definitions are available when the tiv level is at least 2010 or when USE_VAR_TYPE_DEFINES is defined to a non-zero value.
 ```
 
@@ -37,5 +37,7 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [Functions with variable number of arguments: overview](overview.md)
+
 - [Functions with variable number of arguments: synopsis](synopsis.md)
+
 - [Functions with variable number of arguments: sample program](example.md)

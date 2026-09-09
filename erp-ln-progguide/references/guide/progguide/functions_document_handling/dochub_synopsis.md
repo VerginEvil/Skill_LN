@@ -20,4 +20,5 @@
 
 ## Related topics
 - [DMS Document handling API](overview.md)
+
 - [Document Management via Document Hub examples](dochub_examples.md)

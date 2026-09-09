@@ -26,7 +26,7 @@ Timestamps are maintained in UTC, because the meaning of a timestamp differs fro
 The concept of UTC (Universal Coordinated Time) is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 The minimum timestamp value in UTC is "1970-01-01 00:00:00". This corresponds to integer value 0 of the underlying integer representation of the UTC timestamp value.
 The maximum timestamp value in UTC is "2038-01-19 03:14:07". This corresponds to integer value 2^31 - 1 (i.e. the maximum signed 32-bit value) of the underlying integer representation of the UTC timestamp value.
-In Utc40 mode and in Utc64 mode (described below), the maximum timestamp value in UTC is "9999-12-31 00:00:00".
+In [Utc40 mode](#Utc40) and in [Utc64 mode](#Utc64) (described below), the maximum timestamp value in UTC is "9999-12-31 00:00:00".
 For the minimum and maximum timestamp value in the local timezone, the local timezone displacement and daylight savings time must be taken into account.
 
 ## interval days
@@ -60,10 +60,10 @@ The following table shows which Infor Enterprise Server database type correspond
 | raw | raw |
 
 ## BitCountOfUtc
-In this manual, the term BitCountOfUtc is used to refer to the amount of significant bits in a UTC timestamp value.
+In this manual, the term BitCountOfUtc is used to refer to the number of significant bits in a UTC timestamp value.
 Using the term BitCountOfUtc, we can abstract from its actual value.
 This way, we can say that the supported value range of UTC timestamp values is restricted to the non-negative part of the signed *BitCountOfUtc*-bit value range: [0 … 2^(BitCountOfUtc-1) - 1].
-The relation between the term BitCountOfUtc and the term ByteCountOfUtc defined below is as follows.
+The relation between the term BitCountOfUtc and the term [ByteCountOfUtc](#ByteCountOfUtc) defined below is as follows.
 ```
 
          BitCountOfUtc = 8 * ByteCountOfUtc
@@ -71,9 +71,9 @@ The relation between the term BitCountOfUtc and the term ByteCountOfUtc defined 
 The term BitCountOfUtc is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 
 ## ByteCountOfUtc
-In this manual, the term ByteCountOfUtc is used to refer to the amount of bytes used to exchange a UTC timestamp value between any client and a database server.
+In this manual, the term ByteCountOfUtc is used to refer to the number of bytes used to exchange a UTC timestamp value between any client and a database server.
 Using the term ByteCountOfUtc, we can abstract from its actual value.
-The relation between the term ByteCountOfUtc and the term BitCountOfUtc defined above is as follows.
+The relation between the term ByteCountOfUtc and the term [BitCountOfUtc](#BitCountOfUtc) defined above is as follows.
 ```
 
          BitCountOfUtc = 8 * ByteCountOfUtc
@@ -82,20 +82,20 @@ The actual value of ByteCountOfUtc can be configured by setting the resource "ut
 The term ByteCountOfUtc is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 
 ## Utc32 mode
-In Utc32 mode, the value of ByteCountOfUtc is set to 4, so BitCountOfUtc is 32.
+In Utc32 mode, the value of [ByteCountOfUtc](#ByteCountOfUtc) is set to 4, so [BitCountOfUtc](#BitCountOfUtc) is 32.
 The Utc32 mode is the default mode. It is active when the resource "utc40" is not set or when it is set to value 0.
-In Utc32 mode, when a UTC timestamp value is exchanged between any client and a database server, then an amount of 4 bytes is used.
+In Utc32 mode, when a UTC timestamp value is exchanged between any client and a database server, then a sequence of 4 bytes is used.
 The term Utc32 mode is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 
 ## Utc40 mode
-In Utc40 mode, the value of ByteCountOfUtc is set to 5, so BitCountOfUtc is 40.
+In Utc40 mode, the value of [ByteCountOfUtc](#ByteCountOfUtc) is set to 5, so [BitCountOfUtc](#BitCountOfUtc) is 40.
 The Utc40 mode is active when the resource "utc40" is set to any value not equal to 0.
-In Utc40 mode, when a UTC timestamp value is exchanged between any client and a database server, then an amount of 5 bytes is used.
+In Utc40 mode, when a UTC timestamp value is exchanged between any client and a database server, then a sequence of 5 bytes is used.
 The term Utc40 mode is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 
 ## Utc64 mode
-In Utc64 mode, the value of ByteCountOfUtc is set to 8, so BitCountOfUtc is 64.
-In Utc64 mode, when a UTC timestamp value is exchanged between any client and a database server, then an amount of 8 bytes is used.
+In Utc64 mode, the value of [ByteCountOfUtc](#ByteCountOfUtc) is set to 8, so [BitCountOfUtc](#BitCountOfUtc) is 64.
+In Utc64 mode, when a UTC timestamp value is exchanged between any client and a database server, then a sequence of 8 bytes is used.
 The term Utc64 mode is further described in the overview of bshell functions for dates, times and time zones in the Infor ES Programmers Guide.
 Notice that there is no documented way to activate the Utc64 mode. The Utc64 mode only exists for test purposes and is not meant to be used in a normal user environment.
 

@@ -17,4 +17,5 @@ Note  Multi Table functionality is available from [Tools Interface Version (TIV)
 
 ## Related topics
 - [Multi Table Overview](overview.md)
+
 - [Multi Table synopsis](synopsis.md)

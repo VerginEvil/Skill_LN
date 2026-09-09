@@ -12,7 +12,7 @@ Use this function to retrieve data from the Structure Chart Manager after an EVT
 |---|---|---|
 | `ref long` | `event` |  The event containing the MSG.PUSH.BUTTON command.  |
 | `ref long` | `process_id` |  This returns the process ID of the Structure Chart Manager that sent the message.  |
-| `ref string` | `button_id` |  |
+| `ref string` | `button_id` |    |
 | `ref string` | `node_id` |  This returns the ID of the relevant node.  |
 
 ## Context
@@ -21,5 +21,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Structure Chart Manager overview](overview.md)
+
 - [Structure ChartManager synopsis](synopsis.md)
+
 - [Tree structures: example](example.md)

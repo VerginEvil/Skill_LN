@@ -34,4 +34,5 @@ result = str.isuuid("550e8400-ABCD-41d4-a716-446655440000")
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

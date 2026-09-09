@@ -39,6 +39,9 @@ long
 
 ## Related topics
 - [Application Response Time Measurement (ARTM) Overview](artm_overview.md)
+
 - [Application Response Time Measurement (ARTM) Error Codes](artm_error_codes.md)
+
 - [Application Response Time Measurement (ARTM) Debugging](artm_debugging.md)
+
 - [Application Response Time Measurement (ARTM) Examples](artm_examples.md)

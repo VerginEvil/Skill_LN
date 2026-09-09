@@ -10,8 +10,8 @@ For array fields, the element number should be sent as part of the string, betwe
 ## Arguments
 | | | |
 |---|---|---|
-| `boolean` | `try.autocomplete,...` |   |
-| `[ string` | `fieldname(18) ]` |   |
+| `boolean` | `try.autocomplete,...` |    |
+| `[ string` | `fieldname(18) ]` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -27,4 +27,5 @@ init.group:
 
 ## Related topics
 - [Form and form field operations overview](overview.md)
+
 - [Form and form field operations synopsis](synopsis.md)

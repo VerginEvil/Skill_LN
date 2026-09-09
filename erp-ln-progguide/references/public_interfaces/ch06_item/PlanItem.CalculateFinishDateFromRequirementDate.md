@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 213-214
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 214-215
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.10 (KB3514340  ).
+This function is available from 2024.10 (KB3514340).
 Syntax: long PlanItem.CalculateFinishDateFromRequirementDate(
 domain  tcncmp           iCompany,
 domain  cpcom.plnc       iScenario,

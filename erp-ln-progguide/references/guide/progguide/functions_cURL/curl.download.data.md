@@ -13,14 +13,14 @@ Downloads data from the specified url and writes it to the specified data buffer
 | `const string` | `url` |  the url from where the data must be downloaded; this can be an http(s) or an ftp(s) address.  |
 | `ref string` | `data` |  the data buffer to write the downloaded data to  |
 | `ref long` | `data.size` |  the number of bytes downloaded  |
-| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by ` [curl.slist.append()](curl.slist.append.md)` or ` [curl.slist.append_encrypted()](curl.slist.append_encrypted.md)`  |
+| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by [curl.slist.append()](curl.slist.append.md) or [curl.slist.append_encrypted()](curl.slist.append_encrypted.md)  |
 
 ## Return values
 | | |
 |---|---|
 | 0 | Ok |
 | < 0 | Stream IO error |
-| > 0 | A cURL code; use ` [curl.strerror$()](curl.strerror$.md)` to get a descriptive message  |
+| > 0 | A cURL code; use [curl.strerror$()](curl.strerror$.md) to get a descriptive message |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.

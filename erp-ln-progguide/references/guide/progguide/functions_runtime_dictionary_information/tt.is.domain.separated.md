@@ -14,7 +14,7 @@ Returns whether or not a segmented domain should be printed with separators
 | `[ ref string` | `separatorCharacter() ]` |  An optional string (length 1 is sufficient), when passed it will return the separator character that is used, if any.  |
 
 ## Return values
-True when the domain is separated, false otherwise .
+True when the domain is separated, false otherwise.
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types.

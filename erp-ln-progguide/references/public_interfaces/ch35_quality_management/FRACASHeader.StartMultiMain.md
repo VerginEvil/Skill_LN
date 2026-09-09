@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for FRACASHeader
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1769-1770
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1788-1789
 
 ```baan
 DLL:   qmextpqmapi
-This function is available from     2022.08 (KB2226027  ).
+This function is available from 2022.08 (KB2226027).
 Syntax: long FRACASHeader.StartMultiMain(
 long             iStartMode,
 domain  tcmcs.st30       iStartFilter,
@@ -23,10 +23,10 @@ Usage:        Expl:   This function starts the Multi-Main session
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iStartFilter
@@ -38,18 +38,14 @@ Not Used
 iFRACASNumber
 FRACAS Number, Mandatory
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - An error occurred
+Return: 0                       - Session started
+<> 0                    - An error occurred
 ```
-
-## Public Interfaces for TestingCombination
-
-The following functions are available: TestingCombinations.StartOverview

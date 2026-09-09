@@ -10,7 +10,7 @@ This (re)draws the specified chart and updates the display with all new and chan
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `plan_id` |  |
+| `long` | `plan_id` |    |
 
 ## Context
 This function is implemented in the 4GL Engine and can be used in all script types.
@@ -18,5 +18,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [Plan Chart Manager overview](overview.md)
+
 - [Plan Chart Manager synopsis](synopsis.md)
+
 - [Plan Chart Manager: example](example.md)

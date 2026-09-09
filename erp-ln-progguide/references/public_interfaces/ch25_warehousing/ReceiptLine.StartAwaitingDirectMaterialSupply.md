@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ReceiptLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1252-1253
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1262-1263
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2025.06 (KB3566661  ).
+This function is available from 2025.06 (KB3566661).
 Syntax: long ReceiptLine.StartAwaitingDirectMaterialSupply(
 long             iStartMode,
 long             iSessionIndex,
@@ -26,10 +26,10 @@ Material Supply (whinh3512m300, multi occ).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits, the session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iSessionIndex
@@ -50,7 +50,3 @@ oReceipt
 oReceiptLine
 Return: 0 / DALHOOKERROR
 ```
-
-## Public Interfaces for ReceiptLineStockPointDetail
-
-The following functions are available: ReceiptLineStockPointDetails.StartOverview

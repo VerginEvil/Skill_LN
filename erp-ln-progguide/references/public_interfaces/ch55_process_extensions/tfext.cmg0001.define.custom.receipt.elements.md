@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for PaymentReceipt
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2099-2100
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2122-2123
 
 ```baan
 Syntax: long tfext.cmg0001.define.custom.receipt.elements(
@@ -20,7 +20,7 @@ will be ignored.
 Mapping a custom element to a Remittance Related XML Tag, only
 the custom elements starting with "8" can be used.
 The custom elements starting with "9" can only be used for
-mapping to non                      -remittance related XML Tags.
+mapping to non-remittance related XML Tags.
 The custom defined elements can then be used for mapping to
 an XML attribute in session XML Payment/Receipt Layout Lines
 (tfcmg0125m000).
@@ -34,18 +34,18 @@ same.
 Pre:    N.A.
 Post:   N.A.
 Input:  N.A.
-Output: o.number.of.elements                  - Number of additional custom receipt
+Output: o.number.of.elements    - Number of additional custom receipt
 elements
-o.custom.element.codes                        - Array with element codes. The element
+o.custom.element.codes  - Array with element codes. The element
 code must start with a "8" or "9".
 Maximum of 12 characters.
 E.g. "910900000000".
 o.custom.element.descriptions
--                                               Array with descriptions of the
+- Array with descriptions of the
 element codes.
 Maximum of 132 characters.
 o.custom.element.data.types
--                                               Array with data types of the
+- Array with data types of the
 element code.
 Data type should be one of the
 following values:
@@ -54,7 +54,7 @@ tfcmg.xttp.date       (Date)
 tfcmg.xttp.utc        (UTC Date)
 tfcmg.xttp.decimal    (Decimal Number)
 tfcmg.xttp.bool       (Boolean)
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in defining
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in defining
 the custom elements.
 ```

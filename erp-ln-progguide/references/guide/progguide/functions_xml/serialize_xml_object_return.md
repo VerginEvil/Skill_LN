@@ -11,8 +11,8 @@ Use [xmlPrettyString$](serialize_xml_object_return_pretty.md) instead to seriali
 ## Arguments
 | | | |
 |---|---|---|
-| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See fromNode and toNode.  |
-| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See fromNode and toNode.  |
+| `long` | `fromNode` |  Argument *fromNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
+| `[ long` | `toNode ]` |  Optional argument *toNode* is a reference to an XML node. See [fromNode and toNode](api.md#fromnode_tonode).  |
 
 ## Return values
 A temporary single byte string with the resulting UTF-8 encoded unformatted XML document. An empty string is returned if there is not enough temporary memory available for the result, or if the serialization fails.
@@ -22,4 +22,5 @@ This function is implemented in the porting set and can be used in all script ty
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

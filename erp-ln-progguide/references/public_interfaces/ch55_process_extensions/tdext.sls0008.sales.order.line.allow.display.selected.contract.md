@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for SalesOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2234-2235
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2257-2258
 
 ```baan
 Syntax: long tdext.sls0008.sales.order.line.allow.display.selected.contract(
@@ -25,24 +25,24 @@ Using this process extension, the 'display selected contract' variable
 from standard logic can be changed.
 The 'display selected contract' from extension is only retrieved
 and used if:
--                       Process Extension SalesOrderLine.AllowDisplaySelectedContract
+- Process Extension SalesOrderLine.AllowDisplaySelectedContract
 (tdsls.sol.allow.disp.sel.contr) is implemented;
--                       No errors are found during executing the extension.
+- No errors are found during executing the extension.
 Pre:    Not applicable
 Post:   Not applicable
-Input:  i.contract                            - Sales Contract
-i.contract.line                               - Sales Contract Line
-i.contract.office                             - Sales Contract Office
-i.item                                        - Item
-i.sold.to.bp                                  - Sold-to Business Partner
-i.ship.to.bp                                  - Ship-to Business Partner
-i.display.selected.contract.from.standard.logic                       -
+Input:  i.contract              - Sales Contract
+i.contract.line         - Sales Contract Line
+i.contract.office       - Sales Contract Office
+i.item                  - Item
+i.sold.to.bp            - Sold-to Business Partner
+i.ship.to.bp            - Ship-to Business Partner
+i.display.selected.contract.from.standard.logic -
 As defaulted under the standard logic
-Output: o.display.selected.contract.from.extension                    -
+Output: o.display.selected.contract.from.extension      -
 The 'display selected contract' (true/false) determined
 by the extension
-Return: 0                                     - Success
-DALHOOKERROR                                  - When an error occurs in the determination
+Return: 0                       - Success
+DALHOOKERROR            - When an error occurs in the determination
 of the 'display selected contract' from
 extension
 ```

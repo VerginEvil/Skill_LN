@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PlanItem
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 221-222
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 223-223
 
 ```baan
 DLL:   cpextrpdapi
-This function is available from     2024.10 (KB3501609  ).
+This function is available from 2024.10 (KB3501609).
 Syntax: long PlanItem.StartCopyPlanItemsToPlanningClusters(
 long             iStartMode,
 domain  cpitem           iSourceFromPlanItem,
@@ -24,10 +24,10 @@ Copy Plan Items to Planning Clusters (cprpd1210m000).
 Input:  iStartMode
 Specifies the start mode for the session.
 Possible values are:
-MODAL                               -         The parent session is blocked until the
+MODAL -         The parent session is blocked until the
 child session exits. The session will be
 started as a zoom session.
-MODELESS                               -      Parent and child are parallel
+MODELESS -      Parent and child are parallel
 sessions that can be manipulated
 simultaneously.
 iSourceFromPlanItem
@@ -62,7 +62,3 @@ information.
 Return: 0                       Session started.
 <> 0                    Otherwise.
 ```
-
-## Public Interfaces for ItemSerial
-
-The following functions are available: ItemSerial.CreateOrUpdate ItemSerial.SetStatus

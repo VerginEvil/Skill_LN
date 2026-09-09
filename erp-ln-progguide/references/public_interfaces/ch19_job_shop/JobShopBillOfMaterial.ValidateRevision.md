@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for JobShopBillOfMaterial
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 652-653
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 655-656
 
 ```baan
 DLL:   tiextbomapi
-This function is available from     2020.12 (KB2163805  ).
+This function is available from 2020.12 (KB2163805).
 Syntax: long JobShopBillOfMaterial.ValidateRevision(
 domain  tcsite           iSite,
 domain  tcitem           iProduct,
@@ -27,14 +27,14 @@ iRevision               Revision (mandatory).
 iCheckUseUp             If yes, then the function checks
 if the definitions of the Use Up Items
 are:
--                                               valid (last allowed order date vs
+- valid (last allowed order date vs
 expiry date of the BOM) and
--                                               useful (depending on the Inventory
+- useful (depending on the Inventory
 level of the Use Up Item).
 If not valid or not useful, then an error is
 returned and if iRemoveUseUp = Yes, then
 the Use Up item will be removed.
-iThresholdQuantity      If the on                      -hand Inventory quantity of a
+iThresholdQuantity      If the on-hand Inventory quantity of a
 Use Up item is below iThresholdQuantity,
 (or equal in case iThresholdQuantity = 0.0),
 then the Use Up item is considered
@@ -52,7 +52,3 @@ checks.
 <> 0                    JS BOM Revision did not pass all the
 validation checks.
 ```
-
-## Public Interfaces for Product
-
-The following functions are available: Product.StartMultiLevelProductionStructure

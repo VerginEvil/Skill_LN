@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PackageDefinition
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1028-1030
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1038-1039
 
 ```baan
 DLL:   whextwmdapi
-This function is available from     2020.08 (KB2139414  ).
+This function is available from 2020.08 (KB2139414).
 Syntax: long PackageDefinition.DetermineMultipleOfQuantity(
 domain  whwmd.pkdf       iPackageDefinition,
 domain  tcitem           iItem,
@@ -94,13 +94,13 @@ packages only or full layers only setup for the package
 definition, the oMultipleOfQuantity remains zero.
 Pre:    N.a.
 Post:   N.a.
-Input:  iPackageDefinition                    - Package Definition (Mandatory)
+Input:  iPackageDefinition      - Package Definition (Mandatory)
 Package Definition Type should be
 Variable, otherwise an error is given
-iItem                                         - Item (Mandatory)
-Output: oMultipleOfQuantityFound               - Multiple of quantity is found, for
+iItem                   - Item (Mandatory)
+Output: oMultipleOfQuantityFound - Multiple of quantity is found, for
 the given iPackageDefinition and iItem
-oMultipleOfQuantity                           - Multiple of quantity in inventory
+oMultipleOfQuantity     - Multiple of quantity in inventory
 unit. Will only be filled when a
 multiple of quantity can be
 determined, otherwise zero.

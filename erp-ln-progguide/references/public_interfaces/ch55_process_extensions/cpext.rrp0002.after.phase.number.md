@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2075-2076
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2096-2097
 
 ```baan
 Syntax: long cpext.rrp0002.after.phase.number(
@@ -30,9 +30,9 @@ return(0)
 }
 Pre:    NA
 Post:   NA
-Input:  i.company                     - Company
-i.scenario                            - Scenario
-i.phase.number                        - Phase Number
+Input:  i.company       - Company
+i.scenario      - Scenario
+i.phase.number  - Phase Number
 Output: N.A
-Return: 0                             - Success
+Return: 0               - Success
 ```

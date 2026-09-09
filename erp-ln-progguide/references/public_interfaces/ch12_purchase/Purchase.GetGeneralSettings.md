@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Purchase
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 399-401
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 401-403
 
 ```baan
 DLL:   tdextpurapi
-This function is available from     2020.03 (KB2111387  ).
+This function is available from 2020.03 (KB2111387).
 Syntax: long Purchase.GetGeneralSettings(
 domain  tcncmp           iLogisticCompany,
 domain  tcsite           iSite,
@@ -36,45 +36,45 @@ Example: when purchase list group and configutaion date for PCS
 are needed, the function must be called as follows:
 if Purchase.GetGeneralSettings(
 |* Fixed arguments:
-company,                                                --> input
-site,                                                   --> input
-purchase office,                                        --> input
-force.read,                                             --> input
-context is master data                                  --> input
-exception.message,                                      --> output
-exception.id,                                           --> output
+company,                  --> input
+site,                     --> input
+purchase office,          --> input
+force.read,               --> input
+context is master data    --> input
+exception.message,        --> output
+exception.id,             --> output
 |* Variable arguments:
-"clgr",                                                 --> input
-list.group.purchase,                                    --> output
-"codt",                                                 --> input
-configuration.date.pcs) <> 0 then                               --> output
+"clgr",                   --> input
+list.group.purchase,      --> output
+"codt",                   --> input
+configuration.date.pcs) <> 0 then --> output
 |* Error, do something
 Exception.Delete(exception.id)
 endif
 Pre:    None
 Post:   None
 Input:
-iLogisticCompany                              - Logistic Company: Mandatory
-iSite                                         - Site: Not Mandatory
-iPurchaseOffice                               - Purchase Office: Not Mandatory
-iForceRead                                    - Option to force new query in stead of
+iLogisticCompany        - Logistic Company: Mandatory
+iSite                   - Site: Not Mandatory
+iPurchaseOffice         - Purchase Office: Not Mandatory
+iForceRead              - Option to force new query in stead of
 using cached information
-iContextIsMasterData                          - True/False:
+iContextIsMasterData    - True/False:
 Indicates if call is done to retrieve
 data for master data or transactional
 data.
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is.
 given, these are present in the
 oExceptionID
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - An error occurred
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - An error occurred
 ```

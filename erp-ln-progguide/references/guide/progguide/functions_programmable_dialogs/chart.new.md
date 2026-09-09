@@ -25,11 +25,19 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [chart.write()](chart.write.md)
+
 - [chart.delete()](chart.delete.md)
+
 - [chart.set.title()](chart.set.title.md)
+
 - [chart.set.axis.type()](chart.set.axis.type.md)
+
 - [chart.set.axis.title()](chart.set.axis.title.md)
+
 - [chart.add.series()](chart.add.series.md)
+
 - [chart.add.data.point()](chart.add.data.point.md)
+
 - [Programmable dialogs synopsis](synopsis.md)
+
 - [Example chart](examplechart.md)

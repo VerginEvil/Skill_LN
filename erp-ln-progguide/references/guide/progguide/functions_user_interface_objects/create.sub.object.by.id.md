@@ -14,8 +14,8 @@ This creates a new subobject with a specified ID. The subobject is drawn on the 
 | `long` | `sub_object_id` |  The ID for the new object.  |
 | `long` | `type` |  The type of subobject to be created. For example, *DsCgpArc* or *DsCgpLine*.  |
 | `long` | `attribute` |  Use these arguments to set the subobject's attributes. For each attribute you specify, you must include the attribute type (for example, DsNgcBackground or DsNgcForeground), and the attribute value. For attributes of type void data or long array, you must also include the size of the data or array.  |
-| `void` | `value` |  |
-| `[ long` | `size ]` |  |
+| `void` | `value` |    |
+| `[ long` | `size ]` |    |
 
 ## Return values
 The ID for the new subobject (as specified by the *sub_object_id* argument) or 0 if an error occurs. You can subsequently use the returned ID as the *sub_object_id* argument in other functions.
@@ -26,5 +26,7 @@ This function is marked as 'untrusted' and can therefore not be used in custom o
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

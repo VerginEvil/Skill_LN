@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2022.09 (KB2256489  ).
+This function is available from 2022.09 (KB2256489).
 Syntax: long ProductionOrder.MoveRejectedMaterialToQuarantine(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,
@@ -27,8 +27,8 @@ ref             long             oExceptionID )
 Usage:        Expl:   Use this Public Interface to move rejected Material to
 Quarantine for a given Production Order and Material Line.
 Transaction management is handled by this Public Interface.
-Pre:                  -
-Post:                 -
+Pre:    -
+Post:   -
 Input:  iSite                   Site (mandatory when the Site concept
 is active).
 iProductionOrder        Production Order (mandatory, must be

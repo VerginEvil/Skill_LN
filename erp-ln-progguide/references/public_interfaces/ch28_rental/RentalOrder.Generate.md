@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1548-1552
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1563-1567
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.05 (KB2331668  ).
+This function is available from 2024.05 (KB2331668).
 Syntax: long RentalOrder.Generate(
 long             iProcessingOptionSet,
 ref     domain  tcorno           oRentalOrder,
@@ -16,9 +16,9 @@ ref     domain  tsmdm.acln       oAgreementLine,
 ref     domain  tcmcs.s999m      oExceptionMessage mb,
 ref             long             oExceptionID )
 Usage:        Expl:   Use this function to:
--                       Generate a new Rental Order.
--                       Add a Rental Agreement Line to an existing Order.
--                       Process a rental request or rental request line.
+- Generate a new Rental Order.
+- Add a Rental Agreement Line to an existing Order.
+- Process a rental request or rental request line.
 Rental Order can be generated based on the given Equipment,
 Rental Template or a combination of these.
 If a template list is passed, for each of the templates an
@@ -65,7 +65,7 @@ The service type of type Rental to be used on the
 created Rental Order or Agreement.
 RentedToBusinessPartner
 domain  tccom.bpid      empty
-The Rented                              -to Business Partner to be used on the to be
+The Rented-to Business Partner to be used on the to be
 created Rental Order.
 LocationAddress
 domain  tccom.cadr      empty
@@ -117,11 +117,11 @@ The rental period expressed in the period unit.
 RentalPeriodUnit
 domain  tctmun          tctmun.days
 The rental period unit with possible values:
--                                               Hours
--                                               Days
--                                               Weeks
--                                               Months
--                                               Years
+- Hours
+- Days
+- Weeks
+- Months
+- Years
 ExpectedReturnTime
 domain  tcdays          0
 The date the rented out equipment is expected to be
@@ -195,6 +195,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

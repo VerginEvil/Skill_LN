@@ -22,4 +22,5 @@
 
 ## Related topics
 - [Substitute session overview](overview.md)
+
 - [Synchronized sessions synopsis](synopsis.md)

@@ -8,7 +8,7 @@
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2023.04 (KB2274307  ).
+This function is available from 2023.04 (KB2274307).
 Syntax: long ProductionOrder.StartPrintDocuments(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,

@@ -5,21 +5,21 @@ The sequence in which you use the functions is as follows:
 ```
 
 sql.parse()
-	sql.select.bind()
+sql.select.bind()
 	sql.where.bind()
 		sql.exec()
-		sql.fetch()
-		sql.fetch()
+			sql.fetch()
+			sql.fetch()
 		...
-		sql.break()
+	sql.break()
 
-	sql.select.bind()
+sql.select.bind()
 	sql.where.bind()
 		sql.exec()
-		sql.fetch()
-		sql.fetch()
+			sql.fetch()
+			sql.fetch()
 		...
-		sql.break()
+	sql.break()
 sql.close
 ```
 For a general discussion of database handling, and embedded and dynamic SQL, see [Database handling overview](../functions_database_handling/overview.md).

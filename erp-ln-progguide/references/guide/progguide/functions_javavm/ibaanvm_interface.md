@@ -16,8 +16,12 @@ The return value is
 | < -1 | invalid bucket, or internal memory overflow |
 `public void installListener(int p_queueId, IQueueListener p_listener) throws Exception;`
 Installs a listener (at the Java side) on a queue. p_queueID is the ID of a queue which was previously created within Infor Enterprise Server. p_listener is an instance of a custom listener, which implements the IQueueListener interface. An exception is thrown in the following scenarios:
+
 - the specified queue ID is invalid
-- a listener is already installed on this queue  `public void logMessage(String p_message, int p_error);`
+
+- a listener is already installed on this queue
+
+`public void logMessage(String p_message, int p_error);`
 Writes a message to the logfile. p_message is the message to log. If p_error is greater than 0, the message is always written to the logfile. If p_error is 0, the message is only written in debug mode.
 The logfile and debug mode can be toggled through the BW configuration options. The grammar for these options are:
 -- keeplog -logfile <logfilename> [-dbgjvmi]

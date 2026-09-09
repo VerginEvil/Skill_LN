@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ProductionOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 706-706
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 705-706
 
 ```baan
 DLL:   tiextsfcapi
-This function is available from     2024.12 (KB3541196  ).
+This function is available from 2024.12 (KB3541196).
 Syntax: long ProductionOrder.CalculateDeliveryDate(
 domain  tcsite           iSite,
 domain  tcpdno           iProductionOrder,

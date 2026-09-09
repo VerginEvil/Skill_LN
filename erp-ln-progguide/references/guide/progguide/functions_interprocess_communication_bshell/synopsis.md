@@ -50,4 +50,5 @@ long
 
 ## Related topics
 - [Interprocess communication (OS level) overview](../functions_interprocess_communication_os_level/overview.md)
+
 - [Interprocess communication (bshell) overview](overview.md)

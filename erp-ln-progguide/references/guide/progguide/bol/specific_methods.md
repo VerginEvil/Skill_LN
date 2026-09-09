@@ -1,8 +1,13 @@
 # Specific Methods
 The name of the specific method is built as follows:
+
 - execute.<component name>.<method>()
+
 - example: execute.Header.Approve()
-- example without component: execute.Approve()  The system will generate the library. The file can be divided into two parts. The first part is read-only, while in the second part the content of the specific methods must be programmed (see the example below).
+
+- example without component: execute.Approve()
+
+The system will generate the library. The file can be divided into two parts. The first part is read-only, while in the second part the content of the specific methods must be programmed (see the example below).
 
 ## Example Read-only
 ```
@@ -15,7 +20,6 @@ function extern long tlbct.bl790sf00.execute.Header.Approve()
     tlbct.bl790st00.get.Header.orderNumber(g.Header.orderNumber)
 
     RETIFNOK(execute.Header.Approve())
-
 
 RETIFNOK(tlbct.bl790st00.set.Header.lifeCycle(g.Header.lifeCycle))
 
@@ -78,5 +82,7 @@ In the development part, it is possible to report problems. The standard functio
 
 ## Related topics
 - [Filter Hooks](filter_hooks.md)
+
 - [Before and After Method Hooks](before_hooks.md)
+
 - [Protected Layer](st_layer.md)

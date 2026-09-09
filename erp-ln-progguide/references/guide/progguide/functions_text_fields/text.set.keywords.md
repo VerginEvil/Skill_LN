@@ -25,4 +25,5 @@ Note  This function can be used in the when.field.changes section of the multili
 
 ## Related topics
 - [Text fields overview](overview.md)
+
 - [Text fields synopsis](synopsis.md)

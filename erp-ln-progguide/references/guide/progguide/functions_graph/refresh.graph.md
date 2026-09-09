@@ -12,4 +12,5 @@ This function is implemented in the 4GL Engine and can be used in 4GL script typ
 
 ## Related topics
 - [Graph on Form Overview](overview.md)
+
 - [Graph on Form synopsis](synopsis.md)

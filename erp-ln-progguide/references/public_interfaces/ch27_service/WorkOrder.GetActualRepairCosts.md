@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for WorkOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1493-1495
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1508-1509
 
 ```baan
 DLL:   tsextwcsapi
-This function is available from     2021.07 (KB2195953  ).
+This function is available from 2021.07 (KB2195953).
 Syntax: long WorkOrder.GetActualRepairCosts(
 domain  tcorno           iWorkOrder,
 ref             long             oNumberOfHomeCurrencies,
@@ -77,7 +77,7 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - The work order actual repair costs could be determined.
-<> 0                          - Error while determining the work order actual repair
+Return: 0       - The work order actual repair costs could be determined.
+<> 0    - Error while determining the work order actual repair
 costs.
 ```

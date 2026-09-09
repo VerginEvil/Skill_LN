@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Lot
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1103-1105
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1113-1115
 
 ```baan
 DLL:   whextltcapi
-This function is available from     2026.04 (KB3665487  ).
+This function is available from 2026.04 (KB3665487).
 Syntax: long Lot.Delete(
 domain  tcitem           iItem,
 domain  tcclot           iLot,
@@ -46,7 +46,7 @@ Component is not available are ignored.
 Explanation about setting of defaults:
 Minimum Value:  Minimum value of domain is taken as default value.
 Maximum Value:  Maximum value of domain is taken as default value.
-Dates are in ISO 8601 format, e.g. YYYY              -MM-DDTHH:MM:SSZ
+Dates are in ISO 8601 format, e.g. YYYY-MM-DDTHH:MM:SSZ
 NAME                            TYPE                    DEFAULT
 ItemFrom                        domain tcitem           Minimum Value
 ItemTo                          domain tcitem           Maximum Value
@@ -67,14 +67,14 @@ fields (From/To) of the iProcessingOptionSet will be ignored.
 LotReportName/ErrorReportName only needs to filled for customized
 reports, otherwise the default report is automatically used.
 Report name must start with an "r", e.g. "rwhinh423011001"
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - OK
-<> 0                                          - Error.
+Return: 0                       - OK
+<> 0                    - Error.
 ```

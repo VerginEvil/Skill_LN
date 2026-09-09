@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for InboundOrderLine
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1082-1084
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1092-1094
 
 ```baan
 DLL:   whextinhapi
-This function is available from     2020.05 (KB2117931  ).
+This function is available from 2020.05 (KB2117931).
 Syntax: long InboundOrderLine.StartAutomaticInboundProcessing(
 domain  whinh.oorg       iOrderOrigin,
 domain  tcorno           iOrderNumber,
@@ -79,15 +79,15 @@ Pre:    There should be no pending logical transaction before calling
 this function.
 Post:   No need to commit or abort the process, that is handled within
 the function.
-Input:  iOrderOrigin                          - Mandatory
-iOrderNumber                                  - Mandatory
-iOrderLine                                    - Optional
-iOrderSequence                                - Optional
-Output: oExceptionMessage                     - The last message if any message is
+Input:  iOrderOrigin            - Mandatory
+iOrderNumber            - Mandatory
+iOrderLine              - Optional
+iOrderSequence          - Optional
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.

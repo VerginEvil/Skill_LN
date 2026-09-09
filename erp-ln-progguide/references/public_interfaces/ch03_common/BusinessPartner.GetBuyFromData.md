@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BusinessPartner
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 118-119
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 119-120
 
 ```baan
 DLL:   tcextcomapi
-This function is available from     2021.12 (KB2201372  ).
+This function is available from 2021.12 (KB2201372).
 Syntax: long BusinessPartner.GetBuyFromData(
 domain  tcncmp           iLogisticCompany,
 domain  tccom.bpid       iBuyFromBusinessPartner,
@@ -28,39 +28,39 @@ and the field value.
 Example:
 if BusinessPartner.GetBuyFromData(
 |* Fixed arguments:
-575,                                                            --              > input
-"RLX000002",                                                            --      > input
-"",                                                            --               > input
-true,                                                            --             > input
-oExceptionMessage,                                                            --> output
-oExceptionID,                                                            --     > output
+575,                            --> input
+"RLX000002",                    --> input
+"",                             --> input
+true,                           --> input
+oExceptionMessage,              --> output
+oExceptionID,                   --> output
 |* Variable arguments:
-"cadr",                                                            --           > input
-l.tccom120.cadr,                                                            --  > output
-"ccnt",                                                            --           > input
-l.tccom120.ccnt) <> 0 then                                                    --> output
+"cadr",                         --> input
+l.tccom120.cadr,                --> output
+"ccnt",                         --> input
+l.tccom120.ccnt) <> 0 then      --> output
 |* Error, do something
 Exception.Delete(exception.id)
 Pre:    none
 Post:   none
-Input:  iLogisticCompany                      - Logistic Company (mandatory)
-iBuyFromBusinessPartner                       - Buy From Business Partner (mandatory)
-iDepartment                                   - Department
-iForceRead                                    - True/False:
+Input:  iLogisticCompany        - Logistic Company (mandatory)
+iBuyFromBusinessPartner - Buy From Business Partner (mandatory)
+iDepartment             - Department
+iForceRead              - True/False:
 Option to force new query instead of
 using cached information
-...                                           - The field mnemonic of the required
+...                     - The field mnemonic of the required
 field.
 Output:
-oExceptionMessage                             - The last message if any message is
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-...                                           - The value of the required field.
-Return: 0                                     - Data read
-<> 0                                          - An error occurred
+...                     - The value of the required field.
+Return: 0                       - Data read
+<> 0                    - An error occurred
 ```

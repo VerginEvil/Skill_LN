@@ -14,7 +14,7 @@ Tests whether the specified string contains at least one multibyte character. It
 ## Return values
 | | |
 |---|---|
-| true | `string$` contains at least one multibyte character  |
+| true | `string$` contains at least one multibyte character |
 | false | in any other case |
 
 ## Context
@@ -22,4 +22,5 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

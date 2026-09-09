@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for HandlingUnit
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2030-2031
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2049-2050
 
 ```baan
 Syntax: long whext.dll0010.handling.unit.custom.identifier(
@@ -37,7 +37,3 @@ i.location
 Output: o.handling.unit.id
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for HandlingUnitBuilding
-
-The following process extension(s) is/are available: HandlingUnitBuilding.CustomShipmentLine

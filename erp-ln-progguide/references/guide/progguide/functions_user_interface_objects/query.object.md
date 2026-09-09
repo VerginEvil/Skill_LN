@@ -12,11 +12,11 @@ This retrieves information about a specified object, based on specified attribut
 |---|---|---|
 | `long` | `object_id` |  The ID of the object to be queried, as returned by [create.object()](create.object.md) when the object was created.  |
 | `long` | `attribute_in` |  You can use one or more sets of these arguments to specify the input attributes for the query. For each attribute you specify, you must include the attribute type (for example, DsNcolumns), and the attribute value. For attributes of type void data or long array, you must also include the size of the data or array.  |
-| `void` | `value_in` |  |
-| `long` | `size_iin` |  |
+| `void` | `value_in` |    |
+| `long` | `size_iin` |    |
 | `long` | `attribute_in` |  You can use one or more sets of these arguments to specify the output of the query. For each attribute you specify, you must include the attribute type (for example, DsNcontrol). The function returns the current value of the attribute. For attributes of type void data or long array, it also returns the size of the data or array.  |
-| `ref void` | `value_out` |  |
-| `ref long` | `size_out` |  |
+| `ref void` | `value_out` |    |
+| `ref long` | `size_out` |    |
 
 ## Return values
 TRUE success
@@ -122,5 +122,7 @@ query.object( gwin_id, DsNrefSubObject, gp2, DsNprevSubObject, part )
 
 ## Related topics
 - [User interface objects overview](overview.md)
+
 - [User interface objects synopsis](synopsis.md)
+
 - [User interface objects: example](example.md)

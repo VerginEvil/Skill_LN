@@ -9,7 +9,7 @@ This function checks whether the specified language is a bidirectional one. To u
 ## Arguments
 | | | |
 |---|---|---|
-| `string` | `lang` |   |
+| `string` | `lang` |    |
 
 ## Return values
 TRUE current language is bidirectional

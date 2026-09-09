@@ -3,14 +3,16 @@
 ## INTRODUCTION
 JavaScript Object Notation (JSON) is a lightweight, text-based, language-independent data interchange format. It was derived from the ECMAScript Programming Language Standard. JSON defines a small set of formatting rules for the portable representation of structured data.
 JSON is built on two structures:
+
 - A collection of name/value pairs. In JSON this is called an object.
+
 - An ordered list of values. In JSON this is called an array.
 
 ## OBJECT
-An object is an unordered set of name/value pairs. An object begins with { (left brace) and ends with } (right brace). Each name is followed by : (colon) and the name/value pairs are separated by , (comma).
+An object is an unordered set of name/value pairs. An object begins with { (left brace) and ends with } (right brace). Each name is followed by: (colon) and the name/value pairs are separated by, (comma).
 
 ## ARRAY
-An array is an ordered collection of values. An array begins with [ (left bracket) and ends with ] (right bracket). Values are separated by , (comma).
+An array is an ordered collection of values. An array begins with [ (left bracket) and ends with ] (right bracket). Values are separated by, (comma).
 
 ## VALUE
 A value can be a string in double quotes, or a number, or true or false or null, or an object or an array. These structures can be nested.
@@ -26,12 +28,20 @@ Whitespace can be inserted between any pair of tokens.
 
 ## JSON API
 The 3GL JSON API supports reading, writing, creating, manipulating and destroying JSON value instances. These instances can be of one of the following types:
+
 - JSON_TYPE_NULL
+
 - JSON_TYPE_BOOLEAN
+
 - JSON_TYPE_NUMBER
+
 - JSON_TYPE_OBJECT
+
 - JSON_TYPE_ARRAY
-- JSON_TYPE_STRING  The JSON API provides functions to test whether a value is a JSON value and to get the type of the JSON value instance.
+
+- JSON_TYPE_STRING
+
+The JSON API provides functions to test whether a value is a JSON value and to get the type of the JSON value instance.
 
 ## DEALING WITH JSON TYPES
 Most JSON API functions accept a JSON value instance as the first parameter. It depends on the JSON type whether the function can deal with the passed JSON value. E.g. the Json.set() function can only deal with JSON values of type JSON_TYPE_OBJECT and the Json.add() function can only deal with JSON values of type JSON_TYPE_ARRAY.

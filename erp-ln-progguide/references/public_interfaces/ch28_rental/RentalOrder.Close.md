@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for RentalOrder
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1542-1543
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1557-1558
 
 ```baan
 DLL:   tsextsocapi
-This function is available from     2024.05 (KB2331668  ).
+This function is available from 2024.05 (KB2331668).
 Syntax: long RentalOrder.Close(
 domain  tcorno           iRentalOrder fixed,
 domain  tcyesno          iDeleteRentalOrder,
@@ -43,6 +43,6 @@ oExceptionID.
 oExceptionID
 An ID that refers to the exception information. Use the
 functions in Exception to get all relevant information.
-Return: 0                     - No Error
-<> 0                          - Error
+Return: 0       - No Error
+<> 0    - Error
 ```

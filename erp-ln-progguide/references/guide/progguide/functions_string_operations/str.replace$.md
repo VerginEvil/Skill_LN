@@ -19,6 +19,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Preconditions
 Note: The following preconditions no longer apply when `get.tools.tiv()` returns 2210 or higher.
+
 - In case one of the variables passed to `string$`, `oldstr$`, or `newstr$` is declared as a multibyte string, then the variable passed to `result$` must be declared as a multibyte string as well.
 
 ## Example
@@ -57,5 +58,7 @@ temp = str.replace$(source, "the", "")
 
 ## Related topics
 - [str.replace()](str.replace.md)
+
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

@@ -18,7 +18,7 @@ For each child XML_ELEMENT node that has a name equal to *name*, get the data co
 ## Return values
 | | |
 |---|---|
-|  | A temporary multibyte string with the concatenated data for all found nodes.  |
+|  | A temporary multibyte string with the concatenated data for all found nodes. |
 
 ## Context
 This function is implemented in the porting set and can be used in all script types.
@@ -32,4 +32,5 @@ long	xmlAllocDataElement( ref string basedString(), long node, const string name
 
 ## Related topics
 - [XML object overview](overview.md)
+
 - [XML object synopsis](synopsis.md)

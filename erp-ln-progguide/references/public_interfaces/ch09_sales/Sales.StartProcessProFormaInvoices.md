@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for Sales
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 284-286
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 286-288
 
 ```baan
 DLL:   tdextslsapi
-This function is available from     2023.05 (KB2290270  ).
+This function is available from 2023.05 (KB2290270).
 Syntax: long Sales.StartProcessProFormaInvoices(
 long             iStartMode,
 boolean          iIgnoreSelectionFields,
@@ -59,13 +59,13 @@ iFromSalesOffice
 From Sales Office selection field is filled with this
 value. (when iIgnoreSelectionFields is false)
 iFromSoldToBusinessPartner
-From Sold                              -to Business Partner selection field is filled
+From Sold-to Business Partner selection field is filled
 with this value. (when iIgnoreSelectionFields is false)
 iFromShipToBusinessPartner
-From Ship                              -to Business Partner selection field is filled
+From Ship-to Business Partner selection field is filled
 with this value. (when iIgnoreSelectionFields is false)
 iFromInvoiceToBusinessPartner
-From Invoice                              -to Business Partner selection field is
+From Invoice-to Business Partner selection field is
 filled with this value. (when iIgnoreSelectionFields
 is false)
 iFromShipmentReference
@@ -84,30 +84,26 @@ iToSalesOffice
 To Sales Office selection field is filled with this
 value. (when iIgnoreSelectionFields is false)
 iToSoldToBusinessPartner
-To Sold                              -to Business Partner selection field is filled
+To Sold-to Business Partner selection field is filled
 with this value. (when iIgnoreSelectionFields is false)
 iToShipToBusinessPartner
-To Ship                              -to Business Partner selection field is filled
+To Ship-to Business Partner selection field is filled
 with this value. (when iIgnoreSelectionFields is false)
 iToInvoiceToBusinessPartner
-To Invoice                              -to Business Partner selection field is
+To Invoice-to Business Partner selection field is
 filled with this value. (when iIgnoreSelectionFields
 is false)
 iToShipmentReference
 To Shipment Reference selection field is filled with
 this value. (when iIgnoreSelectionFields is false)
-Output: oExceptionMessage                     - The last message if any message is
+Output: oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - Session started
-<> 0                                          - Error.
+Return: 0                       - Session started
+<> 0                    - Error.
 ```
-
-## Public Interfaces for SalesOffice
-
-The following functions are available: SalesOffices.StartOverview

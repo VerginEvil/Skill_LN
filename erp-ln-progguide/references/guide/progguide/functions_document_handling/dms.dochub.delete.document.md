@@ -25,5 +25,7 @@ This function is implemented in the 4GL Tools and can be used in all script type
 
 ## Related topics
 - [DMS Document handling API](overview.md)
+
 - [Document handling via Document Hub synopsis](dochub_synopsis.md)
+
 - [Document Management via Document Hub examples](dochub_examples.md)

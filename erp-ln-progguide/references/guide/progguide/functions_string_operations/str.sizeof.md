@@ -46,4 +46,5 @@ size = str.sizeof(other)
 
 ## Related topics
 - [String operations overview](overview.md)
+
 - [String operations synopsis](synopsis.md)

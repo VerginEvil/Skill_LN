@@ -14,7 +14,7 @@ Uploads binary data to the specified url.
 | `const string` | `data` |  the data to upload  |
 | `long` | `data.size` |  the size of the data to upload, in bytes  |
 | `long` | `response.stream` |  the stream (file or memory stream) to which the response of the upload must be written to; do not forget to rewind the stream before accessing it  |
-| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by ` [curl.slist.append()](curl.slist.append.md)` or ` [curl.slist.append_encrypted()](curl.slist.append_encrypted.md)`. Specify 0 if no headers must be sent.  |
+| `[ long` | `header.list ]` |  optional cURL slist handle containing HTTP headers; this can be created by [curl.slist.append()](curl.slist.append.md) or [curl.slist.append_encrypted()](curl.slist.append_encrypted.md). Specify 0 if no headers must be sent.  |
 | `[ const string` | `method ]` |  optional HTTP method, specify "PUT" or "POST". "POST" is the default method.  |
 
 ## Return values
@@ -22,7 +22,7 @@ Uploads binary data to the specified url.
 |---|---|
 | 0 | Ok |
 | < 0 | Stream IO error |
-| > 0 | A cURL code; use ` [curl.strerror$()](curl.strerror$.md)` to get a descriptive message  |
+| > 0 | A cURL code; use [curl.strerror$()](curl.strerror$.md) to get a descriptive message |
 
 ## Context
 This function is implemented in the 4GL Tools and can be used in all script types. This function is available from [TIV](../tiv/tiv_overview.md) level 1700.

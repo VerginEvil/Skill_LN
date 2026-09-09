@@ -23,8 +23,12 @@ This function is implemented in the 4GL Engine and can be used in all script typ
 
 ## Hooks called
 - [before.open.object.set()](../functions_dal/before.open.object.set.md) if this is the first call to the DAL
-- [before.change.object()](../functions_dal/before.change.object.md)    Note  This function does not lock the record!
+
+- [before.change.object()](../functions_dal/before.change.object.md)
+
+Note  This function does not lock the record!
 
 ## Related topics
 - [Database operations overview](overview.md)
+
 - [Database operations synopsis](synopsis.md)

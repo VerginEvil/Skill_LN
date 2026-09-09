@@ -4,7 +4,7 @@
 >
 > Group: Process Extensions for InventoryCommitments
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2045-2045
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 2064-2064
 
 ```baan
 Syntax: long whext.dll0016.inventory.commitments.skip.generate(
@@ -39,7 +39,3 @@ i.effectivity.unit
 Output: o.generate.inventory.commitment
 Return: 0/DALHOOKERROR
 ```
-
-## Process Extensions for InventorySearchEngine
-
-The following process extension(s) is/are available: InventorySearchEngine.CheckHandlingUnit InventorySearchEngine.CheckStockPoint InventorySearchEngine.OverruleQuantityToAdvise

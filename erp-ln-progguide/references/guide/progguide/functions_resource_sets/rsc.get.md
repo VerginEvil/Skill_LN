@@ -38,4 +38,5 @@ rsc.reload()
 
 ## Related topics
 - [Resource sets overview](overview.md)
+
 - [Resource sets synopsis](synopsis.md)

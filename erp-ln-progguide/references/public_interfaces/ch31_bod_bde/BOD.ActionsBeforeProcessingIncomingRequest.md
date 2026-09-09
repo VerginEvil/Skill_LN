@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for BOD
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1633-1634
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1652-1652
 
 ```baan
 DLL:   tcextbodapi
-This function is available from     2019.03 (KB2040021  ).
+This function is available from 2019.03 (KB2040021).
 Syntax: long BOD.ActionsBeforeProcessingIncomingRequest(
 long             iXMLRequest,
 ref             boolean          oCancel,
@@ -35,20 +35,20 @@ Post:   After the incoming request is processed,
 BOD.ActionsAfterProcessingIncomingRequest() or
 BOD.ActionsAfterProcessingIncomingRequestWithAutomaticProcessing()
 must be called.
-Input:  iXMLRequest                           - XML structure with request. Mandatory
-Output: oCancel                               - true, if BOD must be cancelled
--                                               false, if BOD can be processed
-oExceptionMessage                             - The last message if any message is
+Input:  iXMLRequest             - XML structure with request. Mandatory
+Output: oCancel                 - true, if BOD must be cancelled
+- false, if BOD can be processed
+oExceptionMessage       - The last message if any message is
 found. If more than one message is
 given, these are present in the
 oExceptionID.
-oExceptionID                                  - An ID that refers to the exception
+oExceptionID            - An ID that refers to the exception
 information. Use the functions in
 Exception to get all relevant
 information.
-Return: 0                                     - No error occurred while executing the
+Return: 0                       - No error occurred while executing the
 actions.
-<> 0                                          - An error occurred while executing the
+<> 0                    - An error occurred while executing the
 actions, or a mismatch was detected
 during accounting entity / location
 validation and BOD parameter Inbound

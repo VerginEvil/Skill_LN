@@ -42,4 +42,5 @@ Performing these two index scans may be faster than executing one index scan on 
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)

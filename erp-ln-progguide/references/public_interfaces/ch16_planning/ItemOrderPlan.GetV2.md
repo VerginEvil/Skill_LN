@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for ItemOrderPlan
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 546-548
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 550-552
 
 ```baan
 DLL:   cpextrrpapi
-This function is available from     2026.02 (KB3599795  ).
+This function is available from 2026.02 (KB3599795).
 Syntax: long ItemOrderPlan.GetV2(
 domain  cpcom.plnc       iPlanningScenario,
 domain  cpitem           iPlanItem,

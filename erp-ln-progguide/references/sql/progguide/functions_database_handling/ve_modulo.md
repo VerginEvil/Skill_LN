@@ -5,7 +5,7 @@ The operator \ takes the modulo of the values of two value expressions.
 ```
 
 <operator \>
-    ::= Value expression \ Value expression
+    ::= <value expression> \ <value expression>
 ```
 
 ## Semantics
@@ -25,7 +25,7 @@ I=Integer R=Real S=String D=Date T=TimeStamp ID=Interval Days IS=Interval Second
 The result of the modulo operator is defined by the following equivalence:
 ```
 
-    a \ b = c  <=>  b * n + c = a, n is integer and c in <-b..+b>
+    a \ b = c  ⟺  b * n + c = a, n is integer and c in <-b..+b>
 ```
 For any a and b there exist two pairs (n,c) that obey this rule. The n that is the closest to 0, determines which pair is taken.
 For example, for a=7 and b=3 the pairs (n=2,c=1) and (n=3,c=–2 ) are candidates. In this case n=2 is closest to 0 and hence the outcome of 7\3=1.

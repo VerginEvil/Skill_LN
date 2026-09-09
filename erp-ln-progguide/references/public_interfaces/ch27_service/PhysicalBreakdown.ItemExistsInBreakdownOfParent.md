@@ -4,11 +4,11 @@
 >
 > Group: Public Interfaces for PhysicalBreakdown
 >
-> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1360-1361
+> Source: Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud), pp. 1372-1372
 
 ```baan
 DLL:   tsextcfgapi
-This function is available from     2024.06 (KB2331323  ).
+This function is available from 2024.06 (KB2331323).
 Syntax: long PhysicalBreakdown.ItemExistsInBreakdownOfParent(
 domain  tcitem           iItem,
 domain  tcibd.sern       iSerialNumber,
@@ -53,7 +53,3 @@ functions in Exception to get all relevant information.
 Return: 0:      No error
 <> 0:   An error occurred
 ```
-
-## Public Interfaces for MaintenanceNotification
-
-The following functions are available: MaintenanceNotification.FollowUpUnderCurrentOrder

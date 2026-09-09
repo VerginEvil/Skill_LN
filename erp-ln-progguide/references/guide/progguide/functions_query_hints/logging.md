@@ -35,7 +35,7 @@ tfgld106 (b) dep 2 flag 014
       Used columns
       tfgld106(b).bpid
 ```
-******The effect of index hints can be read in the log file from the generated query execution tree. The tree is logged when TT_SQL_TRACE=4000 and DBSLOG=2000. The information that states which indexes are used to scan the tables can be read from the section "view expression".
+The effect of index hints can be read in the log file from the generated query execution tree. The tree is logged when TT_SQL_TRACE=4000 and DBSLOG=2000. The information that states which indexes are used to scan the tables can be read from the section "view expression".
 For example take the following query:
 ```
 
@@ -76,8 +76,9 @@ index 5 (mode 0)
          Operator: =
          Operand2: Bind (Col bpid) Value: 'NAVEEN'
 ```
-************Each "SrchOper" section in the view expression describes an index scan. Here there are two such "SrchOper" sections for the table tccom100. This indicates the table is accessed using two index scans. The first is on index 4, the second on index 5 exactly according to specified hint. The log output also shows the word "hinted" for both "SrchOper" sections. This means the query processor has indeed applied the index hint and that it is not a coincidence that indexes 4 and 5 are used to scan the table.
+Each "SrchOper" section in the view expression describes an index scan. Here there are two such "SrchOper" sections for the table tccom100. This indicates the table is accessed using two index scans. The first is on index 4, the second on index 5 exactly according to specified hint. The log output also shows the word "hinted" for both "SrchOper" sections. This means the query processor has indeed applied the index hint and that it is not a coincidence that indexes 4 and 5 are used to scan the table.
 
 ## Related topics
 - [Hint types](hint_types.md)
+
 - [Query hints overview](overview.md)
