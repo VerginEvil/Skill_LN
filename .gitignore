@@ -1,4 +1,10 @@
 .scratch/
 update/
 implementation/
-.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.class
+tools/lib/tools/
+output/
+.ln_studio_config.json

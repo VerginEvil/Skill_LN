@@ -1,118 +1,167 @@
-[![Infor LN](https://img.shields.io/badge/ERP-Infor%20LN-blue.svg)](https://www.infor.com)
-[![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor-green.svg)](#)
+[![Infor LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8-blue.svg)](https://www.infor.com)
+[![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-green.svg)](#)
+[![Automation](https://img.shields.io/badge/Toolchain-Eclipse%20RCP%20Automation-orange.svg)](#)
 
-# Skill: Infor ERP LN Programmer's Guide (Baan 4GL)
+# Skill_LN: Infor ERP LN Developer Skill & Studio Automation Toolchain
 
-Agent skill for AI coding assistants working with Infor ERP LN / Baan 4GL.
-The official Infor *Programmer's Guide*
-(`progguide 2610 en`), its *SQL* volume, the *LN Extensions Development
-Guide 10.8*, the *LN Public Interfaces & Process Extensions Reference Guide
-(Cloud) 25082026* and the *AFS Developer's Guide (Infor Integration 6.2)*,
-converted to plain token-efficient Markdown that agents can grep and read
-directly — one file per function, agents read only the pages they need.
+A unified, production-grade intelligence and automation system for **Infor ERP LN** and **Infor LN Studio 10.8 (Eclipse RCP)**.
 
-- **2,970 + 155 + 162 + 2,361 + 76 pages** | **2,425 function references** |
-  **1,833 public interfaces / process extensions** | **AFS `stpapi.*`
-  primitives** | search with `scripts/search.py`
+This repository provides two core pillars:
+1. **[Infor LN Studio Automation Toolset & Assistant Skill](#infor-ln-studio-automation-toolset--skill)** (`ln_studio_skill/` & `tools/`): A reverse-engineered CLI toolchain and agent skill enabling declarative metadata generation, bidirectional 4GL source synchronization, Windows action bridging, and closed-loop compiler diagnostic loops.
+2. **[Baan 4GL Programmer's Guide & Public Interfaces Skill](#infor-erp-ln-programmers-guide-skill)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering 2,425 Baan 4GL functions, GenAI APIs, SQL volumes, Extension Modeler, and Public Interfaces up to release 25082026.
 
-## What's new: LN 2610 + Public Interfaces 25082026
+---
 
-- **Native GenAI 4GL APIs** (`guide/progguide/functions_genai/`): embed AI
-  assistance in standard UI sessions — `genai.processing.start()` /
-  `genai.processing.ready()`, `set.genai.field()`, `session.set.genai()`
-  (+ `.icon` variant), `set.genai.command(s)` (TIV 2496+).
-- **1,833 public interfaces** (was 1,805): +28 new, including the
-  `whext.dll0019.*` warehouse-advice hooks, `Invoice.SplitRevenueByComponent`,
-  `Installment.Approve`, `Invoice.ReprintV2`, and the 2026.07/2026.08 release
-  matrix in `public_interfaces/zz_release_history.md`.
-- **SQL modernization**: `sub_query` renamed to `subquery`
-  (`sql/progguide/functions_database_handling/subquery.md`), plus
-  `base64.validate()` and `http.service.info()` in the 4GL guide.
-- **Reproducible toolchain**: `tools/` converts CHM/PDF sources and rebuilds
-  all indices with a single command (see [Updating](#updating)).
+## Architecture Overview
 
-## Installation: point your agent at this skill
+```
+                                  +-----------------------------------+
+                                  |        User / AI Agent            |
+                                  +-----------------+-----------------+
+                                                    |
+                     +------------------------------+-------------------------------+
+                     |                                                              |
+                     v                                                              v
+       [1. Declarative Authoring]                                     [2. Code Sync & Automation]
+                     |                                                              |
+                     v                                                              v
+       +-----------------------------+                               +-----------------------------+
+       | tools/ln_component_builder  |                               | tools/inject_ln_script.py   |
+       | Generates .tbl, .ses, .dmn, |                               | Syncs .dal / .cln / .src    |
+       | .lbl from YAML/JSON specs   |                               | with embedded XML tags      |
+       +--------------+--------------+                               +--------------+--------------+
+                      |                                                             |
+                      +------------------------------+------------------------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
+                                  | LN Studio Activity Directory      |
+                                  | (workspace/<WS>/<Act> [<Proj>])   |
+                                  | - tx/table/.../*.tbl              |
+                                  | - tx/session/.../*.ses            |
+                                  | - .admin & .project               |
+                                  +------------------+----------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
+                                  | tools/ln_studio_bridge.py         |
+                                  | Triggers F5 (Refresh) & Ctrl+B    |
+                                  +------------------+----------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
+                                  | Infor LN Studio (Eclipse RCP)     |
+                                  | - IncrementalProjectBuilderBIC    |
+                                  | - JCA Adapter -> LN Server (bic)  |
+                                  +------------------+----------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
+                                  | tools/ln_error_reader.py          |
+                                  | Directly parses .markers file     |
+                                  | -> Returns line-accurate errors   |
+                                  +------------------+----------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
+                                  | Closed-Loop Autonomous Debugging  |
+                                  | Agent fixes code until 0 errors   |
+                                  +-----------------------------------+
+```
 
-Copy the `erp-ln-progguide/` folder to your tool's skills directory:
+---
 
-| Tool | Location |
-|---|---|
-| Claude Code | `~/.claude/skills/erp-ln-progguide/` (global) or `.claude/skills/` in the project |
-| OpenClaw | `~/.openclaw/skills/erp-ln-progguide/` (global) or `.openclaw/skills/` in the project |
-| Cursor | `.cursor/skills/erp-ln-progguide/` in the project |
-| Gemini CLI / Antigravity | `~/.gemini/skills/erp-ln-progguide/` (global) or `.gemini/skills/` in the project |
-| opencode | `~/.config/opencode/skill/erp-ln-progguide/` (global) or `.opencode/skill/` in the project |
-| Generic agents | `~/.agents/skills/erp-ln-progguide/` or `.agents/skills/` in the project |
+## Infor LN Studio Automation Toolset & Skill
 
-The agent picks the skill up automatically for Baan/LN 4GL, DAL, AFS, LN SQL,
-SQLSTATE, extension and public-interface work, per the `description` in
-`SKILL.md`.
+Located in [`ln_studio_skill/`](ln_studio_skill/) and [`tools/`](tools/).
 
-## Usage (what the agent does)
+### CLI Tools Summary
 
+| Tool | Purpose | Primary Commands |
+|---|---|---|
+| [`tools/ln_component_builder.py`](tools/ln_component_builder.py) | **Master Orchestrator CLI** | `table`, `session`, `component`, `inject`, `extract`, `sync-admin`, `build`, `pipeline` |
+| [`tools/ln_workspace_manager.py`](tools/ln_workspace_manager.py) | Workspace & Activity Resolver | `python tools/ln_workspace_manager.py --list-workspaces`<br>`python tools/ln_workspace_manager.py --list-activities` |
+| [`tools/ln_schema_parser.py`](tools/ln_schema_parser.py) | Declarative Schema Validator | `python tools/ln_schema_parser.py <schema.yaml>` |
+| [`tools/generate_ln_table.py`](tools/generate_ln_table.py) | Table/Label/Domain XML Generator | `python tools/generate_ln_table.py --spec <spec> --activity <act>` |
+| [`tools/generate_ln_session.py`](tools/generate_ln_session.py) | Session & Form XML Generator | `python tools/generate_ln_session.py --spec <spec> --activity <act>` |
+| [`tools/inject_ln_script.py`](tools/inject_ln_script.py) | 4GL Source Code Synchronizer | `python tools/inject_ln_script.py --inject --source <f.dal> --target <f.tbl>`<br>`python tools/inject_ln_script.py --extract --source <f.tbl> --output <f.dal>` |
+| [`tools/admin_sync.py`](tools/admin_sync.py) | Activity SCM `.admin` Synchronizer | `python tools/admin_sync.py --activity <act> --scan-and-update`<br>`python tools/admin_sync.py --activity <act> --status` |
+| [`tools/ln_error_reader.py`](tools/ln_error_reader.py) | Eclipse `.markers` Error Parser | `python tools/ln_error_reader.py --activity <act> [--errors-only]` |
+| [`tools/ln_studio_bridge.py`](tools/ln_studio_bridge.py) | Windows Action Bridge (F5, Ctrl+B) | `python tools/ln_studio_bridge.py --build-and-check --activity <act>` |
+
+### Quick Start: Generate Table & Session from Schema
+
+1. Define your table and session in YAML (e.g. [`ln_studio_skill/templates/table_schema_sample.yaml`](ln_studio_skill/templates/table_schema_sample.yaml)):
+```yaml
+table:
+  code: txptc200
+  description: Inspection Criteria Configuration
+fields:
+  - name: seqn
+    domain: tcpono
+    mandatory: true
+    default: '$__unique'
+  - name: cmnf
+    domain: tcmcs.cmnf
+    mandatory: true
+indices:
+  - id: 1
+    columns: [seqn]
+    primary_key: true
+session:
+  code: txptc1200m000
+```
+
+2. Run the end-to-end pipeline in one command:
 ```bash
-# 1) Known function name -> grep the index, read one file
-grep -i "genai.processing.start" erp-ln-progguide/references/FUNCTION_INDEX.md
-grep -i "Address.Create" erp-ln-progguide/references/PUBLIC_INTERFACES_INDEX.md
+python tools/ln_component_builder.py pipeline --spec ln_studio_skill/templates/table_schema_sample.yaml --activity "dev_natt_01103"
+```
 
-# 2) Free-text search (stdlib Python only)
+3. If errors are flagged during compilation, read line-accurate problem markers:
+```bash
+python tools/ln_component_builder.py diagnose --activity "dev_natt_01103" --errors-only
+```
+
+---
+
+## Infor ERP LN Programmer's Guide Skill
+
+Located in [`erp-ln-progguide/`](erp-ln-progguide/).
+
+- **2,970 + 155 + 162 + 2,361 + 76 pages** | **2,425 function references** | **1,833 public interfaces / process extensions** | **AFS `stpapi.*` primitives**
+- Full-text search with `python erp-ln-progguide/scripts/search.py <query>`.
+
+### Fast Reference Search
+```bash
+# Search 4GL functions
 python erp-ln-progguide/scripts/search.py genai.processing.start
 python erp-ln-progguide/scripts/search.py subquery --dir sql
 python erp-ln-progguide/scripts/search.py "Address.Create" --dir public_interfaces
-python erp-ln-progguide/scripts/search.py utc.add --dir guide
-python erp-ln-progguide/scripts/search.py --list-groups
-python erp-ln-progguide/scripts/search.py --regex "SQLSTATE" --dir sql
-
-# 3) Every page -> index/INDEX.tsv maps path to title
 ```
 
-## Repository layout
+---
 
-```
-erp-ln-progguide/
-├── SKILL.md                     # entry point: Baan 4GL crash course + task routing
-├── scripts/search.py            # full-text search (Python stdlib only)
-├── index/INDEX.tsv              # title -> path for all ~5,000 pages
-└── references/
-    ├── FUNCTION_INDEX.md        # all 4GL functions by topic (grep first)
-    ├── PUBLIC_INTERFACES_INDEX.md # all public interfaces by chapter
-    ├── EXTENSIONS_INDEX.md / AFS_INDEX.md
-    ├── guide/progguide/...      # main guide: 2,970 topics (incl. functions_genai/)
-    ├── sql/progguide/...        # LN SQL + SQLSTATE messages (155 topics)
-    ├── extensions/...           # LN Extensions Development Guide (17 chapters)
-    ├── public_interfaces/...    # Public Interfaces, 55 chapters + release history
-    └── afs/...                  # AFS Developer's Guide (stpapi.*)
-tools/
-├── update_pipeline.py           # one-command update: decompile -> convert -> index -> validate
-├── convert_chm.py               # CHM (hh.exe) -> Markdown, stdlib only
-├── convert_pdf_interfaces.py    # Public Interfaces PDF -> Markdown (pymupdf)
-├── generate_indices.py          # rebuild INDEX.tsv + both catalog indices
-├── validate_skill.py            # index/link integrity checker
-└── tests/                       # unittest suite (stdlib only)
-docs/MAINTENANCE_GUIDE.md        # step-by-step future-update guide
-update/                          # source artifacts, git-ignored (CHMs + reference PDF)
-```
+## Installation & Skill Configuration
 
-## Updating
+### Installing the Skills into AI Coding Agents
 
-When Infor ships new docs, drop the files into `update/` and run:
+Copy or link the skill folders to your agent's configuration directory:
 
-```bash
-python tools/update_pipeline.py --update-dir update
-python tools/validate_skill.py
-```
-
-Details in [`docs/MAINTENANCE_GUIDE.md`](docs/MAINTENANCE_GUIDE.md).
-
-## Sources & counts
-
-| Source | Edition | Pages |
+| Tool | Reference Skill (`erp-ln-progguide`) | Studio Assistant Skill (`ln_studio_skill`) |
 |---|---|---|
-| Infor Programmer's Guide (Baan 4GL) | 2610 en | 2,970 topics |
-| Programmer's Guide, SQL volume | 2610 en | 155 topics |
-| LN Extensions Development Guide | 10.8 (01062026) | 162 |
-| Public Interfaces & Process Extensions (Cloud) | 25082026 | 2,361 |
-| AFS Developer's Guide (Infor Integration 6.2) | U8627B US | 76 |
+| **Claude Code** | `~/.claude/skills/erp-ln-progguide/` | `~/.claude/skills/ln_studio_skill/` |
+| **OpenClaw** | `~/.openclaw/skills/erp-ln-progguide/` | `~/.openclaw/skills/ln_studio_skill/` |
+| **Cursor** | `.cursor/skills/erp-ln-progguide/` | `.cursor/skills/ln_studio_skill/` |
+| **Gemini CLI / Antigravity** | `~/.gemini/skills/erp-ln-progguide/` | `~/.gemini/skills/ln_studio_skill/` |
 
-All files are UTF-8 Markdown; code examples are fenced; tables preserved;
-links are relative and machine-validated (`validate_skill.py`: 0 broken).
+Architecture and coding rules are codified in [`.antigravity/rules/infor_ln.md`](.antigravity/rules/infor_ln.md).
+
+---
+
+## Automated Test Suite
+
+Run the full unit test suite:
+```bash
+python -m unittest discover tools/tests/
+```
+All 69 unit tests validate schema constraints, XML generation, script injection/extraction round-trips, binary marker parsing, and admin synchronization.

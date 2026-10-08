@@ -1,0 +1,39 @@
+|*******************************************************************************
+|* ${SESSION_CODE}  ${VERSION_ID}
+|* ${SESSION_DESCRIPTION}
+|* Script Type: 123 (UI Script)
+|*******************************************************************************
+#include <bic_dam>
+
+declaration:
+
+    table   t${TABLE_CODE} |* ${TABLE_DESCRIPTION}
+
+|****************************** program section ********************************
+
+before.program:
+    | Initialization logic
+
+main.table.io:
+before.write:
+    | Pre-write checks
+
+before.rewrite:
+    | Pre-rewrite checks
+
+choice.update.db:
+before.choice:
+    check.all.input()
+
+|********************************* field events ********************************
+
+field.${TABLE_CODE}.seqn:
+before.display:
+    | Presentation styling
+
+functions:
+
+function void check.all.input()
+{
+    | Local form input verification
+}

@@ -1,0 +1,92 @@
+# Sample Infor LN Table & Session Specification Schema
+# File: ln_studio_skill/templates/table_schema_sample.yaml
+
+table:
+  code: txptc200
+  module: ptc
+  package: tx
+  description: Inspection Criteria Configuration
+  version_id: B61O_a_ext
+
+fields:
+  - name: seqn
+    description: Sequence Number
+    domain: tcpono
+    mandatory: true
+    default: '$__unique'
+
+  - name: cmnf
+    description: Manufacturer
+    domain: tcmcs.cmnf
+    mandatory: true
+    zoom_program: tcmcs0160m000
+    zoom_return_field: tcmcs060.cmnf
+
+  - name: mpnr
+    description: Manufacturer Part Number
+    domain: tcmpnr
+    zoom_program: tdipu0145m000
+    zoom_return_field: tdipu045.mpnr
+
+  - name: ctit
+    description: Skipping Ins. BP Group
+    domain: tcctit
+    zoom_program: tcmcs0119m000
+    zoom_return_field: tcmcs019.ctit
+
+  - name: stat
+    description: Status
+    domain: txstatus
+    type: enum
+
+  - name: nacp
+    description: Consecutive Accepted Orders
+    domain: tcpono
+    default: '0'
+
+indices:
+  - id: 1
+    description: Primary Key
+    columns:
+      - seqn
+    primary_key: true
+    unique: true
+
+  - id: 2
+    description: Manufacturer and MPN Index
+    columns:
+      - cmnf
+      - mpnr
+    unique: true
+
+references:
+  - to_table: tcmcs060
+    delete_rule: cascade
+    update_rule: cascade
+    columns:
+      cmnf: cmnf
+
+  - to_table: tcmcs019
+    delete_rule: cascade
+    update_rule: cascade
+    columns:
+      ctit: ctit
+
+domains:
+  - name: txstatus
+    description: Inspection Status
+    type: enum
+    enums:
+      - name: active
+        description: Active
+        position: 10
+      - name: inactive
+        description: Inactive
+        position: 20
+      - name: pending
+        description: Pending Approval
+        position: 30
+
+session:
+  code: txptc1200m000
+  description: Maintain Inspection Criteria Configuration

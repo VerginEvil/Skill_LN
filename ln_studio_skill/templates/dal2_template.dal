@@ -1,0 +1,70 @@
+|*******************************************************************************
+|* ${TABLE_CODE}  ${VERSION_ID}
+|* ${TABLE_DESCRIPTION}
+|* Script Type: DAL 2
+|*******************************************************************************
+#include <bic_dal2>
+
+table t${TABLE_CODE}
+
+|*************************** object hooks section ******************************
+
+function extern boolean method.is.allowed(long i.method)
+{
+    on case i.method
+    case DAL_NEW:
+        break
+    case DAL_UPDATE:
+        break
+    case DAL_DESTROY:
+        break
+    endcase
+    return(true)
+}
+
+function extern long before.open.object.set()
+{
+    return(0)
+}
+
+function extern long before.save.object(long i.mode)
+{
+    |#activity.sn
+    | Add business validation checks here
+    |#activity.en
+    return(0)
+}
+
+function extern long after.save.object(long i.mode)
+{
+    return(0)
+}
+
+function extern long before.destroy.object()
+{
+    return(0)
+}
+
+function extern long after.destroy.object()
+{
+    return(0)
+}
+
+|*************************** property hooks section ****************************
+
+function extern long ${TABLE_CODE}.seqn.make.valid(long mode)
+{
+    domain tcpono tem.seqn
+
+    select  ${TABLE_CODE}.seqn:tem.seqn
+    from    ${TABLE_CODE}
+    order by ${TABLE_CODE}.seqn desc
+    as set with 1 rows
+    selectdo
+        ${TABLE_CODE}.seqn = tem.seqn + 1
+    selectempty
+        ${TABLE_CODE}.seqn = 1
+    endselect
+
+    return(0)
+}
