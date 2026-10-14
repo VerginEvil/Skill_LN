@@ -1,6 +1,7 @@
 .scratch/
 update/
 implementation/
+docs/
 __pycache__/
 *.pyc
 *.pyo
