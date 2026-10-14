@@ -22,10 +22,11 @@ import re
 from pathlib import Path
 
 INDEX_FILES = {"FUNCTION_INDEX.md", "PUBLIC_INTERFACES_INDEX.md",
-               "EXTENSIONS_INDEX.md", "AFS_INDEX.md"}
+               "EXTENSIONS_INDEX.md", "AFS_INDEX.md", "DEV_TOOLS_INDEX.md"}
 
 # Legacy section order of INDEX.tsv (conversion sequence, not alphabetical).
-INDEX_GROUP_ORDER = ["guide", "sql", "extensions", "public_interfaces", "afs"]
+INDEX_GROUP_ORDER = ["guide", "sql", "extensions", "public_interfaces", "afs",
+                     "dev_tools", "best_practices"]
 
 FUNC_SIG_RE = re.compile(r"`(function\b[^`]*)`")
 FENCE_RE = re.compile(r"^```[^\n]*\n(.*?)```", re.M | re.S)

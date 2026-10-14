@@ -42,3 +42,9 @@ Source PDF: `Infor LN Extensions Development Guide 108 (01062026).pdf`.
 Background for DAL semantics (return values, `dal.set.error.message()`,
 `with.old.object.values.do()`) lives in the main programmer's guide:
 `references/FUNCTION_INDEX.md` (functions_dal) and `guide/progguide/`.
+
+## Best Practices & Actionable Recipes
+
+For concrete recipes, lifecycle diagrams, standardized error handling, and cloud governance rules, refer to:
+- [Extension Hooks & Cloud Governance Cookbook](best_practices/01_extension_hooks_cookbook.md)
+

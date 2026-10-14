@@ -1,11 +1,11 @@
 ---
 name: erp-ln-progguide
-description: Infor ERP LN / Baan 4GL programmer's reference. Use when writing, reading, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), embedding GenAI assistance (genai.*, set.genai.*) in sessions, developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and their hooks), or calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs) in ttadv / Infor Studio / LN Cloud.
+description: Infor ERP LN / Baan 4GL programmer's reference and full-stack engineering guide. Use when writing, reading, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL 1 & 2 scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), embedding GenAI assistance (genai.*, set.genai.*) in sessions, developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and hooks), calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs), referencing Infor LN Development Tools (Data Dictionaries, domains, tables, crdd reconfiguration, MMT sessions, PMC, SCM), or applying Infor LN coding best practices and cloud governance rules.
 ---
 
-# Infor ERP LN Programmer's Guide (Baan 4GL)
+# Infor ERP LN Programmer's Guide & Best Practices (Baan 4GL)
 
-Full text of the official Infor *Programmer's Guide* (`progguide 2610 en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)* and the *AFS Developer's Guide (Infor Integration 6.2)*, converted to plain Markdown: **2,970 + 155 + 162 + 2,361 + 76 pages**, including **2,425 bshell function references**, **1,833 public interface / process extension references** and all **`stpapi.*` AFS primitives** with syntax, arguments, return values, and usage.
+Full text of the official Infor *Programmer's Guide* (`progguide 2610 en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Development Tools (2016)* manual, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)*, the *AFS Developer's Guide (Infor Integration 6.2)*, and the **Infor LN Best Practices & Cookbooks Suite**, converted to plain Markdown: **5,700+ pages**, including **2,425 bshell function references**, **1,833 public interface / process extension references**, all **`stpapi.*` AFS primitives**, 13 complete **Development Tools** chapters, and 5 prescriptive **Architectural Cookbooks**.
 
 ## How to answer questions (token-efficient workflow)
 
@@ -13,44 +13,99 @@ Never read folders blindly. Use this order:
 
 1. **Known function name** -> grep `references/FUNCTION_INDEX.md` for the name.
    Each line has the normalized signature and the exact `.md` path. Then Read only that file.
-2. **Free-text question** ("how to open a file", "utc conversion", "query hint", "before.save.object hook") -> run:
+2. **Best practices & architectural rules** -> check `references/best_practices/` first before generating or reviewing code.
+3. **Free-text question** ("how to open a file", "utc conversion", "query hint", "before.save.object hook", "crdd reconfiguration", "MMT satellite") -> run:
    ```
-   python <skill_dir>/scripts/search.py <terms> [--dir guide|sql|extensions|all] [--group substr] [--regex PATTERN] [--max 25]
+   python <skill_dir>/scripts/search.py <terms> [--dir guide|sql|extensions|public_interfaces|afs|dev_tools|best_practices|all] [--group substr] [--regex PATTERN] [--max 25]
    python <skill_dir>/scripts/search.py --list-groups        # topic folders + page counts
    ```
    Output is `file:line: snippet` matches ranked by hits. Read only promising files.
-3. **All pages** -> `index/INDEX.tsv` maps every page path to its title.
-4. Links between pages are relative Markdown links and resolve correctly; follow them by Reading the target path next to the current file.
+4. **All pages** -> `index/INDEX.tsv` maps every page path to its title.
+5. Links between pages are relative Markdown links and resolve correctly; follow them by Reading the target path next to the current file.
+
+## Infor LN Coding Standards & Architectural Guardrails
+
+When analyzing, designing, or generating Infor ERP LN code, AI agents and developers **must strictly adhere** to these architectural rules:
+
+1. **Cardinal Rule — Separation of Concerns (SoC)**:
+   - **Never perform database modifications (`db.insert`, `db.update`, `db.delete`, `db.write`) or business validations directly in 4GL UI session scripts (`type 1-4`, `choice.*`, `main.table.io`).**
+   - UI scripts manage form presentation, dynamic views, and window titles only.
+   - All data validations, defaults, calculated fields, and table mutations **must reside strictly in the Data Access Layer (DAL 2)** or **Table Extensions**.
+   - *Reference*: [DAL Architecture & Business Logic Guide](references/best_practices/02_dal_architecture_and_business_logic.md).
+
+2. **Extension Hooks & Standardized Error Conventions**:
+   - Always signal business rule failures using `dal.set.error.message("@<msg_code>", [args...])` and `return(DALHOOKERROR)` (or `false` for boolean hooks).
+   - **Never invoke interactive dialogs (`message()`, `ask.enum()`, `box()`) inside Table Extension hooks or DAL scripts**; doing so hangs headless cloud processes, BOD exchanges, and REST APIs.
+   - Maintain the safe `table.super()` signature pattern with `get.long.arg(1)` for optional `mode` handling.
+   - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
+
+3. **Embedded Baan SQL & Index Alignment**:
+   - Always verify that the query's `WHERE` clause specifies equality predicates on the **leading fields** of a defined table index (`_index1`, `_index2`...).
+   - Never wrap indexed database columns inside expressions or functions (e.g. avoid `toupper(tdsls400.orno)`).
+   - Use `as set with 1 rows` for single-record lookups and `as prepared set` when mutating records inside the loop.
+   - Eliminate N+1 query anti-patterns by joining parent and child tables in a single SQL statement.
+   - *Reference*: [SQL Query Optimization & Transactions Guide](references/best_practices/03_sql_query_optimization_and_transactions.md).
+
+4. **Transaction Concurrency & Deadlock Prevention**:
+   - Strictly bound all database modifications between `db.retry.point()` and `commit.transaction()` / `abort.transaction()`.
+   - Minimize lock windows (`select ... for update`): compute complex logic before locking, and commit immediately after updating.
+   - Always acquire locks in hierarchical order (Parent table before Child table).
+   - *Reference*: [SQL Query Optimization & Transactions Guide](references/best_practices/03_sql_query_optimization_and_transactions.md).
+
+5. **Data Dictionaries & Table Reconfiguration (`crdd`)**:
+   - Distinguish design-time metadata (Application Data Dictionary in `ttadv*`) from compiled bshell binaries (Runtime Data Dictionary).
+   - Follow the two-step `crdd` procedure (Convert to Runtime -> Reconfigure Tables) with exclusive table access to prevent catastrophic data loss.
+   - *Reference*: [Data Model & Domain Design Guide](references/best_practices/04_data_model_and_domain_design.md).
+
+6. **Cloud Extensibility Governance**:
+   - Respect Cloud multi-tenant governor limits: max execution elapsed time = `5,000 ms`, max file output = `5 MB`.
+   - Never call untrusted bshell functions (`run.prog()`, `hostname$()`) or manipulate files outside sandboxed tenant storage.
+   - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
+
+---
 
 ## Layout
 
 ```
 references/
-  guide/progguide/            main guide, mirrored from original TOC
+  best_practices/             Prescriptive architectural guides & cookbooks:
+    01_extension_hooks_cookbook.md               Table/session hook lifecycles, CDF recipes, cloud governance
+    02_dal_architecture_and_business_logic.md   DAL 1 vs 2, SoC rules, property hooks, business methods
+    03_sql_query_optimization_and_transactions.md Baan SQL, index matching, array fetch, retry points
+    04_data_model_and_domain_design.md          Domain types, table references, crdd reconfiguration
+    05_session_and_mmt_patterns.md              Session types 1-4, MMT Controller/Satellite, labels
+  dev_tools/                  Infor LN Development Tools (2016), 13 complete chapters:
+    ch01_development_tools_introduction.md
+    ch02_overview_of_software_components.md
+    ch03_data_dictionaries.md
+    ch04_development_parameters_and_authorizations.md
+    ch05_software_development_procedures.md
+    ch06_session_personalizations.md
+    ch07_version_and_release_management.md
+    ch08_ln_software_maintenance.md
+    ch09_ln_homepages.md
+    ch10_ln_reporting_overview.md
+    ch11_4gl_reports.md
+    ch12_session_based_reporting.md
+    ch13_query_based_reporting.md
+  guide/progguide/            main guide, mirrored from original TOC (LN 2610)
     3gl_features/             data types, variables, expressions, multibyte/UTC
     4gl_features/             4GL sections: program/form/group/field/choice/event/
                               zoom, main.table.io subsections, flow of standard program
     bol/                      Business Object Layer programming
     functions_<topic>/        ~130 function groups; each has overview.md,
                               synopsis.md (all signatures), one page per function
+    functions_genai/          Native GenAI 4GL APIs (genai.processing.*, session.set.genai.*)
     multitasking/ events/     process model, event handling
     debugger/ profiler/       baan debugger commands, call graph profiler
-    misc/                     bshell options/env vars/resources, predefined vars,
-                              known limits, ASCII/Unicode encodings
+    misc/                     bshell options/env vars/resources, predefined vars
     errors/                   Infor ES error messages
-    glossary/
-  sql/progguide/
-    functions_database_handling/   LN SQL (Baan SQL): SELECT/FROM/WHERE/GROUP BY/
-                                   predicates, expressions, data types, reserved words
-    sql_states_and_messages/       SQLSTATE codes explained (e.g. 22001, 42I01)
-  extensions/                 Infor LN Extensions Development Guide (10.8), one file
-                              per chapter; start at references/EXTENSIONS_INDEX.md
-  public_interfaces/          LN Cloud Public Interfaces & Process Extensions
-                              reference, one file per function grouped by chapter
-                              (chNN_<topic>/<Interface>.md)
-  afs/                        AFS Developer's Guide (stpapi.* primitives, field
-                              buffer, message handling); start at AFS_INDEX.md
+  sql/progguide/              Baan SQL reference & SQLSTATE error codes
+  extensions/                 Infor LN Extensions Development Guide (10.8)
+  public_interfaces/          LN Cloud Public Interfaces & Process Extensions reference (25082026)
+  afs/                        AFS Developer's Guide (stpapi.* primitives)
 index/INDEX.tsv               every page: path TAB title
+references/DEV_TOOLS_INDEX.md master chapter and topic index for Development Tools
 references/FUNCTION_INDEX.md  all 2425 functions grouped by topic, grep this first
 references/EXTENSIONS_INDEX.md chapter list + orientation for the extensions guide
 references/PUBLIC_INTERFACES_INDEX.md  index of all public interfaces per chapter
@@ -58,54 +113,34 @@ references/AFS_INDEX.md       stpapi.* primitive list with signatures
 scripts/search.py             full-text search tool (stdlib Python only)
 ```
 
-## Baan 4GL crash course
-
-- **Runtime**: programs execute in the *bshell*. UI runs in WebUI / LN UI. Development happens in Infor Studio (ttadv) under VRC version control.
-- **Script types**: `type 1-4` 4GL UI session scripts (init.form, before.display, main.table.io...), 3GL scripts, DAL scripts (data access layer hooks per table), libraries (`bic_*` DLLs), report scripts, and Function Server / AFS automation (`function.server.*`, `stpapi.*` style calls).
-- **Data types**: `long`, `double`, `string len [fixed]`, `domain`, `table`, `xml node`, UTC date/time via `utc.*`; doubles need care (`double.cmp()`).
-- **Database access**: embedded Baan SQL with `SELECT ... FROM ... WHERE ... SELECTDO ... SELECTEOS ... ENDSELECT`, `db.insert/db.update/db.delete`, transaction control `commit.transaction()`, `abort.transaction()`, `retry.point()`.
-- **Tables**: named `<package><module><seq>` e.g. `tiitm001` (item master), fields referenced directly; referential info in runtime dictionary (`rdi.*` functions).
-- **Query extensions**: `query.extend.where()/.select()/.from()` modify generated session queries.
-- **Predefined variables**: see `guide/progguide/misc/predefined_variables.md`.
-- **LN Extensions** (Extension Modeler): customize standard components without code changes to them. Extension points: domain, table, report, session, BOD/BDE, OData REST, menu, process. Hooks are `function extern` DAL-style functions (e.g. `before.save.object(long mode)`, `method.is.allowed()`, `<field>.check.input()`, `before.context.send()`); errors via `dal.set.error.message("@...")` + `DALHOOKERROR`. CDFs are `cdf_<name>` fields with their own logic hooks. See `references/EXTENSIONS_INDEX.md`.
-- **Public Interfaces**: callable 4GL DLL functions on standard LN data/processes (`Address.Create()`, `SalesOrder.SkipPrint` style process extensions in `tdext.*`/`whext.*`/`tiext.*`/... DLLs). Each reference page has DLL name, availability (release/KB), syntax, Usage (Expl/Pre/Post/Input/Output) and Return values. Grep `references/PUBLIC_INTERFACES_INDEX.md` or search with `--dir public_interfaces`.
-- **GenAI in sessions** (LN 2610+, TIV 2496+): native AI assistance inside standard UI sessions via `guide/progguide/functions_genai/` — `genai.processing.start()` / `genai.processing.ready()` bracket AI work, `set.genai.field()` marks a Text field for process animation, `session.set.genai()` (+ `.icon` variant with action icons) flags the session, `set.genai.command(s)` wires field buttons. See `functions_genai/overview_and_synopsis.md` first.
-- **AFS / Function Server**: drive standard sessions from 4GL via `stpapi.*` primitives (`stpapi.put.field()`, `stpapi.find()`, `stpapi.insert()`, `stpapi.continue.process()` ...). Field buffer semantics, message handling, synchronized dialogs and `api.mode` are covered in `afs/ch03`+`afs/ch04`. See `references/AFS_INDEX.md`; search with `--dir afs`.
-
-Authoritative details always live in the reference pages; do not rely on this summary alone.
-
 ## Common tasks
 
 | Task | Start at |
 |---|---|
+| **Extension Hooks Cookbook & Recipes** | `references/best_practices/01_extension_hooks_cookbook.md` |
+| **DAL 1 vs DAL 2 & SoC Rules** | `references/best_practices/02_dal_architecture_and_business_logic.md` |
+| **Baan SQL Optimization & Transactions** | `references/best_practices/03_sql_query_optimization_and_transactions.md` |
+| **Domain Design, Tables & `crdd`** | `references/best_practices/04_data_model_and_domain_design.md` |
+| **Session Types 1-4 & MMT Patterns** | `references/best_practices/05_session_and_mmt_patterns.md` |
+| **Infor LN Development Tools Master Index** | `references/DEV_TOOLS_INDEX.md` |
+| **Software Components Overview** | `references/dev_tools/ch02_overview_of_software_components.md` |
+| **Development Procedures (Data model, forms, MMT)** | `references/dev_tools/ch05_software_development_procedures.md` |
+| **Data Dictionaries (Runtime vs Application)** | `references/dev_tools/ch03_data_dictionaries.md` |
+| **Version & Release Management (VRC, SCM)** | `references/dev_tools/ch07_version_and_release_management.md` |
+| **PMC Maintenance (Solutions, Patches, FPs)** | `references/dev_tools/ch08_ln_software_maintenance.md` |
 | Signature/usage of any bshell function | `references/FUNCTION_INDEX.md` |
 | GenAI assistance in a session (LN 2610) | `guide/progguide/functions_genai/overview_and_synopsis.md`, then `genai.processing.start.md` |
-| Base64 validation / HTTP service info (2610) | `functions_base64/base64.validate.md`, `functions_http_client/http.service.info.md` |
 | Baan SQL subquery syntax (renamed from `sub_query`) | `sql/progguide/functions_database_handling/subquery.md` |
-| Which 4GL section/subsection exists | `guide/progguide/4gl_features/` |
-| Write DAL hooks | `guide/progguide/functions_dal/overview.md` |
-| File/dir I/O | `guide/progguide/functions_directory_file_operations/` |
-| Dynamic SQL | `guide/progguide/functions_dynamic_sql_queries/` + `functions_sql_query_extensions/` |
-| Baan SQL syntax (SELECT etc.) | `sql/progguide/functions_database_handling/select_statement.md` |
+| Baan SQL syntax (SELECT, clauses, joins) | `sql/progguide/functions_database_handling/select_statement.md` |
 | Decode SQLSTATE error | `sql/progguide/sql_states_and_messages/<code>.md` |
-| String/date/format functions | `functions_string_operations/`, `functions_date_time_zones/`, `functions_formatting_io/` |
 | Add a hook to a standard table/session | `references/extensions/table_extension_point.md`, `extensions/session_extension_point.md` |
 | CDF types, config, limitations | `references/extensions/customer_defined_fields.md` |
-| Extension Modeler workflow / activation | `references/extensions/extension_modeler.md` |
-| Extend BOD/BDE UserArea (macros) | `references/extensions/bod_bde_extension_point.md` |
-| Debug an extension | `references/extensions/extension_debugging.md` |
 | Cloud restrictions / governors / best practices | `references/extensions/governance.md` |
-| Export/import extensions (deployment) | `references/extensions/extension_deployment.md` |
 | Find a public interface by name (e.g. Item.GetData) | `references/PUBLIC_INTERFACES_INDEX.md`, then `public_interfaces/chNN_*/<Name>.md` |
-| Syntax/usage of a public interface function | grep `references/index/INDEX.tsv` for the name or search `--dir public_interfaces` |
-| Which release introduced an interface/process extension | `references/public_interfaces/zz_release_history.md` |
-| Process extension DLL hooks (tdext.*, whext.*, ...) | `public_interfaces/ch55_process_extensions/` |
 | stpapi.* primitive syntax/usage (AFS) | `references/AFS_INDEX.md`, then `references/afs/ch03_baan_4gl_engine_primitives.md` |
-| AFS field buffer / messages / synchronized dialog | `references/afs/ch04_special_issues.md` |
-| Write a new AFS DLL | `references/afs/ch02_application_function_server.md` + `appendix_a_afs_dll_example.md` |
 
 ## Notes
 
-- Sources: Infor progguide 2610 (en) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (25082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US). Content is verbatim from the official guides.
+- Sources: Infor progguide 2610 (en) + Infor LN Development Tools (2016) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (25082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US).
 - All files UTF-8 Markdown; code examples fenced; tables preserved.
 - `search.py` needs only Python 3 stdlib; safe on Windows/Linux/macOS.

@@ -4983,3 +4983,21 @@ references/afs/ch02_application_function_server.md	Chapter 2 Application Functio
 references/afs/ch03_baan_4gl_engine_primitives.md	Chapter 3 Baan 4GL engine primitives
 references/afs/ch04_special_issues.md	Chapter 4 Special issues
 references/afs/ch05_guidelines_for_baan_4gl_application_sessions.md	Chapter 5 Guidelines for Baan 4GL application sessions
+references/dev_tools/ch01_development_tools_introduction.md	Chapter 1: Development Tools Introduction
+references/dev_tools/ch02_overview_of_software_components.md	Chapter 2: Overview of Software Components
+references/dev_tools/ch03_data_dictionaries.md	Chapter 3: Data Dictionaries
+references/dev_tools/ch04_development_parameters_and_authorizations.md	Chapter 4: Development Parameters and Authorizations
+references/dev_tools/ch05_software_development_procedures.md	Chapter 5: Software Development Procedures
+references/dev_tools/ch06_session_personalizations.md	Chapter 6: Session Personalizations
+references/dev_tools/ch07_version_and_release_management.md	Chapter 7: Version and Release Management
+references/dev_tools/ch08_ln_software_maintenance.md	Chapter 8: LN Software Maintenance
+references/dev_tools/ch09_ln_homepages.md	Chapter 9: LN Homepages
+references/dev_tools/ch10_ln_reporting_overview.md	Chapter 10: LN Reporting Overview
+references/dev_tools/ch11_4gl_reports.md	Chapter 11: 4GL Reports
+references/dev_tools/ch12_session_based_reporting.md	Chapter 12: Session-based Reporting
+references/dev_tools/ch13_query_based_reporting.md	Chapter 13: Query-based Reporting
+references/best_practices/01_extension_hooks_cookbook.md	Extension Hooks & Cloud Governance Cookbook
+references/best_practices/02_dal_architecture_and_business_logic.md	DAL Architecture & Business Logic Guide
+references/best_practices/03_sql_query_optimization_and_transactions.md	SQL Query Optimization & Transaction Management Guide
+references/best_practices/04_data_model_and_domain_design.md	Data Model & Domain Design Guide
+references/best_practices/05_session_and_mmt_patterns.md	Session & MMT Patterns Guide

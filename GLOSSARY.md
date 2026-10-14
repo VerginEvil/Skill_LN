@@ -1,0 +1,30 @@
+# Domain Glossary: Infor ERP LN Skill Architecture
+
+Consistent vocabulary for developing, extending, and structuring Infor ERP LN development knowledge and skills.
+
+### Core Architecture & Runtime
+- **Bshell**: The Infor LN runtime execution environment / virtual process that executes 3GL/4GL bytecode, manages database cursors, and interfaces with the UI/WebUI.
+- **VRC (Version - Release - Customer)**: The layered package hierarchy in Infor LN that manages code variants and customizations (e.g., standard code `B61_c`, custom code in customer VRCs).
+- **Runtime Data Dictionary**: Compiled metadata (domains, tables, forms, sessions, labels) read directly by the bshell for maximum performance, updated via "Convert to Runtime" (`crdd`).
+- **Application Data Dictionary**: Editable design-time definitions stored in tools tables (`ttadv...`).
+
+### Modern Extensibility (LN 10.8+)
+- **Extension Modeler (`ttext1500m000`)**: The framework for customizing standard LN components without modifying base code ("last-mile" customization), supporting clean cloud upgrades.
+- **Extension Point**: An extensible LN component type: Table, Session, Report, BOD/BDE, OData REST API, Menu, Process, or Domain.
+- **Hook**: An exported function (`function extern <type> <hook-name>(...)`) called by the bshell/DAL at specific lifecycle events (e.g., `before.save.object`, `when.field.changes`, `is.valid`).
+- **CDF (Customer Defined Field)**: Custom database columns (`<table>.cdf_<name>`) added to standard or custom tables with dedicated logic hooks.
+- **Cloud Governance**: Restrictions enforced on extensions in Infor Cloud (e.g., trusted vs untrusted mode, execution time governors, query limits, restricted file system access).
+
+### Classic 4GL & Tools (Development Tools 10.5+)
+- **DAL (Data Access Layer)**: The business logic layer for tables. DAL 1 (classic) and DAL 2 (modern object-oriented style with property hooks, object sets, and business methods).
+- **UI Script (4GL Script)**: Client-facing session script managing user interface interactions and choice sections. Database modifications should never be placed directly in UI scripts.
+- **3GL / DLL Library**: Shared callable functions (`bic_*` libraries) providing reusable business algorithms and utility routines.
+- **MMT Session (Multi-Main Table)**: Complex user interfaces coordinating multiple entity tables through a Controller session and linked Satellite sessions.
+- **Baan SQL (Embedded SQL)**: Embedded database queries utilizing `SELECT ... SELECTDO ... SELECTEOS ... ENDSELECT` constructs with cursor-level transaction controls (`commit.transaction()`, `retry.point()`).
+- **PMC (Product Maintenance Component)**: Software distribution mechanism managing individual solutions, collections, patches, and feature packs.
+
+### Best Practice & Design Patterns
+- **Separation of Concerns (SoC)**: Architectural rule in Infor LN mandating that UI logic stays in UI scripts (`type 1-4`), while all business logic, data validations, integrity checks, and CRUD operations reside strictly in the DAL (or Table Extension).
+- **Hook Lifecycle**: The deterministic call sequence of extension hooks during CRUD operations (e.g. `before.open.object.set` -> `set.object.defaults` -> `<field>.check.input` -> `before.save.object` -> `after.save.object`).
+- **Index Selectivity**: Designing and selecting SQL indices where leading fields match `WHERE` equality predicates, avoiding full table scans and lock escalation.
+- **Controller & Satellites**: The MMT session design pattern where a single parent Controller coordinates one or more synchronized Satellite sessions displaying related detail records.

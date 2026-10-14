@@ -63,15 +63,20 @@ def check_index_tsv(skill: Path) -> list[str]:
 def check_catalog_links(skill: Path, catalog: str) -> list[str]:
     """All relative links in a catalog index resolve. Returns failures."""
     failures: list[str] = []
+    cat_path = skill / catalog
     try:
-        text = (skill / catalog).read_text(encoding="utf-8")
+        text = cat_path.read_text(encoding="utf-8")
     except OSError as exc:
         return ["%s (unreadable: %s)" % (catalog, exc)]
     for raw in LINK_RE.findall(text):
         target = _link_target(raw)
         if target is None:
             continue
-        if not (skill / target).is_file():
+        if target.startswith("references/"):
+            resolved = skill / target
+        else:
+            resolved = Path(os.path.normpath(os.path.join(str(cat_path.parent), target)))
+        if not resolved.is_file():
             failures.append("%s -> %s" % (catalog, target))
     return failures
 
@@ -118,7 +123,15 @@ def main(argv: list[str] | None = None) -> int:
         print("  missing: %s" % m)
     errors += len(missing)
 
-    for catalog in ("references/FUNCTION_INDEX.md", "references/PUBLIC_INTERFACES_INDEX.md"):
+    catalogs = [
+        "references/FUNCTION_INDEX.md",
+        "references/PUBLIC_INTERFACES_INDEX.md",
+    ]
+    for opt in ("references/EXTENSIONS_INDEX.md", "references/DEV_TOOLS_INDEX.md"):
+        if (skill / opt).is_file():
+            catalogs.append(opt)
+
+    for catalog in catalogs:
         failures = check_catalog_links(skill, catalog)
         print("%s: %s (%d broken)" % (catalog, "OK" if not failures else "FAIL", len(failures)))
         for f in failures[:SHOW_MAX]:

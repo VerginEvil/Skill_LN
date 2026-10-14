@@ -2,13 +2,15 @@
 """Token-efficient full-text search over the ERP LN Programmer's Guide skill.
 
 Usage:
-  python search.py <terms...> [--dir guide|sql|extensions|public_interfaces|afs|all] [--max N]
+  python search.py <terms...> [--dir guide|sql|extensions|public_interfaces|afs|dev_tools|best_practices|all] [--max N]
                    [--group NAME] [--regex PATTERN] [--list-groups]
 
 Examples:
   python search.py seq.open
   python search.py date.add --group functions_date
   python search.py "ref" "enum" --max 10
+  python search.py crdd --dir dev_tools
+  python search.py DALHOOKERROR --dir best_practices
 """
 import argparse
 import os
@@ -37,7 +39,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("terms", nargs="*", help="space-separated terms (AND, case-insensitive)")
     ap.add_argument("--dir", default="all",
-                    choices=["guide", "sql", "extensions", "public_interfaces", "afs", "all"])
+                    choices=["guide", "sql", "extensions", "public_interfaces", "afs",
+                             "dev_tools", "best_practices", "all"])
     ap.add_argument("--max", type=int, default=25, help="max matching files shown (default 25)")
     ap.add_argument("--group", default=None, help="only paths containing this substring")
     ap.add_argument("--regex", default=None, help="treat pattern as regex instead of terms")

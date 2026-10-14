@@ -8,7 +8,7 @@ A unified, production-grade intelligence and automation system for **Infor ERP L
 
 This repository provides two core pillars:
 1. **[Infor LN Studio Automation Toolset & Assistant Skill](#infor-ln-studio-automation-toolset--skill)** (`ln_studio_skill/` & `tools/`): A reverse-engineered CLI toolchain and agent skill enabling declarative metadata generation, bidirectional 4GL source synchronization, Windows action bridging, and closed-loop compiler diagnostic loops.
-2. **[Baan 4GL Programmer's Guide & Public Interfaces Skill](#infor-erp-ln-programmers-guide-skill)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering 2,425 Baan 4GL functions, GenAI APIs, SQL volumes, Extension Modeler, and Public Interfaces up to release 25082026.
+2. **[Baan 4GL Programmer's Guide, Dev Tools & Best Practices Skill](#infor-erp-ln-programmers-guide-skill)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering 2,425 Baan 4GL functions, GenAI APIs, SQL volumes, Extension Modeler, Public Interfaces up to 25082026, 13 chapters of Infor LN Development Tools (2016), and a 5-part architectural Best Practices Cookbook suite.
 
 ---
 
@@ -124,11 +124,18 @@ python tools/ln_component_builder.py diagnose --activity "dev_natt_01103" --erro
 
 ---
 
-## Infor ERP LN Programmer's Guide Skill
+## Infor ERP LN Programmer's Guide, Dev Tools & Best Practices Skill
 
 Located in [`erp-ln-progguide/`](erp-ln-progguide/).
 
-- **2,970 + 155 + 162 + 2,361 + 76 pages** | **2,425 function references** | **1,833 public interfaces / process extensions** | **AFS `stpapi.*` primitives**
+- **5,000+ reference pages** | **2,425 Baan 4GL functions** | **1,833 public interfaces / process extensions** | **AFS `stpapi.*` primitives**
+- **13 Complete Development Tools Chapters** ([`references/DEV_TOOLS_INDEX.md`](erp-ln-progguide/references/DEV_TOOLS_INDEX.md)): Software components, Data Dictionaries (runtime vs application), table reconfiguration (`crdd`), 4GL Engine, SCM, PMC, and reporting.
+- **5 Actionable Best Practices Cookbooks** ([`references/best_practices/`](erp-ln-progguide/references/best_practices/)):
+  1. [`01_extension_hooks_cookbook.md`](erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md): Table/Session lifecycles, `DALHOOKERROR`, CDF logic hooks, Cloud governance.
+  2. [`02_dal_architecture_and_business_logic.md`](erp-ln-progguide/references/best_practices/02_dal_architecture_and_business_logic.md): Separation of Concerns (no DB writes in UI scripts!), DAL 1 vs 2, business methods.
+  3. [`03_sql_query_optimization_and_transactions.md`](erp-ln-progguide/references/best_practices/03_sql_query_optimization_and_transactions.md): Embedded Baan SQL, index alignment, array fetching, `db.retry.point()`.
+  4. [`04_data_model_and_domain_design.md`](erp-ln-progguide/references/best_practices/04_data_model_and_domain_design.md): Domain modeling, referential integrity, safe 2-step `crdd` reconfiguration.
+  5. [`05_session_and_mmt_patterns.md`](erp-ln-progguide/references/best_practices/05_session_and_mmt_patterns.md): Session types 1-4, MMT Controller & Satellite synchronization, labels/localization.
 - Full-text search with `python erp-ln-progguide/scripts/search.py <query>`.
 
 ### Fast Reference Search
@@ -137,6 +144,12 @@ Located in [`erp-ln-progguide/`](erp-ln-progguide/).
 python erp-ln-progguide/scripts/search.py genai.processing.start
 python erp-ln-progguide/scripts/search.py subquery --dir sql
 python erp-ln-progguide/scripts/search.py "Address.Create" --dir public_interfaces
+
+# Search Best Practices Cookbooks & Dev Tools
+python erp-ln-progguide/scripts/search.py "DALHOOKERROR" --dir best_practices
+python erp-ln-progguide/scripts/search.py "query.extend.where" --dir best_practices
+python erp-ln-progguide/scripts/search.py "crdd" --dir dev_tools
+python erp-ln-progguide/scripts/search.py "MMT Controller" --dir best_practices
 ```
 
 ---
