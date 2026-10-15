@@ -1,6 +1,6 @@
 # Infor LN & Baan 4GL Architecture Rules and Coding Guidelines
 
-This document defines the authoritative architecture rules, coding standards, and CLI automation protocols for any engineer or AI coding assistant developing on Infor LN Studio 10.8 and Infor Enterprise Server.
+This document defines the authoritative architecture rules, coding standards, and CLI automation protocols for any engineer or AI coding assistant developing on Infor LN Studio 10.8 build 0640 (April 2026 tree) and Infor Enterprise Server.
 
 ---
 
@@ -81,13 +81,13 @@ txptc100.seqn = tem.seqn + 1
 
 ## 3. Automation Toolchain Workflows for AI Agents
 
-When implementing features, creating tables, or debugging compilation errors, agents MUST use the unified CLI tools in `tools/`:
+When implementing features, creating tables, or debugging compilation errors, agents MUST use the unified CLI tools in `ln_studio_skill/tools/`:
 
 ### 3.1 Step 1: Component Definition & Generation
 Define the table, fields, indices, and session in a YAML schema file (see `ln_studio_skill/templates/table_schema_sample.yaml`). Generate metadata directly into the target activity:
 
 ```bash
-python tools/ln_component_builder.py component --spec schema.yaml --activity "<activity_name>"
+python ln_studio_skill/tools/ln_component_builder.py component --spec schema.yaml --activity "<activity_name>"
 ```
 
 ### 3.2 Step 2: 4GL Code Development & Synchronization
@@ -97,19 +97,19 @@ Develop Baan 4GL source in standalone `.dal` or `.cln` files in `scripts/`:
 
 Inject the code into workspace metadata XML:
 ```bash
-python tools/ln_component_builder.py inject --source scripts/dal/txptc100.dal --target "<activity_path>/tx/table/ptc/txptc100.tbl"
+python ln_studio_skill/tools/ln_component_builder.py inject --source scripts/dal/txptc100.dal --target "<activity_path>/tx/table/ptc/txptc100.tbl"
 ```
 
 ### 3.3 Step 3: Eclipse SCM Synchronization
 Register new components in the activity `.admin` file:
 ```bash
-python tools/ln_component_builder.py sync-admin --activity "<activity_name>"
+python ln_studio_skill/tools/ln_component_builder.py sync-admin --activity "<activity_name>"
 ```
 
 ### 3.4 Step 4: Closed-Loop Compilation & Diagnostic Fixing
 Trigger Eclipse build and inspect line-accurate compiler error markers:
 ```bash
-python tools/ln_component_builder.py build --activity "<activity_name>"
+python ln_studio_skill/tools/ln_component_builder.py build --activity "<activity_name>"
 ```
 
 If compilation errors exist, the tool prints exact files, line numbers, and error descriptions. Fix the code in `scripts/`, re-inject, and rebuild until 0 errors are reported.

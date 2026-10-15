@@ -28,3 +28,11 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Hook Lifecycle**: The deterministic call sequence of extension hooks during CRUD operations (e.g. `before.open.object.set` -> `set.object.defaults` -> `<field>.check.input` -> `before.save.object` -> `after.save.object`).
 - **Index Selectivity**: Designing and selecting SQL indices where leading fields match `WHERE` equality predicates, avoiding full table scans and lock escalation.
 - **Controller & Satellites**: The MMT session design pattern where a single parent Controller coordinates one or more synchronized Satellite sessions displaying related detail records.
+
+### LN Studio (Activity-Based Development, 10.8 build 0640)
+- **Activity**: The unit of work in LN Studio; every component modification is linked to an activity (`<activity> [<project>]` folder), which belongs to a software project under an application. Lifecycle: open, clean, recover, reassign, end, link run configurations (see `ln_studio_skill/references/studio_guide/ch03_activity_based_development.md`).
+- **SCM Cache (`.admin`)**: The per-activity Eclipse SCM registration file listing tracked components and their flags (`isCreated`, `isCheckedOut`, `isDirty`, `isVSCHappy`). Regenerated from disk by `admin_sync.py` / `sync-admin` so Studio stops reporting phantom missing components.
+- **Problem Markers (`.markers`)**: The Eclipse binary diagnostics file per activity project recording compiler errors, warnings, and line numbers; decoded by `ln_error_reader.py` / `diagnose` into line-accurate reports (errors block a build, warnings do not).
+- **Workbench**: The Eclipse RCP desktop shell hosting LN Studio perspectives, views, multipage editors, wizards, and dialogs (see `ln_studio_skill/references/studio_guide/ch01_studio_overview.md`).
+- **Project VRC**: The VRC holding all finished software components for a project; SCM is activated per project VRC on the LN server (and optionally per Studio application), determining VRC numbering and CM action behavior.
+- **Pinned Build Identity**: The validated runtime for this skill — LN Studio 10.8 build 0640 (April 2026 tree) with the September 2025 Application Development Guide; multi-release support is out of scope.

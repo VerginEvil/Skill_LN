@@ -6,6 +6,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.class
-tools/lib/tools/
+ln_studio_skill/tools/lib/tools/
 output/
 .ln_studio_config.json

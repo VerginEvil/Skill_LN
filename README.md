@@ -4,10 +4,10 @@
 
 # Skill_LN: Infor ERP LN Developer Skill & Studio Automation Toolchain
 
-A unified, production-grade intelligence and automation system for **Infor ERP LN** and **Infor LN Studio 10.8 (Eclipse RCP)**.
+A unified, production-grade intelligence and automation system for **Infor ERP LN** and **Infor LN Studio 10.8 build 0640 (April 2026 tree, Eclipse RCP)**.
 
 This repository provides two core pillars:
-1. **[Infor LN Studio Automation Toolset & Assistant Skill](#infor-ln-studio-automation-toolset--skill)** (`ln_studio_skill/` & `tools/`): A reverse-engineered CLI toolchain and agent skill enabling declarative metadata generation, bidirectional 4GL source synchronization, Windows action bridging, and closed-loop compiler diagnostic loops.
+1. **[Infor LN Studio Automation Toolset & Assistant Skill](#infor-ln-studio-automation-toolset--skill)** (`ln_studio_skill/`, self-contained: knowledge plus executables under `ln_studio_skill/tools/`): A reverse-engineered CLI toolchain and agent skill enabling declarative metadata generation, bidirectional 4GL source synchronization, Windows action bridging, and closed-loop compiler diagnostic loops. Studio usage knowledge is distilled from the *Application Development Guide (Cloud and On-premises), September 2025* into `ln_studio_skill/references/studio_guide/` with master index `references/STUDIO_INDEX.md`.
 2. **[Baan 4GL Programmer's Guide, Dev Tools & Best Practices Skill](#infor-erp-ln-programmers-guide-skill)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering 2,425 Baan 4GL functions, GenAI APIs, SQL volumes, Extension Modeler, Public Interfaces up to 25082026, 13 chapters of Infor LN Development Tools (2016), and a 5-part architectural Best Practices Cookbook suite.
 
 ---
@@ -26,7 +26,7 @@ This repository provides two core pillars:
                      |                                                              |
                      v                                                              v
        +-----------------------------+                               +-----------------------------+
-       | tools/ln_component_builder  |                               | tools/inject_ln_script.py   |
+       | ln_studio_skill/tools/ln_component_builder  |                               | ln_studio_skill/tools/inject_ln_script.py   |
        | Generates .tbl, .ses, .dmn, |                               | Syncs .dal / .cln / .src    |
        | .lbl from YAML/JSON specs   |                               | with embedded XML tags      |
        +--------------+--------------+                               +--------------+--------------+
@@ -44,7 +44,7 @@ This repository provides two core pillars:
                                                      |
                                                      v
                                   +-----------------------------------+
-                                  | tools/ln_studio_bridge.py         |
+                                  | ln_studio_skill/tools/ln_studio_bridge.py         |
                                   | Triggers F5 (Refresh) & Ctrl+B    |
                                   +------------------+----------------+
                                                      |
@@ -57,7 +57,7 @@ This repository provides two core pillars:
                                                      |
                                                      v
                                   +-----------------------------------+
-                                  | tools/ln_error_reader.py          |
+                                  | ln_studio_skill/tools/ln_error_reader.py          |
                                   | Directly parses .markers file     |
                                   | -> Returns line-accurate errors   |
                                   +------------------+----------------+
@@ -73,21 +73,21 @@ This repository provides two core pillars:
 
 ## Infor LN Studio Automation Toolset & Skill
 
-Located in [`ln_studio_skill/`](ln_studio_skill/) and [`tools/`](tools/).
+Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plus executables).
 
 ### CLI Tools Summary
 
 | Tool | Purpose | Primary Commands |
 |---|---|---|
-| [`tools/ln_component_builder.py`](tools/ln_component_builder.py) | **Master Orchestrator CLI** | `table`, `session`, `component`, `inject`, `extract`, `sync-admin`, `build`, `pipeline` |
-| [`tools/ln_workspace_manager.py`](tools/ln_workspace_manager.py) | Workspace & Activity Resolver | `python tools/ln_workspace_manager.py --list-workspaces`<br>`python tools/ln_workspace_manager.py --list-activities` |
-| [`tools/ln_schema_parser.py`](tools/ln_schema_parser.py) | Declarative Schema Validator | `python tools/ln_schema_parser.py <schema.yaml>` |
-| [`tools/generate_ln_table.py`](tools/generate_ln_table.py) | Table/Label/Domain XML Generator | `python tools/generate_ln_table.py --spec <spec> --activity <act>` |
-| [`tools/generate_ln_session.py`](tools/generate_ln_session.py) | Session & Form XML Generator | `python tools/generate_ln_session.py --spec <spec> --activity <act>` |
-| [`tools/inject_ln_script.py`](tools/inject_ln_script.py) | 4GL Source Code Synchronizer | `python tools/inject_ln_script.py --inject --source <f.dal> --target <f.tbl>`<br>`python tools/inject_ln_script.py --extract --source <f.tbl> --output <f.dal>` |
-| [`tools/admin_sync.py`](tools/admin_sync.py) | Activity SCM `.admin` Synchronizer | `python tools/admin_sync.py --activity <act> --scan-and-update`<br>`python tools/admin_sync.py --activity <act> --status` |
-| [`tools/ln_error_reader.py`](tools/ln_error_reader.py) | Eclipse `.markers` Error Parser | `python tools/ln_error_reader.py --activity <act> [--errors-only]` |
-| [`tools/ln_studio_bridge.py`](tools/ln_studio_bridge.py) | Windows Action Bridge (F5, Ctrl+B) | `python tools/ln_studio_bridge.py --build-and-check --activity <act>` |
+| [`ln_studio_skill/tools/ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** | `table`, `session`, `component`, `inject`, `extract`, `sync-admin`, `build`, `pipeline` |
+| [`ln_studio_skill/tools/ln_workspace_manager.py`](ln_studio_skill/tools/ln_workspace_manager.py) | Workspace & Activity Resolver | `python ln_studio_skill/tools/ln_workspace_manager.py --list-workspaces`<br>`python ln_studio_skill/tools/ln_workspace_manager.py --list-activities` |
+| [`ln_studio_skill/tools/ln_schema_parser.py`](ln_studio_skill/tools/ln_schema_parser.py) | Declarative Schema Validator | `python ln_studio_skill/tools/ln_schema_parser.py <schema.yaml>` |
+| [`ln_studio_skill/tools/generate_ln_table.py`](ln_studio_skill/tools/generate_ln_table.py) | Table/Label/Domain XML Generator | `python ln_studio_skill/tools/generate_ln_table.py --spec <spec> --activity <act>` |
+| [`ln_studio_skill/tools/generate_ln_session.py`](ln_studio_skill/tools/generate_ln_session.py) | Session & Form XML Generator | `python ln_studio_skill/tools/generate_ln_session.py --spec <spec> --activity <act>` |
+| [`ln_studio_skill/tools/inject_ln_script.py`](ln_studio_skill/tools/inject_ln_script.py) | 4GL Source Code Synchronizer | `python ln_studio_skill/tools/inject_ln_script.py --inject --source <f.dal> --target <f.tbl>`<br>`python ln_studio_skill/tools/inject_ln_script.py --extract --source <f.tbl> --output <f.dal>` |
+| [`ln_studio_skill/tools/admin_sync.py`](ln_studio_skill/tools/admin_sync.py) | Activity SCM `.admin` Synchronizer | `python ln_studio_skill/tools/admin_sync.py --activity <act> --scan-and-update`<br>`python ln_studio_skill/tools/admin_sync.py --activity <act> --status` |
+| [`ln_studio_skill/tools/ln_error_reader.py`](ln_studio_skill/tools/ln_error_reader.py) | Eclipse `.markers` Error Parser | `python ln_studio_skill/tools/ln_error_reader.py --activity <act> [--errors-only]` |
+| [`ln_studio_skill/tools/ln_studio_bridge.py`](ln_studio_skill/tools/ln_studio_bridge.py) | Windows Action Bridge (F5, Ctrl+B) | `python ln_studio_skill/tools/ln_studio_bridge.py --build-and-check --activity <act>` |
 
 ### Quick Start: Generate Table & Session from Schema
 
@@ -114,12 +114,12 @@ session:
 
 2. Run the end-to-end pipeline in one command:
 ```bash
-python tools/ln_component_builder.py pipeline --spec ln_studio_skill/templates/table_schema_sample.yaml --activity "dev_natt_01103"
+python ln_studio_skill/tools/ln_component_builder.py pipeline --spec ln_studio_skill/templates/table_schema_sample.yaml --activity "dev_natt_01103"
 ```
 
 3. If errors are flagged during compilation, read line-accurate problem markers:
 ```bash
-python tools/ln_component_builder.py diagnose --activity "dev_natt_01103" --errors-only
+python ln_studio_skill/tools/ln_component_builder.py diagnose --activity "dev_natt_01103" --errors-only
 ```
 
 ---
@@ -175,6 +175,6 @@ Architecture and coding rules are codified in [`.antigravity/rules/infor_ln.md`]
 
 Run the full unit test suite:
 ```bash
-python -m unittest discover tools/tests/
+python -m unittest discover -s ln_studio_skill/tools/tests
 ```
 All 69 unit tests validate schema constraints, XML generation, script injection/extraction round-trips, binary marker parsing, and admin synchronization.
