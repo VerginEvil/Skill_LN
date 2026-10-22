@@ -5,10 +5,14 @@ Unified Component Builder & Pipeline Orchestrator for Infor LN Studio.
 
 Master CLI entrypoint that unifies:
   - Declarative schema validation (ln_schema_parser)
-  - Table, domain, and label generation (generate_ln_table)
+  - Table, domain, and label generation (generate_ln_table, generate_ln_domain)
   - Session and dynamic form generation (generate_ln_session)
+  - Library generation (generate_ln_library)
+  - Menu generation (generate_ln_menu)
   - Bidirectional 4GL source synchronization (inject_ln_script)
   - Eclipse SCM cache synchronization (admin_sync)
+  - 4-layer activity validation (validate_ln_activity)
+  - Static 4GL script checking (check_4gl_script)
   - Windows action bridge & build triggering (ln_studio_bridge)
   - Eclipse Problem Marker diagnostics (ln_error_reader)
 """
@@ -16,6 +20,7 @@ Master CLI entrypoint that unifies:
 import os
 import sys
 import argparse
+import json
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
@@ -25,15 +30,20 @@ if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
 from ln_workspace_manager import (
-    list_workspaces, list_activities, resolve_activity, load_config, save_config, get_workspace_root
+    list_workspaces, list_activities, resolve_activity, load_config, save_config, get_workspace_root, detect_current_activity
 )
 from ln_schema_parser import parse_schema_file, SchemaValidationError
 from generate_ln_table import generate_all_components
 from generate_ln_session import generate_session
+from generate_ln_domain import generate_domains
+from generate_ln_library import generate_libraries
+from generate_ln_menu import generate_menus
 from inject_ln_script import inject_file, extract_file, sync_all_activity_scripts
 from admin_sync import scan_and_sync_activity, list_admin_components
 from ln_error_reader import read_activity_diagnostics
 from ln_studio_bridge import trigger_build_and_diagnose
+from check_4gl_script import check_file as check_4gl_file
+from validate_ln_activity import ActivityValidator, validate_activity
 
 
 def cmd_workspace(args):
@@ -92,8 +102,53 @@ def cmd_session(args):
         print(f"  ({f['type'].upper():<7}) {f['name']:<20} -> {f['path']}")
 
 
+def cmd_domain(args):
+    """Handles 'domain' subcommand."""
+    print(f"[INFO] Generating domain components from '{args.spec}'...")
+    files = generate_domains(
+        schema_file=args.spec,
+        activity_name=args.activity,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run
+    )
+    status_str = "[DRY-RUN] Planned" if args.dry_run else "[SUCCESS] Created"
+    print(f"{status_str} {len(files)} domain files:")
+    for f in files:
+        print(f"  ({f['type'].upper():<6}) {f['name']:<20} -> {f['path']}")
+
+
+def cmd_library(args):
+    """Handles 'library' subcommand."""
+    print(f"[INFO] Generating library components from spec '{args.spec}'...")
+    files = generate_libraries(
+        schema_file=args.spec,
+        activity_name=args.activity,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run
+    )
+    status_str = "[DRY-RUN] Planned" if args.dry_run else "[SUCCESS] Created"
+    print(f"{status_str} {len(files)} library files:")
+    for f in files:
+        print(f"  ({f['type'].upper():<7}) {f['name']:<20} -> {f['path']}")
+
+
+def cmd_menu(args):
+    """Handles 'menu' subcommand."""
+    print(f"[INFO] Generating menu components from spec '{args.spec}'...")
+    files = generate_menus(
+        schema_file=args.spec,
+        activity_name=args.activity,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run
+    )
+    status_str = "[DRY-RUN] Planned" if args.dry_run else "[SUCCESS] Created"
+    print(f"{status_str} {len(files)} menu files:")
+    for f in files:
+        print(f"  ({f['type'].upper():<6}) {f['name']:<20} -> {f['path']}")
+
+
 def cmd_component(args):
-    """Generates both table and session in one pass."""
+    """Generates table, session, and associated components in one pass."""
     cmd_table(args)
     cmd_session(args)
 
@@ -130,6 +185,110 @@ def cmd_sync_admin(args):
     print(f"  Removed:         {len(res['removed'])}")
 
 
+def cmd_check_script(args):
+    """Statically verifies 4GL scripts against LN Studio completion and syntax rules."""
+    target = Path(args.path)
+    if not target.exists():
+        print(f"[ERROR] Target path does not exist: {target}", file=sys.stderr)
+        sys.exit(1)
+
+    files_to_check: List[Path] = []
+    if target.is_dir():
+        for ext in ("*.tbl", "*.ses", "*.lib", "*.dal", "*.cln", "*.4gl", "*.bic"):
+            files_to_check.extend(target.rglob(ext))
+    else:
+        files_to_check.append(target)
+
+    owning_xml = Path(args.owning_xml) if args.owning_xml else None
+    all_diagnostics = []
+    for f in sorted(files_to_check):
+        diags = check_4gl_file(f, owning_xml=owning_xml)
+        all_diagnostics.extend(diags)
+
+    errors = [d for d in all_diagnostics if d.severity == "ERROR"]
+    warnings = [d for d in all_diagnostics if d.severity == "WARNING"]
+
+    if args.json:
+        out = {
+            "total_files": len(files_to_check),
+            "errors_count": len(errors),
+            "warnings_count": len(warnings),
+            "diagnostics": [
+                {
+                    "file": d.file_path,
+                    "line": d.line,
+                    "col": d.col,
+                    "severity": d.severity,
+                    "message": d.message,
+                }
+                for d in all_diagnostics
+            ]
+        }
+        print(json.dumps(out, indent=2))
+    else:
+        print(f"Checked {len(files_to_check)} component(s):")
+        for d in all_diagnostics:
+            print(f"  {d}")
+        print(f"\nSummary: {len(errors)} error(s), {len(warnings)} warning(s)")
+
+    if errors or (args.strict and warnings):
+        sys.exit(1)
+
+
+def cmd_validate(args):
+    """Runs 4-layer validation across activity."""
+    act_path = Path(args.path) if args.path else None
+    if not act_path:
+        act_info = detect_current_activity()
+        if act_info and act_info.get("activity_path"):
+            act_path = Path(act_info["activity_path"])
+        else:
+            print("[ERROR] No activity path provided and none detected in workspace.", file=sys.stderr)
+            sys.exit(1)
+
+    if not act_path.exists():
+        print(f"[ERROR] Activity path does not exist: {act_path}", file=sys.stderr)
+        sys.exit(1)
+
+    validator = ActivityValidator(act_path, strict=args.strict, fix=args.fix)
+    report = validator.run()
+
+    if args.json:
+        out = {
+            "activity_path": str(report.target_path),
+            "files_scanned": report.files_scanned,
+            "errors_count": len(report.errors),
+            "warnings_count": len(report.warnings),
+            "repaired_items": report.repaired_items,
+            "diagnostics": [
+                {
+                    "file": d.file_path,
+                    "line": d.line,
+                    "col": d.col,
+                    "severity": d.severity,
+                    "message": d.message,
+                }
+                for d in report.diagnostics
+            ]
+        }
+        print(json.dumps(out, indent=2))
+    else:
+        print(f"Validated Activity: {report.target_path}")
+        print(f"Scanned {report.files_scanned} component file(s):")
+        for d in report.diagnostics:
+            print(f"  {d}")
+
+        if report.repaired_items:
+            print("\nSafe Repairs Applied:")
+            for rep in report.repaired_items:
+                print(f"  [REPAIRED] {rep}")
+
+        print(f"\nSummary: {len(report.errors)} error(s), {len(report.warnings)} warning(s)")
+
+    if report.errors or (args.strict and report.warnings):
+        sys.exit(1)
+
+
 def cmd_diagnose(args):
     """Reads Eclipse problem markers."""
     diag = read_activity_diagnostics(activity_name=args.activity, errors_only=args.errors_only)
@@ -162,17 +321,17 @@ def cmd_build(args):
 def cmd_pipeline(args):
     """
     Executes full autonomous pipeline:
-    1. Validate schema
-    2. Generate table & session XML
-    3. Sync .admin
+    1. Parse schema and generate all declared components (tables, domains, sessions, libraries, menus)
+    2. Synchronize .admin SCM cache
+    3. Run 4-layer validation
     4. Optional build trigger & diagnostics
     """
     print("=================================================================")
     print("        INFOR LN STUDIO AUTOMATION PIPELINE                     ")
     print("=================================================================")
 
-    # Step 1 & 2: Generate Components
-    print("\n[STEP 1/4] Generating Table, Domain, Label, and Session XML...")
+    # Step 1: Generate Components
+    print("\n[STEP 1/4] Generating declared components (Tables, Domains, Sessions, Libraries, Menus)...")
     tbl_files = generate_all_components(
         schema_file=args.spec,
         activity_name=args.activity,
@@ -185,15 +344,29 @@ def cmd_pipeline(args):
         output_dir=args.output_dir,
         dry_run=args.dry_run
     )
-    print(f"[OK] Generated {len(tbl_files) + len(ses_files)} component files.")
+    lib_files = generate_libraries(
+        schema_file=args.spec,
+        activity_name=args.activity,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run
+    )
+    mnu_files = generate_menus(
+        schema_file=args.spec,
+        activity_name=args.activity,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run
+    )
+    total_files = len(tbl_files) + len(ses_files) + len(lib_files) + len(mnu_files)
+    print(f"[OK] Generated {total_files} component files.")
 
     if args.dry_run:
         print("\n[DRY-RUN] Pipeline completed in preview mode.")
         return
 
-    # Step 3: Sync Admin
+    # Step 2: Sync Admin
     print("\n[STEP 2/4] Synchronizing Eclipse Activity SCM (.admin)...")
     act_ident = args.activity or load_config().get("default_activity")
+    act_path = None
     if act_ident:
         resolved = resolve_activity(act_ident)
         if resolved:
@@ -202,22 +375,43 @@ def cmd_pipeline(args):
             print(f"[OK] Synchronized .admin (Added: {len(res['added'])}, Total: {res['total_registered']})")
         else:
             print(f"[WARN] Could not resolve activity '{act_ident}', skipped .admin sync.")
+    elif args.output_dir:
+        act_path = Path(args.output_dir)
+        try:
+            res = scan_and_sync_activity(act_path)
+            print(f"[OK] Synchronized .admin (Added: {len(res['added'])}, Total: {res['total_registered']})")
+        except Exception as e:
+            print(f"[INFO] .admin sync skipped: {e}")
+
+    # Step 3: Validate
+    if act_path and act_path.exists():
+        print("\n[STEP 3/4] Running 4-Layer Activity Validation...")
+        validator = ActivityValidator(act_path, strict=False, fix=args.auto_fix)
+        report = validator.run()
+        print(f"Scanned {report.files_scanned} files -> {len(report.errors)} error(s), {len(report.warnings)} warning(s)")
+        if report.errors:
+            print("[WARN] Validation detected errors in generated activity:")
+            for e in report.errors[:5]:
+                print(f"  {e}")
+            if not args.skip_build:
+                print("[ERROR] Aborting build due to validation errors.")
+                sys.exit(1)
     else:
-        print("[INFO] No activity target specified, skipped .admin sync.")
+        print("\n[STEP 3/4] Validation skipped (no activity directory target).")
 
     # Step 4: Build & Diagnose
     if not args.skip_build:
-        print("\n[STEP 3/4] Triggering Eclipse Build Bridge...")
+        print("\n[STEP 4/4] Triggering Eclipse Build Bridge...")
         code = trigger_build_and_diagnose(
             activity_name=args.activity,
             settle_seconds=args.settle,
             errors_only=args.errors_only
         )
-        print("\n[STEP 4/4] Pipeline Complete!")
+        print("\nPipeline Complete!")
         sys.exit(code)
     else:
-        print("\n[STEP 3/4] Skipped build (--skip-build).")
-        print("\n[STEP 4/4] Pipeline Complete!")
+        print("\n[STEP 4/4] Skipped build (--skip-build).")
+        print("\nPipeline Complete!")
 
 
 def main():
@@ -250,6 +444,27 @@ def main():
     sp_ses.add_argument("--output-dir", help="Target directory (overrides activity)")
     sp_ses.add_argument("--dry-run", action="store_true", help="Preview without writing")
 
+    # domain
+    sp_dmn = subparsers.add_parser("domain", help="Generate domain components from schema")
+    sp_dmn.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
+    sp_dmn.add_argument("--activity", help="Target activity name")
+    sp_dmn.add_argument("--output-dir", help="Target directory")
+    sp_dmn.add_argument("--dry-run", action="store_true", help="Preview without writing")
+
+    # library
+    sp_lib = subparsers.add_parser("library", help="Generate library (DLL, session/table extension)")
+    sp_lib.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
+    sp_lib.add_argument("--activity", help="Target activity name")
+    sp_lib.add_argument("--output-dir", help="Target directory")
+    sp_lib.add_argument("--dry-run", action="store_true", help="Preview without writing")
+
+    # menu
+    sp_mnu = subparsers.add_parser("menu", help="Generate menu components")
+    sp_mnu.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
+    sp_mnu.add_argument("--activity", help="Target activity name")
+    sp_mnu.add_argument("--output-dir", help="Target directory")
+    sp_mnu.add_argument("--dry-run", action="store_true", help="Preview without writing")
+
     # component
     sp_comp = subparsers.add_parser("component", help="Generate both table and session from schema")
     sp_comp.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
@@ -269,6 +484,20 @@ def main():
     sp_ext.add_argument("--source", required=True, help="Path to source .tbl / .ses XML file")
     sp_ext.add_argument("--output", required=True, help="Path to output .dal / .cln script file")
 
+    # check-script
+    sp_chk = subparsers.add_parser("check-script", help="Statically verify 4GL script syntax and structure")
+    sp_chk.add_argument("path", help="Path to 4GL script or XML component file/directory")
+    sp_chk.add_argument("--owning-xml", help="Owning XML component file for symbol verification")
+    sp_chk.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
+    sp_chk.add_argument("--json", action="store_true", help="Output results in JSON format")
+
+    # validate
+    sp_val = subparsers.add_parser("validate", help="Run 4-layer validation across activity")
+    sp_val.add_argument("path", nargs="?", help="Path to activity folder")
+    sp_val.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
+    sp_val.add_argument("--fix", action="store_true", help="Perform safe non-destructive repairs (missing labels, admin sync)")
+    sp_val.add_argument("--json", action="store_true", help="Output results in JSON format")
+
     # sync-admin
     sp_adm = subparsers.add_parser("sync-admin", help="Synchronize activity .admin SCM cache")
     sp_adm.add_argument("--activity", help="Target activity name")
@@ -285,10 +514,11 @@ def main():
     sp_bld.add_argument("--errors-only", action="store_true", help="Only report errors")
 
     # pipeline
-    sp_pip = subparsers.add_parser("pipeline", help="Run full pipeline: Schema -> XML -> Admin Sync -> Build")
+    sp_pip = subparsers.add_parser("pipeline", help="Run full pipeline: Schema -> XML -> Admin Sync -> Validate -> Build")
     sp_pip.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
     sp_pip.add_argument("--activity", help="Target activity name")
     sp_pip.add_argument("--output-dir", help="Target output directory")
+    sp_pip.add_argument("--auto-fix", action="store_true", help="Auto-fix missing labels and admin sync during validation")
     sp_pip.add_argument("--skip-build", action="store_true", help="Skip Eclipse build trigger")
     sp_pip.add_argument("--settle", type=float, default=3.0, help="Build settle wait in seconds")
     sp_pip.add_argument("--errors-only", action="store_true", help="Only report errors")
@@ -300,9 +530,14 @@ def main():
         "workspace": cmd_workspace,
         "table": cmd_table,
         "session": cmd_session,
+        "domain": cmd_domain,
+        "library": cmd_library,
+        "menu": cmd_menu,
         "component": cmd_component,
         "inject": cmd_inject,
         "extract": cmd_extract,
+        "check-script": cmd_check_script,
+        "validate": cmd_validate,
         "sync-admin": cmd_sync_admin,
         "diagnose": cmd_diagnose,
         "build": cmd_build,

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 ln_studio_skill/tools/generate_ln_table.py
-Infor LN Studio Table and Metadata XML Generator.
+Infor LN Studio Table, Label, and Domain XML Generator.
 
 Generates production-grade .tbl, .lbl, and .dmn XML files matching Infor LN Studio 10.8
-specifications from validated YAML/JSON schemas, and writes them into the target Activity folder.
+specifications from validated schemas, enforcing SCM Read-Only protection and workbench conventions.
 """
 
 import os
@@ -14,14 +14,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
-# Ensure both repo root and tools folder are in sys.path
 _SKILL_ROOT = Path(__file__).resolve().parent.parent
 _TOOLS_DIR = Path(__file__).resolve().parent
 if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
 from ln_schema_parser import parse_schema_file
-from ln_workspace_manager import resolve_activity, load_config
+from ln_workspace_manager import resolve_activity, load_config, detect_current_activity
+from scm_guardrails import assert_file_writable, ReadOnlyComponentError
 
 
 def get_current_iso_time() -> str:
@@ -80,11 +80,14 @@ def generate_domain_xml(
     version_id: str,
     application: str
 ) -> str:
-    """Generates standard <DR_Domain> XML for enums or custom domains."""
+    """Generates standard <DR_Domain> XML for all native datatypes."""
     name = domain_spec["name"]
     desc = domain_spec["description"]
     c_time = "1970-01-01T00:00:00Z"
     native_dt = domain_spec.get("native_datatype", 7)
+    disp_len = domain_spec.get("display_length", 20)
+    ver = domain_spec.get("version_id", version_id)
+    app = domain_spec.get("application", application)
 
     enums_xml = ""
     for enum_item in domain_spec.get("enums", []):
@@ -101,11 +104,26 @@ def generate_domain_xml(
             f'</Enumeration>'
         )
 
+    facets = domain_spec.get("facets", {})
+    facets_xml = ""
+    if native_dt == 7:  # Enum
+        tot_digits = facets.get("totalDigits", str(disp_len))
+        facets_xml = f'<Facet><value>{tot_digits}</value><type>totalDigits</type></Facet>'
+    elif native_dt in (3, 5):  # Integer or Amount
+        tot_digits = facets.get("totalDigits", facets.get("maxLength", str(disp_len)))
+        facets_xml = f'<Facet><value>{tot_digits}</value><type>totalDigits</type></Facet>'
+        if native_dt == 5:
+            facets_xml += '<Facet><value>2</value><type>fractionDigits</type></Facet>'
+    else:  # String, Date, etc.
+        max_len = facets.get("maxLength", str(disp_len))
+        min_len = facets.get("minLength", "1")
+        facets_xml = f'<Facet><value>{max_len}</value><type>maxLength</type></Facet><Facet><value>{min_len}</value><type>minLength</type></Facet>'
+
     xml = (
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
         f'<DR_Domain>'
         f'<description>{desc}</description>'
-        f'<versionID>{version_id}</versionID>'
+        f'<versionID>{ver}</versionID>'
         f'<type>domain</type>'
         f'<name>{name}</name>'
         f'<Version>'
@@ -125,13 +143,13 @@ def generate_domain_xml(
         f'<rangeMessage/><range/><displayFormat/>'
         f'<roundingMethod>4</roundingMethod>'
         f'<divideFactor>0</divideFactor>'
-        f'<displayLength>20</displayLength>'
+        f'<displayLength>{disp_len}</displayLength>'
         f'<internalFormat/>'
         f'<conversion>4</conversion>'
         f'<alignment>5</alignment>'
-        f'<application>{application}</application>'
+        f'<application>{app}</application>'
         f'<datatype>'
-        f'<Facet><value>20</value><type>totalDigits</type></Facet>'
+        f'{facets_xml}'
         f'<nativeDatatype>{native_dt}</nativeDatatype>'
         f'</datatype>'
         f'</DR_Domain>'
@@ -140,18 +158,17 @@ def generate_domain_xml(
 
 
 def generate_table_xml(
-    schema: Dict[str, Any],
+    table_spec: Dict[str, Any],
     application: str,
     dal_code: Optional[str] = None
 ) -> str:
     """Generates standard Infor LN Studio 10.8 <DR_Table> XML."""
-    tbl = schema["table"]
-    name = tbl["code"]
-    desc = tbl["description"]
-    version_id = tbl["version_id"]
+    name = table_spec["code"]
+    desc = table_spec["description"]
+    version_id = table_spec["version_id"]
+    pkg = table_spec["package"]
     now_iso = get_current_iso_time()
 
-    # 1. Header & Version
     parts = [
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
         '<DR_Table>',
@@ -172,31 +189,32 @@ def generate_table_xml(
         f'<descriptionReference>{name}</descriptionReference>',
     ]
 
-    # 2. Attachments for table and fields
+    # Attachments
     parts.append(f'<Attachment><type>relnotes</type><name>{name}</name></Attachment>')
     parts.append(f'<Attachment><type>techdoc</type><name>{name}</name></Attachment>')
-    for f in schema["fields"]:
+    for f in table_spec["fields"]:
         fname = f["name"]
         parts.append(f'<Attachment><type>relnotes</type><name>{name}.{fname}</name></Attachment>')
         parts.append(f'<Attachment><type>techdoc</type><name>{name}.{fname}</name></Attachment>')
 
-    # 3. Indices
-    for ind in schema["indices"]:
+    # Indices
+    for ind in table_spec.get("indices", []):
         idx_id = ind["id"]
         idx_desc = ind["description"]
         idx_label = ind["label_code"]
-        is_pk = "true" if ind["primary_key"] else "false"
-        is_unq = "true" if ind["unique"] else "false"
-        is_act = "true" if ind["active"] else "false"
+        is_pk = "true" if ind.get("primary_key") else "false"
+        is_unq = "true" if ind.get("unique") else "false"
+        is_act = "true" if ind.get("active", True) else "false"
 
         idx_cols_xml = ""
-        for col in ind["columns"]:
-            s_order = col.get("sorting_order", col.get("sortingOrder", "asc"))
+        for c_pos, col in enumerate(ind["columns"], start=1):
+            c_name = col if isinstance(col, str) else col.get("column", "")
+            s_order = "asc" if isinstance(col, str) else col.get("sorting_order", "asc")
             idx_cols_xml += (
                 f'<IndexColumn>'
                 f'<sortingOrder>{s_order}</sortingOrder>'
-                f'<column>{col["column"]}</column>'
-                f'<position>{col["position"]}</position>'
+                f'<column>{c_name}</column>'
+                f'<position>{c_pos}</position>'
                 f'</IndexColumn>'
             )
 
@@ -212,17 +230,19 @@ def generate_table_xml(
             f'</Index>'
         )
 
-    # 4. Table Relationships (Foreign Keys)
-    for ref in schema["references"]:
-        to_tbl = ref["to_table"]
-        del_rule = ref["delete_rule"]
-        upd_rule = ref["update_rule"]
-        mult = ref["multiplicity"]
-        rel_name = ref["name"]
+    # Table Relationships
+    for ref in table_spec.get("references", []):
+        to_tbl = ref.get("reference_table", ref.get("to_table", ""))
+        del_rule = ref.get("delete_rule", "not_delete_restricted")
+        upd_rule = ref.get("update_rule", "restrict")
+        mult = ref.get("multiplicity", "one_to_many")
+        rel_name = ref.get("name", f"ref_{to_tbl}")
 
         cols_xml = ""
-        for cm in ref["columns"]:
-            cols_xml += f'<TableRelationshipColumn><to>{cm["to"]}</to><from>{cm["from"]}</from></TableRelationshipColumn>'
+        from_cols = ref.get("from_columns", [])
+        to_cols = ref.get("to_columns", [])
+        for f_col, t_col in zip(from_cols, to_cols):
+            cols_xml += f'<TableRelationshipColumn><to>{t_col}</to><from>{f_col}</from></TableRelationshipColumn>'
 
         parts.append(
             f'<TableRelationship>'
@@ -238,22 +258,22 @@ def generate_table_xml(
             f'</TableRelationship>'
         )
 
-    # 5. Columns
-    for col in schema["fields"]:
+    # Columns
+    for col in table_spec["fields"]:
         c_name = col["name"]
         c_desc = col["description"]
         c_label = col["label_code"]
         c_pos = col["position"]
-        c_null = "true" if col["nullable"] else "false"
-        c_mand = "true" if col["mandatory"] else "false"
-        c_act = "true" if col["active"] else "false"
+        c_null = "true" if col.get("nullable") else "false"
+        c_mand = "true" if col.get("mandatory") else "false"
+        c_act = "true" if col.get("active", True) else "false"
         c_dt_code = col["native_datatype"]
         c_domain = col["domain"]
 
-        def_val_tag = f'<defaultValue>{col["default_value"]}</defaultValue>' if col["default_value"] else ""
+        def_val_tag = f'<defaultValue>{col["default_value"]}</defaultValue>' if col.get("default_value") else ""
 
         facets_xml = ""
-        for f_type, f_val in col["facets"].items():
+        for f_type, f_val in col.get("facets", {}).items():
             facets_xml += f'<Facet><value>{f_val}</value><type>{f_type}</type></Facet>'
 
         parts.append(
@@ -276,22 +296,19 @@ def generate_table_xml(
             f'</Column>'
         )
 
-    # 6. Documentation
+    # Documentation & Application
     parts.append('<documentation/>')
 
-    # 7. Embedded DAL (<DR_Module>)
-    # If no DAL code supplied, create a standard DAL2 starter skeleton
+    # Embedded DAL
     if not dal_code:
-        pkg = tbl["package"]
-        tname = tbl["code"]
         dal_code = (
             f"|*******************************************************************************\n"
-            f"|* {tname}  {version_id}\n"
+            f"|* {name}  {version_id}\n"
             f"|* {desc}\n"
             f"|* Script Type: DAL\n"
             f"|*******************************************************************************\n\n"
             f"#include <bic_dal2>\n\n"
-            f"table t{tname}\n\n"
+            f"table t{name}\n\n"
             f"function extern boolean method.is.allowed(long i.method)\n"
             f"{{\n"
             f"\ton case i.method\n"
@@ -303,18 +320,9 @@ def generate_table_xml(
             f"\t\tbreak\n"
             f"\tendcase\n"
             f"\treturn(true)\n"
-            f"}}\n\n"
-            f"function extern long before.save.object(long i.mode)\n"
-            f"{{\n"
-            f"\treturn(0)\n"
-            f"}}\n\n"
-            f"function extern long after.save.object(long i.mode)\n"
-            f"{{\n"
-            f"\treturn(0)\n"
             f"}}\n"
         )
 
-    # XML Escape DAL code
     escaped_dal = (
         dal_code.replace("&", "&amp;")
         .replace("<", "&lt;")
@@ -352,21 +360,16 @@ def generate_table_xml(
         f'<sourceObjectID>1</sourceObjectID>'
         f'<expression>{escaped_dal}</expression>'
         f'<expressionLanguageType>Baan4C</expressionLanguageType>'
-        f'<sourceType>12</sourceType>'
+        f'<sourceType>2</sourceType>'
         f'<sourceDescription>{desc}</sourceDescription>'
         f'<sourceName>{name}</sourceName>'
         f'</Source>'
         f'<documentation/>'
-        f'<Attachment><type>relnotes</type><name>{name}</name></Attachment>'
         f'<Attachment><type>techdoc</type><name>{name}</name></Attachment>'
-        f'<additionalConstraints>2522</additionalConstraints>'
-        f'<additionalInstructions/>'
-        f'<keyword>||</keyword>'
         f'<application>{application}</application>'
         f'</DR_Module>'
     )
 
-    # 8. Closing Table Tag
     parts.append(f'<application>{application}</application>')
     parts.append('</DR_Table>')
 
@@ -374,102 +377,113 @@ def generate_table_xml(
 
 
 def generate_all_components(
-    schema_file: str,
+    schema_file: Union[str, Path, Dict[str, Any]],
     activity_name: Optional[str] = None,
     output_dir: Optional[str] = None,
+    workspace_name: Optional[str] = None,
+    activity_path: Optional[str] = None,
     dry_run: bool = False
 ) -> List[Dict[str, str]]:
     """
-    Parses schema, determines target paths, and generates table, labels, and domains.
-    Returns list of generated file dictionaries: [{"type": "...", "path": "...", "name": "..."}].
+    Generates all table, domain, and label components declared in schema.
+    Validates SCM Read-Only protection before writing to disk.
     """
-    schema = parse_schema_file(schema_file)
-    tbl = schema["table"]
-    pkg = tbl["package"]
-    mod = tbl["module"]
-    tcode = tbl["code"]
-    desc = tbl["description"]
-    ver = tbl["version_id"]
+    if isinstance(schema_file, dict):
+        schema = schema_file
+    else:
+        schema = parse_schema_file(schema_file)
 
+    ver = schema.get("version_id", "B61O_a_ext")
+    app_code = schema.get("application", "")
+
+    # Resolve target directory
     target_root: Path
-    app_code: str = tbl.get("application", "")
-
     if output_dir:
         target_root = Path(output_dir).resolve()
         if not app_code:
             app_code = "EXTce01105"
-    elif activity_name:
-        resolved = resolve_activity(activity_name)
+    elif activity_path or activity_name:
+        resolved = resolve_activity(activity_name, workspace_name=workspace_name, activity_path=activity_path)
         if not resolved:
-            raise ValueError(f"Could not resolve activity: '{activity_name}'")
+            raise ValueError(f"Could not resolve activity: '{activity_path or activity_name}'")
         target_root = Path(resolved["path"])
-        app_code = resolved["project"]
+        if not app_code:
+            app_code = resolved["project"]
     else:
-        cfg = load_config()
-        def_act = cfg.get("default_activity")
-        if def_act:
-            resolved = resolve_activity(def_act)
-            if resolved:
-                target_root = Path(resolved["path"])
-                app_code = resolved["project"]
-            else:
-                target_root = Path.cwd() / "output"
+        detected = detect_current_activity()
+        if detected:
+            target_root = Path(detected["path"])
+            if not app_code:
+                app_code = detected["project"]
+        elif dry_run:
+            target_root = Path.cwd() / "output"
+            if not app_code:
                 app_code = "EXTce01105"
         else:
-            target_root = Path.cwd() / "output"
-            app_code = "EXTce01105"
+            raise ValueError("Explicit --activity, --activity-path, or --output-dir required to generate components.")
 
     generated_files = []
+    tables = schema.get("tables", [])
+    if not tables and "table" in schema and schema["table"]:
+        tables = [schema["table"]]
 
-    # 1. Generate Table XML
-    tbl_dir = target_root / pkg / "table" / mod
-    tbl_path = tbl_dir / f"{tcode}.tbl"
-    tbl_xml = generate_table_xml(schema, application=app_code)
-    generated_files.append({
-        "type": "table",
-        "name": tcode,
-        "path": str(tbl_path),
-        "content": tbl_xml
-    })
+    # 1. Generate Tables and their Labels
+    for tbl in tables:
+        tcode = tbl["code"]
+        pkg = tbl["package"]
+        mod = tbl["module"]
+        desc = tbl["description"]
+        tbl_ver = tbl.get("version_id", ver)
+        tbl_app = tbl.get("application", app_code)
 
-    # 2. Generate Label XMLs
-    lbl_dir = target_root / pkg / "label"
-
-    # Table description label
-    lbl_tbl_path = lbl_dir / f"{tcode}.lbl"
-    generated_files.append({
-        "type": "label",
-        "name": tcode,
-        "path": str(lbl_tbl_path),
-        "content": generate_label_xml(tcode, desc, ver, app_code)
-    })
-
-    # Field description labels
-    for f in schema["fields"]:
-        f_lbl_code = f["label_code"]
-        f_lbl_path = lbl_dir / f"{f_lbl_code}.lbl"
+        tbl_dir = target_root / pkg / "table" / mod
+        tbl_path = tbl_dir / f"{tcode}.tbl"
+        tbl_xml = generate_table_xml(tbl, application=tbl_app)
         generated_files.append({
-            "type": "label",
-            "name": f_lbl_code,
-            "path": str(f_lbl_path),
-            "content": generate_label_xml(f_lbl_code, f["description"], ver, app_code)
+            "type": "table",
+            "name": tcode,
+            "path": str(tbl_path),
+            "content": tbl_xml
         })
 
-    # Index description labels
-    for ind in schema["indices"]:
-        i_lbl_code = ind["label_code"]
-        i_lbl_path = lbl_dir / f"{i_lbl_code}.lbl"
+        lbl_dir = target_root / pkg / "label"
+
+        # Table description label
+        lbl_tbl_path = lbl_dir / f"{tcode}.lbl"
         generated_files.append({
             "type": "label",
-            "name": i_lbl_code,
-            "path": str(i_lbl_path),
-            "content": generate_label_xml(i_lbl_code, ind["description"], ver, app_code)
+            "name": tcode,
+            "path": str(lbl_tbl_path),
+            "content": generate_label_xml(tcode, desc, tbl_ver, tbl_app)
         })
 
-    # 3. Generate Custom Domains
-    dmn_dir = target_root / pkg / "domain"
+        # Field description labels (convention: <pkg><table_code>.<column>)
+        for f in tbl["fields"]:
+            f_lbl_code = f["label_code"]
+            f_lbl_path = lbl_dir / f"{f_lbl_code}.lbl"
+            generated_files.append({
+                "type": "label",
+                "name": f_lbl_code,
+                "path": str(f_lbl_path),
+                "content": generate_label_xml(f_lbl_code, f["description"], tbl_ver, tbl_app)
+            })
+
+        # Index description labels
+        for ind in tbl.get("indices", []):
+            i_lbl_code = ind["label_code"]
+            i_lbl_path = lbl_dir / f"{i_lbl_code}.lbl"
+            generated_files.append({
+                "type": "label",
+                "name": i_lbl_code,
+                "path": str(i_lbl_path),
+                "content": generate_label_xml(i_lbl_code, ind["description"], tbl_ver, tbl_app)
+            })
+
+    # 2. Generate Domains
     for dmn in schema.get("domains", []):
         d_name = dmn["name"]
+        pkg = dmn.get("package") or (d_name[:2] if len(d_name) >= 2 else "tx")
+        dmn_dir = target_root / pkg / "domain"
         d_path = dmn_dir / f"{d_name}.dmn"
         generated_files.append({
             "type": "domain",
@@ -479,6 +493,7 @@ def generate_all_components(
         })
 
         # Labels for enum constants
+        lbl_dir = target_root / pkg / "label"
         for en in dmn.get("enums", []):
             en_lbl = en["label_code"]
             en_path = lbl_dir / f"{en_lbl}.lbl"
@@ -489,8 +504,12 @@ def generate_all_components(
                 "content": generate_label_xml(en_lbl, en["description"], ver, app_code)
             })
 
-    # Write files if not dry-run
+    # Write files if not dry-run, enforcing Read-Only check first
     if not dry_run:
+        for item in generated_files:
+            p = Path(item["path"])
+            assert_file_writable(p, target_root)
+
         for item in generated_files:
             p = Path(item["path"])
             p.parent.mkdir(parents=True, exist_ok=True)
@@ -504,6 +523,8 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Infor LN Table, Labels, and Domains from Schema")
     parser.add_argument("--spec", required=True, help="Path to schema YAML/JSON file")
     parser.add_argument("--activity", help="Target activity folder name or activity code")
+    parser.add_argument("--activity-path", help="Direct activity directory path")
+    parser.add_argument("--workspace", help="Filter by workspace name")
     parser.add_argument("--output-dir", help="Direct target directory path (overrides activity)")
     parser.add_argument("--dry-run", action="store_true", help="Print plan without writing files to disk")
 
@@ -513,6 +534,8 @@ def main():
         files = generate_all_components(
             schema_file=args.spec,
             activity_name=args.activity,
+            activity_path=args.activity_path,
+            workspace_name=args.workspace,
             output_dir=args.output_dir,
             dry_run=args.dry_run
         )
@@ -520,6 +543,9 @@ def main():
         print(f"{mode_str} {len(files)} component files:")
         for f in files:
             print(f"  ({f['type'].upper():<6}) {f['name']:<20} -> {f['path']}")
+    except ReadOnlyComponentError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
         print(f"[ERROR] Generation failed: {e}", file=sys.stderr)
         sys.exit(1)

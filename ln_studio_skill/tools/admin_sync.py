@@ -4,7 +4,7 @@ ln_studio_skill/tools/admin_sync.py
 Eclipse Activity SCM (.admin) Synchronizer for Infor LN Studio.
 
 Maintains the Java-serialized .admin file in each Activity folder, registering
-newly created .tbl, .ses, .lib, .dmn, and .lbl components with proper SCM status
+newly created LN Studio components across all 12 managed extensions with proper SCM status
 flags (isCreated=true, m_isDirty=true, m_isVSCHappy=false).
 """
 
@@ -28,6 +28,13 @@ JAVA_BIN_CANDIDATES = [
     r"C:\Program Files\Java\latest\bin\java.exe",
     shutil.which("java") or "java"
 ]
+
+# 12 Managed LN Studio Component Extensions
+MANAGED_EXTENSIONS = {
+    ".tbl", ".ses", ".lib", ".dmn", ".lbl",
+    ".mnu", ".rpt", ".rptdsrc", ".msg", ".que",
+    ".add", ".fun"
+}
 
 
 def get_java_executable() -> str:
@@ -54,7 +61,6 @@ def ensure_helper_compiled() -> None:
         java_exe = get_java_executable()
         javac_cand = java_exe.replace("java.exe", "javac.exe")
         javac_exe = javac_cand if os.path.isfile(javac_cand) else (shutil.which("javac") or "javac")
-        jar_path = lib_dir / "lnstudio_commoncore.jar"
         cmd = [javac_exe, "-d", str(lib_dir), str(java_file)]
         subprocess.run(cmd, capture_output=True, text=True, check=False)
 
@@ -117,23 +123,26 @@ def remove_component(activity_path: Path, rel_path: str) -> bool:
 
 def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
     """
-    Scans activity folder on disk, compares against .admin entries,
-    registers untracked files, and cleans up missing ones.
+    Scans activity folder on disk, compares against .admin entries across all
+    12 LN Studio component extensions, registers untracked files, and removes
+    obsolete entries only when they match managed extensions.
     """
     admin_file = activity_path / ".admin"
     registered = {c["path"]: c for c in list_admin_components(activity_path)}
 
-    # Scan files on disk
-    managed_exts = {".tbl", ".ses", ".lib", ".dmn", ".lbl"}
+    # Scan files on disk across all 12 managed extensions
     disk_files = set()
 
     for p in activity_path.rglob("*"):
-        if p.is_file() and p.suffix.lower() in managed_exts:
+        if p.is_file() and p.suffix.lower() in MANAGED_EXTENSIONS:
             rel = p.relative_to(activity_path).as_posix()
             disk_files.add(rel)
 
     to_add = sorted(list(disk_files - set(registered.keys())))
-    to_remove = sorted(list(set(registered.keys()) - disk_files))
+    to_remove = sorted([
+        k for k in (set(registered.keys()) - disk_files)
+        if Path(k).suffix.lower() in MANAGED_EXTENSIONS
+    ])
 
     added = []
     removed = []
@@ -158,7 +167,8 @@ def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
 def main():
     parser = argparse.ArgumentParser(description="Synchronize Infor LN Studio Activity .admin File")
     parser.add_argument("--activity", help="Activity name or folder name")
-    parser.add_argument("--path", help="Direct activity directory path")
+    parser.add_argument("--path", "--activity-path", dest="path", help="Direct activity directory path")
+    parser.add_argument("--workspace", help="Filter by workspace name")
     parser.add_argument("--status", action="store_true", help="Display registered components in .admin")
     parser.add_argument("--scan-and-update", action="store_true", help="Scan disk files and synchronize .admin")
     parser.add_argument("--add", help="Add specific relative path to .admin")
@@ -170,21 +180,23 @@ def main():
     if args.path:
         act_path = Path(args.path).resolve()
     elif args.activity:
-        resolved = resolve_activity(args.activity)
+        resolved = resolve_activity(args.activity, workspace_name=args.workspace)
         if not resolved:
             print(f"[ERROR] Could not resolve activity: '{args.activity}'", file=sys.stderr)
             sys.exit(1)
         act_path = Path(resolved["path"])
     else:
-        cfg = load_config()
-        def_act = cfg.get("default_activity")
-        if def_act:
-            resolved = resolve_activity(def_act)
-            if resolved:
-                act_path = Path(resolved["path"])
+        # Attempt auto-detection from current working directory
+        from ln_workspace_manager import detect_current_activity
+        detected = detect_current_activity()
+        if detected:
+            act_path = Path(detected["path"])
+        else:
+            print("[ERROR] Please provide --activity or --activity-path (or run within an Activity directory)", file=sys.stderr)
+            sys.exit(1)
 
-    if not act_path:
-        print("[ERROR] Please provide --activity or --path", file=sys.stderr)
+    if not act_path.exists():
+        print(f"[ERROR] Activity directory does not exist: {act_path}", file=sys.stderr)
         sys.exit(1)
 
     if args.status:

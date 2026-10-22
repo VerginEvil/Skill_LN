@@ -5,7 +5,7 @@ Bidirectional 4GL Source Code Synchronizer for Infor LN Studio.
 
 Bridges standalone Baan 4GL source files (.dal, .cln, .src, .lib) in the Git repository
 with the embedded <DR_Module><Source><expression> XML tags in .tbl, .ses, and .lib workspace files.
-Guarantees 100% round-trip fidelity with zero byte or character loss.
+Guarantees 100% round-trip fidelity with zero byte or character loss, enforcing Read-Only check-out protection.
 """
 
 import os
@@ -20,7 +20,8 @@ _TOOLS_DIR = Path(__file__).resolve().parent
 if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
-from ln_workspace_manager import resolve_activity, load_config
+from ln_workspace_manager import resolve_activity, load_config, detect_current_activity
+from scm_guardrails import assert_file_writable, ReadOnlyComponentError
 
 EXPRESSION_REGEX = re.compile(r"<expression>(.*?)</expression>", re.DOTALL)
 
@@ -42,7 +43,6 @@ def unescape_xml_to_4gl(xml_text: str) -> str:
     Unescapes XML text back to plain Baan 4GL source code.
     Decodes &lt;, &gt;, &quot;, &apos;, and &amp;.
     """
-    # Replace entities other than &amp; first, then &amp; last
     res = xml_text.replace("&lt;", "<")
     res = res.replace("&gt;", ">")
     res = res.replace("&quot;", '"')
@@ -94,11 +94,17 @@ def extract_file(xml_file_path: Path, output_file_path: Path) -> bool:
 
 
 def inject_file(source_script_path: Path, target_xml_path: Path) -> bool:
-    """Injects 4GL code from a plain script file into target XML file."""
+    """
+    Injects 4GL code from a plain script file into target XML file.
+    Enforces SCM Read-Only protection on target_xml_path before writing.
+    """
     if not source_script_path.exists():
         raise FileNotFoundError(f"Source 4GL file does not exist: {source_script_path}")
     if not target_xml_path.exists():
         raise FileNotFoundError(f"Target XML file does not exist: {target_xml_path}")
+
+    # Enforce Read-Only check-out protection
+    assert_file_writable(target_xml_path)
 
     with open(source_script_path, "r", encoding="utf-8") as f:
         script_code = f.read()
@@ -122,6 +128,7 @@ def sync_all_activity_scripts(
     """
     Synchronizes all scripts between repo scripts directory and workspace activity.
     direction: 'repo-to-ws' (inject) or 'ws-to-repo' (extract).
+    Supports .tbl (DAL), .ses (UI), and .lib (Library / Extension).
     """
     synced_count = 0
     if direction == "repo-to-ws":
@@ -141,12 +148,14 @@ def sync_all_activity_scripts(
                 target_ext = ".lib"
 
             if target_ext:
-                # Find matching file in activity
+                # Search matching target file in activity
                 matches = list(activity_path.rglob(f"{stem}{target_ext}"))
                 if matches:
                     target_file = matches[0]
+                    # Enforce guardrail
+                    assert_file_writable(target_file, activity_path)
                     inject_file(script_file, target_file)
-                    print(f"  [INJECTED] {script_file.name} -> {target_file.relative_to(activity_path)}")
+                    print(f"  [INJECTED] {script_file.relative_to(repo_scripts_dir.parent)} -> {target_file.relative_to(activity_path)}")
                     synced_count += 1
     else:
         # ws-to-repo: Extract from all .tbl, .ses, .lib in activity
@@ -181,16 +190,19 @@ def sync_all_activity_scripts(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Bidirectional 4GL Script Synchronizer for Infor LN Studio")
-    parser.add_argument("--inject", action="store_true", help="Inject plain 4GL script into workspace XML file")
-    parser.add_argument("--extract", action="store_true", help="Extract 4GL script from workspace XML file")
-    parser.add_argument("--source", help="Source file path")
+    parser = argparse.ArgumentParser(description="Synchronize Baan 4GL source code with LN Studio XML components")
+    parser.add_argument("--inject", action="store_true", help="Inject plain script into XML")
+    parser.add_argument("--extract", action="store_true", help="Extract plain script from XML")
+    parser.add_argument("--source", help="Source script/XML file path")
     parser.add_argument("--target", help="Target XML file path (for --inject)")
-    parser.add_argument("--output", help="Output file path (for --extract)")
-    parser.add_argument("--sync-all", action="store_true", help="Synchronize all scripts with activity")
-    parser.add_argument("--direction", choices=["repo-to-ws", "ws-to-repo"], default="repo-to-ws", help="Sync direction")
-    parser.add_argument("--activity", help="Activity name for --sync-all")
-    parser.add_argument("--scripts-dir", default="scripts", help="Repository scripts directory (default: 'scripts')")
+    parser.add_argument("--output", help="Output script file path (for --extract)")
+
+    parser.add_argument("--sync-all", action="store_true", help="Batch sync all scripts between activity and repo")
+    parser.add_argument("--activity", help="Target activity folder name or activity code")
+    parser.add_argument("--activity-path", help="Direct activity directory path")
+    parser.add_argument("--workspace", help="Filter by workspace name")
+    parser.add_argument("--scripts-dir", default=str(_SKILL_ROOT / "scripts"), help="Directory containing repository scripts")
+    parser.add_argument("--direction", choices=["repo-to-ws", "ws-to-repo"], default="repo-to-ws")
 
     args = parser.parse_args()
 
@@ -201,6 +213,9 @@ def main():
         try:
             inject_file(Path(args.source), Path(args.target))
             print(f"[SUCCESS] Injected '{args.source}' into '{args.target}'")
+        except ReadOnlyComponentError as e:
+            print(str(e), file=sys.stderr)
+            sys.exit(1)
         except Exception as e:
             print(f"[ERROR] Injection failed: {e}", file=sys.stderr)
             sys.exit(1)
@@ -219,28 +234,35 @@ def main():
         return
 
     if args.sync_all:
-        act_ident = args.activity
-        if not act_ident:
-            cfg = load_config()
-            act_ident = cfg.get("default_activity")
-        if not act_ident:
-            print("[ERROR] Please provide --activity or set default activity in config", file=sys.stderr)
-            sys.exit(1)
+        act_path = None
+        if args.activity_path:
+            act_path = Path(args.activity_path).resolve()
+        elif args.activity:
+            resolved = resolve_activity(args.activity, workspace_name=args.workspace)
+            if not resolved:
+                print(f"[ERROR] Could not resolve activity: '{args.activity}'", file=sys.stderr)
+                sys.exit(1)
+            act_path = Path(resolved["path"])
+        else:
+            detected = detect_current_activity()
+            if detected:
+                act_path = Path(detected["path"])
+            else:
+                print("[ERROR] Please provide --activity or --activity-path (or run within an Activity directory)", file=sys.stderr)
+                sys.exit(1)
 
-        resolved = resolve_activity(act_ident)
-        if not resolved:
-            print(f"[ERROR] Could not resolve activity: '{act_ident}'", file=sys.stderr)
-            sys.exit(1)
-
-        act_path = Path(resolved["path"])
         scripts_path = Path(args.scripts_dir).resolve()
 
         print(f"Syncing scripts ({args.direction}) between:")
         print(f"  Activity: {act_path}")
         print(f"  Scripts:  {scripts_path}")
 
-        count = sync_all_activity_scripts(act_path, scripts_path, direction=args.direction)
-        print(f"[SUCCESS] Synchronized {count} script(s).")
+        try:
+            count = sync_all_activity_scripts(act_path, scripts_path, direction=args.direction)
+            print(f"[SUCCESS] Synchronized {count} script(s).")
+        except ReadOnlyComponentError as e:
+            print(str(e), file=sys.stderr)
+            sys.exit(1)
         return
 
     parser.print_help()
