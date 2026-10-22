@@ -214,6 +214,6 @@ python ln_studio_skill/tools/validate_skill.py --skill-dir ln_studio_skill
 ## Credits & Maintainer
 
 **Created and Maintained by:**
-- **Natthaphon Srikasem** — Lead Developer & Infor LN Solution Architect
+- **Natthaphon Srikasem** — Lead Developer & Senior ERP Technical Consultant
 
 Dedicated to advancing autonomous, high-velocity, and safe enterprise development on Infor ERP LN and Infor LN Studio.
