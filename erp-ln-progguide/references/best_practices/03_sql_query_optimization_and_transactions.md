@@ -1,6 +1,6 @@
 # SQL Query Optimization & Transaction Management Guide
 
-> **Reference Documents**: [Baan SQL Reference](../sql/progguide/functions_database_handling/select_statement.md) | [Dev Tools Chapter 2: Software Components](../dev_tools/ch02_overview_of_software_components.md) | [Hints for using db.retry.point](../guide/progguide/functions_database_handling/hints_for_using_db.retry.point.md)  
+> **Reference Documents**: [Baan SQL Reference](../sql/progguide/functions_database_handling/select_statement.md) | [Dev Tools Chapter 2: Software Components](../dev_tools/ch02_overview_of_software_components.md) | [Hints for using db.retry.point](../guide/progguide/functions_database_handling/hints_for_using_db.retry.point.md) | [4GL Coding Standards & Buffer Protection](06_4gl_coding_standards_and_caveats.md)  
 > **Target Audience**: Infor LN Database Engineers, Backend Developers, and AI Coding Agents
 
 ---
@@ -35,6 +35,8 @@ endselect
 ### 1.2 Binding & Variable Scope
 - **Host Variables**: 4GL local/global variables must be prefixed with a colon (`:variable`) inside SQL statements.
 - **Table Record Buffer**: Table columns (e.g. `tdsls400.orno`) are automatically bound to the session's active table buffer upon each `selectdo` cycle.
+  > [!WARNING]
+  > **Buffer Overwrite Risk**: In UI sessions, executing `select table.*` in helper functions silently overwrites the active form record buffer! Always bind queried columns directly to local host variables (`table.field:l.var`) or use Table Aliases. See [Pillar 4: Table Record Buffer Protection](06_4gl_coding_standards_and_caveats.md#5-pillar-4-embedded-sql--table-record-buffer-protection).
 - **Column Projections**: Avoid `SELECT *` in performance-critical loops. Select only the columns required to reduce network bandwidth and memory overhead.
 
 ---
@@ -227,3 +229,5 @@ endselect
 1. **Acquire Locks in Hierarchical Order**: Always lock parent before child (e.g., `tdsls400` header before `tdsls401` lines).
 2. **Never Open a UI Session or User Dialog While Holding a Lock**: Holding records `for update` while waiting for user keyboard response will block other users and cause deadlocks.
 3. **Always Match `db.retry.point()` with `commit.transaction()` / `abort.transaction()`**: An open transaction without a commit/abort will hold table locks until the bshell terminates.
+4. **Never Commit Inside DAL Hooks or Subroutines**: Transactions must be managed exclusively at outer orchestration boundaries (`choice.update.db`, batch loops, APIs). Commits inside hooks corrupt atomic units of work. See [Outer-Boundary Transaction Orchestration](06_4gl_coding_standards_and_caveats.md#72-outer-boundary-transaction-orchestration).
+5. **Immediate Rollback on Error**: Always call `abort.transaction()` upon encountering database runtime errors in `selecterror` to immediately release row locks. See [Scoped Row-Locking Windows and Rollbacks](06_4gl_coding_standards_and_caveats.md#76-scoped-row-locking-windows-and-rollbacks).

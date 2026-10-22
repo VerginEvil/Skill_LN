@@ -31,8 +31,7 @@ flowchart TD
     classDef blocked fill:#f8f9fa,stroke:#6c757d,stroke-dasharray: 5 5;
     classDef done fill:#d4edda,stroke:#28a745,stroke-width:2px;
 
-    class T01 ready;
-    class T02,T03,T04,T05 blocked;
+    class T01,T02,T03,T04,T05 done;
 ```
 
 ---
@@ -41,11 +40,11 @@ flowchart TD
 
 | ID | Title | Blocked by | Status | Ticket File |
 |---|---|---|---|---|
-| **01** | Domain, Scope & Preprocessor Standards | *None* | `ready` | [`01-domain-scope-and-preprocessor-standards.md`](.scratch/4gl-coding-standards-and-caveats/issues/01-domain-scope-and-preprocessor-standards.md) |
-| **02** | Function Contracts & Buffer Collision Protection | **01** | `blocked` | [`02-function-contracts-and-buffer-collision-protection.md`](.scratch/4gl-coding-standards-and-caveats/issues/02-function-contracts-and-buffer-collision-protection.md) |
-| **03** | Array Dimensions & Fatal Runtime Caveats | **02** | `blocked` | [`03-array-dimensions-and-fatal-runtime-caveats.md`](.scratch/4gl-coding-standards-and-caveats/issues/03-array-dimensions-and-fatal-runtime-caveats.md) |
-| **04** | Skill Guardrails Elevation & Cross-Linking | **03** | `blocked` | [`04-skill-guardrails-elevation-and-cross-linking.md`](.scratch/4gl-coding-standards-and-caveats/issues/04-skill-guardrails-elevation-and-cross-linking.md) |
-| **05** | Catalog Indexing & End-to-End Verification | **04** | `blocked` | [`05-catalog-indexing-and-search-verification.md`](.scratch/4gl-coding-standards-and-caveats/issues/05-catalog-indexing-and-search-verification.md) |
+| **01** | Domain, Scope & Preprocessor Standards | *None* | `done` | [`01-domain-scope-and-preprocessor-standards.md`](.scratch/4gl-coding-standards-and-caveats/issues/01-domain-scope-and-preprocessor-standards.md) |
+| **02** | Function Contracts & Buffer Collision Protection | **01** | `done` | [`02-function-contracts-and-buffer-collision-protection.md`](.scratch/4gl-coding-standards-and-caveats/issues/02-function-contracts-and-buffer-collision-protection.md) |
+| **03** | Array Dimensions & Fatal Runtime Caveats | **02** | `done` | [`03-array-dimensions-and-fatal-runtime-caveats.md`](.scratch/4gl-coding-standards-and-caveats/issues/03-array-dimensions-and-fatal-runtime-caveats.md) |
+| **04** | Skill Guardrails Elevation & Cross-Linking | **03** | `done` | [`04-skill-guardrails-elevation-and-cross-linking.md`](.scratch/4gl-coding-standards-and-caveats/issues/04-skill-guardrails-elevation-and-cross-linking.md) |
+| **05** | Catalog Indexing & End-to-End Verification | **04** | `done` | [`05-catalog-indexing-and-search-verification.md`](.scratch/4gl-coding-standards-and-caveats/issues/05-catalog-indexing-and-search-verification.md) |
 
 ---
 

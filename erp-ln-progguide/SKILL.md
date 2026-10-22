@@ -62,6 +62,19 @@ When analyzing, designing, or generating Infor ERP LN code, AI agents and develo
    - Never call untrusted bshell functions (`run.prog()`, `hostname$()`) or manipulate files outside sandboxed tenant storage.
    - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
 
+### Mandatory Negative Constraints & Defensive Rules (Strictly Prohibited Anti-Patterns)
+
+During code generation, refactoring, and code review, AI agents and engineers **must proactively reject and prevent** the following anti-patterns:
+- **No Primitive Database Types**: Never declare database-bound variables, parameters, or entity keys using raw primitives (`long`, `double`, `string`). Always declare variables using centralized Data Dictionary `domain <name> <var>` (e.g. `domain tcorno orno`) to eliminate silent data truncation when field sizes expand.
+- **No Direct Floating-Point Equality**: Never compare float or domain amount variables using `==` or `!=`. Always use `double.cmp(val1, val2, epsilon) = 0` (e.g. `C_AMOUNT_EPSILON = 0.0001`) to prevent representation rounding failures.
+- **No Nested Transaction Commits in Hooks or DLLs**: Never call `commit.transaction()`, `db.retry.point()`, or `abort.transaction()` inside DAL hooks (`before.save.object`), Table Extensions, or reusable helper DLL subroutines. Transactions must be orchestrated exclusively at outer orchestration boundaries (`choice.update.db`, batch schedulers, integration APIs).
+- **No Unstructured Branching (`goto`)**: Never use `goto` jumps. Use structured control flow (`if/else`, `break`, `continue`, early `return`).
+- **No Raw Database Updates in UI or Helper Scripts**: Never invoke `db.insert`, `db.update`, or `db.delete` directly in UI session scripts or helper functions. Always delegate mutations to DAL 2 (`dal.change.object()`, `dal.set.field()`, `dal.save.object()`).
+- **No Unhandled Query Empty States**: Never write single-record `select` queries without a `selectempty` fallback block. Variables must be deterministically initialized or errors returned.
+- **No Table Record Buffer Overwrites**: Never perform `select table.*` in helper functions or loops that share table declarations with active UI forms. Always bind queried columns directly to local host variables (`table.field:l.var`) or query via Table Aliases.
+- **No 0-Based Array Access**: Never access array index `0` or iterate from `0 to N-1`. 4GL arrays are strictly 1-based (`1..N`).
+- *Authoritative Reference*: [Baan 4GL Coding Standards, Anti-Patterns & Runtime Caveats Guide](references/best_practices/06_4gl_coding_standards_and_caveats.md).
+
 ---
 
 ## Layout
@@ -74,6 +87,7 @@ references/
     03_sql_query_optimization_and_transactions.md Baan SQL, index matching, array fetch, retry points
     04_data_model_and_domain_design.md          Domain types, table references, crdd reconfiguration
     05_session_and_mmt_patterns.md              Session types 1-4, MMT Controller/Satellite, labels
+    06_4gl_coding_standards_and_caveats.md       Domains vs primitives, buffer collision, double.cmp, 1-based arrays
   dev_tools/                  Infor LN Development Tools (2016), 13 complete chapters:
     ch01_development_tools_introduction.md
     ch02_overview_of_software_components.md
@@ -122,6 +136,7 @@ scripts/search.py             full-text search tool (stdlib Python only)
 | **Baan SQL Optimization & Transactions** | `references/best_practices/03_sql_query_optimization_and_transactions.md` |
 | **Domain Design, Tables & `crdd`** | `references/best_practices/04_data_model_and_domain_design.md` |
 | **Session Types 1-4 & MMT Patterns** | `references/best_practices/05_session_and_mmt_patterns.md` |
+| **4GL Coding Standards & Runtime Caveats** | `references/best_practices/06_4gl_coding_standards_and_caveats.md` |
 | **Infor LN Development Tools Master Index** | `references/DEV_TOOLS_INDEX.md` |
 | **Software Components Overview** | `references/dev_tools/ch02_overview_of_software_components.md` |
 | **Development Procedures (Data model, forms, MMT)** | `references/dev_tools/ch05_software_development_procedures.md` |
