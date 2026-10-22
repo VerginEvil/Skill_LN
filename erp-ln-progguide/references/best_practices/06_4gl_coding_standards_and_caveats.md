@@ -134,50 +134,78 @@ function void calculate_discount()
 
 ### 2.2 Enumeration and Set Domain Binding
 
-Enumerated states and options in Infor LN are stored in **List Domains** (`ttadv4501m000`). Each list constant has an explicit symbolic identifier registered in the Data Dictionary (e.g. `tdsls.hdst.created`, `tdsls.hdst.approved`, `tcyesno.yes`, `tcyesno.no`).
+In Infor LN, discrete business states and multi-option configurations are modeled using **List Domains** (`ttadv4501m000`) and **Set Domains** (`ttadv4502m000`).
 
-#### Mandatory Enumeration Rules:
-1. **Never use raw integer literals** (e.g., `1`, `2`, `3`) or string flags (`"Y"`, `"N"`) to represent operational states.
-2. Always declare enumeration variables with the specific list domain name (e.g., `domain tdsls.hdst header_status`).
-3. Always evaluate states against symbolic domain constants.
+#### 1. List Domains (Single-Choice Enumerations):
+List domains represent mutually exclusive states (e.g. `tdsls.hdst.created`, `tdsls.hdst.approved`, `tcyesno.yes`, `tcyesno.no`).
+- **Never use raw integer literals** (e.g., `1`, `2`) or string flags (`"Y"`, `"N"`).
+- Always declare host variables using the specific List Domain name.
+- Always evaluate states against symbolic domain constants.
+
+#### 2. Set Domains (Multi-Choice Bitmask Sets):
+Set domains store multiple simultaneously active options in a single integer column (e.g. document output destinations, processing option sets).
+- Declare host variables with the set domain name: `domain <set_domain> l.active_options`.
+- Use the 4GL `in` operator to test for element membership: `if <set_constant> in l.active_options then ... endif`.
+- Never use raw bit shifts (`l.opts & 4`) or independent boolean flags.
 
 ```baan
 |* ========================================================================
-|* ANTI-PATTERN: Magic numbers and primitive integer comparison
+|* ANTI-PATTERN: Magic numbers, primitive flags, and bitwise manipulation
 |* ========================================================================
-function long check_order_status(domain tcorno i.orno)
+function long check_order_options(domain tcorno i.orno)
 {
-    long status                 |* WRONG: Primitive integer used for enum
-    
-    select tdsls400.hdst
+    long status                     |* WRONG: Primitive integer used for enum
+    long print_flags                |* WRONG: Primitive integer used for set
+
+    select tdsls400.hdst, tdsls400.prnt
     from   tdsls400
     where  tdsls400.orno = :i.orno
     selectdo
         status = tdsls400.hdst
-        if status == 1 then     |* WRONG: What does 1 mean? Brittle & unreadable
-            return(0)
+        print_flags = tdsls400.prnt
+        if status == 1 then         |* WRONG: Magic number instead of domain constant
+            if (print_flags & 2) != 0 then |* WRONG: Low-level bitmask arithmetic
+                return(0)
+            endif
         endif
     endselect
     return(-1)
 }
 
 |* ========================================================================
-|* COMPLIANT PATTERN: Symbolic List Domain binding
+|* COMPLIANT PATTERN: List & Set domain constants with safe local binding
 |* ========================================================================
-function long check_order_status(domain tcorno i.orno)
+function long check_order_options(
+    const domain tcorno i.orno,
+    ref   boolean       o.is_printable)
 {
-    domain tdsls.hdst order_status
-    
-    select tdsls400.hdst
+    domain tdsls.hdst   l.order_status
+    domain tdsls.prnt   l.print_options
+
+    o.is_printable = false
+    l.order_status = tdsls.hdst.created
+    l.print_options = 0
+
+    select tdsls400.hdst:l.order_status,
+           tdsls400.prnt:l.print_options
     from   tdsls400
     where  tdsls400.orno = :i.orno
+    as set with 1 rows
     selectdo
-        order_status = tdsls400.hdst
-        if order_status = tdsls.hdst.created then
-            return(0)
+        |* Evaluate List Domain via symbolic constant
+        if l.order_status = tdsls.hdst.approved then
+            |* Evaluate Set Domain via 4GL 'in' operator
+            if tdsls.prnt.invoice in l.print_options then
+                o.is_printable = true
+                return(0)
+            endif
         endif
+    selectempty
+        o.is_printable = false
+        return(-1)
     endselect
-    return(-1)
+
+    return(0)
 }
 ```
 
@@ -423,7 +451,9 @@ To read database fields in subroutines, batch loops, or helper functions without
 |* ========================================================================
 |* ANTI-PATTERN: Overwrites global tdsls400 table record buffer
 |* ========================================================================
-function domain tcsotp get_order_type(domain tcorno i.orno)
+function long get_order_type(
+    const domain tcorno i.orno,
+    ref   domain tcsotp o.sotp)
 {
     select tdsls400.sotp
     from   tdsls400
@@ -437,7 +467,9 @@ function domain tcsotp get_order_type(domain tcorno i.orno)
 |* ========================================================================
 |* COMPLIANT PATTERN: Direct local variable binding (Buffer Safe)
 |* ========================================================================
-function domain tcsotp get_order_type(domain tcorno i.orno)
+function long get_order_type(
+    const domain tcorno i.orno,
+    ref   domain tcsotp o.sotp)
 {
     domain tcsotp l.sotp
 
@@ -447,12 +479,14 @@ function domain tcsotp get_order_type(domain tcorno i.orno)
     where  tdsls400.orno = :i.orno
     as set with 1 rows
     selectdo
-        |* Buffer tdsls400 remains completely untouched!
+        o.sotp = l.sotp
+        return(0)
     selectempty
-        l.sotp = ""
+        o.sotp = ""
+        return(-1)
     endselect
 
-    return(l.sotp)
+    return(0)
 }
 ```
 
@@ -541,7 +575,7 @@ function void approve_order(domain tcorno i.orno)
 |* ========================================================================
 |* COMPLIANT PATTERN: DAL 2 Object Mutation
 |* ========================================================================
-function long approve_order(domain tcorno i.orno)
+function long approve_order(const domain tcorno i.orno)
 {
     long ret
 
@@ -702,7 +736,7 @@ Standard recommended epsilon value for currency and quantity amounts is `0.0001`
 |* ========================================================================
 |* ANTI-PATTERN: Direct floating-point equality check
 |* ========================================================================
-function boolean is_balance_cleared(domain tcamnt i.balance)
+function boolean is_balance_cleared(const domain tcamnt i.balance)
 {
     if i.balance == 0.0 then            |* FATAL: 0.000000000000001 fails equality!
         return(true)
@@ -715,7 +749,7 @@ function boolean is_balance_cleared(domain tcamnt i.balance)
 |* ========================================================================
 #define C_AMOUNT_EPSILON 0.0001
 
-function boolean is_balance_cleared(domain tcamnt i.balance)
+function boolean is_balance_cleared(const domain tcamnt i.balance)
 {
     if double.cmp(i.balance, 0.0, C_AMOUNT_EPSILON) = 0 then
         return(true)                    |* ACCURATE: Within enterprise decimal tolerance
@@ -805,7 +839,9 @@ When querying the database for a point record or subset, queries that return zer
 |* ========================================================================
 |* ANTI-PATTERN: Missing selectempty leaves variables in stale state
 |* ========================================================================
-function domain tcnm35 get_bp_name(domain tccom.bpid i.bpid)
+function long get_bp_name(
+    const domain tccom.bpid i.bpid,
+    ref   domain tcnm35     o.nama)
 {
     domain tcnm35 l.nama
 
@@ -824,7 +860,9 @@ function domain tcnm35 get_bp_name(domain tccom.bpid i.bpid)
 |* ========================================================================
 |* COMPLIANT PATTERN: Mandatory selectempty with deterministic fallback
 |* ========================================================================
-function domain tcnm35 get_bp_name(domain tccom.bpid i.bpid)
+function long get_bp_name(
+    const domain tccom.bpid i.bpid,
+    ref   domain tcnm35     o.nama)
 {
     domain tcnm35 l.nama
 
@@ -835,12 +873,15 @@ function domain tcnm35 get_bp_name(domain tccom.bpid i.bpid)
     as set with 1 rows
     selectdo
         |* Found
+        o.nama = l.nama
+        return(0)
     selectempty
-        l.nama = ""
+        o.nama = ""
         log_warning("Business partner not found: " & i.bpid)
+        return(-1)
     endselect
 
-    return(l.nama)  |* DETERMINISTIC: Always returns clean value
+    return(0)
 }
 ```
 
@@ -870,39 +911,39 @@ When updating records using `select ... for update`, database engines place excl
 |* ========================================================================
 |* COMPLIANT PATTERN: Minimal lock window and deterministic error rollback
 |* ========================================================================
-function long process_order_batch(domain tcorno i.orno)
+function long execute_order_approval_orchestrator(const domain tcorno i.orno)
 {
     domain tcamnt l.calculated_discount
     long ret
 
-    |* STEP 1: Compute complex logic OUTSIDE the lock window
+    |* STEP 1: Compute all complex logic and external integrations OUTSIDE the transaction
     ret = compute_order_discounts(i.orno, l.calculated_discount)
     if ret != 0 then
         return(-1)
     endif
 
-    |* STEP 2: Minimal locked update window
+    |* STEP 2: Outer transaction boundary orchestrator
     db.retry.point()
-    select tdsls400.hdst
-    from   tdsls400 for update
-    where  tdsls400.orno = :i.orno
-    as set with 1 rows
-    selectdo
-        tdsls400.hdst = tdsls.hdst.approved
-        ret = db.update(ttdsls400, db.retry)
-        if ret != 0 then
-            abort.transaction()         |* IMMEDIATE RELEASE of database lock
-            return(-2)
-        endif
-        commit.transaction()            |* IMMEDIATE COMMIT: Frees lock immediately
-        return(0)
-    selectempty
-        return(-3)
-    selecterror
-        abort.transaction()             |* IMMEDIATE ROLLBACK on fatal deadlock/error
-        return(-4)
-    endselect
 
+    |* STEP 3: Delegate mutation to DAL 2 (never use raw db.update)
+    ret = dal.change.object("tdsls400")
+    if ret != 0 then
+        abort.transaction()             |* IMMEDIATE ROLLBACK: Releases all locks
+        return(-2)
+    endif
+
+    dal.set.field("tdsls400.orno", i.orno)
+    dal.set.field("tdsls400.hdst", tdsls.hdst.approved)
+
+    ret = dal.save.object("tdsls400")
+    if ret != 0 then
+        dal.reset.object("tdsls400")
+        abort.transaction()             |* IMMEDIATE ROLLBACK: Prevents dirty state
+        return(-3)
+    endif
+
+    |* STEP 4: Commit transaction immediately after mutation completes
+    commit.transaction()                |* FREES LOCKS IMMEDIATELY
     return(0)
 }
 ```
