@@ -1,0 +1,77 @@
+|******************************************************************************
+|* %NAME  %VERSION
+|* %DESCRIPTION
+|* %USER
+|* %DATE [%TIME]
+|******************************************************************************
+|* Script Type: User Exit DLL
+|******************************************************************************
+                                                                                
+	table	t%TABLE
+
+#include <bic_dal>
+
+
+function extern long ue.before.before.save.object(long mode)
+{
+	on case mode
+	case DAL_NEW:
+		break
+	case DAL_UPDATE:
+		break
+	endcase
+	return(0)
+}
+
+function extern long ue.after.before.save.object(long mode)
+{
+	on case mode
+	case DAL_NEW:
+		break
+	case DAL_UPDATE:
+		break
+	endcase
+	return(0)
+}
+
+function extern long ue.before.after.save.object(long mode)
+{
+	on case mode
+	case DAL_NEW:
+		break
+	case DAL_UPDATE:
+		break
+	endcase
+	return(0)
+}
+
+function extern long ue.after.after.save.object(long mode)
+{
+	on case mode
+	case DAL_NEW:
+		break
+	case DAL_UPDATE:
+		break
+	endcase
+	return(0)
+}
+
+function extern long ue.before.before.destroy.object()
+{
+	return(0)
+}
+
+function extern long ue.after.before.destroy.object()
+{
+	return(0)
+}
+
+function extern long ue.before.after.destroy.object()
+{
+	return(0)
+}
+
+function extern long ue.after.after.destroy.object()
+{
+	return(0)
+}

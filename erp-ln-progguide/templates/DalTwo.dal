@@ -1,0 +1,60 @@
+|*******************************************************************************
+|* %NAME  %VERSION
+|* %DESCRIPTION
+|* %USER
+|* %DATE [%TIME]
+|*******************************************************************************
+|* Script Type: DAL
+|*******************************************************************************
+                                                                                
+|*************************** declaration section *******************************
+
+#include <bic_dal2>
+
+|*************************** object hooks section ******************************
+
+function extern boolean method.is.allowed(
+			long		i.method)
+{
+	on case i.method
+	case DAL_NEW:
+		break
+	case DAL_UPDATE:
+		break
+	case DAL_DESTROY:
+		break
+	endcase
+	return(true)
+}
+
+function extern long before.open.object.set()
+{
+	return(0)
+}
+
+function extern long before.destroy.object()
+{
+	return(0)
+}
+
+function extern long after.destroy.object()
+{
+	return(0)
+}
+
+function extern long before.save.object(
+			long		i.mode)
+{
+	return(0)
+}
+
+function extern long after.save.object(
+			long		i.mode)
+{
+	return(0)
+}
+
+|*************************** field hooks section *******************************
+|*************************** business methods section **************************
+|*************************** internal functions section ************************
+|*************************** end of DAL source *********************************

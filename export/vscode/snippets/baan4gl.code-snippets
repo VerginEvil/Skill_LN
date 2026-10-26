@@ -1,0 +1,286 @@
+{
+  "Template: ON CASE - Template": {
+    "prefix": [
+      "on_case_template",
+      "on case - template"
+    ],
+    "body": [
+      "on case ${variable}",
+      "case ${value_1}:",
+      "\t${statement_1}",
+      "\tbreak",
+      "case ${value_2}:",
+      "\t${statement_2}",
+      "\tbreak",
+      "default:",
+      "\t${statement_3}",
+      "\tbreak",
+      "endcase"
+    ],
+    "description": "The ON CASE statement is a multiple-way decision table."
+  },
+  "Template: DllUsage - Template": {
+    "prefix": [
+      "dllusage_template",
+      "dllusage - template"
+    ],
+    "body": [
+      "DllUsage",
+      "Expl:\t${text}",
+      "Pre:\t${preconditions}",
+      "Post:\t${postconditions}",
+      "Input:\t${input_arg}",
+      "Output:\t${output_arg}",
+      "Return:\t${returnType}",
+      "EndDllUsage"
+    ],
+    "description": "DllUsage is mandatory for external Infor LN functions, because it contains often processing, starting a session, or calculations."
+  },
+  "Template: FunctionUsage Template": {
+    "prefix": [
+      "functionusage_template",
+      "functionusage template"
+    ],
+    "body": [
+      "FunctionUsage",
+      "Expl:\t${text}",
+      "Pre:\t${preconditions}",
+      "Post:\t${postconditions}",
+      "Input:\t${input_arg}",
+      "Output:\t${output_arg}",
+      "Return:\t${returnType}",
+      "EndFunctionUsage"
+    ],
+    "description": "FunctionUsage is mandatory for every function in Infor LN and beyond, only very simple functions are excluded."
+  },
+  "Template: All Function Arguments Template": {
+    "prefix": [
+      "all_function_arguments_template",
+      "all function arguments template"
+    ],
+    "body": [
+      "${all_args_cs}"
+    ],
+    "description": "Inserts all arguments from the current function (comma separated)."
+  },
+  "Template: For - Template": {
+    "prefix": [
+      "for_template",
+      "for - template"
+    ],
+    "body": [
+      "for ${num_var} = ${num_expr_1} to ${num_expr_2}",
+      "\t${statement}",
+      "endfor"
+    ],
+    "description": "For Control Flow Statement"
+  },
+  "Template: For Step - Template": {
+    "prefix": [
+      "for_step_template",
+      "for step - template"
+    ],
+    "body": [
+      "for ${num_var} = ${num_expr_1} to ${num_expr_2} step ${num_expr_3}",
+      "\t${statement}",
+      "endfor"
+    ],
+    "description": "For Step Control Flow Statement"
+  },
+  "Template: Repeat - Template": {
+    "prefix": [
+      "repeat_template",
+      "repeat - template"
+    ],
+    "body": [
+      "repeat",
+      "\t${statement}",
+      "until ${expression}"
+    ],
+    "description": "Repeat Control Flow Statement"
+  },
+  "Template: While - Template": {
+    "prefix": [
+      "while_template",
+      "while - template"
+    ],
+    "body": [
+      "while ${expression}",
+      "\t${statement}",
+      "endwhile"
+    ],
+    "description": "While Control Flow Statement"
+  },
+  "Template: IF...THEN": {
+    "prefix": [
+      "if_then",
+      "if...then"
+    ],
+    "body": [
+      "if ${condition} then",
+      "\t${statement}",
+      "endif"
+    ],
+    "description": "This tests a condition. If the condition evaluates to TRUE, the statements following the IF...THEN statement are executed."
+  },
+  "Template: IF...THEN...ELSE": {
+    "prefix": [
+      "if_then_else",
+      "if...then...else"
+    ],
+    "body": [
+      "if ${condition} then",
+      "\t${statement1}",
+      "else",
+      "\t${statement2}",
+      "endif"
+    ],
+    "description": "This tests a condition. If the condition evaluates to TRUE, the statements following the IF...THEN statement are executed. If the condition evaluates to FALSE, the statements following the ELSE statement are executed."
+  },
+  "Template: Select - Template": {
+    "prefix": [
+      "select_template",
+      "select - template"
+    ],
+    "body": [
+      "select\t${table}.*",
+      "from\t${table}",
+      "where\t${table}._index$0",
+      "selectdo",
+      "\t|* todo: add operation(s) on all selected records",
+      "selectempty",
+      "\t|* todo: add operation(s) if nothing has been selected ",
+      "endselect"
+    ],
+    "description": "Select Statement"
+  },
+  "Template: Comment Block - Template": {
+    "prefix": [
+      "comment_block_template",
+      "comment block - template"
+    ],
+    "body": [
+      "${comment_block}"
+    ],
+    "description": "Inserts a comment block on the current position"
+  },
+  "DAL2: Field Update Hook": {
+    "prefix": [
+      "dal.update",
+      "hook.update"
+    ],
+    "body": [
+      "function extern void ${1:field}.update(long i.mode)",
+      "{",
+      "\ton case i.mode",
+      "\tcase DAL_NEW:",
+      "\t\t$0",
+      "\t\tbreak",
+      "\tcase DAL_UPDATE:",
+      "\t\tbreak",
+      "\tendcase",
+      "}"
+    ],
+    "description": "DAL2 property update hook with i.mode handling"
+  },
+  "DAL2: Field Check Hook": {
+    "prefix": [
+      "dal.check",
+      "hook.check"
+    ],
+    "body": [
+      "function extern long ${1:field}.check(long has_changed)",
+      "{",
+      "\tif has_changed then",
+      "\t\tif ${2:condition} then",
+      "\t\t\tdal.set.error.message(\"${3:message_code}\")",
+      "\t\t\treturn(DALHOOKERROR)",
+      "\t\tendif",
+      "\tendif",
+      "\treturn(0)",
+      "}"
+    ],
+    "description": "DAL2 property validation check hook"
+  },
+  "DAL2: Field Is Applicable Hook": {
+    "prefix": [
+      "dal.is.applicable",
+      "hook.is.applicable"
+    ],
+    "body": [
+      "function extern boolean ${1:field}.is.applicable()",
+      "{",
+      "\treturn(${2:true})",
+      "}"
+    ],
+    "description": "DAL2 property applicability condition hook"
+  },
+  "DAL2: Field Is Readonly Hook": {
+    "prefix": [
+      "dal.is.readonly",
+      "hook.is.readonly"
+    ],
+    "body": [
+      "function extern boolean ${1:field}.is.readonly()",
+      "{",
+      "\treturn(${2:false})",
+      "}"
+    ],
+    "description": "DAL2 property read-only condition hook"
+  },
+  "DAL2: Before Save Object Hook": {
+    "prefix": [
+      "dal.before.save",
+      "before.save.object"
+    ],
+    "body": [
+      "function extern long before.save.object(long mode)",
+      "{",
+      "\ton case mode",
+      "\tcase DAL_NEW:",
+      "\t\t$0",
+      "\t\tbreak",
+      "\tcase DAL_UPDATE:",
+      "\t\tbreak",
+      "\tendcase",
+      "\treturn(0)",
+      "}"
+    ],
+    "description": "DAL2 object-level before.save.object lifecycle hook"
+  },
+  "DAL2: After Save Object Hook": {
+    "prefix": [
+      "dal.after.save",
+      "after.save.object"
+    ],
+    "body": [
+      "function extern long after.save.object(long mode)",
+      "{",
+      "\t$0",
+      "\treturn(0)",
+      "}"
+    ],
+    "description": "DAL2 object-level after.save.object lifecycle hook"
+  },
+  "4GL: Database Retry Point": {
+    "prefix": [
+      "retry.point",
+      "db.retry.point"
+    ],
+    "body": [
+      "db.retry.point()",
+      "",
+      "select ${1:table}.*",
+      "from   ${1:table} for update",
+      "where  ${2:condition}",
+      "selectdo",
+      "\t$0",
+      "\tdb.update(${1:table}, db.retry)",
+      "\tcommit.transaction()",
+      "selectempty",
+      "\tabort.transaction()",
+      "endselect"
+    ],
+    "description": "Standard 4GL transaction block with retry point"
+  }
+}

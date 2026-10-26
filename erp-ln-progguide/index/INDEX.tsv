@@ -5002,3 +5002,4 @@ references/best_practices/03_sql_query_optimization_and_transactions.md	SQL Quer
 references/best_practices/04_data_model_and_domain_design.md	Data Model & Domain Design Guide
 references/best_practices/05_session_and_mmt_patterns.md	Session & MMT Patterns Guide
 references/best_practices/06_4gl_coding_standards_and_caveats.md	Baan 4GL Coding Standards, Anti-Patterns & Runtime Caveats Guide
+references/STUDIO_SYNTAX_COMPLETION.md	Infor LN Studio Syntax & Code Completion Reference

@@ -104,6 +104,22 @@ def generate_index_tsv(skill: Path) -> tuple[str, int]:
 
 
 def generate_function_index(skill: Path) -> tuple[str, int]:
+    # If enriched functions_db.json is available, use authoritative studio extraction
+    db_path = skill / "index" / "functions_db.json"
+    if db_path.exists():
+        try:
+            import json
+            import sys
+            tools_dir = Path(__file__).resolve().parent.parent.parent / "tools"
+            if str(tools_dir) not in sys.path:
+                sys.path.insert(0, str(tools_dir))
+            from extract_studio_knowledge import generate_enriched_function_index
+            functions_db = json.loads(db_path.read_text(encoding="utf-8"))
+            idx_content = generate_enriched_function_index(functions_db, skill)
+            return idx_content, len(functions_db)
+        except Exception as e:
+            pass
+
     guide = skill / "references" / "guide"
     groups: dict[str, list[str]] = {}
     for path in sorted(guide.rglob("*.md"), key=lambda p: p.relative_to(skill).as_posix()):

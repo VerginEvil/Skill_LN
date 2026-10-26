@@ -1,0 +1,81 @@
+{
+  "comments": {
+    "lineComment": "|"
+  },
+  "brackets": [
+    [
+      "{",
+      "}"
+    ],
+    [
+      "(",
+      ")"
+    ],
+    [
+      "[",
+      "]"
+    ]
+  ],
+  "autoClosingPairs": [
+    {
+      "open": "{",
+      "close": "}"
+    },
+    {
+      "open": "(",
+      "close": ")"
+    },
+    {
+      "open": "[",
+      "close": "]"
+    },
+    {
+      "open": "\"",
+      "close": "\"",
+      "notIn": [
+        "string",
+        "comment"
+      ]
+    },
+    {
+      "open": "'",
+      "close": "'",
+      "notIn": [
+        "string",
+        "comment"
+      ]
+    }
+  ],
+  "surroundingPairs": [
+    [
+      "{",
+      "}"
+    ],
+    [
+      "(",
+      ")"
+    ],
+    [
+      "[",
+      "]"
+    ],
+    [
+      "\"",
+      "\""
+    ],
+    [
+      "'",
+      "'"
+    ]
+  ],
+  "folding": {
+    "markers": {
+      "start": "^\\s*(?:dllusage|functionusage|select|if|while|for|case)\\b",
+      "end": "^\\s*(?:enddllusage|endfunctionusage|endselect|endif|endwhile|endfor|endcase)\\b"
+    }
+  },
+  "indentationRules": {
+    "increaseIndentPattern": "^\\s*(?:function|if|while|for|select|on\\s+case|declaration:|before\\.program:|functions:|field\\.[a-zA-Z0-9_.]+:|choice\\.[a-zA-Z0-9_.]+:)\\b.*$",
+    "decreaseIndentPattern": "^\\s*(?:endif|endwhile|endfor|endselect|endcase|\\})\\b"
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Baan 4GL",
+  "scopeName": "source.baan4gl",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#preprocessor"
+    },
+    {
+      "include": "#sections"
+    },
+    {
+      "include": "#sql"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#modifiers"
+    },
+    {
+      "include": "#standard_defines"
+    },
+    {
+      "include": "#predefined_variables"
+    },
+    {
+      "include": "#dal_hooks"
+    },
+    {
+      "include": "#bshell_functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.documentation.4gl",
+          "begin": "(?i)^\\s*(dllusage|functionusage)\\b",
+          "end": "(?i)^\\s*(enddllusage|endfunctionusage)\\b"
+        },
+        {
+          "name": "comment.line.pipe.4gl",
+          "match": "\\|.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.4gl",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.4gl",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.4gl",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.4gl",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.4gl",
+          "match": "\\b0[xX][0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.4gl",
+          "match": "\\b\\d+\\.\\d+([eE][+-]?\\d+)?\\b"
+        },
+        {
+          "name": "constant.numeric.integer.4gl",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "preprocessor": {
+      "patterns": [
+        {
+          "name": "meta.preprocessor.4gl",
+          "match": "^\\s*(#include)\\s+([<\\\"].*?[>\\\"])",
+          "captures": {
+            "1": {
+              "name": "keyword.control.directive.include.4gl"
+            },
+            "2": {
+              "name": "string.quoted.other.header.4gl"
+            }
+          }
+        },
+        {
+          "name": "keyword.control.directive.4gl",
+          "match": "^\\s*(?:\\#include|\\#define|\\#undef|\\#ifdef|\\#ifndef|\\#if|\\#elif|\\#else|\\#endif|\\#ident|\\#pragma|\\#context_on|\\#context_off)\\b"
+        }
+      ]
+    },
+    "sections": {
+      "patterns": [
+        {
+          "name": "entity.name.section.program.4gl",
+          "match": "^\\s*(?i:declaration:|before\\.program:|after\\.form\\.read:|on\\.error:|after\\.program:|after\\.update\\.db\\.commit:|before\\.display\\.object:|before\\.new\\.object:|functions:)"
+        },
+        {
+          "name": "entity.name.section.choice.4gl",
+          "match": "^\\s*(?i:choice\\.abort\\.program:|choice\\.add\\.set:|choice\\.attachments:|choice\\.bms:|choice\\.change\\.frm:|choice\\.change\\.order:|choice\\.cmd\\.ssi\\.export\\.a:|choice\\.cmd\\.ssi\\.export\\.q:|choice\\.cmd\\.ssi\\.import:|choice\\.cmd\\.insert\\.in\\.detail:|choice\\.cont\\.process:|choice\\.create\\.job:|choice\\.def\\.find:|choice\\.deselect\\.all:|choice\\.display\\.set:|choice\\.dupl\\.occur:|choice\\.end\\.program:|choice\\.find\\.data:|choice\\.first\\.frm:|choice\\.first\\.set:|choice\\.first\\.view:|choice\\.get\\.defaults:|choice\\.global\\.copy:|choice\\.global\\.delete:|choice\\.interrupt:|choice\\.last\\.frm:|choice\\.last\\.set:|choice\\.last\\.view:|choice\\.mark\\.delete:|choice\\.mark\\.occur:|choice\\.modify\\.set:|choice\\.next\\.frm:|choice\\.next\\.set:|choice\\.next\\.view:|choice\\.prev\\.frm:|choice\\.prev\\.set:|choice\\.prev\\.view:|choice\\.print\\.data:|choice\\.recover\\.set:|choice\\.resize\\.frm:|choice\\.restart\\.input:|choice\\.rotate\\.curr:|choice\\.run\\.job:|choice\\.save\\.defaults:|choice\\.select\\.all:|choice\\.start\\.query:|choice\\.start\\.set:|choice\\.text\\.manager:|choice\\.update\\.db:|choice\\.user\\.0:|choice\\.user\\.1:|choice\\.user\\.2:|choice\\.user\\.3:|choice\\.user\\.4:|choice\\.user\\.5:|choice\\.user\\.6:|choice\\.user\\.7:|choice\\.user\\.8:|choice\\.user\\.9:|choice\\.zoom:)"
+        },
+        {
+          "name": "entity.name.section.sub.4gl",
+          "match": "^\\s*(?i:after\\.choice:|after\\.delete:|after\\.display\\.object:|after\\.display:|after\\.field:|after\\.form:|after\\.group:|after\\.input:|after\\.layout:|after\\.read:|after\\.rewrite:|after\\.skip\\.delete:|after\\.skip\\.rewrite:|after\\.skip\\.write:|after\\.write:|after\\.zoom:|before\\.checks:|before\\.choice:|before\\.delete:|before\\.display:|before\\.field:|before\\.form:|before\\.group:|before\\.input:|before\\.layout:|before\\.read:|before\\.rewrite:|before\\.write:|before\\.zoom:|check\\.input:|domain\\.error:|init\\.field:|init\\.form:|init\\.group:|on\\.choice:|on\\.entry:|on\\.exit:|on\\.input:|read\\.view:|ref\\.display:|ref\\.input:|selection\\.filter:|when\\.field\\.changes:)"
+        },
+        {
+          "name": "entity.name.section.dynamic.4gl",
+          "match": "^\\s*(?i:(?:field|choice|group|form)\\.[a-zA-Z0-9_.]+):"
+        },
+        {
+          "name": "entity.name.section.report.4gl",
+          "match": "^\\s*(?i:(?:header|detail|before|after)\\.[0-9]+):"
+        }
+      ]
+    },
+    "sql": {
+      "patterns": [
+        {
+          "name": "keyword.operator.sql.4gl",
+          "match": "\\b(?i:alike|all|as|as\\ prepared\\ set|as\\ set\\ with\\ n\\ rows|asc|avg|between|buffer|by|cSqlAnnotation_SelectAllDataLanguages|cast|clear|clearunref|count|cross|current_date|current_timestamp|date|date\\.num|date\\.to\\.num|desc|distinct|empty|endselect|escape|exists|fetching|first|for\\ update|from|group|group\\ by|having|hint|hint\\ all\\ rows|hint\\ array\\ fetching|hint\\ array\\ size\\ <n>|hint\\ buffer\\ <n>\\ rows|hint\\ first\\ rows|hint\\ no\\ array\\ fetching|hint\\ ordered|hint\\ use\\ index\\ <n>\\ on\\ <table>|hints|in|index|inner|inrange|is|join|last|left|like|no|on|order|order\\ by|ordered|outer|path|prepared|refers|refers\\ to|repeat|repeat\\ last\\ row|retry|right|row|rows|select|selectbind|selectdo|selectempty|selecteos|selecterror|set|setunref|size|skip|sql\\.statement|subhint|substr|sum|timestamp|union|unref|update|use|where|wherebind|with|with\\ retry)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.4gl",
+          "match": "\\b(?i:and|and|array|at|base|based|boolean|break|bset|call|case|common|const|continue|default|delete|delete|deleteempty|deleteerror|dim|dllusage|domain|double|elif|else|endcase|enddelete|enddllusage|endfor|endfunctionusage|endif|endupdate|endwhile|eq|escape|extern|false|fixed|for|function|functionusage|ge|global|goto|gt|if|index|input|integer|le|long|lt|mb|multibyte|ne|not|null|or|print|prompt|raw|real|ref|reference|return|right|static|step|string|substr|table|then|to|true|until|updateempty|updateerror|void|whereused|while)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.4gl",
+          "match": "\\b(?i:boolean|byte|double|long|string|domain|table|bset|void|multibyte)\\b"
+        }
+      ]
+    },
+    "modifiers": {
+      "patterns": [
+        {
+          "name": "storage.modifier.4gl",
+          "match": "\\b(?i:extern|global|fixed|based|const|ref|static)\\b"
+        }
+      ]
+    },
+    "standard_defines": {
+      "patterns": [
+        {
+          "name": "constant.language.standard.4gl",
+          "match": "\\b(?:ALL_ENUMS_EXCEPT|BIC_TIV_LEVEL|DALDBERROR|DALHOOKERROR|DALNOMETHOD|DALNOOBJECT|DALNOOBJPERM|DALNOSETPERM|DAL_DESTROY|DAL_FIND|DAL_GET_CURR|DAL_GET_FIRST|DAL_GET_LAST|DAL_GET_NEXT|DAL_GET_PREV|DAL_GET_SPECIFIED|DAL_NEW|DAL_NOLOCK|DAL_UPDATE|DISABLE|ENABLE|ES_TIV_LEVEL|HOOK_ALL|HOOK_IS_APPLICABLE|HOOK_IS_DERIVED|HOOK_IS_MANDATORY|HOOK_IS_READONLY|HOOK_IS_VALID|HOOK_UPDATE|INCLUDE_ENUMS|MODAL|MODELESS|MSG\\.ALL|MSG\\.ERROR|MSG\\.INFO|MSG\\.SUCCESS|MSG\\.WARNING|PI|PROGRESS\\.BAR|PROGRESS\\.CANCEL|PROGRESS\\.NOAUTODESTROY|PROGRESS\\.RESIZEABLE|PROGRESS\\.STOP|PROGRESS\\.TIMER|READONLY|XML_DATA|XML_DTD|XML_ELEMENT|XML_PI)\\b"
+        }
+      ]
+    },
+    "predefined_variables": {
+      "patterns": [
+        {
+          "name": "variable.language.predefined.4gl",
+          "match": "\\b(?i:actual\\.occ|attr\\.adju|attr\\.bitset\\.mask|attr\\.changed|attr\\.conv|attr\\.currency\\$|attr\\.currkey|attr\\.dbase|attr\\.dbmaxlen|attr\\.deflt\\$|attr\\.descr\\$|attr\\.diga|attr\\.digv|attr\\.divf|attr\\.domain\\$|attr\\.domm\\$|attr\\.dorp|attr\\.echo|attr\\.element|attr\\.enum\\.mask\\$|attr\\.format\\.addition\\$|attr\\.helpfile\\$|attr\\.ille\\$|attr\\.imax|attr\\.inpfld|attr\\.input|attr\\.lega\\$|attr\\.mandatory|attr\\.maxlen|attr\\.message\\$|attr\\.minlen|attr\\.multioccur|attr\\.nowait\\$|attr\\.oformat\\$|attr\\.permission|attr\\.previous\\$|attr\\.rang|attr\\.rang\\$|attr\\.reallen|attr\\.refpath|attr\\.rndm|attr\\.rotate|attr\\.sttp|attr\\.textfield\\$|attr\\.textkw1\\$|attr\\.textkw2\\$|attr\\.textkw3\\$|attr\\.textkw4\\$|attr\\.textlang\\$|attr\\.textmaxlines|attr\\.textmode|attr\\.textopt\\$|attr\\.textstart|attr\\.textzoomsession\\$|attr\\.type|attr\\.zoomcode|attr\\.zoomreturn\\$|attr\\.zoomsession\\$|auto\\.nextform|background|before\\.update\\.check|breakview|chartgrp|chm\\.name|chm\\.owner|chm\\.title|chm\\.user|choice|curr\\.key|curr\\.pacc\\$|date|date\\$|deprecated|e|error\\.bypass|exit\\.val\\$|fattr\\.currfld\\$|fattr\\.descr\\$|fattr\\.ftype|fattr\\.helpfile\\$|fattr\\.horizontal|fattr\\.init|fattr\\.nextfld\\$|fattr\\.nrtabs|fattr\\.occurnr|fattr\\.prevfld\\$|fattr\\.row|fattr\\.scrollbar|fattr\\.seqno|fattr\\.step|fattr\\.toplines|fattr\\.total\\.line|fattr\\.vdate\\$|fattr\\.version\\$|fattr\\.width|filename\\$|filled\\.occ|firstweek\\$|form\\.curr|form\\.next|form\\.prev|free\\$|graphical\\.mode|ignore\\.first\\.event|in\\.ret|initial\\.resize|job\\.device|job\\.device\\.requested|job\\.process|job\\.report|job\\.skip\\.date\\.question|language\\$|lattr\\.autobefores|lattr\\.autoreset|lattr\\.break|lattr\\.enddata|lattr\\.header|lattr\\.language\\$|lattr\\.lineno|lattr\\.multicol|lattr\\.multicol\\.count|lattr\\.multicol\\.repeat|lattr\\.pageno|lattr\\.print|lattr\\.prline|lattr\\.recordtimes|lattr\\.textexpand|lattr\\.textlang\\$|lattr\\.textline|lattr\\.textlineno|lattr\\.textlines\\.max|lattr\\.textlines\\.min|logname\\$|main\\.table\\$|mark\\.status|mark\\.table\\(\\)|marked|max\\.formtabs|maxdouble|modify\\.prim\\.key|number\\.forms|parent|pid|previous\\.choice|procesinfo\\$|prog\\.name\\$|query\\.extension|reportgrp|reportno|sattr\\.combined|spool\\.date|spool\\.device|spool\\.fileout|spool\\.fontnumber|spool\\.id|spool\\.left\\.mrg|spool\\.paper\\.type|spool\\.pg\\.length|spool\\.pg\\.width|spool\\.pr\\.copies|spool\\.pr\\.line|spool\\.report|spool\\.ssrs|spool\\.time|spool\\.view\\.rtl|spool\\.xml|stp\\.abort\\.error|stp\\.check\\.input\\.error|stp\\.skip\\.error|term\\$|time|trusted|update\\.status|user\\.type\\$|zoomfield\\$|zoomreturn\\$)\\b"
+        }
+      ]
+    },
+    "dal_hooks": {
+      "patterns": [
+        {
+          "name": "support.function.dal.object.4gl",
+          "match": "\\b(?i:after\\.abort\\.transaction|after\\.change\\.object|after\\.commit\\.transaction|after\\.destroy\\.object|after\\.get\\.object|after\\.new\\.object|after\\.save\\.object|before\\.change\\.object|before\\.destroy\\.object|before\\.get\\.object|before\\.new\\.object|before\\.open\\.object\\.set|before\\.save\\.object|method\\.is\\.allowed|set\\.object\\.defaults)\\b"
+        },
+        {
+          "name": "support.function.dal.field.4gl",
+          "match": "\\b[a-zA-Z0-9_]+\\.(?:is\\.never\\.applicable|is\\.applicable|is\\.readonly|is\\.derived|is\\.mandatory|is\\.valid|update|make\\.valid|check|set\\.defaults)\\b"
+        }
+      ]
+    },
+    "bshell_functions": {
+      "patterns": [
+        {
+          "name": "support.function.bshell.4gl",
+          "match": "\\b([a-zA-Z0-9_]+(?:\\.[a-zA-Z0-9_]+)+)\\b(?=\\s*\\()"
+        }
+      ]
+    }
+  }
+}

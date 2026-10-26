@@ -1,27 +1,36 @@
 ---
 name: erp-ln-progguide
-description: Infor ERP LN / Baan 4GL programmer's reference and full-stack engineering guide. Use when writing, reading, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL 1 & 2 scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), embedding GenAI assistance (genai.*, set.genai.*) in sessions, developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and hooks), calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs), referencing Infor LN Development Tools (Data Dictionaries, domains, tables, crdd reconfiguration, MMT sessions, PMC, SCM), or applying Infor LN coding best practices and cloud governance rules.
+description: Infor ERP LN / Baan 4GL programmer's reference, full-stack engineering guide, and static audit engine. Use when writing, reading, auditing, or debugging Baan/LN 4GL (bshell) code, 4GL session scripts, DAL 1 & 2 scripts, AFS/function-server automation, report scripts, LN SQL queries, bshell built-in functions, predefined variables, debugger usage, resolving SQL error states (SQLSTATE), embedding GenAI assistance (genai.*, set.genai.*) in sessions, developing Infor LN extensions (Extension Modeler, CDFs, table/session/report/BOD/OData/menu/process extension points and hooks), calling LN public interface functions / process extensions (e.g. Address.Create, Item.GetData, tdext/whext/tiext DLLs), referencing Infor LN Development Tools (Data Dictionaries, domains, tables, crdd reconfiguration, MMT sessions, PMC, SCM), statically auditing 4GL/DAL code via scripts/audit_4gl.py, or applying Infor LN coding best practices and cloud governance rules.
 ---
 
 # Infor ERP LN Programmer's Guide & Best Practices (Baan 4GL)
 
-Full text of the official Infor *Programmer's Guide* (`progguide 2610 en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Development Tools (2016)* manual, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)*, the *AFS Developer's Guide (Infor Integration 6.2)*, and the **Infor LN Best Practices & Cookbooks Suite**, converted to plain Markdown: **5,700+ pages**, including **2,425 bshell function references**, **1,833 public interface / process extension references**, all **`stpapi.*` AFS primitives**, 13 complete **Development Tools** chapters, and 5 prescriptive **Architectural Cookbooks**.
+Full text of the official Infor *Programmer's Guide* (`progguide 2610 en`), its *SQL* volume, the *Infor LN Extensions Development Guide 10.8*, the *Infor LN Development Tools (2016)* manual, the *Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud)*, the *AFS Developer's Guide (Infor Integration 6.2)*, the **Infor LN Studio 10.8 Build 0640 Authoritative Dictionaries**, and the **Infor LN Best Practices & Cookbooks Suite**, converted to plain Markdown: **5,700+ pages**, including **2,266 authoritative bshell functions** from Studio Build 0640 with Cloud Multi-Tenant Trust indicators, **1,833 public interface / process extension references**, all **`stpapi.*` AFS primitives**, official **Studio script templates**, and a standalone **4GL & DAL Audit Engine** (`scripts/audit_4gl.py`).
 
 ## How to answer questions (token-efficient workflow)
 
 Never read folders blindly. Use this order:
 
 1. **Known function name** -> grep `references/FUNCTION_INDEX.md` for the name.
-   Each line has the normalized signature and the exact `.md` path. Then Read only that file.
+   Each line is strictly single-line for high-speed grep execution and displays Cloud Trust badges (`[Cloud: Trusted|Untrusted]`), `[Deprecated]`, `[Scope: <type>]`, and required `#include <...>` headers:
+   ```markdown
+   - **Json.getString** | [Cloud: Trusted] [Scope: all] [Inc: <bic_json>] | `string Json.getString( ... )` -> `references/guide/...`
+   ```
+   If no markdown page exists, it points directly to `index/functions_db.json#<name>`.
 2. **Best practices & architectural rules** -> check `references/best_practices/` first before generating or reviewing code.
-3. **Free-text question** ("how to open a file", "utc conversion", "query hint", "before.save.object hook", "crdd reconfiguration", "MMT satellite") -> run:
+3. **Static Code Verification & Auditing** -> run the zero-dependency auditor on any 4GL/DAL/UEDLL script:
+   ```bash
+   python <skill_dir>/scripts/audit_4gl.py <target_path> [--mode dal2|uedll|general] [--cloud] [--format text|json] [--strict]
+   ```
+   Audits block balance (SYN001), section headers (SYN002), DAL contracts (DAL001-DAL004), Cloud trust (CLD001-CLD002), missing `#include` (INC001), and caveats (CAV001-CAV003).
+4. **Free-text question** ("how to open a file", "utc conversion", "query hint", "before.save.object hook", "crdd reconfiguration", "MMT satellite") -> run:
    ```
    python <skill_dir>/scripts/search.py <terms> [--dir guide|sql|extensions|public_interfaces|afs|dev_tools|best_practices|all] [--group substr] [--regex PATTERN] [--max 25]
    python <skill_dir>/scripts/search.py --list-groups        # topic folders + page counts
    ```
    Output is `file:line: snippet` matches ranked by hits. Read only promising files.
-4. **All pages** -> `index/INDEX.tsv` maps every page path to its title.
-5. Links between pages are relative Markdown links and resolve correctly; follow them by Reading the target path next to the current file.
+5. **All pages** -> `index/INDEX.tsv` maps every page path to its title.
+6. Links between pages are relative Markdown links and resolve correctly; follow them by Reading the target path next to the current file.
 
 ## Infor LN Coding Standards & Architectural Guardrails
 
@@ -60,6 +69,7 @@ When analyzing, designing, or generating Infor ERP LN code, AI agents and develo
 6. **Cloud Extensibility Governance**:
    - Respect Cloud multi-tenant governor limits: max execution elapsed time = `5,000 ms`, max file output = `5 MB`.
    - Never call untrusted bshell functions (`run.prog()`, `hostname$()`) or manipulate files outside sandboxed tenant storage.
+   - Run `scripts/audit_4gl.py --cloud` to automatically flag untrusted or deprecated APIs.
    - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
 
 ### Mandatory Negative Constraints & Defensive Rules (Strictly Prohibited Anti-Patterns)
@@ -80,7 +90,17 @@ During code generation, refactoring, and code review, AI agents and engineers **
 ## Layout
 
 ```
+index/
+  functions_db.json           Machine-readable catalog of 2,266 bshell functions with Cloud Trust & include tags
+  INDEX.tsv                   every page: path TAB title
 references/
+  STUDIO_SYNTAX_COMPLETION.md Studio Build 0640 syntax dictionaries, sections, DAL hooks, and templates
+  studio_syntax_completion.json Machine-readable JSON dictionary (keywords, SQL, sections, hooks)
+  FUNCTION_INDEX.md           Single-line grep-ready function index with Cloud Trust badges & includes
+  DEV_TOOLS_INDEX.md          Master chapter and topic index for Development Tools
+  EXTENSIONS_INDEX.md         Chapter list + orientation for the extensions guide
+  PUBLIC_INTERFACES_INDEX.md  Index of all public interfaces per chapter
+  AFS_INDEX.md                stpapi.* primitive list with signatures
   best_practices/             Prescriptive architectural guides & cookbooks:
     01_extension_hooks_cookbook.md               Table/session hook lifecycles, CDF recipes, cloud governance
     02_dal_architecture_and_business_logic.md   DAL 1 vs 2, SoC rules, property hooks, business methods
@@ -88,49 +108,36 @@ references/
     04_data_model_and_domain_design.md          Domain types, table references, crdd reconfiguration
     05_session_and_mmt_patterns.md              Session types 1-4, MMT Controller/Satellite, labels
     06_4gl_coding_standards_and_caveats.md       Domains vs primitives, buffer collision, double.cmp, 1-based arrays
-  dev_tools/                  Infor LN Development Tools (2016), 13 complete chapters:
-    ch01_development_tools_introduction.md
-    ch02_overview_of_software_components.md
-    ch03_data_dictionaries.md
-    ch04_development_parameters_and_authorizations.md
-    ch05_software_development_procedures.md
-    ch06_session_personalizations.md
-    ch07_version_and_release_management.md
-    ch08_ln_software_maintenance.md
-    ch09_ln_homepages.md
-    ch10_ln_reporting_overview.md
-    ch11_4gl_reports.md
-    ch12_session_based_reporting.md
-    ch13_query_based_reporting.md
-  guide/progguide/            main guide, mirrored from original TOC (LN 2610)
-    3gl_features/             data types, variables, expressions, multibyte/UTC
-    4gl_features/             4GL sections: program/form/group/field/choice/event/
-                              zoom, main.table.io subsections, flow of standard program
+  dev_tools/                  Infor LN Development Tools (2016), 13 complete chapters
+  guide/progguide/            Main guide, mirrored from original TOC (LN 2610)
+    3gl_features/             Data types, variables, expressions, multibyte/UTC
+    4gl_features/             4GL sections: program/form/group/field/choice/event/zoom, main.table.io
     bol/                      Business Object Layer programming
-    functions_<topic>/        ~130 function groups; each has overview.md,
-                              synopsis.md (all signatures), one page per function
+    functions_<topic>/        ~130 function groups; one page per function
     functions_genai/          Native GenAI 4GL APIs (genai.processing.*, session.set.genai.*)
-    multitasking/ events/     process model, event handling
-    debugger/ profiler/       baan debugger commands, call graph profiler
-    misc/                     bshell options/env vars/resources, predefined vars
-    errors/                   Infor ES error messages
   sql/progguide/              Baan SQL reference & SQLSTATE error codes
   extensions/                 Infor LN Extensions Development Guide (10.8)
   public_interfaces/          LN Cloud Public Interfaces & Process Extensions reference (25082026)
   afs/                        AFS Developer's Guide (stpapi.* primitives)
-index/INDEX.tsv               every page: path TAB title
-references/DEV_TOOLS_INDEX.md master chapter and topic index for Development Tools
-references/FUNCTION_INDEX.md  all 2425 functions grouped by topic, grep this first
-references/EXTENSIONS_INDEX.md chapter list + orientation for the extensions guide
-references/PUBLIC_INTERFACES_INDEX.md  index of all public interfaces per chapter
-references/AFS_INDEX.md       stpapi.* primitive list with signatures
-scripts/search.py             full-text search tool (stdlib Python only)
+templates/                    Official Studio ScriptTemplates (DalTwo.dal, UIDatabase.cln, UserExitDLL.ue, etc.)
+scripts/
+  audit_4gl.py                Standalone zero-dependency 4GL/DAL static audit engine
+  search.py                   Full-text search tool (stdlib Python only)
+tests/
+  test_audit_4gl.py           Unit test suite for audit_4gl.py
 ```
+
+---
 
 ## Common tasks
 
 | Task | Start at |
 |---|---|
+| **Static 4GL/DAL Code Audit & Cloud Verification** | `scripts/audit_4gl.py <target_path> [--cloud]` |
+| **Official LN Studio Script Templates** | `templates/` (`DalTwo.dal`, `UIDatabase.cln`, `UserExitDLL.ue`) |
+| **LN Studio Syntax & Completion Dictionaries** | `references/STUDIO_SYNTAX_COMPLETION.md` & `references/studio_syntax_completion.json` |
+| **Bshell Functions Machine Catalog** | `index/functions_db.json` |
+| **VS Code Extension Assets (TextMate & Snippets)** | `export/vscode/` (`syntaxes/`, `snippets/`, `language-configuration.json`) |
 | **Extension Hooks Cookbook & Recipes** | `references/best_practices/01_extension_hooks_cookbook.md` |
 | **DAL 1 vs DAL 2 & SoC Rules** | `references/best_practices/02_dal_architecture_and_business_logic.md` |
 | **Baan SQL Optimization & Transactions** | `references/best_practices/03_sql_query_optimization_and_transactions.md` |
@@ -156,6 +163,6 @@ scripts/search.py             full-text search tool (stdlib Python only)
 
 ## Notes
 
-- Sources: Infor progguide 2610 (en) + Infor LN Development Tools (2016) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (25082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US).
+- Sources: Infor progguide 2610 (en) + Infor LN Development Tools (2016) + Infor LN Extensions Development Guide 10.8 (01062026) + Infor LN Public Interfaces & Process Extensions Reference Guide (Cloud) (25082026) + Infor Integration 6.2 AFS Developer's Guide (U8627B US) + Infor LN Studio 10.8 Build 0640 (April 2026).
 - All files UTF-8 Markdown; code examples fenced; tables preserved.
-- `search.py` needs only Python 3 stdlib; safe on Windows/Linux/macOS.
+- `audit_4gl.py` and `search.py` require only Python 3 stdlib; zero external dependencies.

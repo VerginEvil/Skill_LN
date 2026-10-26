@@ -1,0 +1,21 @@
+|******************************************************************************
+|* %NAME  %VERSION
+|* %DESCRIPTION
+|* %USER
+|* %DATE [%TIME]
+|******************************************************************************
+|* Script Type: DAL
+|******************************************************************************
+                                                                                
+#include <bic_dal>
+
+
+function extern long before.open.object.set()
+{
+	return(0)
+}
+
+function extern long before.save.object(long type)
+{
+	return(0)
+}

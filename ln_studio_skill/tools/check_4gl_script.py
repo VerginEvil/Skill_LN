@@ -90,12 +90,16 @@ class Diagnostic:
 
 def load_syntax_catalog() -> Dict[str, Any]:
     """Load extracted LN Studio syntax catalog if available, or fall back to defaults."""
-    catalog_path = Path(__file__).resolve().parent.parent / "references" / "studio_syntax_completion.json"
-    if catalog_path.exists():
-        try:
-            return json.loads(catalog_path.read_text(encoding="utf-8"))
-        except Exception:
-            pass
+    candidates = [
+        Path(__file__).resolve().parent.parent / "references" / "studio_syntax_completion.json",
+        Path(__file__).resolve().parent.parent.parent / "erp-ln-progguide" / "references" / "studio_syntax_completion.json",
+    ]
+    for catalog_path in candidates:
+        if catalog_path.exists():
+            try:
+                return json.loads(catalog_path.read_text(encoding="utf-8"))
+            except Exception:
+                pass
     return {
         "program_sections": list(DEFAULT_PROGRAM_SECTIONS),
         "sub_sections": list(DEFAULT_SUB_SECTIONS),
@@ -103,6 +107,22 @@ def load_syntax_catalog() -> Dict[str, Any]:
         "dal_object_hooks": list(DEFAULT_DAL_OBJECT_HOOKS),
         "dal_field_hook_suffixes": [{"suffix": s} for s in DEFAULT_DAL_FIELD_HOOK_SUFFIXES],
     }
+
+
+def load_functions_db() -> Dict[str, Any]:
+    """Load bshell function catalog from erp-ln-progguide/index/functions_db.json."""
+    candidates = [
+        Path(__file__).resolve().parent.parent.parent / "erp-ln-progguide" / "index" / "functions_db.json",
+        Path(__file__).resolve().parent.parent / "index" / "functions_db.json",
+    ]
+    for c in candidates:
+        if c.exists():
+            try:
+                raw = json.loads(c.read_text(encoding="utf-8"))
+                return {k.lower(): v for k, v in raw.items()}
+            except Exception:
+                pass
+    return {}
 
 
 def strip_4gl_comments_and_strings(line: str, in_multiline_doc: bool) -> Tuple[str, bool]:
@@ -155,9 +175,19 @@ def strip_4gl_comments_and_strings(line: str, in_multiline_doc: bool) -> Tuple[s
 
 
 class ScriptChecker:
-    def __init__(self, catalog: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        catalog: Optional[Dict[str, Any]] = None,
+        functions_db: Optional[Dict[str, Any]] = None,
+        cloud_mode: bool = False,
+    ):
         if not catalog:
             catalog = load_syntax_catalog()
+        if functions_db is None:
+            functions_db = load_functions_db()
+
+        self.functions_db = functions_db
+        self.cloud_mode = cloud_mode
 
         self.program_sections = set(catalog.get("program_sections", DEFAULT_PROGRAM_SECTIONS))
         self.sub_sections = set(catalog.get("sub_sections", DEFAULT_SUB_SECTIONS))
@@ -166,11 +196,15 @@ class ScriptChecker:
 
         raw_suffixes = catalog.get("dal_field_hook_suffixes", [])
         self.dal_field_hook_suffixes = set()
+        self.dal_field_hooks_info: Dict[str, Dict[str, Any]] = {}
         for s in raw_suffixes:
             if isinstance(s, dict):
-                self.dal_field_hook_suffixes.add(s.get("suffix", ""))
+                sfx = s.get("suffix", "")
+                self.dal_field_hook_suffixes.add(sfx)
+                self.dal_field_hooks_info[sfx.lower()] = s
             else:
                 self.dal_field_hook_suffixes.add(str(s))
+                self.dal_field_hooks_info[str(s).lower()] = {"suffix": str(s)}
 
         # Build combined all known section list for typo suggestion
         self.all_known_sections = sorted(
@@ -219,6 +253,23 @@ class ScriptChecker:
         """Perform static verification of 4GL script text."""
         diagnostics: List[Diagnostic] = []
         lines = script_text.splitlines()
+
+        # Includes collection
+        includes_found: Set[str] = set()
+        for raw_line in lines:
+            m_inc = re.match(r'^\s*#include\s+[<"]([a-zA-Z0-9_.]+)[>"]', raw_line)
+            if m_inc:
+                inc_name = m_inc.group(1).lower()
+                if inc_name.endswith(".h"):
+                    inc_name = inc_name[:-2]
+                includes_found.add(inc_name)
+
+        is_dal = (
+            file_path.lower().endswith((".dal", ".dalsrc"))
+            or "dal2" in file_path.lower()
+            or "before.save.object" in script_text.lower()
+            or "dal.set.error.message" in script_text.lower()
+        )
 
         # Block balance stacks: (block_type, line_number)
         block_stack: List[Tuple[str, int]] = []
@@ -379,18 +430,34 @@ class ScriptChecker:
             # ----------------------------------------------------
             # 3. DAL & Extension Function Hook Signatures
             # ----------------------------------------------------
-            func_match = re.match(r"^\s*function\s+(?:extern\s+)?(?:[a-zA-Z0-9_]+\s+)?([a-zA-Z0-9_.]+)\s*\(", code_line)
+            func_match = re.match(r"^\s*function\s+(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line)
             if func_match:
                 func_name = func_match.group(1).lower()
+                params = func_match.group(2).strip()
 
                 # Check if it looks like a DAL property hook: <col>.<suffix>
                 for sfx in self.dal_field_hook_suffixes:
                     if func_name.endswith(sfx):
                         col_prefix = func_name[:-len(sfx)]
+                        # Check required arguments
+                        hook_info = self.dal_field_hooks_info.get(sfx.lower(), {})
+                        req_args = hook_info.get("arguments", "")
+                        if "long i.mode" in req_args:
+                            if not re.search(r"\blong\s+i\.mode\b", params, re.IGNORECASE):
+                                diagnostics.append(Diagnostic(
+                                    file_path, line_no, 1, "ERROR",
+                                    f"DAL hook '{func_name}' must declare parameter 'long i.mode'. Found: '({params})'."
+                                ))
+                        elif "long has_changed" in req_args:
+                            if not re.search(r"\blong\s+has_changed\b", params, re.IGNORECASE):
+                                diagnostics.append(Diagnostic(
+                                    file_path, line_no, 1, "ERROR",
+                                    f"DAL hook '{func_name}' must declare parameter 'long has_changed'. Found: '({params})'."
+                                ))
+
                         # If owning component table columns are provided, check column
                         if owning_component and "columns" in owning_component:
                             table_cols = owning_component["columns"]
-                            # col_prefix might be table.col or just col
                             col_base = col_prefix.split('.')[-1]
                             if col_prefix not in table_cols and col_base not in table_cols and not col_base.startswith("cdf_"):
                                 diagnostics.append(Diagnostic(
@@ -398,6 +465,39 @@ class ScriptChecker:
                                     f"DAL property hook '{func_name}' references column '{col_prefix}' not found in owning table columns."
                                 ))
                         break
+
+            # ----------------------------------------------------
+            # 4. Prohibited Interactive Dialogs in DAL Scripts
+            # ----------------------------------------------------
+            if is_dal:
+                ui_matches = re.finditer(r"(?<![.\w])(message|ask\.enum|box|input\.string)\s*\(", code_line, re.IGNORECASE)
+                for uim in ui_matches:
+                    func_called = uim.group(1).lower()
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, uim.start() + 1, "ERROR",
+                        f"Interactive dialog '{func_called}()' is prohibited in DAL scripts; use 'dal.set.error.message()' instead."
+                    ))
+
+            # ----------------------------------------------------
+            # 5. Function Catalog Checks (Missing Includes & Cloud Trust)
+            # ----------------------------------------------------
+            call_matches = re.finditer(r"\b([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)+)\s*\(", code_line)
+            for cm in call_matches:
+                called_fn = cm.group(1)
+                called_fn_ci = called_fn.lower()
+                fn_info = self.functions_db.get(called_fn_ci)
+                if fn_info:
+                    if self.cloud_mode and not fn_info.get("trusted", True):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, cm.start() + 1, "ERROR",
+                            f"Function '{called_fn}' is untrusted for Infor LN Cloud Multi-Tenant environments."
+                        ))
+                    req_inc = fn_info.get("include", "").lower().strip()
+                    if req_inc and req_inc not in includes_found:
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, cm.start() + 1, "WARNING",
+                            f"Function '{called_fn}' requires '#include <{req_inc}>', which is missing."
+                        ))
 
         # Check for unclosed blocks at EOF
         while block_stack:
@@ -512,9 +612,9 @@ def inspect_component_xml(xml_path: Path) -> Tuple[Optional[str], Dict[str, Any]
     return script_text, meta
 
 
-def check_file(file_path: Path, owning_xml: Optional[Path] = None) -> List[Diagnostic]:
+def check_file(file_path: Path, owning_xml: Optional[Path] = None, cloud_mode: bool = False) -> List[Diagnostic]:
     """Check a single file (either XML with expression or standalone 4GL script)."""
-    checker = ScriptChecker()
+    checker = ScriptChecker(cloud_mode=cloud_mode)
 
     if file_path.suffix.lower() in (".tbl", ".ses", ".lib"):
         script_text, meta = inspect_component_xml(file_path)
@@ -535,6 +635,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="LN Studio Static 4GL Script Inspector")
     parser.add_argument("path", type=Path, help="Path to 4GL script or XML component file/directory")
     parser.add_argument("--owning-xml", type=Path, default=None, help="Owning XML component for symbol verification")
+    parser.add_argument("--cloud", action="store_true", help="Enforce Infor LN Cloud Multi-Tenant rules")
     parser.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     args = parser.parse_args()
@@ -553,7 +654,7 @@ def main() -> None:
 
     all_diagnostics: List[Diagnostic] = []
     for f in sorted(files_to_check):
-        diags = check_file(f, owning_xml=args.owning_xml)
+        diags = check_file(f, owning_xml=args.owning_xml, cloud_mode=args.cloud)
         all_diagnostics.extend(diags)
 
     errors = [d for d in all_diagnostics if d.severity == "ERROR"]
