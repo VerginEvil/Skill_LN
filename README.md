@@ -2,15 +2,16 @@
 [![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-green.svg)](#)
 [![Automation](https://img.shields.io/badge/Toolchain-Eclipse%20RCP%20Automation-orange.svg)](#)
 [![Author](https://img.shields.io/badge/Author-Natthaphon%20Srikasem-purple.svg)](#credits--maintainer)
-[![Tests](https://img.shields.io/badge/Tests-86%20Passed-brightgreen.svg)](#automated-test-suite)
+[![Tests](https://img.shields.io/badge/Tests-94%20Passed-brightgreen.svg)](#automated-test-suite)
 
 # Skill_LN: Infor ERP LN Developer Skill & Studio Automation Toolchain
 
 A unified, production-grade intelligence, modeling, and static verification system for **Infor ERP LN** and **Infor LN Studio 10.8 build 0640 (April 2026 tree, Eclipse RCP)**.
 
-This repository provides two core pillars:
+This repository provides three core pillars:
 1. **[Infor LN Studio Automation Toolset & Assistant Skill](#infor-ln-studio-automation-toolset--skill)** (`ln_studio_skill/`, self-contained: knowledge plus executables under `ln_studio_skill/tools/`): A reverse-engineered CLI toolchain and agent skill enabling high-fidelity declarative metadata modeling, bidirectional 4GL source synchronization, OS Read-Only SCM guardrails, 12-extension `.admin` cache synchronization, offline 4GL syntax/completion inspection, 4-layer static activity validation (`validate` & `--fix`), Windows action bridging, and closed-loop compiler diagnostic loops. Studio usage knowledge is distilled from the *Application Development Guide (Cloud and On-premises), September 2025* into `ln_studio_skill/references/studio_guide/` with master index `references/STUDIO_INDEX.md`.
-2. **[Baan 4GL Programmer's Guide, Dev Tools & Best Practices Skill](#infor-erp-ln-programmers-guide-skill)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering 2,425 Baan 4GL functions, GenAI APIs, SQL volumes, Extension Modeler, Public Interfaces up to 25082026, 13 chapters of Infor LN Development Tools (2016), and a 5-part architectural Best Practices Cookbook suite.
+2. **[Baan 4GL Programmer's Guide, Dev Tools, Best Practices & Standalone Audit Engine](#infor-erp-ln-programmers-guide-dev-tools-best-practices--audit-engine)** (`erp-ln-progguide/`): Over 5,000 converted Markdown reference pages covering **2,266 authoritative bshell functions** (Build 0640) with Cloud Multi-Tenant Trust indicators, GenAI APIs, SQL volumes, Extension Modeler, Public Interfaces up to 25082026, 13 chapters of Infor LN Development Tools (2016), a 6-part architectural Best Practices Cookbook suite, official **Studio Script Templates**, and a zero-dependency **Standalone 4GL & DAL Audit Engine** (`scripts/audit_4gl.py`).
+3. **[VS Code Extension Production-Ready Assets](#vs-code-extension-assets-package)** (`export/vscode/`): Production-grade TextMate grammar (`tmLanguage.json`), code snippets (`.code-snippets`), language configuration, and hover/completion catalog ready for authoring or packaging VS Code extensions for Baan 4GL and Infor LN development.
 
 ---
 
@@ -52,6 +53,14 @@ This repository provides two core pillars:
                                                      |
                                                      v
                                   +-----------------------------------+
+                                  | Standalone 4GL & DAL Audit Engine |
+                                  | - erp-ln-progguide/scripts/       |
+                                  |   audit_4gl.py (--cloud, --mode)  |
+                                  | - Zero dependencies, pure Python  |
+                                  +------------------+----------------+
+                                                     |
+                                                     v
+                                  +-----------------------------------+
                                   | ln_studio_bridge.py (Optional)    |
                                   | Triggers F5 (Refresh) & Ctrl+B    |
                                   +------------------+----------------+
@@ -67,7 +76,7 @@ This repository provides two core pillars:
                                   +-----------------------------------+
                                   | Closed-Loop Autonomous Debugging  |
                                   | Agent fixes code until 0 errors   |
-                                  +-----------------------------------+
+                                  +------------------+----------------+
 ```
 
 ---
@@ -86,7 +95,7 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
   - *Layer 1 (SCM)*: Audits `.admin` tracking & Read-Only states.
   - *Layer 2 (XML)*: Checks XML root tags, Ecore facets, and Session `<FormGroup>` hierarchy trees.
   - *Layer 3 (References)*: Resolves `.lbl` references, Table-Session column bindings, and Index columns.
-  - *Layer 4 (4GL)*: Statically verifies section headers, block balance (`select`, `if`, `case`, `for`, `while`, `repeat`, `#context_on`), and hook symbols.
+  - *Layer 4 (4GL)*: Statically verifies section headers, block balance (`select`, `if`, `case`, `for`, `while`, `repeat`, `#context_on`), missing `#include` headers, Cloud Multi-Tenant rules (`--cloud`), and hook signatures.
   - *Safe `--fix`*: Auto-creates missing `.lbl` files and synchronizes `.admin` without touching Read-Only files.
 
 ### CLI Tools Summary
@@ -95,7 +104,7 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
 |---|---|---|
 | [`ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** (14 subcommands) | `table`, `session`, `domain`, `library`, `menu`, `component`, `inject`, `extract`, `check-script`, `validate`, `sync-admin`, `diagnose`, `build`, `pipeline` |
 | [`validate_ln_activity.py`](ln_studio_skill/tools/validate_ln_activity.py) | **4-Layer Activity Validator & Safe `--fix`** | `python ln_studio_skill/tools/validate_ln_activity.py [<act>] [--strict] [--fix] [--json]` |
-| [`check_4gl_script.py`](ln_studio_skill/tools/check_4gl_script.py) | **Static 4GL Script Inspector** | `python ln_studio_skill/tools/check_4gl_script.py <file> [--owning-xml <xml>] [--strict]` |
+| [`check_4gl_script.py`](ln_studio_skill/tools/check_4gl_script.py) | **Static 4GL Script Inspector** (Layer 4) | `python ln_studio_skill/tools/check_4gl_script.py <file> [--owning-xml <xml>] [--cloud] [--strict]` |
 | [`scm_guardrails.py`](ln_studio_skill/tools/scm_guardrails.py) | **SCM Read-Only Protection** | Enforces `assert_file_writable` before write/inject |
 | [`admin_sync.py`](ln_studio_skill/tools/admin_sync.py) | **12-Extension `.admin` SCM Synchronizer** | `python ln_studio_skill/tools/admin_sync.py --activity <act> --scan-and-update` |
 | [`generate_ln_table.py`](ln_studio_skill/tools/generate_ln_table.py) | Table, Label & Domain XML Generator | `python ln_studio_skill/tools/generate_ln_table.py --spec <spec> [--output-dir <dir>]` |
@@ -111,73 +120,57 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
 
 ---
 
-### Quick Start: Generate & Verify Components
-
-1. Define your multi-component schema in YAML (e.g. `schema.yaml`):
-```yaml
-version_id: B61O_a_ext
-application: EXTce01107
-
-tables:
-  - code: txcmg011
-    description: Billing Batch Header
-    package: tx
-    module: cmg
-    fields:
-      - name: btno
-        domain: tcmcs.long
-        type: long
-        mandatory: true
-      - name: bild
-        domain: tfgld.date
-        type: date
-      - name: tamt
-        domain: tcamnt
-        type: amount
-    indices:
-      - id: 1
-        columns: [btno]
-        primary_key: true
-
-sessions:
-  - code: txcmg0110m100
-    description: Billing Batch MMT Controller
-    type: mmt_controller
-    table: txcmg011
-    satellites: [txcmg0510m000, txcmg0512m000]
-    form_commands:
-      - { name: exec.user.0, function: generate.billing, label_code: txcmg0110m100.cmd1, description: Generate Billing }
-```
-
-2. Run the end-to-end pipeline (generate, sync SCM, validate with auto-fix):
-```bash
-python ln_studio_skill/tools/ln_component_builder.py pipeline --spec schema.yaml --activity "dev_natt_1107-1 [EXTce01107]" --auto-fix --skip-build
-```
-
-3. Run 4-layer validation independently:
-```bash
-python ln_studio_skill/tools/ln_component_builder.py validate "C:\Users\nutdo\OneDrive\Documents\workspace_lnstudio\SCS_TST\dev_natt_1107-1 [EXTce01107]"
-```
-
-4. Statically inspect a 4GL script or XML component:
-```bash
-python ln_studio_skill/tools/ln_component_builder.py check-script "tx/table/cmg/txcmg011.tbl"
-```
-
----
-
-## Infor ERP LN Programmer's Guide, Dev Tools & Best Practices Skill
+## Infor ERP LN Programmer's Guide, Dev Tools, Best Practices & Audit Engine
 
 Located in [`erp-ln-progguide/`](erp-ln-progguide/).
 
-- **5,000+ reference pages** | **2,425 Baan 4GL functions** | **1,833 public interfaces / process extensions** | **AFS `stpapi.*` primitives**
+### Key Capabilities
+
+- **5,000+ reference pages** | **2,266 authoritative bshell functions** from Studio Build 0640 | **1,833 public interfaces / process extensions** | **AFS `stpapi.*` primitives**.
+- **Enriched Grep-Friendly Function Index** ([`references/FUNCTION_INDEX.md`](erp-ln-progguide/references/FUNCTION_INDEX.md)): Strict single-line physical formatting with Cloud Multi-Tenant indicators:
+  ```markdown
+  - **Json.getString** | [Cloud: Trusted] [Scope: all] [Inc: <bic_json>] | `string Json.getString( ... )` -> `references/guide/...`
+  - **cmf.create** | [Cloud: Untrusted] [Scope: all] [Inc: <bic_cmf>] | `long cmf.create( )` -> `references/guide/...`
+  ```
+- **Authoritative Functions Database** ([`index/functions_db.json`](erp-ln-progguide/index/functions_db.json)): Complete machine-readable catalog of bshell functions with return types, parameters, cloud trust, and required includes.
+- **Standalone 4GL & DAL Audit Engine** ([`scripts/audit_4gl.py`](erp-ln-progguide/scripts/audit_4gl.py)):
+  Zero-dependency Python CLI tool auditing 4GL, DAL2, and UEDLL files outside of Eclipse:
+  ```bash
+  python erp-ln-progguide/scripts/audit_4gl.py <target_path> [--mode dal2|uedll|general] [--cloud] [--format text|json] [--strict]
+  ```
+  - `SYN001`: Unbalanced block statements (`select/endselect`, `if/endif`, `for/endfor`, `while/endwhile`, `case/endcase`, `{}`)
+  - `SYN002`: Section header typos and suggestions based on official Studio dictionary
+  - `DAL001`: Rejection of interactive dialogs (`message()`, `ask.enum()`, `box()`) in DAL2 and Table Extensions
+  - `DAL002`: Enforcement of DAL field hook signatures (`long i.mode` on `.update`, `long has_changed` on `.check`)
+  - `DAL003`: Validation of return types for DAL hooks
+  - `DAL004`: Prohibition of direct database mutations (`db.insert`, `db.update`, `db.delete`) in UI scripts
+  - `CLD001`: Rejection of untrusted bshell functions in Cloud Multi-Tenant mode (`--cloud`)
+  - `CLD002`: Warnings on deprecated bshell functions
+  - `INC001`: Verification of required header includes (e.g. `#include <bic_json>`, `#include <bic_cmf>`)
+  - `CAV001`: Direct float comparison warning (`== 100.0`)
+  - `CAV003`: Nested transaction detection in DAL hooks
+- **Official Script Templates** ([`templates/`](erp-ln-progguide/templates/)):
+  Extracted directly from Studio `ScriptTemplates/`: `DalTwo.dal`, `UIDatabase.cln`, `UserExitDLL.ue`, `Dal.dal`, `Bol.cln`, `Function.cln`, `Integration.cln`, `Report.cln`, `ThreeGL.cln`.
 - **13 Complete Development Tools Chapters** ([`references/DEV_TOOLS_INDEX.md`](erp-ln-progguide/references/DEV_TOOLS_INDEX.md)): Software components, Data Dictionaries (runtime vs application), table reconfiguration (`crdd`), 4GL Engine, SCM, PMC, and reporting.
-- **5 Actionable Best Practices Cookbooks** ([`references/best_practices/`](erp-ln-progguide/references/best_practices/)):
+- **6 Actionable Best Practices Cookbooks** ([`references/best_practices/`](erp-ln-progguide/references/best_practices/)):
   1. [`01_extension_hooks_cookbook.md`](erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md): Table/Session lifecycles, `DALHOOKERROR`, CDF logic hooks, Cloud governance.
   2. [`02_dal_architecture_and_business_logic.md`](erp-ln-progguide/references/best_practices/02_dal_architecture_and_business_logic.md): Separation of Concerns (no DB writes in UI scripts!), DAL 1 vs 2, business methods.
   3. [`03_sql_query_optimization_and_transactions.md`](erp-ln-progguide/references/best_practices/03_sql_query_optimization_and_transactions.md): Embedded Baan SQL, index alignment, array fetching, `db.retry.point()`.
   4. [`04_data_model_and_domain_design.md`](erp-ln-progguide/references/best_practices/04_data_model_and_domain_design.md): Domain modeling, referential integrity, safe 2-step `crdd` reconfiguration.
   5. [`05_session_and_mmt_patterns.md`](erp-ln-progguide/references/best_practices/05_session_and_mmt_patterns.md): Session types 1-4, MMT Controller & Satellite synchronization, labels/localization.
+  6. [`06_4gl_coding_standards_and_caveats.md`](erp-ln-progguide/references/best_practices/06_4gl_coding_standards_and_caveats.md): Domains vs primitives, buffer collision prevention, float equality caveats (`double.cmp`), and 1-based arrays.
+
+---
+
+## VS Code Extension Assets Package
+
+Located in [`export/vscode/`](export/vscode/). Ready-to-use artifacts for future VS Code extension authoring or language server development:
+
+- **TextMate Grammar** ([`syntaxes/baan4gl.tmLanguage.json`](export/vscode/syntaxes/baan4gl.tmLanguage.json)): Complete syntax highlighting grammar covering 80 keywords, 92 SQL operators, section headers, DAL hooks, pipe comments, and bshell functions.
+- **Code Snippets** ([`snippets/baan4gl.code-snippets`](export/vscode/snippets/baan4gl.code-snippets)): 19 rich code snippets for official Studio templates, modern DAL2 hooks (`.update`, `.check`, `.is.applicable`, `before.save.object`), and retry-point transactions.
+- **Language Configuration** ([`language-configuration.json`](export/vscode/language-configuration.json)): Comment rules (`|`), bracket pairs, quote auto-closing, and 4GL block folding.
+- **Hover & Completion Dataset** ([`completions.json`](export/vscode/completions.json)): 2,491 structured completion proposals covering 2,266 bshell functions, predefined variables, standard defines, and DAL hooks with Markdown parameter hints.
+- **Integration Guide** ([`README.md`](export/vscode/README.md)): Step-by-step instructions for wiring into a VS Code extension manifest.
 
 ---
 
@@ -187,7 +180,7 @@ Located in [`erp-ln-progguide/`](erp-ln-progguide/).
 
 Copy or link the skill folders to your agent's configuration directory:
 
-| Tool | Reference Skill (`erp-ln-progguide`) | Studio Assistant Skill (`ln_studio_skill`) |
+| Tool | Reference & Audit Skill (`erp-ln-progguide`) | Studio Assistant Skill (`ln_studio_skill`) |
 |---|---|---|
 | **Claude Code** | `~/.claude/skills/erp-ln-progguide/` | `~/.claude/skills/ln_studio_skill/` |
 | **OpenClaw** | `~/.openclaw/skills/erp-ln-progguide/` | `~/.openclaw/skills/ln_studio_skill/` |
@@ -198,14 +191,18 @@ Copy or link the skill folders to your agent's configuration directory:
 
 ## Automated Test Suite
 
-Run the full unit test suite:
+Run the full unit test suite (94 tests total):
 ```bash
+# 1. Studio Toolchain & Object Modeling Tests (86 tests)
 python -m unittest discover -s ln_studio_skill/tools/tests
+
+# 2. Standalone 4GL & DAL Audit Engine Tests (8 tests)
+python -m unittest discover -s erp-ln-progguide/tests
 ```
-All **86 unit tests** validate schema constraints, multi-table generation, MMT & satellite sessions, libraries & extensions, menus, syntax extraction, Read-Only guardrails, 4-layer validation, script injection round-trips, binary marker parsing, and admin synchronization.
 
 Validate documentation integrity & links:
 ```bash
+python ln_studio_skill/tools/validate_skill.py --skill-dir erp-ln-progguide
 python ln_studio_skill/tools/validate_skill.py --skill-dir ln_studio_skill
 ```
 
