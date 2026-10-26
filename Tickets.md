@@ -16,25 +16,44 @@
 
 ```mermaid
 flowchart TD
-    T01["01: Multi-Tier Knowledge Extractor"]
-    T02["02: Enriched Grep-Friendly Function Index"]
-    T03["03: Standalone 4GL & DAL Audit Engine"]
-    T04["04: Synchronized Rule Alignment in ln_studio_skill"]
-    T05["05: Export VS Code Extension Assets Package"]
-    T06["06: Test Suite, Documentation & Catalog Indexing"]
+    subgraph Batch1["Batch: Build 0640 Dictionaries & Standalone Auditor"]
+        T01["01: Multi-Tier Knowledge Extractor"]
+        T02["02: Enriched Grep-Friendly Function Index"]
+        T03["03: Standalone 4GL & DAL Audit Engine"]
+        T04["04: Synchronized Rule Alignment in ln_studio_skill"]
+        T05["05: Export VS Code Extension Assets Package"]
+        T06["06: Test Suite, Documentation & Catalog Indexing"]
 
-    T01 --> T02
-    T01 --> T03
-    T02 --> T03
-    T03 --> T04
-    T01 --> T05
-    T03 --> T06
-    T04 --> T06
-    T05 --> T06
+        T01 --> T02
+        T01 --> T03
+        T02 --> T03
+        T03 --> T04
+        T01 --> T05
+        T03 --> T06
+        T04 --> T06
+        T05 --> T06
+    end
+
+    subgraph Batch2["Batch: Extension Modeler Boundary & Local Hook Workflow"]
+        T07["07: SCM Guardrails & Extension Write Interception"]
+        T08["08: Extension Templates & Project Scaffolding CLI"]
+        T09["09: Studio Ingestion & Hook Extraction CLI"]
+        T10["10: Static Verification Engine for Extension Hooks"]
+        T11["11: Activity Validator Realignment"]
+        T12["12: Test Suite, Verification & Skill Documentation"]
+
+        T07 --> T11
+        T08 --> T09
+        T08 --> T10
+        T07 --> T12
+        T09 --> T12
+        T10 --> T12
+        T11 --> T12
+    end
 
     classDef done fill:#d4edda,stroke:#28a745,stroke-width:2px;
 
-    class T01,T02,T03,T04,T05,T06 done;
+    class T01,T02,T03,T04,T05,T06,T07,T08,T09,T10,T11,T12 done;
 ```
 
 ---
@@ -52,19 +71,19 @@ flowchart TD
 
 ---
 
-## Active Ticket Roster (Batch: Extension Modeler Boundary & Local Hook Workflow)
+## Completed Ticket Roster (Batch: Extension Modeler Boundary & Local Hook Workflow)
 - **Specification**: [`docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
 - **Implementation Plan**: [`docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
 - **ADR**: [`docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md`](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md)
 
 | ID | Title | Blocked by | Status | Target Deliverable |
 |---|---|---|---|---|
-| **07** | SCM Guardrails & Extension Write Interception | *None* | `open` | `scm_guardrails.py`, `inject_ln_script.py`, `generate_ln_library.py` |
-| **08** | Extension Templates & Project Scaffolding CLI (`new-extension`) | *None* | `open` | `templates/*_extension_template.4gl`, `ln_extension_manager.py`, `ln_component_builder.py` |
-| **09** | Studio Ingestion & Hook Extraction CLI (`import-extension` & `extension-hooks`) | **08** | `open` | `ln_extension_manager.py`, `ln_component_builder.py` |
-| **10** | Static Verification Engine for Extension Hooks | **08** | `open` | `check_4gl_script.py`, `scripts/audit_4gl.py` |
-| **11** | Activity Validator Realignment (`validate_ln_activity.py`) | **07** | `open` | `validate_ln_activity.py`, `admin_sync.py` |
-| **12** | Test Suite, Verification & Skill Documentation | **07, 09, 10, 11** | `open` | `test_extension_workflow.py`, `SKILL.md`, `README.md`, `GLOSSARY.md` |
+| **07** | SCM Guardrails & Extension Write Interception | *None* | `done` | `scm_guardrails.py`, `inject_ln_script.py`, `generate_ln_library.py` |
+| **08** | Extension Templates & Project Scaffolding CLI (`new-extension`) | *None* | `done` | `templates/*_extension_template.4gl`, `ln_extension_manager.py`, `ln_component_builder.py` |
+| **09** | Studio Ingestion & Hook Extraction CLI (`import-extension` & `extension-hooks`) | **08** | `done` | `ln_extension_manager.py`, `ln_component_builder.py` |
+| **10** | Static Verification Engine for Extension Hooks | **08** | `done` | `check_4gl_script.py`, `scripts/audit_4gl.py` |
+| **11** | Activity Validator Realignment (`validate_ln_activity.py`) | **07** | `done` | `validate_ln_activity.py`, `admin_sync.py` |
+| **12** | Test Suite, Verification & Skill Documentation | **07, 09, 10, 11** | `done` | `test_extension_workflow.py`, `SKILL.md`, `README.md`, `GLOSSARY.md` |
 
 ---
 

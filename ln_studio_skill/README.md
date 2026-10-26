@@ -2,7 +2,7 @@
 [![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-green.svg)](#)
 [![Automation](https://img.shields.io/badge/Toolchain-Eclipse%20RCP%20Automation-orange.svg)](#)
 [![Author](https://img.shields.io/badge/Author-Natthaphon%20Srikasem-purple.svg)](#credits--maintainer)
-[![Tests](https://img.shields.io/badge/Tests-86%20Passed-brightgreen.svg)](#automated-test-suite)
+[![Tests](https://img.shields.io/badge/Tests-102%20Passed-brightgreen.svg)](#automated-test-suite)
 
 # Skill_LN: Infor ERP LN Developer Skill & Studio Automation Toolchain
 
@@ -78,25 +78,27 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
 
 ### Key Capabilities
 
-- **Human-in-the-Loop SCM Guardrails**: Intercepts writes to checked-in Read-Only files with clear diagnostic alerts (`ReadOnlyComponentError`) instructing developers to check out in Eclipse.
-- **12-Extension `.admin` Synchronization**: Synchronizes on-disk components across all 12 LN Studio extensions (`.tbl`, `.ses`, `.lib`, `.dmn`, `.lbl`, `.mnu`, `.rpt`, `.rptdsrc`, `.msg`, `.que`, `.add`, `.fun`) without deleting `.mnu` or `.rpt` files.
-- **High-Fidelity Object Modeling**: Full support for Ecore native datatypes (Byte=1, Double=2, Long=3, Numeric=5, String=6, Enum=7, Date=9, UTC=14), Workbench column labels (`<pkg><table_code>.<column>`), MMT Controllers with satellites, Form Commands, Libraries (DLL, `ess`, `est` with `#context_on`/`#context_off`), and Menus.
+- **Human-in-the-Loop SCM Guardrails & Extension Interception**: Intercepts writes to checked-in Read-Only files and Extension Modeler components (`tx*`, `ess`, `est`, `esb`, `esm`, `esr`) with authoritative alerts (`ReadOnlyComponentError`), instructing developers to use LN UI (`ttext1500m000`) for extensions.
+- **Local Project Extension Modeler Workflow (ADR 0006)**: Complete scaffolding (`new-extension`), Studio "Get" ingestion (`import-extension`), and clipboard extraction (`extension-hooks`) for cohesive `#context_on` 4GL extension authoring without invalid Studio SCM checkouts.
+- **12-Extension `.admin` Synchronization**: Synchronizes on-disk components across all 12 LN Studio extensions (`.tbl`, `.ses`, `.lib`, `.dmn`, `.lbl`, `.mnu`, `.rpt`, `.rptdsrc`, `.msg`, `.que`, `.add`, `.fun`) while treating extensions as `[GET_ONLY_EXTENSION]`.
+- **High-Fidelity Object Modeling**: Full support for Ecore native datatypes (Byte=1, Double=2, Long=3, Numeric=5, String=6, Enum=7, Date=9, UTC=14), Workbench column labels (`<pkg><table_code>.<column>`), MMT Controllers with satellites, Form Commands, Libraries (DLL), and Menus.
 - **LN Studio 10.8 Syntax & Completion Extraction**: Extracted official dictionaries (Keywords, SQL Keywords, Program/Sub/Choice/Report Sections, Variables, Defines, DAL Object/Field Hooks, Templates) directly from Studio JARs.
 - **Four-Layer Static Activity Verification (`validate` & `--fix`)**:
-  - *Layer 1 (SCM)*: Audits `.admin` tracking & Read-Only states.
+  - *Layer 1 (SCM)*: Audits `.admin` tracking & Read-Only states; treats `tx*` components as read-only Get cache.
   - *Layer 2 (XML)*: Checks XML root tags, Ecore facets, and Session `<FormGroup>` hierarchy trees.
   - *Layer 3 (References)*: Resolves `.lbl` references, Table-Session column bindings, and Index columns.
-  - *Layer 4 (4GL)*: Statically verifies section headers, block balance (`select`, `if`, `case`, `for`, `while`, `repeat`, `#context_on`), and hook symbols.
+  - *Layer 4 (4GL)*: Statically verifies section headers, block balance (`select`, `if`, `case`, `for`, `while`, `repeat`, `#context_on`), hook signatures, and Cloud Governance rules.
   - *Safe `--fix`*: Auto-creates missing `.lbl` files and synchronizes `.admin` without touching Read-Only files.
 
 ### CLI Tools Summary
 
 | Tool | Purpose | Primary Commands |
 |---|---|---|
-| [`ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** (14 subcommands) | `table`, `session`, `domain`, `library`, `menu`, `component`, `inject`, `extract`, `check-script`, `validate`, `sync-admin`, `diagnose`, `build`, `pipeline` |
+| [`ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** (17 subcommands) | `table`, `session`, `domain`, `library`, `menu`, `component`, `inject`, `extract`, `check-script`, `validate`, `sync-admin`, `diagnose`, `build`, `pipeline`, `new-extension`, `import-extension`, `extension-hooks` |
+| [`ln_extension_manager.py`](ln_studio_skill/tools/ln_extension_manager.py) | **Extension Scaffolding & Hook Extractor** | Local project authoring, `#context_on` parsing, and 1-click clipboard export |
 | [`validate_ln_activity.py`](ln_studio_skill/tools/validate_ln_activity.py) | **4-Layer Activity Validator & Safe `--fix`** | `python ln_studio_skill/tools/validate_ln_activity.py [<act>] [--strict] [--fix] [--json]` |
 | [`check_4gl_script.py`](ln_studio_skill/tools/check_4gl_script.py) | **Static 4GL Script Inspector** | `python ln_studio_skill/tools/check_4gl_script.py <file> [--owning-xml <xml>] [--strict]` |
-| [`scm_guardrails.py`](ln_studio_skill/tools/scm_guardrails.py) | **SCM Read-Only Protection** | Enforces `assert_file_writable` before write/inject |
+| [`scm_guardrails.py`](ln_studio_skill/tools/scm_guardrails.py) | **SCM Read-Only & Extension Guardrail** | Enforces `assert_file_writable` before write/inject |
 | [`admin_sync.py`](ln_studio_skill/tools/admin_sync.py) | **12-Extension `.admin` SCM Synchronizer** | `python ln_studio_skill/tools/admin_sync.py --activity <act> --scan-and-update` |
 | [`generate_ln_table.py`](ln_studio_skill/tools/generate_ln_table.py) | Table, Label & Domain XML Generator | `python ln_studio_skill/tools/generate_ln_table.py --spec <spec> [--output-dir <dir>]` |
 | [`generate_ln_domain.py`](ln_studio_skill/tools/generate_ln_domain.py) | Standalone Domain XML Generator | `python ln_studio_skill/tools/generate_ln_domain.py --spec <spec> [--output-dir <dir>]` |
@@ -202,7 +204,7 @@ Run the full unit test suite:
 ```bash
 python -m unittest discover -s ln_studio_skill/tools/tests
 ```
-All **86 unit tests** validate schema constraints, multi-table generation, MMT & satellite sessions, libraries & extensions, menus, syntax extraction, Read-Only guardrails, 4-layer validation, script injection round-trips, binary marker parsing, and admin synchronization.
+All **102 unit tests** validate schema constraints, multi-table generation, MMT & satellite sessions, libraries & extensions, menus, syntax extraction, Read-Only guardrails, 4-layer validation, script injection round-trips, binary marker parsing, admin synchronization, and the complete Extension Modeler workflow (`test_extension_workflow.py`).
 
 Validate documentation integrity & links:
 ```bash

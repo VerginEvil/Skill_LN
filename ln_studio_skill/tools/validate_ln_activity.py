@@ -27,7 +27,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from admin_sync import list_admin_components, scan_and_sync_activity, MANAGED_EXTENSIONS
 from check_4gl_script import ScriptChecker, Diagnostic
 from ln_workspace_manager import detect_current_activity
-from scm_guardrails import is_file_readonly
+from scm_guardrails import is_file_readonly, is_extension_component
 
 
 VALID_DATATYPES = {1, 2, 3, 5, 6, 7, 9, 14}
@@ -233,6 +233,11 @@ class ActivityValidator:
         disk_files: Set[str] = set()
         for p in self.activity_path.rglob("*"):
             if p.is_file() and p.suffix.lower() in MANAGED_EXTENSIONS:
+                # Extension Modeler components (tx*, ess, est, etc.) are Read-Only "Get" mode in Studio.
+                # Do not flag untracked or SCM check-out warnings for them.
+                if is_extension_component(p):
+                    continue
+
                 rel = p.relative_to(self.activity_path).as_posix()
                 disk_files.add(rel)
 

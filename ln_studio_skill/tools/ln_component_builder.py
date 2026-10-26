@@ -44,6 +44,9 @@ from ln_error_reader import read_activity_diagnostics
 from ln_studio_bridge import trigger_build_and_diagnose
 from check_4gl_script import check_file as check_4gl_file
 from validate_ln_activity import ActivityValidator, validate_activity
+from ln_extension_manager import (
+    new_extension, import_extension, list_hooks, get_hook, copy_to_clipboard
+)
 
 
 def cmd_workspace(args):
@@ -414,6 +417,77 @@ def cmd_pipeline(args):
         print("\nPipeline Complete!")
 
 
+def cmd_new_extension(args):
+    """Handles 'new-extension' subcommand."""
+    print(f"[INFO] Scaffolding {args.type} extension for '{args.target}'...")
+    try:
+        out_p = new_extension(
+            ext_type=args.type,
+            target=args.target,
+            output_path=args.output,
+            author=args.author if hasattr(args, "author") and args.author else "Developer"
+        )
+        print(f"[SUCCESS] Created extension file: {out_p}")
+        print(f"Target Session: Infor LN UI -> ttext1500m000 (Extension Modeler)")
+        print(f"Note: Author and verify locally. Do NOT check out in LN Studio.")
+    except Exception as e:
+        print(f"[ERROR] Failed to scaffold extension: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_import_extension(args):
+    """Handles 'import-extension' subcommand."""
+    print(f"[INFO] Importing extension from '{args.source}'...")
+    try:
+        out_p = import_extension(
+            source=args.source,
+            output_path=args.output,
+            ext_type=args.type if hasattr(args, "type") else None
+        )
+        print(f"[SUCCESS] Imported and normalized extension: {out_p}")
+        print(f"Ready for offline verification with 'check-script'.")
+    except Exception as e:
+        print(f"[ERROR] Import failed: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_extension_hooks(args):
+    """Handles 'extension-hooks' subcommand."""
+    file_p = Path(args.path).resolve()
+    if not file_p.exists():
+        print(f"[ERROR] Extension file not found: {file_p}", file=sys.stderr)
+        sys.exit(1)
+
+    if args.hook:
+        hook_block = get_hook(file_p, args.hook)
+        if not hook_block:
+            print(f"[ERROR] Hook '{args.hook}' not found in {file_p.name}", file=sys.stderr)
+            avail = [h["name"] for h in list_hooks(file_p)]
+            if avail:
+                print(f"Available hooks: {', '.join(avail)}")
+            sys.exit(1)
+
+        clean_code = hook_block.clean_code
+        if args.copy:
+            copied = copy_to_clipboard(clean_code)
+            if copied:
+                print(f"[SUCCESS] Copied hook '{hook_block.name}' ({hook_block.code_lines_count} lines) to system clipboard!")
+                print(f"Target: Infor LN UI -> Session ttext1500m000 -> Hook '{hook_block.name}'")
+            else:
+                print(f"[WARNING] Could not copy to clipboard automatically. Outputting code below:")
+                print(clean_code)
+        else:
+            print(f"--- Hook: {hook_block.name} ({file_p.name}, lines {hook_block.start_line}-{hook_block.end_line}) ---")
+            print(clean_code)
+    else:
+        # Default / --list behavior
+        hooks = list_hooks(file_p)
+        print(f"Extension Hooks in {file_p.name} ({len(hooks)} hook(s)):")
+        for idx, h in enumerate(hooks, start=1):
+            print(f"  {idx:2d}. {h['name']:<35} (Lines {h['start_line']:3d} - {h['end_line']:3d}, {h['code_lines']} code lines)")
+        print("\nUse --hook <name> to view clean code, or --hook <name> --copy to copy to clipboard for LN UI.")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Infor LN Studio Automation Toolset & Assistant CLI",
@@ -524,6 +598,26 @@ def main():
     sp_pip.add_argument("--errors-only", action="store_true", help="Only report errors")
     sp_pip.add_argument("--dry-run", action="store_true", help="Preview without writing")
 
+    # new-extension
+    sp_next = subparsers.add_parser("new-extension", help="Scaffold a local project extension 4GL file")
+    sp_next.add_argument("--type", required=True, choices=["table", "session"], help="Extension type: 'table' or 'session'")
+    sp_next.add_argument("--target", required=True, help="Target component code (e.g. whwmd400)")
+    sp_next.add_argument("--output", help="Output path (default: extensions/<type>/<target>_ext.4gl)")
+    sp_next.add_argument("--author", default="Developer", help="Author metadata")
+
+    # import-extension
+    sp_impext = subparsers.add_parser("import-extension", help="Import an extension from Studio activity 'Get' cache into local project")
+    sp_impext.add_argument("--source", required=True, help="Path to .lib or .4gl extension in Studio workspace")
+    sp_impext.add_argument("--output", help="Output path in local project")
+    sp_impext.add_argument("--type", choices=["table", "session"], help="Override extension type")
+
+    # extension-hooks
+    sp_exthooks = subparsers.add_parser("extension-hooks", help="Inspect and extract hooks from local extension 4GL file")
+    sp_exthooks.add_argument("path", help="Path to extension .4gl file")
+    sp_exthooks.add_argument("--list", action="store_true", help="List all hook blocks")
+    sp_exthooks.add_argument("--hook", help="Extract specific hook block stripped of wrappers")
+    sp_exthooks.add_argument("--copy", action="store_true", help="Copy clean hook code directly to system clipboard for LN UI")
+
     args = parser.parse_args()
 
     commands = {
@@ -542,6 +636,9 @@ def main():
         "diagnose": cmd_diagnose,
         "build": cmd_build,
         "pipeline": cmd_pipeline,
+        "new-extension": cmd_new_extension,
+        "import-extension": cmd_import_extension,
+        "extension-hooks": cmd_extension_hooks,
     }
 
     if args.command in commands:

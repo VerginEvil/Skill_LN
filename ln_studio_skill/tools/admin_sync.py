@@ -22,6 +22,7 @@ if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
 from ln_workspace_manager import resolve_activity, load_config
+from scm_guardrails import is_extension_component
 
 JAVA_BIN_CANDIDATES = [
     r"C:\Program Files\Java\jdk-25.0.2\bin\java.exe",
@@ -135,6 +136,9 @@ def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
 
     for p in activity_path.rglob("*"):
         if p.is_file() and p.suffix.lower() in MANAGED_EXTENSIONS:
+            # Skip read-only Extension Modeler components
+            if is_extension_component(p):
+                continue
             rel = p.relative_to(activity_path).as_posix()
             disk_files.add(rel)
 

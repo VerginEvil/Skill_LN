@@ -34,6 +34,12 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 3. **12-Extension `.admin` SCM Synchronization**:
    - Manages all 12 LN Studio component extensions: `.tbl`, `.ses`, `.lib`, `.dmn`, `.lbl`, `.mnu`, `.rpt`, `.rptdsrc`, `.msg`, `.que`, `.add`, `.fun`.
    - Prevents accidental deletion of `.mnu` or `.rpt` files during SCM cache synchronization.
+4. **Extension Modeler Boundary & Studio Read-Only "Get" Mode (ADR 0006)**:
+   - Extension Modeler components (`tx*`, `ess`, `est`, `esb`, `esm`, `esr`) **cannot** be checked out or checked in via LN Studio SCM.
+   - Studio SCM enforces: `Failure checking-out the component: Action on "..." is not allowed. Use session ttext1500m000 to process extensions.`
+   - In Studio workspaces, extension files are strictly Read-Only / "Get" mode for viewing and debugging.
+   - All extension authoring must be performed directly in local project repositories (`extensions/<type>/<component>_ext.4gl`) and deployed via LN UI (`ttext1500m000`).
+   - The toolchain intercepts write/inject actions on extension components with `ReadOnlyComponentError`, and `validate` marks them as `[GET_ONLY_EXTENSION]`, suppressing false-positive SCM errors.
 
 ---
 
@@ -46,9 +52,12 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Generate Table, Label & Domain XML | `python <skill_dir>/tools/ln_component_builder.py table --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Domain XML independently | `python <skill_dir>/tools/ln_component_builder.py domain --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Session XML (Maintain, MMT, Satellites) | `python <skill_dir>/tools/ln_component_builder.py session --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
-| Generate Library XML (DLL, `ess`, `est`) | `python <skill_dir>/tools/ln_component_builder.py library --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
+| Generate Library XML (Standard DLL) | `python <skill_dir>/tools/ln_component_builder.py library --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Menu XML & Labels | `python <skill_dir>/tools/ln_component_builder.py menu --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate All Components in one pass | `python <skill_dir>/tools/ln_component_builder.py component --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
+| Scaffold Local Extension 4GL script | `python <skill_dir>/tools/ln_component_builder.py new-extension --type <table|session> --target <comp> [--output <path>]` |
+| Import Extension from Studio 'Get' cache | `python <skill_dir>/tools/ln_component_builder.py import-extension --source <xml_or_4gl> [--output <path>]` |
+| Inspect & Export Extension Hooks | `python <skill_dir>/tools/ln_component_builder.py extension-hooks <ext_4gl> [--list] [--hook <name>] [--copy]` |
 | Inject 4GL source into workspace XML | `python <skill_dir>/tools/ln_component_builder.py inject --source <f.dal> --target <f.tbl>` |
 | Extract 4GL source from workspace XML | `python <skill_dir>/tools/ln_component_builder.py extract --source <f.tbl> --output <f.dal>` |
 | Statically verify 4GL scripts (offline) | `python <skill_dir>/tools/ln_component_builder.py check-script <script_or_xml_file> [--strict] [--json]` |
@@ -57,6 +66,31 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Read Eclipse problem markers (`.markers`) | `python <skill_dir>/tools/ln_component_builder.py diagnose --activity "<act>" [--errors-only]` |
 | Trigger Eclipse build bridge (F5 + Ctrl+B) | `python <skill_dir>/tools/ln_component_builder.py build --activity "<act>"` |
 | Full Autonomous Pipeline (Gen -> Sync -> Validate -> Build) | `python <skill_dir>/tools/ln_component_builder.py pipeline --spec <schema.yaml> [--output-dir <path>] [--auto-fix] [--skip-build]` |
+
+---
+
+## Extension Modeler Boundary & Agent "Guide-and-Paste" Protocol
+
+In Infor ERP LN 10.8+, **Extension Modeler (`ttext1500m000`)** in LN UI (Web) is the authoritative environment for creating, editing, and compiling last-mile extensions.
+
+### The System Constraint:
+Attempting to check out or edit an extension component in Infor LN Studio fails with:
+```text
+Failure checking-out the component
+Action on "txesswmd4300m0" is not allowed.
+Use session ttext1500m000 to process extensions.
+```
+In Studio, extensions exist solely as Read-Only "Get" cache for viewing and debugging.
+
+### Mandatory Agent Protocol (Guide-and-Paste):
+When an AI agent or engineer is asked to author or modify an Infor LN Extension:
+1. **Local Authoring**: Scaffold or edit the extension `.4gl` file inside the local project repository (under `extensions/<type>/<component>_ext.4gl`) with standard `#context_on "<hook_name>"` ... `#context_off` blocks.
+2. **Offline Verification**: Run `check_4gl_script.py` to ensure 0 syntax errors, balanced blocks, valid hook signatures, and full Cloud Governance compliance (no interactive dialogs or transaction controls in DAL/Table extensions).
+3. **Interactive Step-by-Step Delivery**: In chat, output structured Markdown instructing the developer:
+   - Target Session: `ttext1500m000` (Extension Modeler)
+   - Component Selection: e.g. Table Extension for `whwmd400`
+   - For each hook: Clean, copy-pasteable code block (stripped of `#context_on` wrappers)
+4. **Studio Warning**: Explicitly warn the user **never** to check out or edit the component in LN Studio.
 
 ---
 
@@ -95,23 +129,27 @@ Running `validate --fix` performs non-destructive automatic repairs:
 
 ```
 tools/                          Self-contained automation toolchain:
-  ln_component_builder.py         Master CLI orchestrator (14 subcommands)
+  ln_component_builder.py         Master CLI orchestrator (17 subcommands)
   ln_schema_parser.py             Declarative authoring schema validator (multi-table & domains)
   generate_ln_table.py            Table, Label & Domain XML generator (Ecore facets & conventions)
   generate_ln_domain.py           Standalone & Spec-based Domain generator (.dmn & enums)
   generate_ln_session.py          Multi-archetype Session generator (Maintain, MMT, Satellites, Commands)
-  generate_ln_library.py          Library generator (DLL, ess, est with #context_on/#context_off)
+  generate_ln_library.py          Library generator (Standard DLL; redirects extensions to new-extension)
   generate_ln_menu.py             Menu generator (<DR_Menu> XML & .lbl)
+  ln_extension_manager.py         Extension scaffolding, 'Get' import, and hook clipboard extractor
   inject_ln_script.py             Bidirectional 4GL synchronizer with Read-Only guardrails
   admin_sync.py                   12-extension SCM .admin cache synchronizer (+ Java helper)
-  scm_guardrails.py               OS Read-Only SCM protection module
-  check_4gl_script.py             Static 4GL syntax, completion & block balance inspector
-  validate_ln_activity.py         Four-layer activity validator & safe --fix engine
+  scm_guardrails.py               OS Read-Only SCM protection & extension interception module
+  check_4gl_script.py             Static 4GL syntax, completion, block balance & extension hook inspector
+  validate_ln_activity.py         Four-layer activity validator & safe --fix engine ([GET_ONLY_EXTENSION])
   extract_studio_dictionaries.py  LN Studio 10.8 reflection extractor for keywords, sections, hooks
   ln_error_reader.py              Binary .markers problem diagnostics reader
   ln_studio_bridge.py             Windows action bridge (F5 refresh / Ctrl+B build)
   ln_workspace_manager.py         Pinned Studio & workspace environment resolver
-  tests/                          Comprehensive unit test suite (86+ tests)
+  tests/                          Comprehensive unit test suite (102+ tests, including test_extension_workflow.py)
+templates/
+  table_extension_template.4gl    Starter template for Table Extensions (#context_on hooks)
+  session_extension_template.4gl  Starter template for Session Extensions (command hooks)
 scripts/search.py               Full-text search across documentation guides
 references/
   COMPONENT_XML_SCHEMA.md         Complete Ecore XML schema guide for all 12 component types

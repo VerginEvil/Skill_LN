@@ -240,7 +240,9 @@ class Auditor4GL:
             return "uedll"
 
         # Content heuristics
-        if "function extern long before.save.object" in content.lower() or "dal.set.error.message" in content.lower():
+        if "function extern long before.save.object" in content.lower() or "dal.set.error.message" in content.lower() or "bic_tableext" in content.lower() or "bic_dal2" in content.lower():
+            return "dal2"
+        if ("table" in path_lower or "est" in path_lower) and ("_ext.4gl" in path_lower or ".4gl" in path_lower):
             return "dal2"
         if "ue.before.save" in content.lower() or "ue.after.save" in content.lower():
             return "uedll"
@@ -321,8 +323,23 @@ class Auditor4GL:
             # 2. Block Balance Tracking (SYN001)
             # ----------------------------------------------------
             # #context_on / #context_off
-            if re.match(r"^\s*#context_on\b", code_line, re.IGNORECASE):
-                context_stack.append(("#context_on", line_no))
+            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', code_line, re.IGNORECASE)
+            if m_ctx:
+                ctx_name = m_ctx.group(1) or "unknown"
+                if context_stack:
+                    parent_type, parent_line = context_stack[-1]
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "SYN001",
+                            f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_type}' (line {parent_line}).",
+                            raw_line,
+                        )
+                    )
+                context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
             if re.match(r"^\s*#context_off\b", code_line, re.IGNORECASE):
                 if not context_stack:
                     diagnostics.append(
@@ -493,14 +510,146 @@ class Auditor4GL:
             # 3. Function & DAL Hook Signatures (DAL002, DAL003)
             # ----------------------------------------------------
             func_decl_match = re.match(
-                r"^\s*(?:function\s+)?(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)",
+                r"^\s*(?:function\s+)?(?:extern\s+)?(?:([a-zA-Z0-9_.]+)\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)",
                 code_line,
+                re.IGNORECASE,
             )
             if func_decl_match:
-                func_name = func_decl_match.group(1).lower()
-                params = func_decl_match.group(2).strip()
+                ret_type = (func_decl_match.group(1) or "").lower()
+                func_name = func_decl_match.group(2).lower()
+                params = func_decl_match.group(3).strip()
                 current_func_name = func_name
                 current_func_hook_suffix = None
+
+                # Specific Extension & DAL Lifecycle Hooks
+                if func_name == "before.save.object":
+                    if ret_type in ("void", "boolean"):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'before.save.object' must return 'long' (returns error code or 0). Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                    if not re.search(r"\blong\s+[a-zA-Z0-9_.]+\b", params, re.IGNORECASE):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'before.save.object' must declare parameter 'long mode'. Found: '({params})'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name == "after.save.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'after.save.object' must return 'long' or 'void'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name == "before.destroy.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'before.destroy.object' must return 'long' or 'void'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name == "after.destroy.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'after.destroy.object' must return 'long' or 'void'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name == "method.is.allowed":
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'method.is.allowed' must return 'boolean'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                    if not re.search(r"\blong\s+[a-zA-Z0-9_.]+\b", params, re.IGNORECASE):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Hook 'method.is.allowed' must declare parameter 'long method'. Found: '({params})'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name.endswith((".is.valid", ".is.readonly", ".is.mandatory", ".is.applicable", ".is.never.applicable")):
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Field hook '{func_name}' must return 'boolean'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".before.command")):
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Command hook '{func_name}' must return 'boolean'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
+                elif func_name.startswith("function.") and func_name.endswith(".after.command"):
+                    if ret_type and ret_type not in ("void", "long"):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL002",
+                                f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'.",
+                                raw_line,
+                            )
+                        )
 
                 # Check if this matches a DAL field hook suffix
                 for sfx, sfx_def in self.dal_field_hooks.items():
@@ -575,7 +724,7 @@ class Auditor4GL:
                             )
 
             # ----------------------------------------------------
-            # 4. Prohibited Interactive UI in DAL (DAL001)
+            # 4. Prohibited Interactive UI & Transaction Controls in DAL / Table Extensions (DAL001, DAL005)
             # ----------------------------------------------------
             if mode == "dal2":
                 ui_matches = re.finditer(r"(?<![.\w])(message|ask\.enum|box|input\.string)\s*\(", code_line, re.IGNORECASE)
@@ -588,7 +737,22 @@ class Auditor4GL:
                             uim.start() + 1,
                             "ERROR",
                             "DAL001",
-                            f"Interactive dialog '{func_called}()' is prohibited in DAL scripts; use 'dal.set.error.message()' instead.",
+                            f"Interactive dialog '{func_called}()' is prohibited in DAL scripts and Table Extension hooks; use 'dal.set.error.message()' instead.",
+                            raw_line,
+                        )
+                    )
+
+                trans_matches = re.finditer(r"(?<![.\w])(commit\.transaction|abort\.transaction|db\.retry\.point)\s*\(", code_line, re.IGNORECASE)
+                for tm in trans_matches:
+                    func_called = tm.group(1).lower()
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            tm.start() + 1,
+                            "ERROR",
+                            "DAL005",
+                            f"Transaction control '{func_called}()' is prohibited in DAL/Table Extension hooks; transaction lifecycle is managed by the DAL engine.",
                             raw_line,
                         )
                     )

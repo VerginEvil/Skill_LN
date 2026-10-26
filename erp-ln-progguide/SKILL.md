@@ -46,6 +46,7 @@ When analyzing, designing, or generating Infor ERP LN code, AI agents and develo
    - Always signal business rule failures using `dal.set.error.message("@<msg_code>", [args...])` and `return(DALHOOKERROR)` (or `false` for boolean hooks).
    - **Never invoke interactive dialogs (`message()`, `ask.enum()`, `box()`) inside Table Extension hooks or DAL scripts**; doing so hangs headless cloud processes, BOD exchanges, and REST APIs.
    - Maintain the safe `table.super()` signature pattern with `get.long.arg(1)` for optional `mode` handling.
+   - **Extension Modeler Boundary (ADR 0006)**: Extension Modeler components (`ttext1500m000`) cannot be checked out via LN Studio SCM. Author extensions locally (`extensions/<type>/<comp>_ext.4gl`) with `#context_on` blocks, audit with `audit_4gl.py`, and deliver hook-by-hook into LN UI.
    - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
 
 3. **Embedded Baan SQL & Index Alignment**:

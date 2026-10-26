@@ -269,6 +269,10 @@ class ScriptChecker:
             or "dal2" in file_path.lower()
             or "before.save.object" in script_text.lower()
             or "dal.set.error.message" in script_text.lower()
+            or "bic_tableext" in script_text.lower()
+            or "bic_dal2" in script_text.lower()
+            or "/table/" in file_path.replace("\\", "/").lower()
+            or "\\table\\" in file_path.lower()
         )
 
         # Block balance stacks: (block_type, line_number)
@@ -317,9 +321,17 @@ class ScriptChecker:
             # 2. Block Balance Checks
             # ----------------------------------------------------
             # #context_on / #context_off check
-            if re.match(r"^\s*#context_on\b", code_line):
-                context_stack.append(("#context_on", line_no))
-            if re.match(r"^\s*#context_off\b", code_line):
+            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', code_line, re.IGNORECASE)
+            if m_ctx:
+                ctx_name = m_ctx.group(1) or "unknown"
+                if context_stack:
+                    parent_name, parent_line = context_stack[-1]
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, 1, "ERROR",
+                        f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_name}' (line {parent_line})."
+                    ))
+                context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
+            if re.match(r"^\s*#context_off\b", code_line, re.IGNORECASE):
                 if not context_stack:
                     diagnostics.append(Diagnostic(
                         file_path, line_no, 1, "ERROR",
@@ -430,10 +442,71 @@ class ScriptChecker:
             # ----------------------------------------------------
             # 3. DAL & Extension Function Hook Signatures
             # ----------------------------------------------------
-            func_match = re.match(r"^\s*function\s+(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line)
+            func_match = re.match(r"^\s*function(?:\s+extern)?(?:\s+([a-zA-Z0-9_.]+))?\s+([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line, re.IGNORECASE)
             if func_match:
-                func_name = func_match.group(1).lower()
-                params = func_match.group(2).strip()
+                ret_type = (func_match.group(1) or "").lower()
+                func_name = func_match.group(2).lower()
+                params = func_match.group(3).strip()
+
+                # Specific Extension & DAL Lifecycle Hooks
+                if func_name == "before.save.object":
+                    if ret_type in ("void", "boolean"):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'before.save.object' must return 'long' (returns error code or 0). Found: '{ret_type}'."
+                        ))
+                    if not re.search(r"\blong\s+[a-zA-Z0-9_.]+\b", params, re.IGNORECASE):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'before.save.object' must declare parameter 'long mode'. Found: '({params})'."
+                        ))
+                elif func_name == "after.save.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'after.save.object' must return 'long' or 'void'. Found: '{ret_type}'."
+                        ))
+                elif func_name == "before.destroy.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'before.destroy.object' must return 'long' or 'void'. Found: '{ret_type}'."
+                        ))
+                elif func_name == "after.destroy.object":
+                    if ret_type and ret_type not in ("long", "void"):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'after.destroy.object' must return 'long' or 'void'. Found: '{ret_type}'."
+                        ))
+                elif func_name == "method.is.allowed":
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'method.is.allowed' must return 'boolean'. Found: '{ret_type}'."
+                        ))
+                    if not re.search(r"\blong\s+[a-zA-Z0-9_.]+\b", params, re.IGNORECASE):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Hook 'method.is.allowed' must declare parameter 'long method'. Found: '({params})'."
+                        ))
+                elif func_name.endswith((".is.valid", ".is.readonly", ".is.mandatory", ".is.applicable", ".is.never.applicable")):
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Field hook '{func_name}' must return 'boolean'. Found: '{ret_type}'."
+                        ))
+                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".before.command")):
+                    if ret_type and ret_type != "boolean":
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Command hook '{func_name}' must return 'boolean'. Found: '{ret_type}'."
+                        ))
+                elif func_name.startswith("function.") and func_name.endswith(".after.command"):
+                    if ret_type and ret_type not in ("void", "long"):
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR",
+                            f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'."
+                        ))
 
                 # Check if it looks like a DAL property hook: <col>.<suffix>
                 for sfx in self.dal_field_hook_suffixes:
@@ -467,7 +540,7 @@ class ScriptChecker:
                         break
 
             # ----------------------------------------------------
-            # 4. Prohibited Interactive Dialogs in DAL Scripts
+            # 4. Prohibited Interactive Dialogs & Transaction Controls in DAL / Table Extensions
             # ----------------------------------------------------
             if is_dal:
                 ui_matches = re.finditer(r"(?<![.\w])(message|ask\.enum|box|input\.string)\s*\(", code_line, re.IGNORECASE)
@@ -475,7 +548,15 @@ class ScriptChecker:
                     func_called = uim.group(1).lower()
                     diagnostics.append(Diagnostic(
                         file_path, line_no, uim.start() + 1, "ERROR",
-                        f"Interactive dialog '{func_called}()' is prohibited in DAL scripts; use 'dal.set.error.message()' instead."
+                        f"Interactive dialog '{func_called}()' is prohibited in DAL scripts and Table Extension hooks; use 'dal.set.error.message()' instead."
+                    ))
+
+                trans_matches = re.finditer(r"(?<![.\w])(commit\.transaction|abort\.transaction|db\.retry\.point)\s*\(", code_line, re.IGNORECASE)
+                for tm in trans_matches:
+                    func_called = tm.group(1).lower()
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, tm.start() + 1, "ERROR",
+                        f"Transaction control '{func_called}()' is prohibited in DAL/Table Extension hooks; transaction lifecycle is managed by the DAL engine."
                     ))
 
             # ----------------------------------------------------

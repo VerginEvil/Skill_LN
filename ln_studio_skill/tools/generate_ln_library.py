@@ -246,14 +246,17 @@ def generate_libraries(
         pkg = code[:2]
         l_type = lib.get("type", "dll").lower()
 
+        if l_type in ("session_extension", "table_extension"):
+            raise ReadOnlyComponentError(
+                f"[ERROR] Generation of '{l_type}' into LN Studio workspace is disallowed. "
+                f"Extensions in LN Studio are Read-Only (Get mode only). "
+                f"Use 'python tools/ln_component_builder.py new-extension --type {l_type.replace('_extension', '')} ...' "
+                f"to author local project extensions, and configure them in LN UI session ttext1500m000."
+            )
+
         # Destination subdirectory
-        if l_type == "session_extension":
-            lib_dir = target_root / pkg / "library" / "ess"
-        elif l_type == "table_extension":
-            lib_dir = target_root / pkg / "library" / "est"
-        else:
-            mod = lib.get("module", code[2:5] if len(code) >= 5 else "gen")
-            lib_dir = target_root / pkg / "library" / mod
+        mod = lib.get("module", code[2:5] if len(code) >= 5 else "gen")
+        lib_dir = target_root / pkg / "library" / mod
 
         lib_path = lib_dir / f"{code}.lib"
         xml_content = generate_library_xml(lib, application=app_code)

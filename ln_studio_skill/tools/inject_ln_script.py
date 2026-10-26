@@ -21,7 +21,7 @@ if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
 from ln_workspace_manager import resolve_activity, load_config, detect_current_activity
-from scm_guardrails import assert_file_writable, ReadOnlyComponentError
+from scm_guardrails import assert_file_writable, is_extension_component, ReadOnlyComponentError
 
 EXPRESSION_REGEX = re.compile(r"<expression>(.*?)</expression>", re.DOTALL)
 
@@ -152,6 +152,9 @@ def sync_all_activity_scripts(
                 matches = list(activity_path.rglob(f"{stem}{target_ext}"))
                 if matches:
                     target_file = matches[0]
+                    if is_extension_component(target_file):
+                        print(f"  [SKIPPED] Extension component '{target_file.name}' is Read-Only in Studio. Use session ttext1500m000 in LN UI.")
+                        continue
                     # Enforce guardrail
                     assert_file_writable(target_file, activity_path)
                     inject_file(script_file, target_file)

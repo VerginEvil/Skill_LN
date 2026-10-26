@@ -11,12 +11,43 @@ checked-in components and guides developers to perform Check-out in LN Studio.
 import os
 import stat
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 
 class ReadOnlyComponentError(Exception):
     """Raised when an operation attempts to write to a read-only or checked-in component."""
     pass
+
+
+def is_extension_component(path: Union[Path, str]) -> bool:
+    """
+    Checks if a component path represents an Infor LN Extension Modeler component
+    (txess*, txest*, txesb*, txesm*, txesr*, or components located in
+    /library/ess/, /library/est/, /library/esb/, /library/esm/, /library/esr/).
+    """
+    p = Path(path)
+    name = p.name.lower()
+    stem = p.stem.lower()
+
+    # 1. Official Extension Modeler component prefixes
+    ext_prefixes = ("txess", "txest", "txesb", "txesm", "txesr")
+    if name.startswith(ext_prefixes) or stem.startswith(ext_prefixes):
+        return True
+
+    # 2. Directory path check for Studio extension library subfolders
+    posix = p.as_posix().lower()
+    for ext_type in ("ess", "est", "esb", "esm", "esr"):
+        if f"/library/{ext_type}/" in posix or posix.endswith(f"/library/{ext_type}") or f"library/{ext_type}" in posix:
+            return True
+
+    # 3. Path parts check (handles OS-specific separators)
+    parts = [part.lower() for part in p.parts]
+    if "library" in parts:
+        idx = parts.index("library")
+        if idx + 1 < len(parts) and parts[idx + 1] in ("ess", "est", "esb", "esm", "esr"):
+            return True
+
+    return False
 
 
 def is_file_readonly(path: Path) -> bool:
@@ -86,31 +117,46 @@ def is_tracked_checked_in(path: Path, activity_path: Optional[Path] = None) -> T
     return False, None
 
 
-def assert_file_writable(path: Path, activity_path: Optional[Path] = None) -> None:
+def assert_file_writable(path: Union[Path, str], activity_path: Optional[Path] = None) -> None:
     """
     Asserts that the target path can be safely written to.
-    Aborts immediately with ReadOnlyComponentError if the file is Read-Only
-    or checked in without check-out in .admin.
+    Aborts immediately with ReadOnlyComponentError if:
+    - The component is an Extension Modeler component (tx*, ess, est, esb, esm, esr)
+      which is Read-Only in LN Studio.
+    - The target directory or file is not writable.
+    - The file is Read-Only on disk.
+    - The file is checked in without check-out in .admin SCM cache.
     """
-    if not path.exists():
+    p = Path(path)
+
+    # 1. Extension Modeler Read-Only Guardrail (ADR 0006)
+    if is_extension_component(p):
+        comp_name = p.stem if p.suffix else p.name
+        raise ReadOnlyComponentError(
+            f"[ERROR] Failure checking-out the component. "
+            f"Action on '{comp_name}' is not allowed in LN Studio. "
+            f"Use session ttext1500m000 in LN UI to process extensions."
+        )
+
+    if not p.exists():
         # Parent directory must be checked if writing a new file
-        parent = path.parent
+        parent = p.parent
         if parent.exists() and not os.access(parent, os.W_OK):
             raise ReadOnlyComponentError(
                 f"[ERROR] Parent directory is not writable: '{parent}'. "
-                f"Cannot create component '{path.name}'."
+                f"Cannot create component '{p.name}'."
             )
         return
 
-    if is_file_readonly(path):
+    if is_file_readonly(p):
         raise ReadOnlyComponentError(
-            f"[ERROR] Target file is Read-Only on disk (checked-in): '{path}'. "
+            f"[ERROR] Target file is Read-Only on disk (checked-in): '{p}'. "
             f"Please Check-out the component in LN Studio (Eclipse Workbench) before modifying it."
         )
 
-    checked_in, rel = is_tracked_checked_in(path, activity_path)
+    checked_in, rel = is_tracked_checked_in(p, activity_path)
     if checked_in:
         raise ReadOnlyComponentError(
-            f"[ERROR] Component '{rel or path.name}' is checked in (isCheckedOut=false) in .admin SCM cache: '{path}'. "
+            f"[ERROR] Component '{rel or p.name}' is checked in (isCheckedOut=false) in .admin SCM cache: '{p}'. "
             f"Please Check-out the component in LN Studio (Eclipse Workbench) before modifying it."
         )
