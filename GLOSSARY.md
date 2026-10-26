@@ -9,7 +9,9 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Application Data Dictionary**: Editable design-time definitions stored in tools tables (`ttadv...`).
 
 ### Modern Extensibility (LN 10.8+)
-- **Extension Modeler (`ttext1500m000`)**: The framework for customizing standard LN components without modifying base code ("last-mile" customization), supporting clean cloud upgrades.
+- **Extension Modeler (`ttext1500m000`)**: The framework for customizing standard LN components without modifying base code ("last-mile" customization), supporting clean cloud upgrades. Authoritative coding and compilation occurs strictly in the LN UI Web interface.
+- **Extension Modeler Boundary & SCM Non-Check-Out**: Extensions cannot be checked out or committed through LN Studio SCM. In LN Studio, extension scripts can only be imported via "Get" for read-only reference and debugging; direct edits to workspace `.lib` XML files are invalid and non-deployable.
+- **Hook-by-Hook Local Authoring**: The workflow pattern of creating and maintaining extension source files inside the local project/repository, structured by hook/function blocks, which are then copied into individual hook windows in LN UI (`ttext1500m000`).
 - **Extension Point**: An extensible LN component type: Table, Session, Report, BOD/BDE, OData REST API, Menu, Process, or Domain.
 - **Hook**: An exported function (`function extern <type> <hook-name>(...)`) called by the bshell/DAL at specific lifecycle events (e.g., `before.save.object`, `when.field.changes`, `is.valid`).
 - **Session Extension (`ess`)**: Last-mile extension for standard sessions (`<pkg>/library/ess/`, `sourceType=8`), implementing UI command hooks (`function.<cmd>.is.enabled`, `before.command`, `after.command`).

@@ -52,6 +52,22 @@ flowchart TD
 
 ---
 
+## Active Ticket Roster (Batch: Extension Modeler Boundary & Local Hook Workflow)
+- **Specification**: [`docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
+- **Implementation Plan**: [`docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
+- **ADR**: [`docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md`](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md)
+
+| ID | Title | Blocked by | Status | Target Deliverable |
+|---|---|---|---|---|
+| **07** | SCM Guardrails & Extension Write Interception | *None* | `open` | `scm_guardrails.py`, `inject_ln_script.py`, `generate_ln_library.py` |
+| **08** | Extension Templates & Project Scaffolding CLI (`new-extension`) | *None* | `open` | `templates/*_extension_template.4gl`, `ln_extension_manager.py`, `ln_component_builder.py` |
+| **09** | Studio Ingestion & Hook Extraction CLI (`import-extension` & `extension-hooks`) | **08** | `open` | `ln_extension_manager.py`, `ln_component_builder.py` |
+| **10** | Static Verification Engine for Extension Hooks | **08** | `open` | `check_4gl_script.py`, `scripts/audit_4gl.py` |
+| **11** | Activity Validator Realignment (`validate_ln_activity.py`) | **07** | `open` | `validate_ln_activity.py`, `admin_sync.py` |
+| **12** | Test Suite, Verification & Skill Documentation | **07, 09, 10, 11** | `open` | `test_extension_workflow.py`, `SKILL.md`, `README.md`, `GLOSSARY.md` |
+
+---
+
 ## Archive / Completed Batches
 
 <details>
