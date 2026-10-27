@@ -51,14 +51,14 @@ flowchart TD
 
 | ID | Title | Blocked by | Status | Ticket File |
 |---|---|---|---|---|
-| **01** | `.ionapi` Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge | *None* | `ready-for-agent` | [`01-ionapi-env-manager-and-jca-bridge.md`](.scratch/headless-jca-scm-mcp/issues/01-ionapi-env-manager-and-jca-bridge.md) |
-| **02** | Software Project & Activity Explorers + Local Activity Bootstrap | **01** | `ready-for-agent` | [`02-project-and-activity-explorers.md`](.scratch/headless-jca-scm-mcp/issues/02-project-and-activity-explorers.md) |
-| **03** | Component Explorer & Server `Get` / `Clone` Workflows | **01** | `ready-for-agent` | [`03-component-explorer-get-and-clone.md`](.scratch/headless-jca-scm-mcp/issues/03-component-explorer-get-and-clone.md) |
-| **04** | Pre-Commit SCM Engine (`Check-Out`, `Uncheckout`, `Put`, `Check-In` & Hard-Blocked `End Activity`) | **02, 03** | `ready-for-agent` | [`04-pre-commit-scm-engine.md`](.scratch/headless-jca-scm-mcp/issues/04-pre-commit-scm-engine.md) |
-| **05** | Remote Server Build (`Compile`, `CRDD`, `CreateTables`, `VSC`), `deploy-test` & `prepare-end-activity` | **04** | `ready-for-agent` | [`05-remote-build-deploy-test-and-precommit.md`](.scratch/headless-jca-scm-mcp/issues/05-remote-build-deploy-test-and-precommit.md) |
-| **06** | Message (`.msg`), Question (`.qst`/`.que`), Function (`.fnc`/`.fun`) & Additional File (`.add`) Generators | **01** | `ready-for-agent` | [`06-msg-qst-fnc-add-generators.md`](.scratch/headless-jca-scm-mcp/issues/06-msg-qst-fnc-add-generators.md) |
-| **07** | Report (`.rpt` & `.rptdsrc`) Ecore Generator & Script Synchronizer | **06** | `ready-for-agent` | [`07-report-ecore-generator-and-validator.md`](.scratch/headless-jca-scm-mcp/issues/07-report-ecore-generator-and-validator.md) |
-| **08** | Native Stdio MCP Server (`ln_studio_mcp.py`), `mcp-setup` CLI & Documentation Sync | **05, 07** | `ready-for-agent` | [`08-stdio-mcp-server-and-docs.md`](.scratch/headless-jca-scm-mcp/issues/08-stdio-mcp-server-and-docs.md) |
+| **01** | `.ionapi` Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge | *None* | `completed` | [`01-ionapi-env-manager-and-jca-bridge.md`](.scratch/headless-jca-scm-mcp/issues/01-ionapi-env-manager-and-jca-bridge.md) |
+| **02** | Software Project & Activity Explorers + Local Activity Bootstrap | **01** | `completed` | [`02-project-and-activity-explorers.md`](.scratch/headless-jca-scm-mcp/issues/02-project-and-activity-explorers.md) |
+| **03** | Component Explorer & Server `Get` / `Clone` Workflows | **01** | `completed` | [`03-component-explorer-get-and-clone.md`](.scratch/headless-jca-scm-mcp/issues/03-component-explorer-get-and-clone.md) |
+| **04** | Pre-Commit SCM Engine (`Check-Out`, `Uncheckout`, `Put`, `Check-In` & Hard-Blocked `End Activity`) | **02, 03** | `completed` | [`04-pre-commit-scm-engine.md`](.scratch/headless-jca-scm-mcp/issues/04-pre-commit-scm-engine.md) |
+| **05** | Remote Server Build (`Compile`, `CRDD`, `CreateTables`, `VSC`), `deploy-test` & `prepare-end-activity` | **04** | `completed` | [`05-remote-build-deploy-test-and-precommit.md`](.scratch/headless-jca-scm-mcp/issues/05-remote-build-deploy-test-and-precommit.md) |
+| **06** | Message (`.msg`), Question (`.qst`/`.que`), Function (`.fnc`/`.fun`) & Additional File (`.add`) Generators | **01** | `completed` | [`06-msg-qst-fnc-add-generators.md`](.scratch/headless-jca-scm-mcp/issues/06-msg-qst-fnc-add-generators.md) |
+| **07** | Report (`.rpt` & `.rptdsrc`) Ecore Generator & Script Synchronizer | **06** | `completed` | [`07-report-ecore-generator-and-validator.md`](.scratch/headless-jca-scm-mcp/issues/07-report-ecore-generator-and-validator.md) |
+| **08** | Native Stdio MCP Server (`ln_studio_mcp.py`), `mcp-setup` CLI & Documentation Sync | **05, 07** | `completed` | [`08-stdio-mcp-server-and-docs.md`](.scratch/headless-jca-scm-mcp/issues/08-stdio-mcp-server-and-docs.md) |
 
 ---
 

@@ -48,14 +48,34 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Task | CLI Command / Entry Point |
 |---|---|
 | Inspect workspaces and activities | `python <skill_dir>/tools/ln_component_builder.py workspace --list` / `--activities` |
+| List configured cloud environments | `python <skill_dir>/tools/ln_component_builder.py environments [--workspace-root <path>]` |
+| Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>]` |
+| Browse remote projects & apps | `python <skill_dir>/tools/ln_component_builder.py project [--app <code>] [--project <p>]` |
+| Browse/create remote activities | `python <skill_dir>/tools/ln_component_builder.py activity --project <p> [--create <act>] [--desc <d>]` |
+| Clean remote activity lock | `python <skill_dir>/tools/ln_component_builder.py clean-activity --project <p> --task <act>` |
+| Browse components across 12 types | `python <skill_dir>/tools/ln_component_builder.py explorer --type <t> [--filter <pattern>]` |
+| Get component (inspect or Read-Only) | `python <skill_dir>/tools/ln_component_builder.py get-component --type <t> --name <n> [--inspect] [--activity <a>]` |
+| Clone component into custom | `python <skill_dir>/tools/ln_component_builder.py clone-component --source-type <t> --source-name <sn> --target-name <tn> --activity <a>` |
+| Check-out component from server | `python <skill_dir>/tools/ln_component_builder.py checkout-component --type <t> --name <n> --activity <a>` |
+| Revert check-out (uncheckout) | `python <skill_dir>/tools/ln_component_builder.py uncheckout-component --type <t> --name <n> --activity <a>` |
+| Check-in component to server | `python <skill_dir>/tools/ln_component_builder.py checkin-component --type <t> --name <n> --activity <a> [--comment <c>]` |
+| Deploy-Test composite pipeline | `python <skill_dir>/tools/ln_component_builder.py deploy-test --type <t> --name <n> --activity <a> [--comment <c>]` |
+| Pre-commit verification (prepare) | `python <skill_dir>/tools/ln_component_builder.py prepare-end-activity --activity <a> [--project <p>]` |
+| End activity (hard-blocked gate) | `python <skill_dir>/tools/ln_component_builder.py end-activity --task <act> --project <p>` |
+| Register Stdio MCP Server | `python <skill_dir>/tools/ln_component_builder.py mcp-setup [--client claude\|cursor\|antigravity\|generic] [--apply]` |
 | Validate authoring schema | `python <skill_dir>/tools/ln_schema_parser.py <schema.yaml>` |
 | Generate Table, Label & Domain XML | `python <skill_dir>/tools/ln_component_builder.py table --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Domain XML independently | `python <skill_dir>/tools/ln_component_builder.py domain --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
-| Generate Session XML (Maintain, MMT, Satellites) | `python <skill_dir>/tools/ln_component_builder.py session --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
+| Generate Session XML (Maintain, MMT) | `python <skill_dir>/tools/ln_component_builder.py session --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Library XML (Standard DLL) | `python <skill_dir>/tools/ln_component_builder.py library --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
 | Generate Menu XML & Labels | `python <skill_dir>/tools/ln_component_builder.py menu --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
+| Generate Message (.msg) XML | `python <skill_dir>/tools/ln_component_builder.py message --code <c> [--severity 1-3] [--text <t>] --activity <a>` |
+| Generate Question (.qst/.que) XML | `python <skill_dir>/tools/ln_component_builder.py question --code <c> [--domain <d>] [--text <t>] --activity <a>` |
+| Generate Include Function (.fnc/.fun) | `python <skill_dir>/tools/ln_component_builder.py function --code <c> [--script-file <f>] --activity <a>` |
+| Generate Additional File (.add) | `python <skill_dir>/tools/ln_component_builder.py additional --code <c> [--content-file <f>] --activity <a>` |
+| Generate Report (.rpt) XML | `python <skill_dir>/tools/ln_component_builder.py report --code <c> [--paper-width 80\|132] --activity <a>` |
 | Generate All Components in one pass | `python <skill_dir>/tools/ln_component_builder.py component --spec <schema.yaml> [--output-dir <path>] [--dry-run]` |
-| Scaffold Local Extension 4GL script | `python <skill_dir>/tools/ln_component_builder.py new-extension --type <table|session> --target <comp> [--output <path>]` |
+| Scaffold Local Extension 4GL script | `python <skill_dir>/tools/ln_component_builder.py new-extension --type <table\|session> --target <comp> [--output <path>]` |
 | Import Extension from Studio 'Get' cache | `python <skill_dir>/tools/ln_component_builder.py import-extension --source <xml_or_4gl> [--output <path>]` |
 | Inspect & Export Extension Hooks | `python <skill_dir>/tools/ln_component_builder.py extension-hooks <ext_4gl> [--list] [--hook <name>] [--copy]` |
 | Inject 4GL source into workspace XML | `python <skill_dir>/tools/ln_component_builder.py inject --source <f.dal> --target <f.tbl>` |
@@ -64,7 +84,7 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Run 4-Layer Activity Validation | `python <skill_dir>/tools/ln_component_builder.py validate [<activity_path>] [--strict] [--fix] [--json]` |
 | Synchronize Activity `.admin` SCM Cache | `python <skill_dir>/tools/ln_component_builder.py sync-admin --activity "<act>"` |
 | Read Eclipse problem markers (`.markers`) | `python <skill_dir>/tools/ln_component_builder.py diagnose --activity "<act>" [--errors-only]` |
-| Trigger Eclipse build bridge (F5 + Ctrl+B) | `python <skill_dir>/tools/ln_component_builder.py build --activity "<act>"` |
+| Trigger JCA remote compile or UI build | `python <skill_dir>/tools/ln_component_builder.py build --activity "<act>" [--ui-bridge]` |
 | Full Autonomous Pipeline (Gen -> Sync -> Validate -> Build) | `python <skill_dir>/tools/ln_component_builder.py pipeline --spec <schema.yaml> [--output-dir <path>] [--auto-fix] [--skip-build]` |
 
 ---
@@ -125,17 +145,67 @@ Running `validate --fix` performs non-destructive automatic repairs:
 
 ---
 
+## Native Stdio Model Context Protocol (MCP) Server (`ln_studio_mcp.py`)
+
+The skill exposes a zero-dependency Stdio MCP server (`ln_studio_mcp.py`) implementing JSON-RPC 2.0. It exposes 16 structured tools for AI coding assistants (Claude Desktop, Cursor, Antigravity):
+
+| MCP Tool | Capability | Guardrail / Policy |
+|---|---|---|
+| `ln_list_environments` | Lists customer workspaces, cloud configs, active dev/runtime endpoints | Read-only |
+| `ln_connect` | Imports `.ionapi` credentials, syncs `cloudenv.prefs` & `connectivity.prefs` | Idempotent |
+| `ln_explore_projects` | Lists remote Applications and Software Projects | Read-only Headless JCA |
+| `ln_explore_activities` | Lists remote Activities under a Software Project | Read-only Headless JCA |
+| `ln_explore_components` | Browses server components across all 12 types with wildcard filters | Read-only Headless JCA |
+| `ln_create_activity` | Creates remote Activity and bootstraps local `.project`, `.admin`, `.settings` | Production |
+| `ln_clean_activity` | Recovers stuck workarea locks on LN Server | Recovery |
+| `ln_get_component` | Fetches component from server (inspects in-memory or downloads Read-Only) | Preserves Read-Only |
+| `ln_checkout_component` | Checks out component into activity on server and downloads editable XML | **ADR 0006 Guardrail**: Rejects `tx*` extension check-outs |
+| `ln_uncheckout_component`| Reverts component check-out on server and restores local Read-Only copy | Safe Revert |
+| `ln_checkin_component` | Puts component to server and checks in with comment for LN UI testing | Safe Check-In |
+| `ln_create_component` | Generates any of the 12 LN Studio components and registers in `.admin` | 12 Components |
+| `ln_clone_component` | Clones standard or custom component into renamed custom activity component | Prefix Renaming |
+| `ln_validate_activity` | Runs 4-layer validation across activity (.admin, XML, cross-ref, 4GL) | Read-only Audit |
+| `ln_deploy_test` | Composite pipeline: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn | Cloud Testing |
+| `ln_prepare_end_activity`| Pre-commit verification before handing delivery off to human review | **ADR 0007 Human Gate** |
+| `ln_end_activity` | **Hard-blocked pre-commit delivery gate**: Raises `PreCommitBoundaryError` | Human LN Studio Hand-off |
+
+### Client Registration (`mcp-setup`):
+```bash
+# Register in Claude Desktop configuration
+python <skill_dir>/tools/ln_component_builder.py mcp-setup --client claude --apply
+
+# Register in Cursor configuration (.cursor/mcp.json)
+python <skill_dir>/tools/ln_component_builder.py mcp-setup --client cursor --apply
+
+# Preview generic JSON configuration
+python <skill_dir>/tools/ln_component_builder.py mcp-setup --client generic --dry-run
+```
+
+---
+
 ## Toolchain & Reference Layout
 
 ```
 tools/                          Self-contained automation toolchain:
-  ln_component_builder.py         Master CLI orchestrator (17 subcommands)
+  ln_component_builder.py         Master CLI orchestrator (37 subcommands)
+  ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (16 tools)
+  ln_env_manager.py               .ionapi parser, token refresh & Eclipse prefs synchronizer
+  ln_server_client.py             JCA WebClient transport & BDE call executor
+  ln_project_activity_manager.py  Software Project & Activity explorer + local bootstrapper
+  ln_component_explorer.py        12-type component explorer, inspector, and cloner
+  ln_scm_engine.py                Pre-commit SCM engine (Check-Out, Uncheckout, Put, Check-In)
+  ln_build_pipeline.py            Remote compile, CRDD, CreateTables, VSC & deploy-test
   ln_schema_parser.py             Declarative authoring schema validator (multi-table & domains)
   generate_ln_table.py            Table, Label & Domain XML generator (Ecore facets & conventions)
   generate_ln_domain.py           Standalone & Spec-based Domain generator (.dmn & enums)
-  generate_ln_session.py          Multi-archetype Session generator (Maintain, MMT, Satellites, Commands)
+  generate_ln_session.py          Multi-archetype Session generator (Maintain, MMT, Satellites)
   generate_ln_library.py          Library generator (Standard DLL; redirects extensions to new-extension)
   generate_ln_menu.py             Menu generator (<DR_Menu> XML & .lbl)
+  generate_ln_message.py          Message generator (<DR_Message> XML & .msg)
+  generate_ln_question.py         Question generator (<DR_Question> XML & .qst/.que)
+  generate_ln_function.py         Include Function generator (<DR_Module> XML & .fnc/.fun)
+  generate_ln_additional.py       Additional File generator (<DR_AdditionalFile> XML & .add)
+  generate_ln_report.py           Report generator (<DR_Report> XML & .rpt/.rptdsrc)
   ln_extension_manager.py         Extension scaffolding, 'Get' import, and hook clipboard extractor
   inject_ln_script.py             Bidirectional 4GL synchronizer with Read-Only guardrails
   admin_sync.py                   12-extension SCM .admin cache synchronizer (+ Java helper)
@@ -146,7 +216,7 @@ tools/                          Self-contained automation toolchain:
   ln_error_reader.py              Binary .markers problem diagnostics reader
   ln_studio_bridge.py             Windows action bridge (F5 refresh / Ctrl+B build)
   ln_workspace_manager.py         Pinned Studio & workspace environment resolver
-  tests/                          Comprehensive unit test suite (102+ tests, including test_extension_workflow.py)
+  tests/                          Comprehensive unit test suite (154+ tests across 15 test suites)
 templates/
   table_extension_template.4gl    Starter template for Table Extensions (#context_on hooks)
   session_extension_template.4gl  Starter template for Session Extensions (command hooks)

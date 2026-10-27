@@ -367,3 +367,179 @@ Root element is `<DR_Menu>`.
   <application>EXTce01107</application>
 </DR_Menu>
 ```
+
+---
+
+## 7. Report Schema (`.rpt`, `.rptdsrc`)
+
+Root element is `<DR_Report>`. Contains `<InputField>`, `<Layout>`, `<PhysicalReportLayout>` (with base64 `<ReportLayoutText>`), `<ReportOutputField>`, `<ReportSpecial>`, `<PageSetup>`, and 4GL report `<Source>`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DR_Report xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+  <description>Billing Batch Summary Report</description>
+  <versionID>B61O_a_ext</versionID>
+  <type>report</type>
+  <name>txcmg04010100</name>
+  <Version>
+    <ObjectID/><classID/><checkInLabel/><documentation/>
+    <isExpired>no</isExpired>
+    <isCheckedOutParallel>no</isCheckedOutParallel>
+    <isCheckedOut>no</isCheckedOut>
+    <modificationDateTime>2026-10-27T05:00:00Z</modificationDateTime>
+    <modifiedBy>agent</modifiedBy>
+    <creationDateTime>2026-10-27T05:00:00Z</creationDateTime>
+    <createdBy>agent</createdBy>
+  </Version>
+  <descriptionReference>txcmg04010100</descriptionReference>
+  <Attachment><type>relnotes</type><name>txcmg04010100</name></Attachment>
+  <Attachment><type>techdoc</type><name>txcmg04010100</name></Attachment>
+  <language>2</language>
+
+  <InputField>
+    <isTableField>false</isTableField>
+    <sortSequence>1</sortSequence>
+    <sortMode>1</sortMode>
+    <datatype>
+      <Facet><value>9</value><type>totalDigits</type></Facet>
+      <nativeDatatype>3</nativeDatatype>
+      <name>tcmcs.long</name>
+    </datatype>
+    <fieldname>btno</fieldname>
+    <name>btno</name>
+  </InputField>
+
+  <Layout>
+    <type>4</type>
+    <sequenceNumber>1</sequenceNumber>
+    <PhysicalReportLayout>
+      <ReportLayoutText>AQgBjDoBEwGMWwEZAYwsAR4BjF0BSwGMOgJLAYs6/yAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=</ReportLayoutText>
+      <width>80</width>
+      <height>2</height>
+      <ReportOutputField>
+        <printCondition/>
+        <suppressEmptyField>false</suppressEmptyField>
+        <printExpression>btno</printExpression>
+        <row>1</row>
+        <column>1</column>
+        <length>9</length>
+        <datatype>
+          <Facet><value>9</value><type>totalDigits</type></Facet>
+          <nativeDatatype>3</nativeDatatype>
+          <name>tcmcs.long</name>
+        </datatype>
+      </ReportOutputField>
+    </PhysicalReportLayout>
+  </Layout>
+
+  <PageSetup>
+    <paperWidth>80</paperWidth>
+    <pageLength>66</pageLength>
+    <linesPerPage>60</linesPerPage>
+  </PageSetup>
+
+  <Source>
+    <expression><![CDATA[
+before.program:
+	| Report initialization
+detail.1:
+	layout.1()
+]]></expression>
+    <sourceType>7</sourceType>
+    <sourceName>txcmg04010100</sourceName>
+  </Source>
+  <application>EXTce01107</application>
+</DR_Report>
+```
+
+---
+
+## 8. Message Schema (`.msg`)
+
+Root element is `<DR_Message>`. Defines runtime dialog and error messages with severity levels (`1`=Info, `2`=Warning, `3`=Error):
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DR_Message xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+  <description>Billing Batch Closed</description>
+  <versionID>B61O_a_ext</versionID>
+  <type>message</type>
+  <name>txcmg0001</name>
+  <descriptionReference>txcmg0001</descriptionReference>
+  <messageCode>txcmg0001</messageCode>
+  <severity>3</severity>
+  <text>Billing batch %1$s has already been finalized and cannot be modified.</text>
+  <application>EXTce01107</application>
+</DR_Message>
+```
+
+---
+
+## 9. Question Schema (`.qst`, `.que`)
+
+Root element is `<DR_Question>`. Defines interactive user prompt dialogs with question text, domain, and default answer:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DR_Question xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+  <description>Confirm Batch Finalization</description>
+  <versionID>B61O_a_ext</versionID>
+  <type>question</type>
+  <name>txcmg0002</name>
+  <descriptionReference>txcmg0002</descriptionReference>
+  <questionCode>txcmg0002</questionCode>
+  <severity>2</severity>
+  <domain>tcyesno</domain>
+  <defaultAnswer>yes</defaultAnswer>
+  <text>Do you want to finalize billing batch %1$s now?</text>
+  <application>EXTce01107</application>
+</DR_Question>
+```
+
+---
+
+## 10. Include Function Schema (`.fnc`, `.fun`)
+
+Root element is `<DR_Module>` with `<type>function</type>`. Represents reusable 4GL include function source definitions:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DR_Module xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+  <description>Billing Tax Calculation Function</description>
+  <versionID>B61O_a_ext</versionID>
+  <type>function</type>
+  <name>txcmgf001</name>
+  <Source>
+    <expression><![CDATA[
+function extern double txcmgf001.calculate_tax(double amount, double rate)
+{
+	return(amount * (rate / 100.0))
+}
+]]></expression>
+    <sourceType>8</sourceType>
+    <sourceName>txcmgf001</sourceName>
+  </Source>
+  <application>EXTce01107</application>
+</DR_Module>
+```
+
+---
+
+## 11. Additional File Schema (`.add`)
+
+Root element is `<DR_AdditionalFile>`. Represents non-4GL configuration, schema, or asset files packaged in activities:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DR_AdditionalFile xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+  <description>Billing Configuration JSON</description>
+  <versionID>B61O_a_ext</versionID>
+  <type>additional_file</type>
+  <name>txcmgcfg</name>
+  <keyword1>billing</keyword1>
+  <keyword2>config</keyword2>
+  <keyword3>tax</keyword3>
+  <content><![CDATA[{"taxRate": 7.0, "currency": "THB", "autoFinalize": true}]]></content>
+  <application>EXTce01107</application>
+</DR_AdditionalFile>
+```

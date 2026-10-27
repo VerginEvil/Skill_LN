@@ -68,6 +68,7 @@ class ActivityValidator:
         self.labels: Set[str] = set()
         self.libraries: Dict[str, Dict[str, Any]] = {}
         self.menus: Dict[str, Dict[str, Any]] = {}
+        self.reports: Dict[str, Dict[str, Any]] = {}
 
         # Activity package detection
         self.packages: Set[str] = set()
@@ -127,6 +128,8 @@ class ActivityValidator:
                     self.libraries[code] = {"path": p}
                 elif ext == ".mnu":
                     self.menus[code] = self._parse_menu_metadata(p)
+                elif ext in (".rpt", ".rptdsrc"):
+                    self.reports[code] = self._parse_report_metadata(p)
 
     def _parse_table_metadata(self, path: Path) -> Dict[str, Any]:
         meta: Dict[str, Any] = {"path": path, "columns": set(), "indexes": []}
@@ -206,6 +209,34 @@ class ActivityValidator:
                         or ch.findtext("menuField")
                     ),
                 })
+        except Exception as e:
+            meta["error"] = str(e)
+        return meta
+
+    def _parse_report_metadata(self, path: Path) -> Dict[str, Any]:
+        meta: Dict[str, Any] = {"path": path, "input_fields": [], "referenced_labels": set()}
+        try:
+            tree = ET.parse(path)
+            root = tree.getroot()
+            meta["xml_root"] = root
+            meta["report_code"] = root.findtext(".//{*}name") or path.stem
+            meta["descriptionReference"] = root.findtext(".//{*}descriptionReference") or ""
+            dref = meta["descriptionReference"]
+            if dref:
+                meta["referenced_labels"].add(dref)
+
+            for inp in root.findall(".//{*}InputField"):
+                iname = inp.findtext("{*}name") or inp.findtext("name")
+                idom = inp.findtext("{*}domain") or inp.findtext("domain")
+                idref = inp.findtext("{*}descriptionReference") or inp.findtext("descriptionReference")
+                meta["input_fields"].append({"name": iname, "domain": idom, "descriptionReference": idref})
+                if idref:
+                    meta["referenced_labels"].add(idref)
+
+            for spec in root.findall(".//{*}ReportSpecial"):
+                slbl = spec.findtext("{*}descriptionReference") or spec.findtext("descriptionReference") or spec.findtext("{*}label_code")
+                if slbl:
+                    meta["referenced_labels"].add(slbl)
         except Exception as e:
             meta["error"] = str(e)
         return meta
@@ -320,6 +351,15 @@ class ActivityValidator:
                 if prev and prev not in groups:
                     self.report.add(str(path), 1, 1, "ERROR", f"FormGroup {gnum} has non-existent previousGroup '{prev}'", layer=2)
 
+        # Report structure checks
+        for code, rdata in self.reports.items():
+            path = rdata["path"]
+            root = rdata.get("xml_root")
+            if root is None:
+                continue
+            if not root.tag.endswith("Report"):
+                self.report.add(str(path), 1, 1, "ERROR", f"Expected root <DR_Report>, found <{root.tag}>", layer=2)
+
     # ----------------------------------------------------
     # Layer 3: Cross-Object Reference Integrity
     # ----------------------------------------------------
@@ -327,6 +367,10 @@ class ActivityValidator:
         """Verify label existence, table-column relationships, and index column validity."""
         # 1. Label cross-checks
         all_referenced_labels: Set[Tuple[str, str]] = set()
+
+        for code, rdata in self.reports.items():
+            for dref in rdata.get("referenced_labels", set()):
+                all_referenced_labels.add((dref, str(rdata["path"])))
 
         for code, tdata in self.tables.items():
             dref = tdata.get("descriptionReference", "")
@@ -416,15 +460,29 @@ class ActivityValidator:
                             layer=3
                         )
 
+        # 5. Report input domain cross-checks
+        for code, rdata in self.reports.items():
+            for inp in rdata.get("input_fields", []):
+                dom = inp.get("domain") or ""
+                if dom and any(dom.lower().startswith(pkg) for pkg in self.packages):
+                    dom_base = dom.lower()
+                    if dom_base not in self.domains:
+                        self.report.add(
+                            str(rdata["path"]), 1, 1, "WARNING",
+                            f"Report input field '{inp.get('name')}' references unknown activity domain '{dom}'.",
+                            layer=3
+                        )
+
     # ----------------------------------------------------
     # Layer 4: Static 4GL Script Validation
     # ----------------------------------------------------
     def _validate_layer4_scripts(self) -> None:
-        """Run static 4GL inspector on embedded <expression> scripts in .tbl, .ses, .lib."""
+        """Run static 4GL inspector on embedded <expression> scripts in .tbl, .ses, .lib, .rpt."""
         for comp_map, comp_type in [
             (self.tables, "table"),
             (self.sessions, "session"),
-            (self.libraries, "library")
+            (self.libraries, "library"),
+            (self.reports, "report")
         ]:
             for code, cdata in comp_map.items():
                 path = cdata["path"]
@@ -443,6 +501,8 @@ class ActivityValidator:
                     elif comp_type == "session":
                         meta["form_fields"] = cdata.get("form_fields", set())
                         meta["commands"] = cdata.get("commands", set())
+                    elif comp_type == "report":
+                        meta["input_fields"] = {inp["name"] for inp in cdata.get("input_fields", []) if inp.get("name")}
 
                     diags = self.script_checker.check_script(
                         expr.text,

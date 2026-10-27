@@ -98,6 +98,39 @@ public class AdminSyncHelper {
                 } else {
                     System.out.println("[WARN] Not found: " + relPath);
                 }
+            } else if ("init".equalsIgnoreCase(cmd)) {
+                saveAdmin(adminFile, map);
+                System.out.println("[OK] Initialized empty .admin: " + adminFile.getAbsolutePath());
+            } else if ("set-status".equalsIgnoreCase(cmd)) {
+                if (args.length < 6) {
+                    System.err.println("Usage: set-status <rel_path> <isCreated> <isCheckedOut> <isDirty>");
+                    System.exit(1);
+                }
+                String relPath = args[2].replace('\\', '/');
+                boolean isCreated = Boolean.parseBoolean(args[3]);
+                boolean isCheckedOut = Boolean.parseBoolean(args[4]);
+                boolean isDirty = Boolean.parseBoolean(args[5]);
+
+                Object comp = map.get(relPath);
+                if (comp != null) {
+                    setField(comp, "isCreated", isCreated);
+                    setField(comp, "isCheckedout", isCheckedOut);
+                    setField(comp, "m_isDirty", isDirty);
+                    saveAdmin(adminFile, map);
+                    System.out.println("[OK] Updated status: " + relPath);
+                } else {
+                    String actFolder = adminFile.getParentFile() != null ? adminFile.getParentFile().getName() : "";
+                    String fullPath = ":" + actFolder + "/" + relPath;
+                    comp = compClass.getDeclaredConstructor(String.class).newInstance(fullPath);
+                    setField(comp, "isCreated", isCreated);
+                    setField(comp, "isCheckedout", isCheckedOut);
+                    setField(comp, "m_isDirty", isDirty);
+                    setField(comp, "m_isVSCHappy", false);
+                    setField(comp, "isExpired", false);
+                    map.put(relPath, comp);
+                    saveAdmin(adminFile, map);
+                    System.out.println("[OK] Created and updated status: " + relPath);
+                }
             } else {
                 System.err.println("Unknown command: " + cmd);
                 System.exit(1);

@@ -30,11 +30,11 @@ JAVA_BIN_CANDIDATES = [
     shutil.which("java") or "java"
 ]
 
-# 12 Managed LN Studio Component Extensions
+# 12 Managed LN Studio Component Extensions (plus aliases .que and .fun)
 MANAGED_EXTENSIONS = {
     ".tbl", ".ses", ".lib", ".dmn", ".lbl",
-    ".mnu", ".rpt", ".rptdsrc", ".msg", ".que",
-    ".add", ".fun"
+    ".mnu", ".rpt", ".rptdsrc", ".msg", ".qst", ".que",
+    ".add", ".fnc", ".fun"
 }
 
 
@@ -120,6 +120,38 @@ def remove_component(activity_path: Path, rel_path: str) -> bool:
     if res.returncode != 0:
         raise RuntimeError(f"Failed to remove component from .admin: {res.stderr}")
     return True
+
+
+def init_admin_file(admin_path: Path, initial_data: Optional[Dict[str, Any]] = None) -> None:
+    """Initializes an empty .admin file or writes initial component map."""
+    admin_path.parent.mkdir(parents=True, exist_ok=True)
+    res = run_helper(admin_path, "init")
+    if res.returncode != 0:
+        # Fallback binary write of empty Java HashMap if java not reachable
+        EMPTY_JAVA_HASHMAP = b'\xac\xed\x00\x05sr\x00\x11java.util.HashMap\x05\x07\xda\xc1\xc3\x16`\xd1\x03\x00\x02F\x00\nloadFactorI\x00\tthresholdxp?@\x00\x00\x00\x00\x00\x00w\x08\x00\x00\x00\x10\x00\x00\x00\x00x'
+        admin_path.write_bytes(EMPTY_JAVA_HASHMAP)
+
+
+def set_component_status(
+    activity_path: Path,
+    rel_path: str,
+    is_created: bool = False,
+    is_checked_out: bool = True,
+    is_dirty: bool = True,
+) -> bool:
+    """Updates component SCM status flags in activity's .admin file."""
+    admin_file = activity_path / ".admin"
+    res = run_helper(
+        admin_file,
+        "set-status",
+        [rel_path, str(is_created).lower(), str(is_checked_out).lower(), str(is_dirty).lower()],
+    )
+    if res.returncode != 0:
+        raise RuntimeError(f"Failed to update status in .admin: {res.stderr}")
+    return True
+
+
+write_admin_file = init_admin_file
 
 
 def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:

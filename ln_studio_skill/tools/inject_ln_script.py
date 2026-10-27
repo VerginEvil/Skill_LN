@@ -57,6 +57,9 @@ def extract_script_from_xml(xml_content: str) -> Optional[str]:
     if not m:
         return None
     raw_expr = m.group(1)
+    stripped = raw_expr.strip()
+    if stripped.startswith("<![CDATA[") and stripped.endswith("]]>"):
+        return stripped[9:-3].strip()
     return unescape_xml_to_4gl(raw_expr)
 
 
@@ -65,10 +68,13 @@ def inject_script_into_xml(xml_content: str, script_code: str) -> str:
     Safely injects escaped 4GL source code into the <expression> tag of an existing XML content.
     If no <expression> tag exists, raises ValueError.
     """
-    escaped_code = escape_4gl_to_xml(script_code)
     m = EXPRESSION_REGEX.search(xml_content)
     if m:
         start, end = m.span(1)
+        raw_inner = m.group(1)
+        if "<![CDATA[" in raw_inner:
+            return xml_content[:start] + f"<![CDATA[\n{script_code}\n]]>" + xml_content[end:]
+        escaped_code = escape_4gl_to_xml(script_code)
         return xml_content[:start] + escaped_code + xml_content[end:]
     else:
         raise ValueError("Could not find <expression> tag in target XML file.")
@@ -146,6 +152,8 @@ def sync_all_activity_scripts(
                 target_ext = ".ses"
             elif ext == ".lib":
                 target_ext = ".lib"
+            elif ext in (".rpt", ".rep", ".rptdsrc"):
+                target_ext = ".rpt"
 
             if target_ext:
                 # Search matching target file in activity
@@ -179,6 +187,9 @@ def sync_all_activity_scripts(
             elif ext == ".lib":
                 out_subfolder = "lib"
                 out_ext = ".lib"
+            elif ext in (".rpt", ".rptdsrc"):
+                out_subfolder = "report"
+                out_ext = ".rpt"
 
             if out_subfolder and out_ext:
                 out_file = repo_scripts_dir / out_subfolder / f"{stem}{out_ext}"

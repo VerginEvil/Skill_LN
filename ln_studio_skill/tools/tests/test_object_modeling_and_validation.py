@@ -103,7 +103,7 @@ class TestWorkspaceAndAdminSync(unittest.TestCase):
     def test_managed_extensions_contains_all_12_types(self):
         expected = {
             ".tbl", ".ses", ".lib", ".dmn", ".lbl", ".mnu",
-            ".rpt", ".rptdsrc", ".msg", ".que", ".add", ".fun"
+            ".rpt", ".rptdsrc", ".msg", ".qst", ".que", ".add", ".fnc", ".fun"
         }
         self.assertEqual(MANAGED_EXTENSIONS, expected)
 

@@ -2,7 +2,7 @@
 [![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-green.svg)](#)
 [![Automation](https://img.shields.io/badge/Toolchain-Eclipse%20RCP%20Automation-orange.svg)](#)
 [![Author](https://img.shields.io/badge/Author-Natthaphon%20Srikasem-purple.svg)](#credits--maintainer)
-[![Tests](https://img.shields.io/badge/Tests-94%20Passed-brightgreen.svg)](#automated-test-suite)
+[![Tests](https://img.shields.io/badge/Tests-154%2B%20Passed-brightgreen.svg)](#automated-test-suite)
 
 # Skill_LN: Infor ERP LN Developer Skill & Studio Automation Toolchain
 
@@ -102,7 +102,14 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
 
 | Tool | Purpose | Primary Commands |
 |---|---|---|
-| [`ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** (14 subcommands) | `table`, `session`, `domain`, `library`, `menu`, `component`, `inject`, `extract`, `check-script`, `validate`, `sync-admin`, `diagnose`, `build`, `pipeline` |
+| [`ln_component_builder.py`](ln_studio_skill/tools/ln_component_builder.py) | **Master Orchestrator CLI** (37 subcommands) | `workspace`, `environments`, `connect`, `project`, `activity`, `clean-activity`, `explorer`, `get-component`, `clone-component`, `checkout-component`, `uncheckout-component`, `checkin-component`, `deploy-test`, `prepare-end-activity`, `end-activity`, `table`, `session`, `domain`, `library`, `menu`, `message`, `question`, `function`, `additional`, `report`, `mcp-setup`, `validate`, `build`, `pipeline` |
+| [`ln_studio_mcp.py`](ln_studio_skill/tools/ln_studio_mcp.py) | **Native Stdio MCP Server** (16 tools) | JSON-RPC 2.0 stdio server for Claude Desktop, Cursor, and Antigravity |
+| [`ln_env_manager.py`](ln_studio_skill/tools/ln_env_manager.py) | **.ionapi & OAuth2 Token Manager** | Credentials import & Eclipse `cloudenv.prefs` / `connectivity.prefs` sync |
+| [`ln_server_client.py`](ln_studio_skill/tools/ln_server_client.py) | **Headless JCA Server Client** | Java bridge (`LNStudioJcaBridge.java`) & Mock JCA transport |
+| [`ln_project_activity_manager.py`](ln_studio_skill/tools/ln_project_activity_manager.py) | **Project & Activity Manager** | Remote exploration, activity creation, lock recovery & local bootstrap |
+| [`ln_component_explorer.py`](ln_studio_skill/tools/ln_component_explorer.py) | **12-Component Explorer & Cloner** | `browse_components`, in-memory `inspect_component`, `get_component`, `clone_component` |
+| [`ln_scm_engine.py`](ln_studio_skill/tools/ln_scm_engine.py) | **Pre-Commit SCM Engine** | Check-Out, Uncheckout, Put, Check-In, and Hard-Blocked End-Activity Gate |
+| [`ln_build_pipeline.py`](ln_studio_skill/tools/ln_build_pipeline.py) | **Remote Build Pipeline** | Remote compile, CRDD, CreateTables, VSC, `deploy-test`, and `prepare-end-activity` |
 | [`validate_ln_activity.py`](ln_studio_skill/tools/validate_ln_activity.py) | **4-Layer Activity Validator & Safe `--fix`** | `python ln_studio_skill/tools/validate_ln_activity.py [<act>] [--strict] [--fix] [--json]` |
 | [`check_4gl_script.py`](ln_studio_skill/tools/check_4gl_script.py) | **Static 4GL Script Inspector** (Layer 4) | `python ln_studio_skill/tools/check_4gl_script.py <file> [--owning-xml <xml>] [--cloud] [--strict]` |
 | [`scm_guardrails.py`](ln_studio_skill/tools/scm_guardrails.py) | **SCM Read-Only Protection** | Enforces `assert_file_writable` before write/inject |
@@ -112,6 +119,11 @@ Located in [`ln_studio_skill/`](ln_studio_skill/) (self-contained: knowledge plu
 | [`generate_ln_session.py`](ln_studio_skill/tools/generate_ln_session.py) | Multi-Archetype Session Generator | `python ln_studio_skill/tools/generate_ln_session.py --spec <spec> [--output-dir <dir>]` |
 | [`generate_ln_library.py`](ln_studio_skill/tools/generate_ln_library.py) | Library Generator (DLL, `ess`, `est`) | `python ln_studio_skill/tools/generate_ln_library.py --spec <spec> [--output-dir <dir>]` |
 | [`generate_ln_menu.py`](ln_studio_skill/tools/generate_ln_menu.py) | Menu Generator (`<DR_Menu>` & `.lbl`) | `python ln_studio_skill/tools/generate_ln_menu.py --spec <spec> [--output-dir <dir>]` |
+| [`generate_ln_message.py`](ln_studio_skill/tools/generate_ln_message.py) | Message Generator (`<DR_Message>` & `.msg`) | `python ln_studio_skill/tools/generate_ln_message.py --code <code>` |
+| [`generate_ln_question.py`](ln_studio_skill/tools/generate_ln_question.py) | Question Generator (`<DR_Question>` & `.qst`) | `python ln_studio_skill/tools/generate_ln_question.py --code <code>` |
+| [`generate_ln_function.py`](ln_studio_skill/tools/generate_ln_function.py) | Include Function Generator (`<DR_Module>`) | `python ln_studio_skill/tools/generate_ln_function.py --code <code>` |
+| [`generate_ln_additional.py`](ln_studio_skill/tools/generate_ln_additional.py) | Additional File Generator (`<DR_AdditionalFile>`) | `python ln_studio_skill/tools/generate_ln_additional.py --code <code>` |
+| [`generate_ln_report.py`](ln_studio_skill/tools/generate_ln_report.py) | Report Generator (`<DR_Report>` & `.rpt`) | `python ln_studio_skill/tools/generate_ln_report.py --code <code>` |
 | [`inject_ln_script.py`](ln_studio_skill/tools/inject_ln_script.py) | 4GL Source Synchronizer (with Guardrails) | `python ln_studio_skill/tools/inject_ln_script.py --inject --source <f.dal> --target <f.tbl>` |
 | [`extract_studio_dictionaries.py`](ln_studio_skill/tools/extract_studio_dictionaries.py) | LN Studio 10.8 Reflection Extractor | Generates `studio_syntax_completion.json` & docs |
 | [`ln_workspace_manager.py`](ln_studio_skill/tools/ln_workspace_manager.py) | Pinned Studio & Activity Resolver | `python ln_studio_skill/tools/ln_workspace_manager.py --list-workspaces` |

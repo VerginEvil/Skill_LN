@@ -185,12 +185,15 @@ def resolve_activity(
     activity_identifier: Optional[str] = None,
     workspace_name: Optional[str] = None,
     root: Optional[Path] = None,
-    activity_path: Optional[str] = None
+    activity_path: Optional[str] = None,
+    activity_name: Optional[str] = None
 ) -> Optional[Dict[str, str]]:
     """
     Resolves an activity directory by path, activity name, project name, or exact folder name.
     Requires explicit workspace or path unless running inside an Activity folder.
     """
+    if not activity_identifier and activity_name:
+        activity_identifier = activity_name
     # 1. Direct explicit activity path
     if activity_path:
         p = Path(activity_path).resolve()
