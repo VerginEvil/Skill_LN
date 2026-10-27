@@ -1,18 +1,68 @@
-# Task Tickets: Infor LN Studio Build 0640 Dictionaries Extraction, Cloud Governance & Standalone 4GL Audit Engine
+# Task Tickets: Infor LN Studio Headless JCA Connectivity, Explorers, 12-Component Generators, Pre-Commit SCM & Stdio MCP Server
 
-- **Specification**: [`docs/SPEC_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md`](docs/SPEC_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md)
-- **Implementation Plan**: [`docs/PLAN_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md`](docs/PLAN_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md)
+- **Active Specification**: [`docs/SPEC_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md`](docs/SPEC_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md)
+- **Active Implementation Plan**: [`docs/PLAN_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md`](docs/PLAN_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md)
 - **Architecture Decision Records**:
   - [`docs/adr/0001-plan-skill-update-and-coding-best-practices.md`](docs/adr/0001-plan-skill-update-and-coding-best-practices.md)
   - [`docs/adr/0002-ln-studio-skill-self-contained-toolchain.md`](docs/adr/0002-ln-studio-skill-self-contained-toolchain.md)
   - [`docs/adr/0003-ln-studio-object-modeling-and-static-verification.md`](docs/adr/0003-ln-studio-object-modeling-and-static-verification.md)
   - [`docs/adr/0004-4gl-coding-standards-and-caveats.md`](docs/adr/0004-4gl-coding-standards-and-caveats.md)
   - [`docs/adr/0005-progguide-studio-dictionaries-and-audit-engine.md`](docs/adr/0005-progguide-studio-dictionaries-and-audit-engine.md)
-- **Target Skills**: `erp-ln-progguide` (Primary), `ln_studio_skill` (Rule Alignment)
+  - [`docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md`](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md)
+  - [`docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md`](docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md)
+- **Target Skill**: `ln_studio_skill`
 
 ---
 
-## Dependency Graph
+## Active Batch Dependency Graph (`Batch3: Headless JCA, Explorers, 12-Type Generators, SCM & MCP`)
+
+```mermaid
+flowchart TD
+    subgraph Batch3["Batch: Headless JCA Connectivity, Explorers, 12-Type Generators, Pre-Commit SCM & MCP"]
+        J01["01: .ionapi Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge"]
+        J02["02: Software Project & Activity Explorers + Local Activity Bootstrap"]
+        J03["03: Component Explorer & Server Get / Clone Workflows"]
+        J04["04: Pre-Commit SCM Engine (Check-Out, Uncheckout, Put, Check-In & End-Activity Block)"]
+        J05["05: Remote Server Build (Compile, CRDD, CreateTables, VSC), deploy-test & prepare-end-activity"]
+        J06["06: Message (.msg), Question (.qst/.que), Function (.fnc/.fun) & Additional File (.add) Generators"]
+        J07["07: Report (.rpt & .rptdsrc) Ecore Generator & Script Synchronizer"]
+        J08["08: Native Stdio MCP Server (ln_studio_mcp.py), mcp-setup CLI & Documentation Sync"]
+
+        J01 --> J02
+        J01 --> J03
+        J02 --> J04
+        J03 --> J04
+        J04 --> J05
+        J01 --> J06
+        J06 --> J07
+        J05 --> J08
+        J07 --> J08
+    end
+
+    classDef ready fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+    class J01,J02,J03,J04,J05,J06,J07,J08 ready;
+```
+
+---
+
+## Active Ticket Roster (Batch: Headless JCA Connectivity, Explorers, 12-Component Generators, Pre-Commit SCM & Stdio MCP Server)
+
+- **Local Issues Directory**: [`.scratch/headless-jca-scm-mcp/issues/`](.scratch/headless-jca-scm-mcp/issues/)
+
+| ID | Title | Blocked by | Status | Ticket File |
+|---|---|---|---|---|
+| **01** | `.ionapi` Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge | *None* | `ready-for-agent` | [`01-ionapi-env-manager-and-jca-bridge.md`](.scratch/headless-jca-scm-mcp/issues/01-ionapi-env-manager-and-jca-bridge.md) |
+| **02** | Software Project & Activity Explorers + Local Activity Bootstrap | **01** | `ready-for-agent` | [`02-project-and-activity-explorers.md`](.scratch/headless-jca-scm-mcp/issues/02-project-and-activity-explorers.md) |
+| **03** | Component Explorer & Server `Get` / `Clone` Workflows | **01** | `ready-for-agent` | [`03-component-explorer-get-and-clone.md`](.scratch/headless-jca-scm-mcp/issues/03-component-explorer-get-and-clone.md) |
+| **04** | Pre-Commit SCM Engine (`Check-Out`, `Uncheckout`, `Put`, `Check-In` & Hard-Blocked `End Activity`) | **02, 03** | `ready-for-agent` | [`04-pre-commit-scm-engine.md`](.scratch/headless-jca-scm-mcp/issues/04-pre-commit-scm-engine.md) |
+| **05** | Remote Server Build (`Compile`, `CRDD`, `CreateTables`, `VSC`), `deploy-test` & `prepare-end-activity` | **04** | `ready-for-agent` | [`05-remote-build-deploy-test-and-precommit.md`](.scratch/headless-jca-scm-mcp/issues/05-remote-build-deploy-test-and-precommit.md) |
+| **06** | Message (`.msg`), Question (`.qst`/`.que`), Function (`.fnc`/`.fun`) & Additional File (`.add`) Generators | **01** | `ready-for-agent` | [`06-msg-qst-fnc-add-generators.md`](.scratch/headless-jca-scm-mcp/issues/06-msg-qst-fnc-add-generators.md) |
+| **07** | Report (`.rpt` & `.rptdsrc`) Ecore Generator & Script Synchronizer | **06** | `ready-for-agent` | [`07-report-ecore-generator-and-validator.md`](.scratch/headless-jca-scm-mcp/issues/07-report-ecore-generator-and-validator.md) |
+| **08** | Native Stdio MCP Server (`ln_studio_mcp.py`), `mcp-setup` CLI & Documentation Sync | **05, 07** | `ready-for-agent` | [`08-stdio-mcp-server-and-docs.md`](.scratch/headless-jca-scm-mcp/issues/08-stdio-mcp-server-and-docs.md) |
+
+---
+
+## Previous Dependency Graph (Completed Batches 1 & 2)
 
 ```mermaid
 flowchart TD

@@ -9,3 +9,7 @@ __pycache__/
 ln_studio_skill/tools/lib/tools/
 output/
 .ln_studio_config.json
+
+.ln_studio_tokens.json
+.cache/
+*.ionapi
