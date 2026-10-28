@@ -187,8 +187,11 @@ A high-performance, **zero-dependency** Python static analyzer located at [`scri
 
 | Rule Code | Severity | Description | Target Modes |
 |---|---|---|---|
-| **`SYN001`** | **ERROR** | Unbalanced block statements (`select/endselect`, `if/endif`, `for/endfor`, `while/endwhile`, `case/endcase`, `{}`) | All |
+| **`SYN001`** | **ERROR** | AST-based unbalanced block statements (`select/selectdo/selectempty/selecteos/endselect`, subqueries, `#define` macros, `if/endif`, `for/endfor`, `while/endwhile`, `case/endcase`, `{}`) | All |
 | **`SYN002`** | **WARNING** | Misspelled 4GL section headers with closest official Studio dictionary suggestion | All |
+| **`TBL001`** | **ERROR** | Referenced table (`<pkg><mod><num>.<field>`) missing `table t<table>` declaration in `declaration:` (excluding `--main-table`) | All |
+| **`TBL002`** | **ERROR** | Referenced `<table>.<field>` does not exist in `.ln_dd_cache.json` (supports `--auto-fetch-dd`) | All (with DD cache) |
+| **`DMN001`** | **ERROR** | Declared `domain <domain_name>` does not exist in `.ln_dd_cache.json` (supports `--auto-fetch-dd`) | All (with DD cache) |
 | **`DAL001`** | **ERROR** | Interactive dialog calls (`message()`, `ask.enum()`, `box()`) inside DAL2 or Table Extensions | `dal2`, `uedll` |
 | **`DAL002`** | **ERROR** | Missing or incorrect parameter signature in DAL field hooks (e.g. `long i.mode` on `.update`, `long has_changed` on `.check`) | `dal2` |
 | **`DAL003`** | **ERROR** | Invalid hook return type (e.g. `void` when hook must return `long`) | `dal2` |
@@ -197,7 +200,7 @@ A high-performance, **zero-dependency** Python static analyzer located at [`scri
 | **`CLD002`** | **WARNING** | Use of deprecated bshell functions with replacement guidance | `--cloud` |
 | **`INC001`** | **ERROR** | Calling functions without their mandatory `#include` header (e.g. `Json.*` without `<bic_json>`) | All |
 | **`CAV001`** | **WARNING** | Direct floating-point equality comparisons (`== 0.0` / `!= 100.0`); recommends `double.cmp()` | All |
-| **`CAV003`** | **ERROR** | Nested transaction boundaries (`commit.transaction()`, `db.retry.point()`) inside DAL hooks or DLL subroutines | `dal2`, `uedll` |
+| **`CAV003`** | **ERROR** | Intra-file Call Graph detection of direct or transitive nested transaction boundaries (`commit.transaction()`, `db.retry.point()`, `abort.transaction()`) inside active transactions, DAL hooks, or UEDLL subroutines | All |
 
 ### CLI Syntax & Examples
 

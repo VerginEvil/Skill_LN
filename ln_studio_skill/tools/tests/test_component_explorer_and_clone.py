@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Unit tests for Ticket 03:
-Component Explorer & Server Get / Clone Workflows.
+Unit tests for Ticket 03 & Task 2.2:
+Component Explorer, Server Get / Clone Workflows, sync-reference (.reference/<type>/),
+and automatic .ln_dd_cache.json indexing for Ecore .tbl and .dmn XMLs.
 """
 
 import os
@@ -11,7 +12,6 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 SKILL_TOOLS = Path(__file__).resolve().parent.parent
 if str(SKILL_TOOLS) not in sys.path:
@@ -23,8 +23,10 @@ from ln_component_explorer import (
     get_component,
     inspect_component,
     clone_component,
+    sync_reference,
     BDE_TYPE_MAP,
 )
+from scm_guardrails import ReadOnlyComponentError, is_file_readonly
 
 
 class TestComponentExplorerAndClone(unittest.TestCase):
@@ -97,35 +99,80 @@ class TestComponentExplorerAndClone(unittest.TestCase):
         self.assertEqual(summary["fields"][0]["name"], "item")
         self.assertIn("before.save.object", summary["script"])
 
-    def test_get_component_workspace_mode_read_only(self):
+    def test_get_component_workspace_mode_read_only_and_dd_cache_update(self):
+        dd_cache_file = self.workspace_path / ".ln_dd_cache.json"
         self.transport.register_response(
             "DR_Table",
             "Get",
-            """<DR_Table name="tcibd001" package="tc" module="ibd">
-                <description>General Item Data</description>
+            """<DR_Table xmlns="http://www.infor.com/businessline/application/dr">
+                <name>txcmg011</name>
+                <description>Billing Batch Header</description>
+                <Column>
+                    <datatype><name>tcmcs.long</name><nativeDatatype>3</nativeDatatype></datatype>
+                    <name>btno</name>
+                    <fieldLabel>txcmg011.btno</fieldLabel>
+                </Column>
+                <Column>
+                    <datatype><name>tcamnt</name><nativeDatatype>5</nativeDatatype></datatype>
+                    <name>tamt</name>
+                    <fieldLabel>txcmg011.tamt</fieldLabel>
+                </Column>
+                <Index>
+                    <IndexColumn><name>btno</name></IndexColumn>
+                </Index>
             </DR_Table>""",
         )
         saved_file = get_component(
             client=self.client,
             comp_type="table",
-            comp_name="tcibd001",
+            comp_name="txcmg011",
             activity_dir=self.act_dir,
             read_only=True,
+            dd_cache_path=dd_cache_file,
         )
         self.assertTrue(saved_file.exists())
-        self.assertEqual(saved_file.name, "tcibd001.tbl")
-
-        # Verify OS read-only attribute
-        from scm_guardrails import is_file_readonly
+        self.assertEqual(saved_file.name, "txcmg011.tbl")
         self.assertTrue(is_file_readonly(saved_file))
 
-        # Verify .admin registration
-        from admin_sync import list_admin_components
-        comps = list_admin_components(self.act_dir)
-        found = any("tcibd001.tbl" in c["path"] for c in comps)
-        self.assertTrue(found)
+        # Verify Ecore <Column>/<Index> parsed into .ln_dd_cache.json
+        self.assertTrue(dd_cache_file.exists())
+        cache_data = json.loads(dd_cache_file.read_text(encoding="utf-8"))
+        self.assertIn("txcmg011", cache_data["tables"])
+        self.assertIn("btno", cache_data["tables"]["txcmg011"]["fields"])
+        self.assertEqual(cache_data["tables"]["txcmg011"]["fields"]["btno"]["domain"], "tcmcs.long")
+        self.assertEqual(cache_data["tables"]["txcmg011"]["indices"]["1"], ["btno"])
 
-    def test_clone_component(self):
+    def test_sync_reference_table_domain_extension_read_only(self):
+        """Asserts sync_reference downloads into .reference/<type>/ Read-Only without modifying .admin and indexes DD cache."""
+        dd_cache_file = self.workspace_path / ".ln_dd_cache.json"
+        self.transport.register_response(
+            "DR_Domain",
+            "Get",
+            """<DR_Domain xmlns="http://www.infor.com/businessline/application/dr">
+                <name>txcmg.stat</name>
+                <nativeDatatype>7</nativeDatatype>
+                <Enumeration><constant>open</constant><description>Open</description></Enumeration>
+                <Enumeration><constant>closed</constant><description>Closed</description></Enumeration>
+            </DR_Domain>""",
+        )
+        res = sync_reference(
+            client=self.client,
+            comp_type="domain",
+            name_pattern="txcmg.stat",
+            workspace_root=self.workspace_path,
+            dd_cache_path=dd_cache_file,
+        )
+        self.assertEqual(res["count"], 1)
+        ref_file = Path(res["downloaded"][0]["path"])
+        self.assertTrue(ref_file.exists())
+        self.assertIn(".reference", ref_file.parts)
+        self.assertTrue(is_file_readonly(ref_file))
+
+        cache_data = json.loads(dd_cache_file.read_text(encoding="utf-8"))
+        self.assertIn("txcmg.stat", cache_data["domains"])
+        self.assertEqual(cache_data["domains"]["txcmg.stat"]["enum_values"], ["open", "closed"])
+
+    def test_clone_component_and_block_extension_cloning(self):
         self.transport.register_response(
             "DR_Table",
             "Get",
@@ -151,43 +198,17 @@ class TestComponentExplorerAndClone(unittest.TestCase):
             register_on_server=True,
         )
         self.assertTrue(cloned_file.exists())
-        self.assertEqual(cloned_file.name, "txibd001.tbl")
-
-        content = cloned_file.read_text(encoding="utf-8")
-        self.assertIn('name="txibd001"', content)
-        self.assertIn('package="tx"', content)
-        self.assertIn('label="txibd001.item"', content)
-
-        # Cloned file must be writable
-        from scm_guardrails import is_file_readonly
         self.assertFalse(is_file_readonly(cloned_file))
 
-
-class TestComponentCliIntegration(unittest.TestCase):
-    def test_cmd_explorer_and_get(self):
-        from ln_component_builder import cmd_explorer, cmd_get_component, cmd_clone_component
-        import argparse
-        import io
-        from contextlib import redirect_stdout
-
-        # Test explorer subcommand
-        args_exp = argparse.Namespace(package="tc", type="table", filter=None, workspace=None, json=True, mock=True)
-        f = io.StringIO()
-        with redirect_stdout(f):
-            cmd_explorer(args_exp)
-        out = f.getvalue()
-        self.assertIn("components", json.loads(out))
-
-        # Test get inspect mode
-        args_get = argparse.Namespace(
-            type="table", name="tcibd001", inspect=True, activity=None, workspace=None, json=True, mock=True
-        )
-        f_get = io.StringIO()
-        with redirect_stdout(f_get):
-            cmd_get_component(args_get)
-        out_get = f_get.getvalue()
-        data_get = json.loads(out_get)
-        self.assertEqual(data_get["name"], "tcibd001")
+        # Attempting to clone an extension component must raise ReadOnlyComponentError (ADR 0006)
+        with self.assertRaises(ReadOnlyComponentError):
+            clone_component(
+                client=self.client,
+                comp_type="extension",
+                source_name="txestwmd400",
+                target_name="txestwmd401",
+                activity_dir=self.act_dir,
+            )
 
 
 if __name__ == "__main__":

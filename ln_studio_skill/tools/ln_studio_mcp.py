@@ -37,7 +37,7 @@ from ln_project_activity_manager import (
     bootstrap_local_activity
 )
 from ln_component_explorer import (
-    browse_components, inspect_component, get_component, clone_component
+    browse_components, inspect_component, get_component, clone_component, sync_reference
 )
 from ln_scm_engine import (
     checkout_component, uncheckout_component, put_component, checkin_component,
@@ -164,16 +164,37 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
     },
     {
         "name": "ln_get_component",
-        "description": "Fetches a component from server (inspects in-memory or downloads Read-Only into local activity).",
+        "description": "Fetches a component from server (inspects in-memory, downloads Read-Only into local activity, or syncs to .reference/<type>/ and updates .ln_dd_cache.json).",
         "inputSchema": {
             "type": "object",
             "properties": {
-                "type": {"type": "string", "description": "Component type (table, session, domain, etc.)"},
-                "name": {"type": "string", "description": "Component name (e.g. ttadv300)"},
+                "type": {"type": "string", "description": "Component type (table, session, domain, extension, etc.)"},
+                "name": {"type": "string", "description": "Component name or pattern (e.g. tcibd001, txsli001)"},
                 "activity": {"type": "string", "description": "Target local activity folder or path"},
                 "inspect_only": {"type": "boolean", "description": "If true, inspect in memory without writing"},
+                "reference_only": {"type": "boolean", "description": "If true, save Read-Only into .reference/<type>/ and update .ln_dd_cache.json"},
                 "project": {"type": "string", "description": "Software Project name"},
                 "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["type", "name"]
+        }
+    },
+    {
+        "name": "ln_sync_reference",
+        "description": "Downloads standard/custom tables, domains, sessions, or read-only extensions into .reference/<type>/ and indexes .tbl/.dmn schemas into .ln_dd_cache.json.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["table", "domain", "session", "extension", "library", "report", "menu"],
+                    "description": "Reference component type (extensions are strictly Read-Only Get per ADR 0006)"
+                },
+                "name": {"type": "string", "description": "Component name or wildcard pattern (e.g. tcibd001, tcibd*, txsli001)"},
+                "workspace_dir": {"type": "string", "description": "Local workspace/project root directory"},
+                "dd_cache_path": {"type": "string", "description": "Optional path to .ln_dd_cache.json"},
+                "workspace": {"type": "string", "description": "LN Studio workspace name"},
                 "mock": {"type": "boolean", "description": "Use mock transport for testing"}
             },
             "required": ["type", "name"]
@@ -282,13 +303,19 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
     },
     {
         "name": "ln_deploy_test",
-        "description": "Runs composite test pipeline on server: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn.",
+        "description": "Runs split test deployment pipeline on server: compile-only (default safe mode: Put -> Compile -> VSC -> CheckIn) or schema-crdd (adds CRDD & CreateTables with lock warning).",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "type": {"type": "string", "description": "Component type"},
                 "name": {"type": "string", "description": "Component name"},
                 "activity": {"type": "string", "description": "Target activity directory"},
+                "mode": {
+                    "type": "string",
+                    "enum": ["compile-only", "schema-crdd"],
+                    "description": "Deployment mode: compile-only (default safe mode) or schema-crdd"
+                },
+                "dry_run": {"type": "boolean", "description": "Pre-check planned steps and table lock risks without executing"},
                 "project": {"type": "string", "description": "Software Project name"},
                 "workspace": {"type": "string", "description": "Workspace name"},
                 "comment": {"type": "string", "description": "Check-in comment"},
@@ -444,15 +471,39 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             comp_type = arguments["type"]
             name_val = arguments["name"]
             inspect_only = arguments.get("inspect_only", False)
+            reference_only = arguments.get("reference_only", False) or comp_type.lower() == "extension"
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
 
             if inspect_only:
-                res = inspect_component(client, component_type=comp_type, component_name=name_val)
+                res = inspect_component(client, comp_type=comp_type, comp_name=name_val)
+            elif reference_only:
+                ws_dir = Path(arguments.get("activity") or get_workspace_root() or Path.cwd())
+                res = sync_reference(client, comp_type=comp_type, name_pattern=name_val, workspace_dir=ws_dir)
             else:
                 act_arg = arguments.get("activity")
                 act_path = Path(act_arg) if act_arg else Path(get_workspace_root())
-                res = get_component(client, component_type=comp_type, component_name=name_val, activity_path=act_path)
+                saved = get_component(client, comp_type=comp_type, comp_name=name_val, activity_dir=act_path)
+                res = {"saved_path": str(saved), "read_only": True}
+            return {
+                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "isError": False
+            }
+
+        elif name == "ln_sync_reference":
+            comp_type = arguments["type"]
+            name_val = arguments["name"]
+            ws_dir = Path(arguments.get("workspace_dir") or get_workspace_root() or Path.cwd())
+            dd_cache = Path(arguments["dd_cache_path"]) if arguments.get("dd_cache_path") else None
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            res = sync_reference(
+                client=client,
+                comp_type=comp_type,
+                name_pattern=name_val,
+                workspace_dir=ws_dir,
+                dd_cache_path=dd_cache,
+            )
             return {
                 "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
                 "isError": False
@@ -577,9 +628,20 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             act_dir = Path(arguments["activity"])
             proj = arguments.get("project", "EXTce01107")
             comment = arguments.get("comment", f"deploy-test for {name_val}")
+            mode = arguments.get("mode", "compile-only")
+            dry_run = arguments.get("dry_run", False)
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            res = deploy_test(client, comp_type, name_val, act_dir, proj, comment=comment)
+            res = deploy_test(
+                client,
+                comp_type,
+                name_val,
+                act_dir,
+                proj,
+                comment=comment,
+                mode=mode,
+                dry_run=dry_run,
+            )
             return {
                 "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
                 "isError": not res.get("success", False)

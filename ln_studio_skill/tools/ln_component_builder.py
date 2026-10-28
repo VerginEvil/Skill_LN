@@ -61,7 +61,7 @@ from ln_project_activity_manager import (
 )
 from ln_component_explorer import (
     browse_components, inspect_component, get_component, clone_component,
-    BDE_TYPE_MAP
+    sync_reference, BDE_TYPE_MAP
 )
 from ln_scm_engine import (
     checkout_component, uncheckout_component, put_component, checkin_component,
@@ -149,7 +149,12 @@ def cmd_connect(args):
     token_mgr = OAuth2TokenManager()
     token = None
     try:
-        token = token_mgr.get_access_token(env_name, config)
+        token = token_mgr.get_access_token(
+            env_name,
+            config,
+            interactive=getattr(args, "interactive", True),
+            manual_auth=getattr(args, "manual_auth", False),
+        )
         print(f"[OK] OAuth2 Access Token acquired successfully (length: {len(token)})")
     except Exception as e:
         print(f"[WARN] Could not acquire token automatically: {e}")
@@ -200,6 +205,18 @@ def get_server_client(workspace_name: Optional[str] = None, mock: bool = False) 
         transport.register_response(
             "DR_Table", "Get",
             "<DR_Table name=\"tcibd001\" package=\"tc\" module=\"ibd\"><description>Item Data</description><Fields><Field name=\"item\" domain=\"tcitem\" label=\"tcibd001.item\"/></Fields></DR_Table>"
+        )
+        transport.register_response(
+            "DR_Domain", "Get",
+            "<DR_Domain name=\"tcitem\"><description>Item Code</description><datatype><nativeDatatype>6</nativeDatatype></datatype></DR_Domain>"
+        )
+        transport.register_response(
+            "DR_Controller", "Get",
+            "<DR_Controller name=\"tcibd0501m000\"><description>Items</description><mainTable>tcibd001</mainTable></DR_Controller>"
+        )
+        transport.register_response(
+            "DR_Module", "Get",
+            "<DR_Module name=\"tcibd001\"><description>Item Extension</description><Source><expression>function extern long before.save.object(long mode) { return(0) }</expression></Source></DR_Module>"
         )
         transport.register_response("DR_Table", "DR_Create", "<DR_Table><status>created</status></DR_Table>")
         transport.register_response("DR_Table", "CheckOut", "<DR_Table name=\"tdsls400\" package=\"td\" module=\"sls\"><desc>Sales Order</desc></DR_Table>")
@@ -398,6 +415,28 @@ def cmd_get_component(args):
         )
         ro_str = " (Read-Only)" if is_ro else ""
         print(f"[SUCCESS] Downloaded {args.type} '{args.name}'{ro_str} -> {saved_file}")
+
+
+def cmd_sync_reference(args):
+    """Handles 'sync-reference' subcommand: downloads read-only reference objects into .reference/<type>/ and updates .ln_dd_cache.json."""
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    ws_dir = Path(args.output_dir).resolve() if getattr(args, "output_dir", None) else Path(env_info.get("workspace_path") or Path.cwd()).resolve()
+    dd_cache = Path(args.dd_cache).resolve() if getattr(args, "dd_cache", None) else (ws_dir / ".ln_dd_cache.json")
+    res = sync_reference(
+        client=client,
+        comp_type=args.type,
+        name_pattern=args.name,
+        workspace_dir=ws_dir,
+        dd_cache_path=dd_cache,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(
+            f"[SUCCESS] Synced {res['synced_count']} '{args.type}' reference component(s) into {res['reference_dir']}"
+        )
+        if res.get("dd_indexed"):
+            print(f"[DD CACHE] Updated {res['dd_cache_path']} with: {', '.join(res['dd_indexed'])}")
 
 
 def cmd_clone_component(args):
@@ -663,7 +702,12 @@ def cmd_additional(args):
 
 
 def cmd_report(args):
-    """Handles 'report' subcommand."""
+    """Handles 'report' subcommand (deprecated for complex layouts; recommends clone-component)."""
+    print(
+        "[DEPRECATION NOTICE] From-scratch declarative YAML/CLI report layout generation is deprecated for complex .rpt reports. "
+        "Pivot to 'clone-component --type report --source <std_report> --target <custom_report>' to clone an existing baseline report XML and patch specific fields/labels.",
+        file=sys.stderr,
+    )
     act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
     act_dir = Path(act_info["path"])
     script_text = ""
@@ -926,6 +970,8 @@ def cmd_deploy_test(args):
             project_name = m.group(1)
 
     comment = getattr(args, "comment", None) or "Automated deploy-test for LN UI Cloud testing"
+    mode = getattr(args, "mode", None) or "compile-only"
+    dry_run = getattr(args, "dry_run", False)
     res = deploy_test(
         client=client,
         comp_type=args.type,
@@ -933,12 +979,16 @@ def cmd_deploy_test(args):
         activity_dir=act_dir,
         project_name=project_name or "EXTce01107",
         comment=comment,
+        mode=mode,
+        dry_run=dry_run,
     )
     if getattr(args, "json", False):
         print(json.dumps(res, indent=2))
     else:
+        if res.get("lock_warning"):
+            print(res["lock_warning"], file=sys.stderr)
         status_str = "[SUCCESS]" if res["success"] else "[FAILED]"
-        print(f"{status_str} deploy-test for {args.type} '{args.name}': {res.get('message')}")
+        print(f"{status_str} deploy-test ({mode}) for {args.type} '{args.name}': {res.get('message')}")
         if res.get("errors"):
             for e in res["errors"]:
                 print(f"  [ERROR] Line {e['line']}: {e['message']}")
@@ -1284,6 +1334,8 @@ def main():
     sp_conn.add_argument("--workspace", help="Target workspace folder name under workspace root")
     sp_conn.add_argument("--project", help="Software project name for shared dev/rt connection points (e.g. EXTce01107)")
     sp_conn.add_argument("--ping", action="store_true", help="Execute live JCA ping to verify server connectivity")
+    sp_conn.add_argument("--interactive", action="store_true", default=True, help="Launch interactive browser fallback if needed")
+    sp_conn.add_argument("--manual-auth", action="store_true", help="Headless/SSH/WSL fallback: print auth URL and prompt to paste redirect URL/code")
 
     # project
     sp_proj = subparsers.add_parser("project", help="Browse remote Applications and Software Projects")
@@ -1329,6 +1381,16 @@ def main():
     sp_get.add_argument("--json", action="store_true", help="Output inspection results in JSON format")
     sp_get.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
+    # sync-reference
+    sp_syncref = subparsers.add_parser("sync-reference", help="Download Read-Only reference components into .reference/<type>/ and index .ln_dd_cache.json")
+    sp_syncref.add_argument("--type", required=True, choices=["table", "domain", "session", "extension", "library", "report", "menu", "label", "message", "question", "function"], help="Reference component type")
+    sp_syncref.add_argument("--name", required=True, help="Component name or wildcard pattern (e.g. tcibd001, tcibd*, txsli001)")
+    sp_syncref.add_argument("--workspace", help="Target workspace folder name")
+    sp_syncref.add_argument("--output-dir", help="Workspace/project root directory for .reference/ and .ln_dd_cache.json")
+    sp_syncref.add_argument("--dd-cache", help="Custom path to .ln_dd_cache.json")
+    sp_syncref.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_syncref.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
     # clone-component
     sp_clone = subparsers.add_parser("clone-component", help="Clone standard or custom component into renamed custom activity component")
     sp_clone.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
@@ -1373,9 +1435,11 @@ def main():
     sp_endact.add_argument("--project", help="Software Project name")
 
     # deploy-test
-    sp_deptest = subparsers.add_parser("deploy-test", help="Composite test deployment: Put -> Compile -> CRDD -> Tables -> VSC -> CheckIn")
+    sp_deptest = subparsers.add_parser("deploy-test", help="Split test deployment: compile-only (default safe mode) or schema-crdd")
     sp_deptest.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
     sp_deptest.add_argument("--name", required=True, help="Component name (e.g. txibd001)")
+    sp_deptest.add_argument("--mode", choices=["compile-only", "schema-crdd"], default="compile-only", help="Deployment mode: compile-only (default safe) or schema-crdd (includes CRDD & CreateTables)")
+    sp_deptest.add_argument("--dry-run", action="store_true", help="Run pre-check and display planned steps / lock warnings without executing")
     sp_deptest.add_argument("--activity", help="Target activity name or directory path")
     sp_deptest.add_argument("--project", help="Software Project name")
     sp_deptest.add_argument("--workspace", help="Target workspace folder name")
@@ -1469,6 +1533,7 @@ def main():
         "clean-activity": cmd_clean_activity,
         "explorer": cmd_explorer,
         "get-component": cmd_get_component,
+        "sync-reference": cmd_sync_reference,
         "clone-component": cmd_clone_component,
         "checkout-component": cmd_checkout_component,
         "uncheckout-component": cmd_uncheckout_component,

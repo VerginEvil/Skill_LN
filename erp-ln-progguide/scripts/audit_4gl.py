@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """
-Standalone Baan 4GL & DAL Audit Engine
+Standalone Baan 4GL & DAL Audit Engine (Semantic, Schema & AST Validator)
 
 Statically audits Baan 4GL, DAL2, and UEDLL files against Infor LN Studio Build 0640
-authoritative dictionaries, CloudSuite Multi-Tenant restrictions, DAL2 contracts,
-and language caveats.
+authoritative dictionaries, Data Dictionary Schema Cache (.ln_dd_cache.json),
+CloudSuite Multi-Tenant restrictions, DAL2 contracts, and AST/Call-Graph transaction rules.
+
+Upgraded Rules (ADR 0008):
+- TBL001: Enforces `table t<tablename>` declaration in `declaration:` for all referenced tables.
+- TBL002: Validates `<table>.<field>` references against `.ln_dd_cache.json` (with `--auto-fetch-dd`).
+- DMN001: Validates `domain <domain_name>` declarations against `.ln_dd_cache.json` (with `--auto-fetch-dd`).
+- SYN001: Pure-Python Tokenizer & Recursive-Descent AST block parser handling `#define` macros,
+          comments (`|`), subqueries, and multi-line SQL (`select`/`selectdo`/`selectempty`/`selecteos`/`endselect`).
+- CAV003: Intra-file Function Call Graph detecting direct and transitive nested transactions
+          (calling a helper function containing `db.retry.point()` / `commit.transaction()` inside an active transaction).
 
 Zero external dependencies. Runs on pure Python 3.8+.
 """
@@ -15,10 +24,31 @@ import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 SEVERITY_LEVELS = {"INFO": 0, "WARNING": 1, "ERROR": 2}
+
+# Standard Bshell built-in table pseudo-fields valid on all LN tables
+BSHELL_PSEUDO_FIELDS = {
+    "_compnr",
+    "record_len",
+    "_index1",
+    "_index2",
+    "_index3",
+    "_index4",
+    "_index5",
+    "_index6",
+    "_index7",
+    "_index8",
+    "_index9",
+    "_index10",
+    "_index11",
+    "_index12",
+}
 
 
 class Diagnostic:
@@ -40,6 +70,10 @@ class Diagnostic:
         self.message = message
         self.snippet = snippet.strip()
 
+    @property
+    def fix_suggestion(self) -> str:
+        return self.message
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "file": self.file,
@@ -56,6 +90,839 @@ class Diagnostic:
         if self.snippet:
             return f"{prefix}\n       -> {self.snippet}"
         return prefix
+
+
+# ============================================================================
+# Data Dictionary Schema Cache (.ln_dd_cache.json) & Ecore XML Indexer
+# ============================================================================
+
+
+class DataDictionaryCache:
+    """
+    Manages `.ln_dd_cache.json` reading, updating, and Ecore XML parsing for
+    Infor LN Tables (`.tbl`) and Domains (`.dmn`).
+    """
+
+    def __init__(self, cache_path: Optional[Path] = None, raw_data: Optional[Dict[str, Any]] = None):
+        self.cache_path = Path(cache_path) if cache_path else None
+        self.tables: Dict[str, Dict[str, Any]] = {}
+        self.domains: Dict[str, Dict[str, Any]] = {}
+
+        if raw_data is not None:
+            self._ingest_dict(raw_data)
+        elif self.cache_path and self.cache_path.exists():
+            self.load(self.cache_path)
+
+    @property
+    def has_data(self) -> bool:
+        return bool(self.tables or self.domains)
+
+    def _ingest_dict(self, data: Dict[str, Any]) -> None:
+        raw_tables = data.get("tables", {})
+        if isinstance(raw_tables, dict):
+            for tbl_name, tbl_info in raw_tables.items():
+                t_key = tbl_name.lower().strip()
+                if isinstance(tbl_info, list):
+                    # Simplified format: {"tables": {"tcibd001": ["item", "dsca"]}}
+                    self.tables[t_key] = {
+                        "name": t_key,
+                        "fields": {str(f).lower(): {"name": str(f).lower()} for f in tbl_info},
+                        "indices": [],
+                    }
+                elif isinstance(tbl_info, dict):
+                    raw_fields = tbl_info.get("fields", tbl_info.get("columns", {}))
+                    fields_map: Dict[str, Dict[str, Any]] = {}
+                    if isinstance(raw_fields, list):
+                        for f in raw_fields:
+                            if isinstance(f, dict):
+                                fname = str(f.get("name", "")).lower()
+                                if fname:
+                                    fields_map[fname] = f
+                            else:
+                                fname = str(f).lower()
+                                fields_map[fname] = {"name": fname}
+                    elif isinstance(raw_fields, dict):
+                        for fname, fmeta in raw_fields.items():
+                            fields_map[fname.lower()] = fmeta if isinstance(fmeta, dict) else {"name": fname.lower()}
+                    self.tables[t_key] = {
+                        "name": t_key,
+                        "description": tbl_info.get("description", ""),
+                        "fields": fields_map,
+                        "indices": tbl_info.get("indices", []),
+                    }
+
+        raw_domains = data.get("domains", {})
+        if isinstance(raw_domains, list):
+            for d in raw_domains:
+                d_key = str(d).lower().strip()
+                if d_key:
+                    self.domains[d_key] = {"name": d_key}
+        elif isinstance(raw_domains, dict):
+            for d_name, d_info in raw_domains.items():
+                d_key = d_name.lower().strip()
+                self.domains[d_key] = d_info if isinstance(d_info, dict) else {"name": d_key}
+
+    def load(self, path: Optional[Path] = None) -> None:
+        target = Path(path) if path else self.cache_path
+        if not target or not target.exists():
+            return
+        try:
+            raw = json.loads(target.read_text(encoding="utf-8"))
+            if isinstance(raw, dict):
+                self._ingest_dict(raw)
+        except Exception:
+            pass
+
+    def save(self, path: Optional[Path] = None) -> Optional[Path]:
+        target = Path(path) if path else self.cache_path
+        if not target:
+            return None
+        target.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "version": "1.0",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "tables": self.tables,
+            "domains": self.domains,
+        }
+        target.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        return target
+
+    def has_table(self, table_name: str) -> bool:
+        return table_name.lower() in self.tables
+
+    def has_field(self, table_name: str, field_name: str) -> bool:
+        t_key = table_name.lower()
+        f_key = field_name.lower()
+        if f_key in BSHELL_PSEUDO_FIELDS or re.match(r"^_index\d+$", f_key):
+            return True
+        if t_key not in self.tables:
+            return False
+        fields = self.tables[t_key].get("fields", {})
+        return f_key in fields
+
+    def has_domain(self, domain_name: str) -> bool:
+        return domain_name.lower() in self.domains
+
+    def update_table(
+        self,
+        table_name: str,
+        fields: Dict[str, Any],
+        indices: Optional[Any] = None,
+        description: str = "",
+    ) -> None:
+        t_key = table_name.lower().strip()
+        fields_map: Dict[str, Dict[str, Any]] = {}
+        for fname, fmeta in fields.items():
+            fields_map[fname.lower()] = fmeta if isinstance(fmeta, dict) else {"name": fname.lower()}
+        self.tables[t_key] = {
+            "name": t_key,
+            "description": description,
+            "fields": fields_map,
+            "indices": indices if indices is not None else {},
+        }
+
+    def update_domain(
+        self,
+        domain_name: str,
+        datatype: str = "string",
+        length: Optional[int] = None,
+        enum_values: Optional[List[str]] = None,
+    ) -> None:
+        d_key = domain_name.lower().strip()
+        self.domains[d_key] = {
+            "name": d_key,
+            "datatype": datatype,
+            "length": length,
+            "enum_values": enum_values or [],
+        }
+
+    def index_xml_content(self, xml_content: str, hint_name: str = "") -> Optional[Dict[str, Any]]:
+        """
+        Parse a `.tbl` (`<DR_Table>`) or `.dmn` (`<DR_Domain>`) XML string and update
+        in-memory cache. Supports both real Ecore (`<Column>/<datatype>/<name>`, `<Enumeration>`)
+        and mock `<Field>` formats.
+        """
+        try:
+            root = ET.fromstring(xml_content.strip())
+        except ET.ParseError:
+            return None
+
+        for el in root.iter():
+            if "}" in el.tag:
+                el.tag = el.tag.split("}", 1)[1]
+
+        root_tag = root.tag
+
+        if root_tag == "DR_Table":
+            tbl_name = (root.attrib.get("name") or root.findtext("name") or hint_name).strip().lower()
+            if not tbl_name:
+                return None
+            desc = (root.findtext("description") or root.attrib.get("description") or "").strip()
+            fields_map: Dict[str, Dict[str, Any]] = {}
+
+            # 1. Real Ecore <Column> elements
+            for col in root.findall(".//Column"):
+                c_name = (col.attrib.get("name") or col.findtext("name") or "").strip().lower()
+                if not c_name:
+                    continue
+                dt_node = col.find("datatype")
+                dmn_name = ""
+                native_dt = ""
+                max_len = ""
+                if dt_node is not None:
+                    dmn_name = (dt_node.findtext("name") or dt_node.attrib.get("name") or "").strip()
+                    native_dt = (dt_node.findtext("nativeDatatype") or dt_node.attrib.get("nativeDatatype") or "").strip()
+                    for facet in dt_node.findall("Facet"):
+                        if facet.findtext("type") == "maxLength":
+                            max_len = facet.findtext("value") or ""
+                if not dmn_name:
+                    dmn_name = (col.attrib.get("domain") or col.findtext("domain") or "").strip()
+                c_desc = (col.findtext("description") or col.attrib.get("description") or "").strip()
+                is_mand = (col.findtext("isMandatory") or col.attrib.get("mandatory") or "false").lower() == "true"
+                fields_map[c_name] = {
+                    "name": c_name,
+                    "domain": dmn_name,
+                    "datatype": native_dt,
+                    "maxLength": max_len,
+                    "mandatory": is_mand,
+                    "description": c_desc,
+                }
+                if dmn_name and dmn_name.lower() not in self.domains:
+                    self.domains[dmn_name.lower()] = {
+                        "name": dmn_name.lower(),
+                        "datatype": native_dt,
+                        "inferred_from_table": tbl_name,
+                    }
+
+            # 2. Legacy/mock <Field> elements
+            for fld in root.findall(".//Field"):
+                f_name = (fld.attrib.get("name") or fld.findtext("name") or "").strip().lower()
+                if not f_name or f_name in fields_map:
+                    continue
+                dmn_name = (fld.attrib.get("domain") or fld.findtext("domain") or "").strip()
+                native_dt = (fld.attrib.get("type") or fld.findtext("type") or "").strip()
+                fields_map[f_name] = {
+                    "name": f_name,
+                    "domain": dmn_name,
+                    "datatype": native_dt,
+                    "mandatory": (fld.attrib.get("mandatory") or "false").lower() == "true",
+                    "description": (fld.attrib.get("description") or fld.findtext("description") or "").strip(),
+                }
+                if dmn_name and dmn_name.lower() not in self.domains:
+                    self.domains[dmn_name.lower()] = {
+                        "name": dmn_name.lower(),
+                        "datatype": native_dt,
+                        "inferred_from_table": tbl_name,
+                    }
+
+            indices_list: List[Dict[str, Any]] = []
+            for idx in root.findall(".//Index"):
+                idx_name = (idx.attrib.get("name") or idx.findtext("name") or "").strip()
+                is_pk = (idx.findtext("isPrimaryKey") or idx.attrib.get("primary") or "false").lower() == "true"
+                is_uniq = (idx.findtext("isUnique") or idx.attrib.get("unique") or "false").lower() == "true"
+                cols: List[str] = []
+                for ic in idx.findall(".//IndexColumn"):
+                    col_ref = (ic.findtext("column") or ic.attrib.get("column") or ic.attrib.get("name") or "").strip().lower()
+                    if col_ref:
+                        cols.append(col_ref)
+                for mf in idx.findall(".//FieldRef"):
+                    col_ref = (mf.attrib.get("name") or mf.text or "").strip().lower()
+                    if col_ref:
+                        cols.append(col_ref)
+                indices_list.append({
+                    "name": idx_name,
+                    "primary": is_pk,
+                    "unique": is_uniq,
+                    "columns": cols,
+                })
+
+            entry = {
+                "name": tbl_name,
+                "description": desc,
+                "fields": fields_map,
+                "indices": indices_list,
+            }
+            self.tables[tbl_name] = entry
+            return {"type": "table", "name": tbl_name, "entry": entry}
+
+        elif root_tag == "DR_Domain":
+            dmn_name = (root.attrib.get("name") or root.findtext("name") or hint_name).strip().lower()
+            if not dmn_name:
+                return None
+            desc = (root.findtext("description") or root.attrib.get("description") or "").strip()
+            dt_node = root.find("datatype")
+            native_dt = ""
+            facets: Dict[str, str] = {}
+            if dt_node is not None:
+                native_dt = (dt_node.findtext("nativeDatatype") or dt_node.attrib.get("nativeDatatype") or "").strip()
+                for facet in dt_node.findall("Facet"):
+                    ftype = (facet.findtext("type") or "").strip()
+                    fval = (facet.findtext("value") or "").strip()
+                    if ftype:
+                        facets[ftype] = fval
+            if not native_dt:
+                native_dt = (root.attrib.get("type") or root.findtext("type") or "").strip()
+
+            enums: Dict[str, Dict[str, Any]] = {}
+            for en in root.findall(".//Enumeration"):
+                e_name = (en.attrib.get("name") or en.findtext("name") or "").strip()
+                if e_name:
+                    enums[e_name] = {
+                        "position": (en.findtext("position") or en.attrib.get("position") or "").strip(),
+                        "description": (en.findtext("description") or en.attrib.get("description") or "").strip(),
+                        "label": (en.findtext("descriptionReference") or "").strip(),
+                    }
+            for ev in root.findall(".//EnumValue"):
+                e_name = (ev.attrib.get("name") or ev.attrib.get("const") or ev.findtext("name") or "").strip()
+                if e_name and e_name not in enums:
+                    enums[e_name] = {
+                        "position": (ev.attrib.get("value") or "").strip(),
+                        "description": (ev.attrib.get("description") or "").strip(),
+                    }
+
+            entry = {
+                "name": dmn_name,
+                "description": desc,
+                "datatype": native_dt,
+                "facets": facets,
+                "enums": enums,
+            }
+            self.domains[dmn_name] = entry
+            return {"type": "domain", "name": dmn_name, "entry": entry}
+
+        return None
+
+    def index_xml_file(self, xml_path: Path, save_cache: bool = True) -> Optional[Dict[str, Any]]:
+        if not xml_path.exists():
+            return None
+        try:
+            xml_text = xml_path.read_text(encoding="utf-8", errors="replace")
+            res = self.index_xml_content(xml_text, hint_name=xml_path.stem)
+            if res and save_cache and self.cache_path:
+                self.save()
+            return res
+        except Exception:
+            return None
+
+
+# ============================================================================
+# Lightweight Pure-Python Tokenizer & Recursive-Descent AST Parser (SYN001 & CAV003)
+# ============================================================================
+
+
+@dataclass
+class Token4GL:
+    kind: str  # 'WORD', 'LBRACE', 'RBRACE', 'LPAREN', 'RPAREN', 'COLON', 'ASSIGN', 'DIRECTIVE', 'SYMBOL'
+    value: str
+    line: int
+    column: int
+    raw_line: str = ""
+
+
+@dataclass
+class FunctionASTNode:
+    name: str
+    line: int
+    end_line: int = 0
+    return_type: str = ""
+    params: str = ""
+    direct_tx_calls: List[Tuple[str, int, int, str]] = field(default_factory=list)
+    callees: List[Tuple[str, int, int, str]] = field(default_factory=list)
+    calls_inside_tx: List[Tuple[str, int, int, str, int]] = field(default_factory=list)
+    nested_tx_starts: List[Tuple[str, int, int, str, int]] = field(default_factory=list)
+
+
+class ASTParser4GL:
+    """
+    Zero-dependency pure-Python tokenizer & recursive-descent block/AST analyzer for Baan 4GL.
+    Handles:
+    - Preprocessor `#define` macros (including multi-line `\\` continuations)
+    - Pipe comments (`|`) and string literals (`"..."`, `'...'`)
+    - Multi-line `dllusage ... enddllusage` and `functionusage ... endfunctionusage`
+    - Multi-line Embedded SQL (`select ... selectdo ... selectempty ... selecteos ... endselect`)
+      while ignoring SQL subqueries inside parentheses `where exists (select ...)`
+    - Control blocks (`if`/`endif`, `for =`/`endfor`, `while`/`endwhile`, `repeat`/`until`, `on case`/`endcase`)
+    - Intra-file Function Call Graph and transaction state tracking for `CAV003`
+    """
+
+    def __init__(self, content: str, file_path: str = "<stdin>"):
+        self.content = content
+        self.file_path = file_path
+        self.raw_lines = content.splitlines()
+        self.cleaned_lines: List[str] = []
+        self.tokens: List[Token4GL] = []
+        self.diagnostics: List[Diagnostic] = []
+        self.functions: Dict[str, FunctionASTNode] = {}
+
+    def preprocess_and_tokenize(self) -> List[str]:
+        """
+        Strip comments, string literals, doc blocks, and preprocessor `#define` bodies,
+        producing both cleaned code lines and a structured token stream.
+        """
+        in_multiline_doc = False
+        in_define_continuation = False
+        self.cleaned_lines = []
+        self.tokens = []
+
+        for line_no, raw_line in enumerate(self.raw_lines, start=1):
+            stripped_lower = raw_line.strip().lower()
+
+            # Multi-line doc blocks
+            if in_multiline_doc:
+                self.cleaned_lines.append("")
+                if "enddllusage" in stripped_lower or "endfunctionusage" in stripped_lower:
+                    in_multiline_doc = False
+                continue
+
+            if stripped_lower.startswith("dllusage") or stripped_lower.startswith("functionusage"):
+                self.cleaned_lines.append("")
+                in_multiline_doc = True
+                continue
+
+            # Strip strings and pipe comments first
+            code_line, _ = strip_4gl_comments_and_strings(raw_line, False)
+            code_stripped = code_line.strip()
+
+            # Handle multi-line #define continuations so macro expansion bodies don't corrupt AST blocks
+            if in_define_continuation:
+                self.cleaned_lines.append("")
+                if not code_stripped.endswith("\\"):
+                    in_define_continuation = False
+                continue
+
+            if re.match(r"^\s*#\s*(define|pragma|ident|ifdef|ifndef|elif|else|endif|undef)\b", code_line, re.IGNORECASE):
+                if code_stripped.endswith("\\"):
+                    in_define_continuation = True
+                self.cleaned_lines.append("")
+                continue
+
+            self.cleaned_lines.append(code_line)
+
+            # Check #context_on / #context_off directives
+            m_ctx_on = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', raw_line, re.IGNORECASE)
+            if m_ctx_on:
+                ctx_name = m_ctx_on.group(1) or "unknown"
+                self.tokens.append(Token4GL("DIRECTIVE", f"#context_on:{ctx_name}", line_no, 1, raw_line))
+                continue
+            if re.match(r"^\s*#context_off\b", raw_line, re.IGNORECASE):
+                self.tokens.append(Token4GL("DIRECTIVE", "#context_off", line_no, 1, raw_line))
+                continue
+            if re.match(r"^\s*#include\b", raw_line, re.IGNORECASE):
+                continue
+
+            # Tokenize cleaned line
+            token_pattern = re.compile(
+                r"(\{|\}|\(|\)|:=|==|<>|<=|>=|=|:|,|;|\b[a-zA-Z_][a-zA-Z0-9_.]*\b)"
+            )
+            for match in token_pattern.finditer(code_line):
+                val = match.group(0)
+                col = match.start() + 1
+                if val == "{":
+                    kind = "LBRACE"
+                elif val == "}":
+                    kind = "RBRACE"
+                elif val == "(":
+                    kind = "LPAREN"
+                elif val == ")":
+                    kind = "RPAREN"
+                elif val == ":":
+                    kind = "COLON"
+                elif val in ("=", ":="):
+                    kind = "ASSIGN"
+                elif val[0].isalpha() or val[0] == "_":
+                    kind = "WORD"
+                else:
+                    kind = "SYMBOL"
+                self.tokens.append(Token4GL(kind, val, line_no, col, raw_line))
+
+        return self.cleaned_lines
+
+    def parse(self) -> Tuple[List[Diagnostic], Dict[str, FunctionASTNode]]:
+        """
+        Run recursive-descent / state-machine AST verification for block balance (SYN001)
+        and build intra-file FunctionASTNodes for Call Graph transaction analysis (CAV003).
+        """
+        if not self.cleaned_lines and self.raw_lines:
+            self.preprocess_and_tokenize()
+
+        block_stack: List[Tuple[str, int, str]] = []  # (block_type, line_no, extra_state)
+        context_stack: List[Tuple[str, int]] = []
+        brace_stack: List[Tuple[str, int]] = []
+
+        paren_depth = 0
+        current_func: Optional[FunctionASTNode] = None
+        tx_active_since_line: Optional[int] = None
+
+        n = len(self.tokens)
+        i = 0
+
+        while i < n:
+            tok = self.tokens[i]
+            val_lower = tok.value.lower()
+
+            # 1. Directives (#context_on / #context_off)
+            if tok.kind == "DIRECTIVE":
+                if tok.value.startswith("#context_on:"):
+                    ctx_name = tok.value.split(":", 1)[1]
+                    if context_stack:
+                        parent_type, parent_line = context_stack[-1]
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_type}' (line {parent_line}).",
+                                tok.raw_line,
+                            )
+                        )
+                    context_stack.append((f'#context_on "{ctx_name}"', tok.line))
+                elif tok.value == "#context_off":
+                    if not context_stack:
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched '#context_off' without corresponding '#context_on'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        context_stack.pop()
+                i += 1
+                continue
+
+            # 2. Parentheses tracking (used to distinguish SQL subqueries `(select ...)` from top-level `select`)
+            if tok.kind == "LPAREN":
+                paren_depth += 1
+                i += 1
+                continue
+            if tok.kind == "RPAREN":
+                paren_depth = max(0, paren_depth - 1)
+                i += 1
+                continue
+
+            # 3. Curly Braces & Function body tracking
+            if tok.kind == "LBRACE":
+                brace_stack.append(("{", tok.line))
+                i += 1
+                continue
+            if tok.kind == "RBRACE":
+                if not brace_stack:
+                    self.diagnostics.append(
+                        Diagnostic(
+                            self.file_path,
+                            tok.line,
+                            tok.column,
+                            "ERROR",
+                            "SYN001",
+                            "Unmatched closing brace '}'.",
+                            tok.raw_line,
+                        )
+                    )
+                else:
+                    brace_stack.pop()
+                    if current_func and not brace_stack:
+                        current_func.end_line = tok.line
+                        current_func = None
+                        tx_active_since_line = None
+                i += 1
+                continue
+
+            # 4. Function Declarations: `function [extern] [<type>] <name>(...)`
+            if tok.kind == "WORD" and val_lower == "function" and not brace_stack:
+                # Look ahead for function name before `(`
+                j = i + 1
+                words_before_paren: List[Token4GL] = []
+                while j < n and self.tokens[j].kind == "WORD" and self.tokens[j].line == tok.line:
+                    words_before_paren.append(self.tokens[j])
+                    j += 1
+                if words_before_paren and j < n and self.tokens[j].kind == "LPAREN":
+                    fn_tok = words_before_paren[-1]
+                    fn_name = fn_tok.value.lower()
+                    fn_node = FunctionASTNode(name=fn_name, line=tok.line)
+                    self.functions[fn_name] = fn_node
+                    current_func = fn_node
+                    tx_active_since_line = None
+                i += 1
+                continue
+
+            # 5. Control & SQL Block Keywords
+            if tok.kind == "WORD":
+                # ON CASE
+                if val_lower == "on" and i + 1 < n and self.tokens[i + 1].kind == "WORD" and self.tokens[i + 1].value.lower() == "case":
+                    block_stack.append(("case", tok.line, "open"))
+                    i += 2
+                    continue
+
+                if val_lower == "endcase":
+                    if not block_stack or block_stack[-1][0] != "case":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'endcase' without corresponding 'on case'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # SELECT / SELECTDO / SELECTEMPTY / SELECTEOS / ENDSELECT
+                if val_lower == "select":
+                    # Only top-level select (not inside parentheses subquery `where exists (select ...)`) requires endselect
+                    if paren_depth == 0:
+                        block_stack.append(("select", tok.line, "query"))
+                    i += 1
+                    continue
+
+                if val_lower in ("selectdo", "selectempty", "selecteos"):
+                    # Find nearest select block on stack
+                    select_idx = -1
+                    for idx in range(len(block_stack) - 1, -1, -1):
+                        if block_stack[idx][0] == "select":
+                            select_idx = idx
+                            break
+                    if select_idx == -1:
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                f"'{val_lower}' statement outside of an active 'select' block.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        # Update select phase
+                        sel_type, sel_line, _ = block_stack[select_idx]
+                        block_stack[select_idx] = (sel_type, sel_line, val_lower)
+                    i += 1
+                    continue
+
+                if val_lower == "endselect":
+                    if not block_stack or block_stack[-1][0] != "select":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'endselect' without corresponding 'select'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # FOR <var> = <init> TO <limit> (exclude SQL `for update`)
+                if val_lower == "for":
+                    if (
+                        i + 2 < n
+                        and self.tokens[i + 1].kind == "WORD"
+                        and self.tokens[i + 1].value.lower() != "update"
+                        and self.tokens[i + 2].kind == "ASSIGN"
+                    ):
+                        block_stack.append(("for", tok.line, "loop"))
+                    i += 1
+                    continue
+
+                if val_lower == "endfor":
+                    if not block_stack or block_stack[-1][0] != "for":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'endfor' without corresponding 'for'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # WHILE / ENDWHILE
+                if val_lower == "while":
+                    block_stack.append(("while", tok.line, "loop"))
+                    i += 1
+                    continue
+
+                if val_lower == "endwhile":
+                    if not block_stack or block_stack[-1][0] != "while":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'endwhile' without corresponding 'while'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # REPEAT / UNTIL
+                if val_lower == "repeat":
+                    block_stack.append(("repeat", tok.line, "loop"))
+                    i += 1
+                    continue
+
+                if val_lower == "until":
+                    if not block_stack or block_stack[-1][0] != "repeat":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'until' without corresponding 'repeat'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # IF / ENDIF
+                if val_lower == "if":
+                    block_stack.append(("if", tok.line, "cond"))
+                    i += 1
+                    continue
+
+                if val_lower == "endif":
+                    if not block_stack or block_stack[-1][0] != "if":
+                        self.diagnostics.append(
+                            Diagnostic(
+                                self.file_path,
+                                tok.line,
+                                tok.column,
+                                "ERROR",
+                                "SYN001",
+                                "Unmatched 'endif' without corresponding 'if'.",
+                                tok.raw_line,
+                            )
+                        )
+                    else:
+                        block_stack.pop()
+                    i += 1
+                    continue
+
+                # 6. Function Calls & Transaction State Tracking inside Function Bodies
+                if current_func is not None and i + 1 < n and self.tokens[i + 1].kind == "LPAREN":
+                    # Exclude the function's own declaration header on `current_func.line`
+                    if tok.line != current_func.line or val_lower != current_func.name:
+                        if val_lower in ("db.retry.point", "commit.transaction", "abort.transaction"):
+                            current_func.direct_tx_calls.append((val_lower, tok.line, tok.column, tok.raw_line))
+                            if val_lower == "db.retry.point":
+                                if tx_active_since_line is not None:
+                                    current_func.nested_tx_starts.append(
+                                        (val_lower, tok.line, tok.column, tok.raw_line, tx_active_since_line)
+                                    )
+                                else:
+                                    tx_active_since_line = tok.line
+                            elif val_lower in ("commit.transaction", "abort.transaction"):
+                                tx_active_since_line = None
+                        else:
+                            current_func.callees.append((val_lower, tok.line, tok.column, tok.raw_line))
+                            if tx_active_since_line is not None:
+                                current_func.calls_inside_tx.append(
+                                    (val_lower, tok.line, tok.column, tok.raw_line, tx_active_since_line)
+                                )
+
+            i += 1
+
+        # End-of-file unclosed blocks (SYN001)
+        while block_stack:
+            blk_type, blk_line, _ = block_stack.pop()
+            self.diagnostics.append(
+                Diagnostic(
+                    self.file_path,
+                    blk_line,
+                    1,
+                    "ERROR",
+                    "SYN001",
+                    f"Unclosed '{blk_type}' statement opened at line {blk_line}.",
+                )
+            )
+
+        while context_stack:
+            ctx_type, ctx_line = context_stack.pop()
+            self.diagnostics.append(
+                Diagnostic(
+                    self.file_path,
+                    ctx_line,
+                    1,
+                    "ERROR",
+                    "SYN001",
+                    f"Unclosed '{ctx_type}' opened at line {ctx_line}.",
+                )
+            )
+
+        while brace_stack:
+            brace_char, brace_line = brace_stack.pop()
+            self.diagnostics.append(
+                Diagnostic(
+                    self.file_path,
+                    brace_line,
+                    1,
+                    "ERROR",
+                    "SYN001",
+                    f"Unclosed brace '{brace_char}' opened at line {brace_line}.",
+                )
+            )
+
+        return self.diagnostics, self.functions
+
+    def find_transitive_tx_functions(self) -> Dict[str, List[str]]:
+        """
+        Compute transitive closure over the intra-file Call Graph to identify every
+        function that directly or transitively calls `db.retry.point()`,
+        `commit.transaction()`, or `abort.transaction()`.
+        Returns mapping: `func_name -> chain_description` (e.g. `["helper_b", "commit.transaction()"]`).
+        """
+        tx_map: Dict[str, List[str]] = {}
+        for fname, fnode in self.functions.items():
+            if fnode.direct_tx_calls:
+                tx_fn = fnode.direct_tx_calls[0][0]
+                tx_map[fname] = [f"{tx_fn}()"]
+
+        # Iterative relaxation for transitive callers
+        changed = True
+        while changed:
+            changed = False
+            for fname, fnode in self.functions.items():
+                if fname in tx_map:
+                    continue
+                for callee_name, _, _, _ in fnode.callees:
+                    if callee_name in tx_map:
+                        tx_map[fname] = [callee_name] + tx_map[callee_name]
+                        changed = True
+                        break
+        return tx_map
 
 
 def load_syntax_dictionaries(skill_dir: Path) -> Dict[str, Any]:
@@ -120,7 +987,6 @@ def load_functions_db(skill_dir: Path) -> Dict[str, Any]:
         if c.exists():
             try:
                 raw = json.loads(c.read_text(encoding="utf-8"))
-                # Build lowercase lookup dict
                 db_ci: Dict[str, Any] = {}
                 for k, v in raw.items():
                     db_ci[k.lower()] = v
@@ -181,6 +1047,10 @@ class Auditor4GL:
         cloud_mode: bool = False,
         min_severity: str = "INFO",
         strict: bool = False,
+        main_table: Optional[str] = None,
+        dd_cache: Optional[Union[DataDictionaryCache, Dict[str, Any], Path, str]] = None,
+        auto_fetch_dd: bool = False,
+        auto_fetch_callback: Optional[Callable[[str, str], Optional[str]]] = None,
     ):
         if not skill_dir:
             skill_dir = Path(__file__).resolve().parent.parent
@@ -189,6 +1059,18 @@ class Auditor4GL:
         self.cloud_mode = cloud_mode
         self.min_severity_level = SEVERITY_LEVELS.get(min_severity.upper(), 0)
         self.strict = strict
+        self.main_table = main_table.lower().strip() if main_table else None
+        self.auto_fetch_dd = auto_fetch_dd
+        self.auto_fetch_callback = auto_fetch_callback
+
+        if isinstance(dd_cache, DataDictionaryCache):
+            self.dd_cache: Optional[DataDictionaryCache] = dd_cache
+        elif isinstance(dd_cache, dict):
+            self.dd_cache = DataDictionaryCache(raw_data=dd_cache)
+        elif isinstance(dd_cache, (Path, str)):
+            self.dd_cache = DataDictionaryCache(cache_path=Path(dd_cache))
+        else:
+            self.dd_cache = None
 
         self.syntax_dict = load_syntax_dictionaries(skill_dir)
         self.functions_db = load_functions_db(skill_dir)
@@ -249,18 +1131,141 @@ class Auditor4GL:
 
         return "general"
 
+    def infer_main_table(self, file_path: str, content: str, mode: str) -> Optional[str]:
+        """Infer the component's main table from CLI configuration, filename, or DAL hook definitions."""
+        if self.main_table:
+            return self.main_table
+
+        if file_path and file_path != "<stdin>":
+            stem = Path(file_path).stem.lower()
+            if stem.endswith("_ext"):
+                stem = stem[:-4]
+            # Standard LN table code: 5 letters + 3 digits (e.g., txsli001, tcibd001)
+            if re.match(r"^[a-z]{5}\d{3}$", stem):
+                return stem
+
+        # Check DAL2 field hooks in script: `function extern <ret> <table>.<field>.<hook_suffix>(...)`
+        if mode == "dal2":
+            for sfx in self.dal_field_hooks:
+                pattern = rf"\bfunction\s+extern\s+[a-zA-Z0-9_.]+\s+([a-z]{{5}}\d{{3}})\.[a-z0-9_]+{re.escape(sfx)}\s*\("
+                m = re.search(pattern, content, re.IGNORECASE)
+                if m:
+                    return m.group(1).lower()
+
+        return None
+
+    def _resolve_dd_cache(self, file_path: str) -> DataDictionaryCache:
+        """Locate or initialize the active DataDictionaryCache for the target file."""
+        if self.dd_cache is not None:
+            return self.dd_cache
+
+        search_dirs: List[Path] = []
+        if file_path and file_path != "<stdin>":
+            p = Path(file_path).resolve()
+            search_dirs.extend([p.parent] + list(p.parents[:5]))
+        search_dirs.append(Path.cwd())
+
+        for d in search_dirs:
+            candidate = d / ".ln_dd_cache.json"
+            if candidate.exists():
+                return DataDictionaryCache(cache_path=candidate)
+
+        default_path = (Path(file_path).resolve().parent if file_path and file_path != "<stdin>" else Path.cwd()) / ".ln_dd_cache.json"
+        return DataDictionaryCache(cache_path=default_path)
+
+    def _try_auto_fetch_dd(self, dd_cache: DataDictionaryCache, comp_type: str, comp_name: str, file_path: str) -> bool:
+        """
+        Attempt to fetch a missing `.tbl` or `.dmn` read-only from the server (or custom callback)
+        and index it into `.ln_dd_cache.json`.
+        """
+        if not self.auto_fetch_dd:
+            return False
+
+        # 1. Custom callback hook (useful for unit tests & dependency injection)
+        if self.auto_fetch_callback is not None:
+            try:
+                xml_str = self.auto_fetch_callback(comp_type, comp_name)
+                if xml_str:
+                    dd_cache.index_xml_content(xml_str, hint_name=comp_name)
+                    if dd_cache.cache_path:
+                        dd_cache.save()
+                    return True
+            except Exception:
+                pass
+            return False
+
+        # 2. Local workspace `.tbl` / `.dmn` search before hitting network
+        ext = ".tbl" if comp_type == "table" else ".dmn"
+        if file_path and file_path != "<stdin>":
+            base_dir = Path(file_path).resolve().parent
+            for parent in [base_dir] + list(base_dir.parents[:3]):
+                for match_file in parent.rglob(f"{comp_name}{ext}"):
+                    if dd_cache.index_xml_file(match_file, save_cache=True):
+                        return True
+
+        # 3. Invoke ln_studio_skill ComponentExplorer / Server Client read-only
+        try:
+            tools_dir = Path(__file__).resolve().parent.parent.parent / "ln_studio_skill" / "tools"
+            if tools_dir.exists() and str(tools_dir) not in sys.path:
+                sys.path.insert(0, str(tools_dir))
+            from ln_server_client import LNStudioServerClient
+            from ln_component_explorer import ComponentExplorer
+
+            ws_dir = Path(file_path).resolve().parent if file_path and file_path != "<stdin>" else Path.cwd()
+            client = LNStudioServerClient(workspace_dir=ws_dir)
+            explorer = ComponentExplorer(client)
+            res = explorer.sync_reference(
+                comp_type=comp_type,
+                name_pattern=comp_name,
+                workspace_dir=ws_dir,
+                dd_cache_path=dd_cache.cache_path,
+            )
+            if res.get("synced_count", 0) > 0 and dd_cache.cache_path and dd_cache.cache_path.exists():
+                dd_cache.load(dd_cache.cache_path)
+                return True
+        except Exception:
+            pass
+
+        return False
+
     def audit_content(
         self,
         content: str,
         file_path: str = "<stdin>",
         mode: Optional[str] = None,
+        main_table: Optional[str] = None,
+        dd_cache: Optional[Union[DataDictionaryCache, Dict[str, Any], Path, str]] = None,
+        auto_fetch_dd: Optional[bool] = None,
     ) -> List[Diagnostic]:
-        """Perform comprehensive static verification on 4GL script content."""
+        """Perform comprehensive semantic, schema, and AST static verification on 4GL script content."""
         if not mode or mode == "auto":
             mode = self.detect_archetype(file_path, content)
 
+        effective_main_table = (
+            main_table.lower().strip()
+            if main_table
+            else self.infer_main_table(file_path, content, mode)
+        )
+        effective_auto_fetch = self.auto_fetch_dd if auto_fetch_dd is None else auto_fetch_dd
+
+        if isinstance(dd_cache, DataDictionaryCache):
+            active_dd_cache = dd_cache
+        elif isinstance(dd_cache, dict):
+            active_dd_cache = DataDictionaryCache(raw_data=dd_cache)
+        elif isinstance(dd_cache, (Path, str)):
+            active_dd_cache = DataDictionaryCache(cache_path=Path(dd_cache))
+        else:
+            active_dd_cache = self._resolve_dd_cache(file_path)
+
         diagnostics: List[Diagnostic] = []
         lines = content.splitlines()
+
+        # Run AST Tokenizer & Recursive-Descent Block/Call-Graph Parser (SYN001 & CAV003)
+        ast_parser = ASTParser4GL(content, file_path)
+        cleaned_lines = ast_parser.preprocess_and_tokenize()
+        ast_diags, ast_functions = ast_parser.parse()
+        diagnostics.extend(ast_diags)
+        transitive_tx_map = ast_parser.find_transitive_tx_functions()
 
         # Includes collection: `#include <header>` or `#include "header"`
         includes_found: Set[str] = set()
@@ -272,23 +1277,42 @@ class Auditor4GL:
                     inc_name = inc_name[:-2]
                 includes_found.add(inc_name)
 
-        # Block balance tracking: (type, line_no)
-        block_stack: List[Tuple[str, int]] = []
-        context_stack: List[Tuple[str, int]] = []
-        brace_stack: List[Tuple[str, int]] = []
+        # ----------------------------------------------------
+        # Pass 1: Extract `table t<tablename>` declarations (TBL001)
+        # ----------------------------------------------------
+        declared_tables: Set[str] = set()
+        for code_line in cleaned_lines:
+            if re.search(r"\btable\b", code_line, re.IGNORECASE):
+                for m_tbl in re.finditer(r"\bt([a-z]{5}\d{3})\b", code_line, re.IGNORECASE):
+                    declared_tables.add(m_tbl.group(1).lower())
 
-        in_multiline_doc = False
         in_case_block = False
+        brace_depth = 0
         current_func_name: Optional[str] = None
         current_func_hook_suffix: Optional[str] = None
+        reported_tbl001: Set[Tuple[str, int]] = set()
+        fetched_attempts: Set[Tuple[str, str]] = set()
 
         for line_no, raw_line in enumerate(lines, start=1):
-            stripped = raw_line.strip()
-            if not stripped:
+            code_line = cleaned_lines[line_no - 1] if line_no - 1 < len(cleaned_lines) else ""
+            code_line_stripped = code_line.strip()
+            if not code_line_stripped:
                 continue
 
-            code_line, in_multiline_doc = strip_4gl_comments_and_strings(raw_line, in_multiline_doc)
-            code_line_stripped = code_line.strip()
+            # Track case context for section header disambiguation
+            if re.search(r"(?<![.\w])on\s+case(?![.\w])", code_line, re.IGNORECASE):
+                in_case_block = True
+            elif re.search(r"(?<![.\w])endcase(?![.\w])", code_line, re.IGNORECASE):
+                in_case_block = False
+
+            for ch in code_line:
+                if ch == "{":
+                    brace_depth += 1
+                elif ch == "}":
+                    brace_depth = max(0, brace_depth - 1)
+                    if current_func_name and brace_depth == 0:
+                        current_func_name = None
+                        current_func_hook_suffix = None
 
             # ----------------------------------------------------
             # 1. Section Header Checks (SYN002)
@@ -298,7 +1322,6 @@ class Auditor4GL:
                 raw_token = sec_match.group(1)
                 header_name = raw_token.lower() + ":"
 
-                # Ignore case labels (e.g. `case DAL_NEW:`) and default:
                 if raw_token.lower() in ("default", "case"):
                     pass
                 elif in_case_block and (raw_token.lower().startswith("case ") or raw_token.isupper()):
@@ -320,191 +1343,89 @@ class Auditor4GL:
                         )
 
             # ----------------------------------------------------
-            # 2. Block Balance Tracking (SYN001)
+            # 2. Table Declaration (TBL001) & Schema Field/Domain Checks (TBL002, DMN001)
             # ----------------------------------------------------
-            # #context_on / #context_off
-            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', code_line, re.IGNORECASE)
-            if m_ctx:
-                ctx_name = m_ctx.group(1) or "unknown"
-                if context_stack:
-                    parent_type, parent_line = context_stack[-1]
+            # 2a. Domain declarations: `domain <domain_name> <var>`
+            for m_dmn in re.finditer(r"\bdomain\s+([a-zA-Z][a-zA-Z0-9_.]*)\b", code_line, re.IGNORECASE):
+                dmn_name = m_dmn.group(1)
+                dmn_lower = dmn_name.lower()
+                if dmn_lower in ("error", "true", "false"):
+                    continue
+                if not active_dd_cache.has_domain(dmn_lower) and effective_auto_fetch:
+                    if ("domain", dmn_lower) not in fetched_attempts:
+                        fetched_attempts.add(("domain", dmn_lower))
+                        self._try_auto_fetch_dd(active_dd_cache, "domain", dmn_lower, file_path)
+                if (active_dd_cache.domains or effective_auto_fetch) and not active_dd_cache.has_domain(dmn_lower):
                     diagnostics.append(
                         Diagnostic(
                             file_path,
                             line_no,
-                            1,
+                            m_dmn.start(1) + 1,
                             "ERROR",
-                            "SYN001",
-                            f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_type}' (line {parent_line}).",
+                            "DMN001",
+                            f"Domain '{dmn_name}' does not exist in Data Dictionary cache (.ln_dd_cache.json).",
                             raw_line,
                         )
                     )
-                context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
-            if re.match(r"^\s*#context_off\b", code_line, re.IGNORECASE):
-                if not context_stack:
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched '#context_off' without corresponding '#context_on'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    context_stack.pop()
 
-            # Curly braces balance
-            for char_idx, char in enumerate(code_line):
-                if char == "{":
-                    brace_stack.append(("{", line_no))
-                elif char == "}":
-                    if not brace_stack:
+            # 2b. Table field references: `<table>.<field>` (matching `([a-z]{5}\d{3})\.([a-z0-9_]+)`)
+            for m_ref in re.finditer(r"(?<![a-zA-Z0-9_.])([a-z]{5}\d{3})\.([a-z0-9_]+)", code_line, re.IGNORECASE):
+                prefix_before = code_line[: m_ref.start()].rstrip().lower()
+                # Skip if preceded by `domain` or `zoom.from`
+                if re.search(r"\bdomain$", prefix_before) or prefix_before.endswith("zoom.from"):
+                    continue
+
+                tbl_code = m_ref.group(1).lower()
+                fld_code = m_ref.group(2).lower()
+                col_pos = m_ref.start(1) + 1
+
+                # Rule TBL001: Check table declaration in `declaration:` (excluding component's main table)
+                if tbl_code != effective_main_table and tbl_code not in declared_tables:
+                    if (tbl_code, line_no) not in reported_tbl001:
+                        reported_tbl001.add((tbl_code, line_no))
                         diagnostics.append(
                             Diagnostic(
                                 file_path,
                                 line_no,
-                                char_idx + 1,
+                                col_pos,
                                 "ERROR",
-                                "SYN001",
-                                "Unmatched closing brace '}'.",
+                                "TBL001",
+                                f"Table '{tbl_code}' referenced via '{tbl_code}.{fld_code}' is missing 'table t{tbl_code}' in declaration: section.",
                                 raw_line,
                             )
                         )
-                    else:
-                        brace_stack.pop()
-                        if current_func_name and not brace_stack:
-                            current_func_name = None
-                            current_func_hook_suffix = None
 
-            # ON CASE / ENDCASE
-            if re.search(r"(?<![.\w])on\s+case(?![.\w])", code_line, re.IGNORECASE):
-                block_stack.append(("case", line_no))
-                in_case_block = True
-            elif re.search(r"(?<![.\w])endcase(?![.\w])", code_line, re.IGNORECASE):
-                in_case_block = False
-                if not block_stack or block_stack[-1][0] != "case":
+                # Rule TBL002: Validate field existence against `.ln_dd_cache.json`
+                if not active_dd_cache.has_table(tbl_code) and effective_auto_fetch:
+                    if ("table", tbl_code) not in fetched_attempts:
+                        fetched_attempts.add(("table", tbl_code))
+                        self._try_auto_fetch_dd(active_dd_cache, "table", tbl_code, file_path)
+
+                if active_dd_cache.has_table(tbl_code):
+                    if not active_dd_cache.has_field(tbl_code, fld_code):
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                col_pos,
+                                "ERROR",
+                                "TBL002",
+                                f"Field '{tbl_code}.{fld_code}' does not exist in Data Dictionary schema for table '{tbl_code}'.",
+                                raw_line,
+                            )
+                        )
+                elif effective_auto_fetch and ("table", tbl_code) in fetched_attempts:
                     diagnostics.append(
                         Diagnostic(
                             file_path,
                             line_no,
-                            1,
+                            col_pos,
                             "ERROR",
-                            "SYN001",
-                            "Unmatched 'endcase' without corresponding 'on case'.",
+                            "TBL002",
+                            f"Table '{tbl_code}' (for '{tbl_code}.{fld_code}') could not be found in Data Dictionary cache or server.",
                             raw_line,
                         )
                     )
-                else:
-                    block_stack.pop()
-
-            # SELECT / ENDSELECT
-            select_matches = re.findall(r"(?<![.\w])select(?![.\w])", code_line, re.IGNORECASE)
-            for _ in select_matches:
-                block_stack.append(("select", line_no))
-
-            endselect_matches = re.findall(r"(?<![.\w])endselect(?![.\w])", code_line, re.IGNORECASE)
-            for _ in endselect_matches:
-                if not block_stack or block_stack[-1][0] != "select":
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched 'endselect' without corresponding 'select'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    block_stack.pop()
-
-            # FOR / ENDFOR (only for-loop: 'for <var> = <init> to <limit>')
-            if re.search(r"(?<![.\w])for(?![.\w])\s+[a-zA-Z0-9_.]+\s*=", code_line, re.IGNORECASE):
-                block_stack.append(("for", line_no))
-
-            endfor_matches = re.findall(r"(?<![.\w])endfor(?![.\w])", code_line, re.IGNORECASE)
-            for _ in endfor_matches:
-                if not block_stack or block_stack[-1][0] != "for":
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched 'endfor' without corresponding 'for'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    block_stack.pop()
-
-            # WHILE / ENDWHILE
-            if re.search(r"(?<![.\w])while(?![.\w])", code_line, re.IGNORECASE):
-                block_stack.append(("while", line_no))
-
-            endwhile_matches = re.findall(r"(?<![.\w])endwhile(?![.\w])", code_line, re.IGNORECASE)
-            for _ in endwhile_matches:
-                if not block_stack or block_stack[-1][0] != "while":
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched 'endwhile' without corresponding 'while'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    block_stack.pop()
-
-            # REPEAT / UNTIL
-            if re.search(r"(?<![.\w])repeat(?![.\w])", code_line, re.IGNORECASE):
-                block_stack.append(("repeat", line_no))
-
-            until_matches = re.findall(r"(?<![.\w])until(?![.\w])", code_line, re.IGNORECASE)
-            for _ in until_matches:
-                if not block_stack or block_stack[-1][0] != "repeat":
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched 'until' without corresponding 'repeat'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    block_stack.pop()
-
-            # IF / ENDIF
-            if re.search(r"(?<![.\w])if(?![.\w])", code_line, re.IGNORECASE):
-                block_stack.append(("if", line_no))
-
-            endif_matches = re.findall(r"(?<![.\w])endif(?![.\w])", code_line, re.IGNORECASE)
-            for _ in endif_matches:
-                if not block_stack or block_stack[-1][0] != "if":
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            1,
-                            "ERROR",
-                            "SYN001",
-                            "Unmatched 'endif' without corresponding 'if'.",
-                            raw_line,
-                        )
-                    )
-                else:
-                    block_stack.pop()
 
             # ----------------------------------------------------
             # 3. Function & DAL Hook Signatures (DAL002, DAL003)
@@ -655,7 +1576,6 @@ class Auditor4GL:
                 for sfx, sfx_def in self.dal_field_hooks.items():
                     if func_name.endswith(sfx):
                         current_func_hook_suffix = sfx
-                        # Check required arguments
                         req_args = sfx_def.get("arguments", "")
                         if "long i.mode" in req_args:
                             if not re.search(r"\blong\s+i\.mode\b", params, re.IGNORECASE):
@@ -694,9 +1614,7 @@ class Auditor4GL:
                     expected_ret = hook_info.get("returnValue", "")
 
                     if "boolean" in expected_ret:
-                        # Should return boolean / true / false / 0 / 1
                         if ret_val and ret_val.lower() not in ("true", "false", "0", "1"):
-                            # If it returns negative or DALHOOKERROR, flag it
                             if "dalhookerror" in ret_val.lower() or ret_val.startswith("-"):
                                 diagnostics.append(
                                     Diagnostic(
@@ -779,7 +1697,7 @@ class Auditor4GL:
                     )
 
             # ----------------------------------------------------
-            # 6. Nested Transactions in Subroutines (CAV003)
+            # 6. Direct Transaction Statements in DAL/UEDLL Subroutines (CAV003)
             # ----------------------------------------------------
             if mode in ("dal2", "uedll"):
                 tx_matches = re.finditer(
@@ -827,7 +1745,6 @@ class Auditor4GL:
 
                 fn_info = self.functions_db.get(called_fn_ci)
                 if fn_info:
-                    # Cloud Trust check (CLD001)
                     if self.cloud_mode and not fn_info.get("trusted", True):
                         diagnostics.append(
                             Diagnostic(
@@ -841,7 +1758,6 @@ class Auditor4GL:
                             )
                         )
 
-                    # Deprecation check (CLD002)
                     if fn_info.get("deprecated", False):
                         diagnostics.append(
                             Diagnostic(
@@ -855,7 +1771,6 @@ class Auditor4GL:
                             )
                         )
 
-                    # Missing Include check (INC001)
                     req_inc = fn_info.get("include", "").lower().strip()
                     if req_inc and req_inc not in includes_found:
                         diagnostics.append(
@@ -870,45 +1785,39 @@ class Auditor4GL:
                             )
                         )
 
-        # Unbalanced block endings at end of file (SYN001)
-        while block_stack:
-            blk_type, blk_line = block_stack.pop()
-            diagnostics.append(
-                Diagnostic(
-                    file_path,
-                    blk_line,
-                    1,
-                    "ERROR",
-                    "SYN001",
-                    f"Unclosed '{blk_type}' statement opened at line {blk_line}.",
+        # ----------------------------------------------------
+        # 9. Intra-File Call Graph Nested Transaction Detection (CAV003)
+        # ----------------------------------------------------
+        for fn_name, fn_node in ast_functions.items():
+            # 9a. Direct nested db.retry.point() inside an already open transaction in the same function
+            for tx_fn, call_line, call_col, raw_l, start_line in fn_node.nested_tx_starts:
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        call_line,
+                        call_col,
+                        "ERROR",
+                        "CAV003",
+                        f"Nested transaction '{tx_fn}()' inside function '{fn_name}' while transaction opened at line {start_line} is still active.",
+                        raw_l,
+                    )
                 )
-            )
 
-        while context_stack:
-            ctx_type, ctx_line = context_stack.pop()
-            diagnostics.append(
-                Diagnostic(
-                    file_path,
-                    ctx_line,
-                    1,
-                    "ERROR",
-                    "SYN001",
-                    f"Unclosed '{ctx_type}' opened at line {ctx_line}.",
-                )
-            )
-
-        while brace_stack:
-            brace_char, brace_line = brace_stack.pop()
-            diagnostics.append(
-                Diagnostic(
-                    file_path,
-                    brace_line,
-                    1,
-                    "ERROR",
-                    "SYN001",
-                    f"Unclosed brace '{brace_char}' opened at line {brace_line}.",
-                )
-            )
+            # 9b. Calling a helper function that directly or transitively starts/commits a transaction while inside an active transaction
+            for callee_name, call_line, call_col, raw_l, start_line in fn_node.calls_inside_tx:
+                if callee_name in transitive_tx_map:
+                    chain = " -> ".join([callee_name] + transitive_tx_map[callee_name])
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            call_line,
+                            call_col,
+                            "ERROR",
+                            "CAV003",
+                            f"Nested transaction via call graph: '{fn_name}' calls '{callee_name}()' inside an active transaction (opened at line {start_line}), which executes '{chain}'.",
+                            raw_l,
+                        )
+                    )
 
         # Filter by severity
         filtered: List[Diagnostic] = []
@@ -990,6 +1899,21 @@ def main() -> int:
         help="Enforce Infor LN CloudSuite Multi-Tenant restrictions (prohibit untrusted functions)",
     )
     parser.add_argument(
+        "--main-table",
+        default=None,
+        help="Component main table code (e.g. txsli001) exempted from TBL001 declaration check",
+    )
+    parser.add_argument(
+        "--dd-cache",
+        default=None,
+        help="Path to .ln_dd_cache.json for TBL002 and DMN001 schema validation",
+    )
+    parser.add_argument(
+        "--auto-fetch-dd",
+        action="store_true",
+        help="Automatically pull missing .tbl / .dmn definitions read-only from the server and update .ln_dd_cache.json",
+    )
+    parser.add_argument(
         "--format",
         choices=["text", "json"],
         default="text",
@@ -1021,6 +1945,9 @@ def main() -> int:
         cloud_mode=args.cloud,
         min_severity=args.severity,
         strict=args.strict,
+        main_table=args.main_table,
+        dd_cache=Path(args.dd_cache) if args.dd_cache else None,
+        auto_fetch_dd=args.auto_fetch_dd,
     )
 
     try:

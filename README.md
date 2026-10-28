@@ -178,7 +178,7 @@ flowchart TD
 
 | Capability / Workflow | Traditional Infor LN Studio (Eclipse GUI) | Skill_LN Headless Ecosystem |
 |---|---|---|
-| **User Interface** | Heavy Eclipse RCP GUI (~1GB RAM, modal wizards) | Headless CLI & Native Stdio MCP Server (<50MB RAM) |
+| **User Interface** | Heavy Eclipse RCP GUI (~1GB RAM, modal wizards) | Headless CLI & Native Stdio MCP Server (~150MB RAM (Python CLI + Headless JVM Daemon)) |
 | **Authentication** | Manual browser login prompt on every session | Automatic OAuth2 token caching & silent refresh (`.ionapi`) |
 | **Component Creation** | Multi-step modal wizard clicking field-by-field | 1-line declarative YAML / MCP call for all 12 types |
 | **Component Cloning** | Manual copy-paste, renaming XML, manual `.admin` edit | 1-line `clone-component` with automatic reference updates |
@@ -231,13 +231,18 @@ python ln_studio_skill/tools/ln_component_builder.py connect --ionapi SCS_TST.io
 python ln_studio_skill/tools/ln_component_builder.py project --list
 python ln_studio_skill/tools/ln_component_builder.py explorer --type table --filter "tx*" --project EXTce01107
 
-# Generate components:
+# Generate components (or clone baseline report for complex .rpt layouts):
 python ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml
 python ln_studio_skill/tools/ln_component_builder.py session --spec schema.yaml
-python ln_studio_skill/tools/ln_component_builder.py report --code txcmg041101000 --desc "Billing Report" --activity <act>
+python ln_studio_skill/tools/ln_component_builder.py clone-component --type report --source tdsls440101000 --target txsls440101000 --activity <act>
 
-# Deploy & test on Cloud Activity VRC:
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity <act> --comment "Ready for test"
+# Sync read-only server references & auto-index .ln_dd_cache.json:
+python ln_studio_skill/tools/ln_component_builder.py sync-reference --type table --name "tcibd001"
+python ln_studio_skill/tools/ln_component_builder.py sync-reference --type domain --name "tcitem"
+
+# Deploy & test on Cloud Activity VRC (default safe mode: compile-only; or schema-crdd):
+python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --mode compile-only --activity <act> --comment "Ready for test"
+python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --mode schema-crdd --dry-run --activity <act>
 python ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity <act>
 ```
 
@@ -266,11 +271,14 @@ Located in [`references/FUNCTION_INDEX.md`](erp-ln-progguide/references/FUNCTION
 ### Standalone 4GL & DAL Audit Engine (`audit_4gl.py`)
 Run static verification on any 4GL/DAL/UEDLL script without running Eclipse:
 ```bash
-python erp-ln-progguide/scripts/audit_4gl.py <target_path> [--mode dal2|uedll|general] [--cloud] [--strict]
+python erp-ln-progguide/scripts/audit_4gl.py <target_path> [--mode dal2|uedll|general] [--main-table <tbl>] [--dd-cache .ln_dd_cache.json] [--auto-fetch-dd] [--cloud] [--strict]
 ```
 
-Enforces 11 static rules:
-- `SYN001`: Unbalanced block statements (`select/endselect`, `if/endif`, `for/endfor`, etc.)
+Enforces 14 static, semantic, schema, and AST rules:
+- `TBL001`: Enforces `table t<tablename>` declaration in `declaration:` for all referenced tables (excluding component main table)
+- `TBL002`: Verifies `<table>.<field>` references against `.ln_dd_cache.json` (with `--auto-fetch-dd` server fallback)
+- `DMN001`: Verifies `domain <domain_name>` declarations against `.ln_dd_cache.json` (with `--auto-fetch-dd` server fallback)
+- `SYN001`: Pure-Python Tokenizer & Recursive-Descent AST block balance (`select/selectdo/selectempty/selecteos/endselect`, `if/endif`, `for/endfor`, `#define` macros)
 - `SYN002`: Misspelled 4GL section headers with official dictionary suggestions
 - `DAL001`: Rejection of interactive dialogs (`message()`, `ask.enum()`) in DAL2 and Extensions
 - `DAL002`: Enforcement of DAL field hook signatures (`long i.mode`, `long has_changed`)
@@ -280,7 +288,7 @@ Enforces 11 static rules:
 - `CLD002`: Warnings on deprecated bshell functions
 - `INC001`: Verification of required header includes (`#include <...>`)
 - `CAV001`: Direct float equality comparisons (`== 0.0`); recommends `double.cmp()`
-- `CAV003`: Nested transaction detection in DAL hooks
+- `CAV003`: Intra-file Call Graph detection of direct and transitive nested transactions (`db.retry.point()`, `commit.transaction()`)
 
 ### 6 Architectural Best Practices Cookbooks
 1. [`01_extension_hooks_cookbook.md`](erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md): Table/Session hook lifecycles, CDF recipes, `DALHOOKERROR`, Cloud governance.

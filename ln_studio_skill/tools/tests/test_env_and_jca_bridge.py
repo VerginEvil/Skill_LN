@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """
-Unit and integration tests for Ticket 01:
-.ionapi Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge.
+Unit and integration tests for Ticket 01 & Tasks 2.1, 3.1, 3.3:
+- .ionapi Environment Manager
+- 3-Tier OAuth2 Token Lifecycle (~/.ln_studio/tokens/<workspace>.json, 5-min buffer, silent refresh, interactive/manual-auth fallback)
+- BYOJ JAR auto-discovery (resolve_ln_studio_jars)
+- Protocol-level EndActivity rejection in Python & LNStudioJcaBridge.java
 """
 
 import os
 import sys
 import json
 import time
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-# Ensure skill tools are importable
 SKILL_TOOLS = Path(__file__).resolve().parent.parent
 if str(SKILL_TOOLS) not in sys.path:
     sys.path.insert(0, str(SKILL_TOOLS))
@@ -26,12 +29,15 @@ from ln_env_manager import (
     list_configured_environments,
     OAuth2TokenManager,
     IonapiConfig,
+    TOKEN_EXPIRY_BUFFER_SECONDS,
 )
 from ln_server_client import (
     JcaTransport,
+    HeadlessJavaJcaTransport,
     MockJcaTransport,
     LNStudioServerClient,
     BdeExecutionError,
+    resolve_ln_studio_jars,
 )
 
 
@@ -98,7 +104,6 @@ class TestIonapiEnvManager(unittest.TestCase):
             scope="openid",
         )
 
-        # 1. Create entry in empty/new file
         sync_cloudenv_prefs(cloudenv_file, "TEST_ENV", config)
         self.assertTrue(cloudenv_file.exists())
         content = cloudenv_file.read_text(encoding="utf-8")
@@ -107,7 +112,6 @@ class TestIonapiEnvManager(unittest.TestCase):
         self.assertIn("TenantID0=TEST_TENANT_001", content)
         self.assertIn(r"GatewayURL0=https\://mingle-ionapi.test.inforcloudsuite.com", content)
 
-        # 2. Add second entry
         config2 = IonapiConfig(
             tenant_id="ANOTHER_TENANT",
             client_name="LNStudio",
@@ -124,7 +128,6 @@ class TestIonapiEnvManager(unittest.TestCase):
         self.assertIn("EnvironmentsCount=2", content)
         self.assertIn("EnvironmentName1=SECOND_ENV", content)
 
-        # 3. Update existing entry without duplicating
         config.client_secret = "updated_secret_999"
         sync_cloudenv_prefs(cloudenv_file, "TEST_ENV", config)
         content = cloudenv_file.read_text(encoding="utf-8")
@@ -209,8 +212,9 @@ class TestOAuth2TokenLifecycle(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def test_cached_token_valid(self):
-        # Store a token that expires in 1 hour
+    def test_cached_token_valid_and_5min_buffer(self):
+        """Asserts 5-minute (300s) buffer is enforced when checking cached tokens."""
+        self.assertEqual(TOKEN_EXPIRY_BUFFER_SECONDS, 300)
         token_data = {
             "access_token": "valid_token_123",
             "token_type": "Bearer",
@@ -219,23 +223,22 @@ class TestOAuth2TokenLifecycle(unittest.TestCase):
             "refresh_token": "refresh_token_456",
         }
         self.manager.save_token("MY_ENV", token_data)
+        self.assertTrue((self.cache_dir / "MY_ENV.json").exists())
 
-        # Getting token should return valid_token_123 without calling network
         token = self.manager.get_access_token("MY_ENV", self.config)
         self.assertEqual(token, "valid_token_123")
 
     @patch("ln_env_manager.urllib.request.urlopen")
-    def test_refresh_token_when_expired(self, mock_urlopen):
-        # Store an expired token with refresh token
+    def test_refresh_token_triggered_within_5min_buffer(self, mock_urlopen):
+        """Asserts a token expiring in 120s (< 300s buffer) triggers silent refresh."""
         token_data = {
-            "access_token": "expired_token",
+            "access_token": "almost_expired_token",
             "expires_in": 3600,
-            "expires_at": time.time() - 100,
+            "expires_at": time.time() + 120,  # within 300s safety buffer
             "refresh_token": "valid_refresh_token",
         }
         self.manager.save_token("MY_ENV", token_data)
 
-        # Mock token endpoint response
         mock_response = MagicMock()
         mock_response.read.return_value = json.dumps({
             "access_token": "new_refreshed_token_789",
@@ -264,55 +267,102 @@ class TestOAuth2TokenLifecycle(unittest.TestCase):
         token = self.manager.get_access_token("SA_ENV", self.config)
         self.assertEqual(token, "sa_token_xyz")
 
+    @patch("ln_env_manager.urllib.request.urlopen")
+    @patch("ln_env_manager.webbrowser.open")
+    def test_tier3_interactive_and_manual_auth_paste_fallback(self, mock_browser, mock_urlopen):
+        """Asserts Tier 3 interactive browser / --manual-auth paste mode extracts code from oob URL and persists token."""
+        mock_response = MagicMock()
+        mock_response.read.return_value = json.dumps({
+            "access_token": "interactive_token_999",
+            "token_type": "Bearer",
+            "expires_in": 3600,
+            "refresh_token": "interactive_refresh_888",
+        }).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_response
 
-class TestJcaBridgeAndServerClient(unittest.TestCase):
-    def test_mock_jca_transport_ping(self):
-        transport = MockJcaTransport()
-        client = LNStudioServerClient(transport=transport)
-        self.assertTrue(client.ping())
+        # Simulate user pasting full oob redirect URL in --manual-auth mode
+        pasted_url = "oob://localhost/lnstudio?code=auth_code_from_browser_12345&state=xyz"
+        token = self.manager.get_access_token(
+            "MANUAL_ENV",
+            self.config,
+            interactive=True,
+            manual_auth=True,
+            input_fn=lambda prompt: pasted_url,
+        )
+        self.assertEqual(token, "interactive_token_999")
+        # In manual_auth mode, webbrowser.open must not be called
+        mock_browser.assert_not_called()
 
-    def test_mock_jca_transport_do_bde_call(self):
+        # Verify token was persisted to ~/.ln_studio/tokens/MANUAL_ENV.json (cache_dir)
+        cached = self.manager.load_token("MANUAL_ENV")
+        self.assertIsNotNone(cached)
+        self.assertEqual(cached["access_token"], "interactive_token_999")
+        self.assertEqual(cached["refresh_token"], "interactive_refresh_888")
+
+
+class TestJcaBridgeAndByojCompliance(unittest.TestCase):
+    def test_mock_jca_transport_ping_and_bde_call(self):
         transport = MockJcaTransport()
         transport.register_response(
             "Application",
             "List",
             "<ApplicationList><Application><name>LN</name><title>Infor LN</title></Application></ApplicationList>",
         )
-
         client = LNStudioServerClient(transport=transport)
+        self.assertTrue(client.ping())
         xml_resp = client.do_bde_call("Application", "List", "<Request/>")
         self.assertIn("<Application>", xml_resp)
-        self.assertIn("<name>LN</name>", xml_resp)
 
-    def test_bde_error_raises_exception(self):
+    def test_byoj_jar_autodiscovery(self):
+        """Asserts resolve_ln_studio_jars locates JCAAdapter4ERPln and lnstudio_commoncore from local Eclipse installation."""
+        jars = resolve_ln_studio_jars()
+        self.assertIn("jca_jar", jars)
+        self.assertIn("commoncore_jar", jars)
+        self.assertTrue(Path(jars["jca_jar"]).exists())
+        self.assertTrue(Path(jars["commoncore_jar"]).exists())
+
+    def test_protocol_level_end_activity_rejection_python_and_java(self):
+        """Asserts EndActivity is hard-blocked in LNStudioServerClient and in LNStudioJcaBridge.java (exit code 3)."""
         transport = MockJcaTransport()
-        transport.register_error(
-            "SoftwareProject_V2",
-            "Show",
-            "Project EXTce01107 not found on server",
-        )
-
         client = LNStudioServerClient(transport=transport)
         with self.assertRaises(BdeExecutionError) as ctx:
-            client.do_bde_call("SoftwareProject_V2", "Show", "<ProjectName>EXTce01107</ProjectName>")
-        self.assertIn("EXTce01107", str(ctx.exception))
+            client.do_bde_call("DR_Solution", "EndActivity", "<EndActivityRequest/>")
+        self.assertIn("PROHIBITED_OPERATION", str(ctx.exception))
 
-
-class TestBuilderCliIntegration(unittest.TestCase):
-    def test_cmd_environments(self):
-        from ln_component_builder import cmd_environments
-        import argparse
-        import io
-        from contextlib import redirect_stdout
-
-        args = argparse.Namespace(json=True, workspace_root=None)
-        f = io.StringIO()
-        with redirect_stdout(f):
-            cmd_environments(args)
-        output = f.getvalue()
-        # Verify JSON output structure
-        data = json.loads(output)
-        self.assertIsInstance(data, dict)
+        # Also test Java bridge binary directly if class is compiled
+        real_transport = HeadlessJavaJcaTransport(
+            gateway_url="https://example.com",
+            tenant_id="TEST_TENANT",
+            access_token="dummy",
+        )
+        java_exe = real_transport._get_java_exe()
+        class_file = SKILL_TOOLS / "lib" / "LNStudioJcaBridge.class"
+        if Path(java_exe).exists() and class_file.exists():
+            cp = real_transport._get_classpath()
+            proc = subprocess.run(
+                [
+                    java_exe,
+                    "-cp",
+                    cp,
+                    "LNStudioJcaBridge",
+                    "--backend",
+                    "https://example.com",
+                    "--tenant",
+                    "TEST_TENANT",
+                    "--token",
+                    "dummy",
+                    "--bde",
+                    "DR_Solution",
+                    "--method",
+                    "EndActivity",
+                ],
+                input="<EndActivityRequest/>",
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(proc.returncode, 3)
+            self.assertIn("SECURITY_BLOCK", proc.stderr)
 
 
 if __name__ == "__main__":

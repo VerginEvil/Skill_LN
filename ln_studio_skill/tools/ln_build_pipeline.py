@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
 ln_studio_skill/tools/ln_build_pipeline.py
-Headless JCA Server Build, deploy-test Pipeline & prepare-end-activity Pre-Commit Gate.
+Headless JCA Server Build, Split deploy-test Pipeline (`compile-only` vs `schema-crdd`)
+& prepare-end-activity Pre-Commit Gate.
 
 Replaces Win32 Ctrl+B keystrokes with direct headless JCA:
 1. XML Compile error/warning diagnostics parsing with exact line and column numbers.
 2. ConvertToRuntime (crdd) and CreateTables dictionary generation.
 3. executeVSC (Verification of Source Code).
-4. Composite deploy-test pipeline (Inject -> Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn).
+4. Split deploy-test operational modes (ADR 0008):
+   - `compile-only` (default safe mode): `Put -> Compile -> executeVSC -> CheckIn`
+   - `schema-crdd`: `Put -> Compile -> ConvertToRuntime -> CreateTables -> executeVSC -> CheckIn`
+     with `--dry-run` pre-check and explicit active LN UI session table-lock warnings.
 5. prepare-end-activity pre-commit readiness verification and human review handoff.
 """
 
@@ -15,11 +19,11 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from ln_server_client import LNStudioServerClient, BdeExecutionError
 from ln_component_explorer import BDE_TYPE_MAP, _split_component_name
-from ln_scm_engine import put_component, checkin_component
+from ln_scm_engine import checkin_component, put_component
+from ln_server_client import BdeExecutionError, LNStudioServerClient
 
 
 def parse_compile_diagnostics(response_xml: str) -> List[Dict[str, Any]]:
@@ -36,7 +40,6 @@ def parse_compile_diagnostics(response_xml: str) -> List[Dict[str, Any]]:
     except ET.ParseError:
         return diagnostics
 
-    # Errors
     for err in root.iter("CompileResponseError"):
         line = int(err.attrib.get("line") or err.findtext("line") or 0)
         col = int(err.attrib.get("column") or err.findtext("column") or 0)
@@ -50,7 +53,6 @@ def parse_compile_diagnostics(response_xml: str) -> List[Dict[str, Any]]:
             "message": msg,
         })
 
-    # Warnings
     for warn in root.iter("CompileResponseWarning"):
         line = int(warn.attrib.get("line") or warn.findtext("line") or 0)
         col = int(warn.attrib.get("column") or warn.findtext("column") or 0)
@@ -204,28 +206,66 @@ def deploy_test(
     activity_dir: Path,
     project_name: str,
     comment: str = "Automated deploy-test for LN UI Cloud testing",
+    mode: str = "compile-only",
+    dry_run: bool = False,
 ) -> Dict[str, Any]:
     """
-    Executes the complete test-deployment sequence so changes are live on the Activity VRC (ext):
-    1. Standalone script sync into XML (if any).
-    2. Upload XML to server workarea (Put).
-    3. Server Compile (returning line/col error diagnostics).
-    4. ConvertToRuntime (crdd) & CreateTables (if applicable).
-    5. executeVSC.
-    6. CheckIn with comment.
+    Executes the split `deploy-test` pipeline (ADR 0008):
+    - `mode="compile-only"` (default safe mode):
+      Executes `Put -> Compile -> executeVSC -> CheckIn` without invoking CRDD or CreateTables.
+    - `mode="schema-crdd"`:
+      Executes `Put -> Compile -> ConvertToRuntime -> CreateTables -> executeVSC -> CheckIn`
+      with a pre-check table lock warning and `--dry-run` support.
     """
+    ctype_lower = comp_type.lower()
+    if ctype_lower == "extension" or comp_name.lower().endswith((".eso", ".eto", ".ere")):
+        raise PermissionError(
+            "Extension Modeler Rule (ADR 0006): Extension objects cannot be deployed via LN Studio. "
+            "Author and deploy extension hooks via manual Copy-Paste in LN UI Cloud (ttext1500m000)."
+        )
+
+    if mode not in ("compile-only", "schema-crdd"):
+        raise ValueError(f"Invalid deploy-test mode '{mode}'. Supported modes: 'compile-only', 'schema-crdd'.")
+
+    planned_steps = (
+        ["Put", "Compile", "executeVSC", "CheckIn"]
+        if mode == "compile-only"
+        else ["Put", "Compile", "ConvertToRuntime", "CreateTables", "executeVSC", "CheckIn"]
+    )
+    lock_warning = (
+        f"[TABLE LOCK WARNING] Mode 'schema-crdd' will execute ConvertToRuntime (CRDD) and CreateTables for "
+        f"'{comp_name}'. Active LN UI Cloud sessions or open bshell cursors on '{comp_name}' can cause "
+        f"reconfiguration lock hangs. Close active LN UI sessions before running without --dry-run."
+        if mode == "schema-crdd"
+        else ""
+    )
+
     result: Dict[str, Any] = {
         "component": comp_name,
         "type": comp_type,
+        "mode": mode,
+        "dry_run": dry_run,
+        "planned_steps": planned_steps,
+        "lock_warning": lock_warning,
         "success": False,
         "compiled": False,
         "crdd": False,
         "create_tables": False,
+        "tables_created": False,
         "vsc_passed": False,
         "checked_in": False,
         "errors": [],
         "warnings": [],
     }
+
+    if dry_run:
+        result["success"] = True
+        result["message"] = (
+            f"[DRY-RUN] Pre-check completed for '{comp_name}' in mode '{mode}'. "
+            f"Planned steps: {' -> '.join(planned_steps)}."
+            + (f" {lock_warning}" if lock_warning else "")
+        )
+        return result
 
     # 1. Sync standalone scripts if present
     try:
@@ -247,13 +287,14 @@ def deploy_test(
         result["message"] = f"Compilation failed with {len(compile_res['errors'])} errors."
         return result
 
-    # 4. Convert to Runtime (crdd)
-    if comp_type.lower() in ("table", "domain", "session", "menu"):
-        result["crdd"] = convert_to_runtime(client, comp_type, comp_name, project_name)
-
-    # 5. Create Tables if table
-    if comp_type.lower() == "table":
-        result["create_tables"] = create_tables(client, comp_name, project_name)
+    # 4 & 5. Convert to Runtime (crdd) & Create Tables ONLY in `schema-crdd` mode
+    if mode == "schema-crdd":
+        if ctype_lower in ("table", "domain", "session", "menu"):
+            result["crdd"] = convert_to_runtime(client, comp_type, comp_name, project_name)
+        if ctype_lower == "table":
+            ct_ok = create_tables(client, comp_name, project_name)
+            result["create_tables"] = ct_ok
+            result["tables_created"] = ct_ok
 
     # 6. executeVSC
     vsc_res = execute_vsc(client, comp_type, comp_name, project_name)
@@ -263,7 +304,9 @@ def deploy_test(
     checkin_component(client, comp_type, comp_name, activity_dir, project_name, comment=comment)
     result["checked_in"] = True
     result["success"] = True
-    result["message"] = f"Successfully deployed {comp_name} to Activity VRC for testing in LN UI Cloud."
+    result["message"] = (
+        f"Successfully deployed {comp_name} ({mode}) to Activity VRC for testing in LN UI Cloud."
+    )
 
     return result
 
@@ -301,7 +344,7 @@ def prepare_end_activity(
     metadata_ok = has_proj and has_admin and has_props
 
     # 3. Discover modified components
-    from admin_sync import scan_and_sync_activity, list_admin_components
+    from admin_sync import list_admin_components, scan_and_sync_activity
     try:
         scan_and_sync_activity(activity_dir)
     except Exception:

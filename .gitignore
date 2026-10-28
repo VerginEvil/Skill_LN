@@ -7,9 +7,13 @@ __pycache__/
 *.pyo
 *.class
 ln_studio_skill/tools/lib/tools/
+ln_studio_skill/tools/lib/*.jar
+**/JCAAdapter4ERPln*.jar
+**/lnstudio_commoncore.jar
 output/
 .ln_studio_config.json
-
+.ln_dd_cache.json
+.reference/
 .ln_studio_tokens.json
 .cache/
 *.ionapi

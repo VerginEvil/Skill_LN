@@ -49,17 +49,18 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 |---|---|
 | Inspect workspaces and activities | `python <skill_dir>/tools/ln_component_builder.py workspace --list` / `--activities` |
 | List configured cloud environments | `python <skill_dir>/tools/ln_component_builder.py environments [--workspace-root <path>]` |
-| Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>]` |
+| Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>] [--manual-auth]` |
 | Browse remote projects & apps | `python <skill_dir>/tools/ln_component_builder.py project [--app <code>] [--project <p>]` |
 | Browse/create remote activities | `python <skill_dir>/tools/ln_component_builder.py activity --project <p> [--create <act>] [--desc <d>]` |
 | Clean remote activity lock | `python <skill_dir>/tools/ln_component_builder.py clean-activity --project <p> --task <act>` |
 | Browse components across 12 types | `python <skill_dir>/tools/ln_component_builder.py explorer --type <t> [--filter <pattern>]` |
-| Get component (inspect or Read-Only) | `python <skill_dir>/tools/ln_component_builder.py get-component --type <t> --name <n> [--inspect] [--activity <a>]` |
-| Clone component into custom | `python <skill_dir>/tools/ln_component_builder.py clone-component --source-type <t> --source-name <sn> --target-name <tn> --activity <a>` |
+| Sync Read-Only references & DD cache | `python <skill_dir>/tools/ln_component_builder.py sync-reference --type <table\|domain\|session\|extension> --name <pattern>` |
+| Get component (inspect or Read-Only) | `python <skill_dir>/tools/ln_component_builder.py get-component --type <t> --name <n> [--inspect] [--reference-only] [--activity <a>]` |
+| Clone component into custom (incl. report) | `python <skill_dir>/tools/ln_component_builder.py clone-component --source-type <t> --source-name <sn> --target-name <tn> --activity <a>` |
 | Check-out component from server | `python <skill_dir>/tools/ln_component_builder.py checkout-component --type <t> --name <n> --activity <a>` |
 | Revert check-out (uncheckout) | `python <skill_dir>/tools/ln_component_builder.py uncheckout-component --type <t> --name <n> --activity <a>` |
 | Check-in component to server | `python <skill_dir>/tools/ln_component_builder.py checkin-component --type <t> --name <n> --activity <a> [--comment <c>]` |
-| Deploy-Test composite pipeline | `python <skill_dir>/tools/ln_component_builder.py deploy-test --type <t> --name <n> --activity <a> [--comment <c>]` |
+| Deploy-Test split pipeline | `python <skill_dir>/tools/ln_component_builder.py deploy-test --type <t> --name <n> --activity <a> [--mode compile-only\|schema-crdd] [--dry-run]` |
 | Pre-commit verification (prepare) | `python <skill_dir>/tools/ln_component_builder.py prepare-end-activity --activity <a> [--project <p>]` |
 | End activity (hard-blocked gate) | `python <skill_dir>/tools/ln_component_builder.py end-activity --task <act> --project <p>` |
 | Register Stdio MCP Server | `python <skill_dir>/tools/ln_component_builder.py mcp-setup [--client claude\|cursor\|antigravity\|generic] [--apply]` |

@@ -244,7 +244,12 @@ def generate_reports(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate Infor LN Report (.rpt) XML component")
+    parser = argparse.ArgumentParser(
+        description=(
+            "[DEPRECATED for complex layouts] Generate basic Infor LN Report (.rpt) XML component. "
+            "For production reports, use: ln_component_builder.py clone-component --source-type report"
+        )
+    )
     parser.add_argument("--code", required=True, help="Report code (e.g. txcmg04010100)")
     parser.add_argument("--desc", help="Description")
     parser.add_argument("--paper-width", type=int, choices=[80, 132], default=80, help="Paper width (80 or 132)")
@@ -253,6 +258,12 @@ def main():
     parser.add_argument("--project", default="EXTce01107", help="Software Project name")
     parser.add_argument("--dry-run", action="store_true", help="Preview without writing")
     args = parser.parse_args()
+
+    print(
+        "[DEPRECATION NOTICE] Declarative from-scratch .rpt layout generation is deprecated for complex reports. "
+        "Prefer cloning a baseline report via: clone-component --source-type report --source-name <base> --target-name <custom>",
+        file=sys.stderr,
+    )
 
     act_info = resolve_activity(activity_name=args.activity)
     act_dir = Path(act_info["path"])

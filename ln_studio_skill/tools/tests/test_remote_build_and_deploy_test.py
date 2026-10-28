@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Unit tests for Ticket 05:
-Remote Server Build (Compile, CRDD, CreateTables, VSC), deploy-test & prepare-end-activity.
+Unit tests for Ticket 05 & Task 3.2:
+Remote Server Build (Compile, CRDD, CreateTables, VSC), split deploy-test modes
+(compile-only vs schema-crdd with --dry-run pre-check) & prepare-end-activity.
 """
 
 import os
@@ -93,13 +94,59 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         ct_ok = create_tables(self.client, "txibd001", "EXTce01107")
         self.assertTrue(ct_ok)
 
-    def test_deploy_test_end_to_end(self):
-        # Setup component file in activity
+    def test_deploy_test_default_compile_only_mode(self):
+        """Asserts default deploy_test mode is 'compile-only' (Put -> Compile -> executeVSC -> CheckIn without CRDD)."""
         tbl_file = self.act_dir / "tables" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
 
-        # Register server responses
+        self.transport.register_response("DR_Table", "Put", "<PutResponse>OK</PutResponse>")
+        self.transport.register_response("DR_Table", "Compile", "<CompileResponse><status>success</status></CompileResponse>")
+        self.transport.register_response("DR_Table", "executeVSC", "<executeVSCResponse><status>pass</status></executeVSCResponse>")
+        self.transport.register_response("DR_Table", "CheckIn", "<CheckInResponse><status>checked_in</status></CheckInResponse>")
+
+        res = deploy_test(
+            client=self.client,
+            comp_type="table",
+            comp_name="txibd001",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+            comment="Safe script-only deploy",
+        )
+        self.assertTrue(res["success"])
+        self.assertEqual(res["mode"], "compile-only")
+        self.assertTrue(res["compiled"])
+        self.assertFalse(res["crdd"])
+        self.assertFalse(res["tables_created"])
+        self.assertTrue(res["checked_in"])
+
+        called_methods = [c["method"] for c in self.transport.call_history]
+        self.assertEqual(called_methods, ["Put", "Compile", "executeVSC", "CheckIn"])
+
+    def test_deploy_test_schema_crdd_mode_and_dry_run_precheck(self):
+        """Asserts mode='schema-crdd' supports dry_run pre-check + lock warning and full CRDD execution."""
+        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file.parent.mkdir(parents=True, exist_ok=True)
+        tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
+
+        # 1. Dry-run pre-check must not call server BDEs and must emit lock_warning
+        dry_res = deploy_test(
+            client=self.client,
+            comp_type="table",
+            comp_name="txibd001",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+            mode="schema-crdd",
+            dry_run=True,
+        )
+        self.assertTrue(dry_res["success"])
+        self.assertTrue(dry_res["dry_run"])
+        self.assertIn("ConvertToRuntime", dry_res["planned_steps"])
+        self.assertIn("CreateTables", dry_res["planned_steps"])
+        self.assertIsNotNone(dry_res["lock_warning"])
+        self.assertEqual(len(self.transport.call_history), 0)
+
+        # 2. Full schema-crdd execution
         self.transport.register_response("DR_Table", "Put", "<PutResponse>OK</PutResponse>")
         self.transport.register_response("DR_Table", "Compile", "<CompileResponse><status>success</status></CompileResponse>")
         self.transport.register_response("DR_Table", "ConvertToRuntime", "<ConvertToRuntimeResponse>OK</ConvertToRuntimeResponse>")
@@ -113,20 +160,20 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
             comp_name="txibd001",
             activity_dir=self.act_dir,
             project_name="EXTce01107",
-            comment="Test deploy for LN UI",
+            comment="Full schema deploy",
+            mode="schema-crdd",
         )
         self.assertTrue(res["success"])
-        self.assertTrue(res["compiled"])
-        self.assertTrue(res["checked_in"])
+        self.assertEqual(res["mode"], "schema-crdd")
+        self.assertTrue(res["crdd"])
+        self.assertTrue(res["tables_created"])
+        self.assertIsNotNone(res["lock_warning"])
 
-        # Verify call history order: Put -> Compile -> ConvertToRuntime -> CreateTables -> executeVSC -> CheckIn
         called_methods = [c["method"] for c in self.transport.call_history]
-        self.assertIn("Put", called_methods)
-        self.assertIn("Compile", called_methods)
-        self.assertIn("ConvertToRuntime", called_methods)
-        self.assertIn("CreateTables", called_methods)
-        self.assertIn("executeVSC", called_methods)
-        self.assertIn("CheckIn", called_methods)
+        self.assertEqual(
+            called_methods,
+            ["Put", "Compile", "ConvertToRuntime", "CreateTables", "executeVSC", "CheckIn"],
+        )
 
     def test_prepare_end_activity_reporting(self):
         tbl_file = self.act_dir / "tables" / "txibd001.tbl"
@@ -164,12 +211,10 @@ class TestBuildCliIntegration(unittest.TestCase):
         settings_dir.mkdir(parents=True, exist_ok=True)
         (settings_dir / "properties.index").write_text("version=1\ntaskId=task_cli_build\n", encoding="utf-8")
 
-        # Create dummy table file
         tbl_file = act_dir / "tables" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
 
-        # Test prepare-end-activity
         args_prep = argparse.Namespace(activity=str(act_dir), project="EXTce01107", workspace=None, json=True, mock=True)
         f = io.StringIO()
         with redirect_stdout(f):

@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """
 Unit Test Suite for Standalone 4GL & DAL Audit Engine (`scripts/audit_4gl.py`).
+Covers Task 1:
+- 1.1 Table Declaration Enforcement (TBL001)
+- 1.2 Data Dictionary Schema Cache & Field/Domain Verification (TBL002 & DMN001) + --auto-fetch-dd
+- 1.3 Lightweight Recursive Descent AST Parser (SYN001 & Call-Graph CAV003)
+- Existing DAL/Cloud/Include/Caveat rules (DAL001-004, CLD001-002, INC001, CAV001)
 """
 
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -13,7 +19,7 @@ from pathlib import Path
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 
-from audit_4gl import Auditor4GL
+from audit_4gl import Auditor4GL, DataDictionaryCache
 
 
 class TestAudit4GL(unittest.TestCase):
@@ -93,11 +99,9 @@ function void send_legacy_mail()
     cmf.create()
 }
 """
-        # In non-cloud mode, should not trigger CLD001
         diags_regular = self.auditor.audit_content(script, "myscript.cln", mode="general")
         self.assertFalse(any(d.code == "CLD001" for d in diags_regular))
 
-        # In cloud mode, should trigger CLD001
         diags_cloud = self.cloud_auditor.audit_content(script, "myscript.cln", mode="general")
         cld001_diags = [d for d in diags_cloud if d.code == "CLD001"]
         self.assertGreaterEqual(len(cld001_diags), 1)
@@ -144,10 +148,13 @@ function void calculate(double amount)
     def test_unbalanced_block_detection(self):
         """Asserts SYN001 triggered on unclosed select or if statements."""
         script_unclosed_select = """
+declaration:
+    table ttcibd001
+
 function void query_data()
 {
-    select tcmcs001.*
-    from tcmcs001
+    select tcibd001.*
+    from tcibd001
     selectdo
         | missing endselect
 }
@@ -168,6 +175,191 @@ function void check_cond(long flag)
         syn001_if = [d for d in diags_if if d.code == "SYN001"]
         self.assertGreaterEqual(len(syn001_if), 1)
         self.assertTrue(any("if" in d.message.lower() for d in syn001_if))
+
+    # =========================================================================
+    # Task 1.1: Table Declaration Enforcement (Rule TBL001)
+    # =========================================================================
+    def test_tbl001_undeclared_table_flagged_and_main_table_exempted(self):
+        """Asserts TBL001 flags referenced tables missing 'table t<name>' while exempting main_table."""
+        script = """
+declaration:
+    table ttcibd001
+
+function extern long before.save.object(long mode)
+{
+    | tdsls400 is the main table of tdsls400.dal (exempted)
+    if isspace(tdsls400.orno) then
+        return(DALHOOKERROR)
+    endif
+
+    | tcibd001 is declared in declaration: (valid)
+    select tcibd001.item
+    from tcibd001
+    where tcibd001._index1 = {:tdsls401.item}
+    selectdo
+    endselect
+
+    return(0)
+}
+"""
+        # tdsls400 is inferred from filename tdsls400.dal; tcibd001 is declared; tdsls401 is undeclared!
+        diags = self.auditor.audit_content(script, "tdsls400.dal", mode="dal2")
+        tbl001_diags = [d for d in diags if d.code == "TBL001"]
+        self.assertEqual(len(tbl001_diags), 1)
+        self.assertIn("tdsls401", tbl001_diags[0].message)
+        self.assertIn("table ttdsls401", tbl001_diags[0].fix_suggestion)
+
+        # Now test explicit --main-table exemption
+        diags_explicit = self.auditor.audit_content(
+            script, "custom_script.cln", mode="general", main_table="tdsls400"
+        )
+        tbl001_explicit = [d for d in diags_explicit if d.code == "TBL001"]
+        self.assertEqual(len(tbl001_explicit), 1)
+        self.assertIn("tdsls401", tbl001_explicit[0].message)
+
+    # =========================================================================
+    # Task 1.2: Data Dictionary Cache & Field/Domain Verification (TBL002 & DMN001)
+    # =========================================================================
+    def test_tbl002_and_dmn001_dd_cache_validation_and_auto_fetch(self):
+        """Asserts TBL002 and DMN001 validate fields and domains against .ln_dd_cache.json and support auto-fetch."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_path = Path(tmpdir) / ".ln_dd_cache.json"
+            dd_cache = DataDictionaryCache(cache_path=cache_path)
+            dd_cache.update_table(
+                "tdsls400",
+                fields={
+                    "orno": {"domain": "tcorno", "type": "string"},
+                    "ofbp": {"domain": "tccom.bpid", "type": "string"},
+                },
+                indices={"1": ["orno"]},
+            )
+            dd_cache.update_domain("tcorno", datatype="string", length=9)
+            dd_cache.save()
+
+            auditor_with_dd = Auditor4GL(
+                skill_dir=SKILL_ROOT,
+                dd_cache=DataDictionaryCache(cache_path=cache_path),
+            )
+
+            script = """
+declaration:
+    table ttdsls400
+    domain tcorno valid.orno
+    domain tcfake.dmn bad.var
+
+function void check_order()
+{
+    valid.orno = tdsls400.orno
+    if isspace(tdsls400.hallucinated_field) then
+    endif
+}
+"""
+            diags = auditor_with_dd.audit_content(script, "test.cln", mode="general")
+            tbl002 = [d for d in diags if d.code == "TBL002"]
+            dmn001 = [d for d in diags if d.code == "DMN001"]
+
+            # _index1 or valid fields ('orno') must NOT trigger TBL002; 'hallucinated_field' MUST trigger TBL002
+            self.assertEqual(len(tbl002), 1)
+            self.assertIn("tdsls400.hallucinated_field", tbl002[0].message)
+
+            # 'tcorno' is in cache; 'tcfake.dmn' is NOT in cache -> triggers DMN001
+            self.assertEqual(len(dmn001), 1)
+            self.assertIn("tcfake.dmn", dmn001[0].message)
+
+            # Test --auto-fetch-dd callback resolves missing domain/table dynamically
+            fetched_items = []
+
+            def mock_auto_fetch(comp_type: str, comp_name: str):
+                fetched_items.append((comp_type, comp_name))
+                if comp_type == "domain" and comp_name == "tcfake.dmn":
+                    return '<DR_Domain name="tcfake.dmn"><nativeDatatype>6</nativeDatatype></DR_Domain>'
+                return None
+
+            auditor_autofetch = Auditor4GL(
+                skill_dir=SKILL_ROOT,
+                dd_cache=DataDictionaryCache(cache_path=cache_path),
+                auto_fetch_dd=True,
+                auto_fetch_callback=mock_auto_fetch,
+            )
+            diags_after = auditor_autofetch.audit_content(script, "test.cln", mode="general")
+            self.assertIn(("domain", "tcfake.dmn"), fetched_items)
+            dmn001_after = [d for d in diags_after if d.code == "DMN001"]
+            self.assertEqual(len(dmn001_after), 0)
+
+    # =========================================================================
+    # Task 1.3: AST Parser (Macros, Multi-line SQL, Subqueries & Call-Graph CAV003)
+    # =========================================================================
+    def test_ast_parser_handles_define_macros_and_sql_subqueries(self):
+        """Asserts AST parser handles #define macros, SQL subqueries (select ...), and 'for update'."""
+        script = """
+declaration:
+    table ttdsls400
+    table ttdsls401
+
+#define OPEN_IF_VALID(x) \\
+    if (x) > 0 then \\
+        x = x + 1 \\
+    endif
+
+function void complex_query()
+{
+    long cnt
+    cnt = 1
+    OPEN_IF_VALID(cnt)
+
+    select tdsls400.*
+    from tdsls400 for update
+    where tdsls400._index1 = {"SO0001"}
+    and exists (
+        select tdsls401.orno
+        from tdsls401
+        where tdsls401.orno = tdsls400.orno
+    )
+    selectdo
+        for cnt = 1 to 5
+        endfor
+    selectempty
+    selecteos
+    endselect
+}
+"""
+        diags = self.auditor.audit_content(script, "complex.cln", mode="general")
+        syn001 = [d for d in diags if d.code == "SYN001"]
+        self.assertEqual(len(syn001), 0, f"Expected 0 SYN001 errors, got: {[str(d) for d in syn001]}")
+
+    def test_ast_call_graph_detects_direct_and_transitive_nested_transactions_cav003(self):
+        """Asserts intra-file Call Graph catches helper functions with commit.transaction() called inside active tx."""
+        script = """
+declaration:
+    table ttdsls400
+
+function void deep_helper_commit()
+{
+    commit.transaction()
+}
+
+function void middle_helper()
+{
+    deep_helper_commit()
+}
+
+function void outer_batch_process()
+{
+    db.retry.point()
+    select tdsls400.*
+    from tdsls400 for update
+    selectdo
+        db.update(ttdsls400, db.retry)
+        middle_helper()
+    selectempty
+    endselect
+    commit.transaction()
+}
+"""
+        diags = self.auditor.audit_content(script, "batch.cln", mode="general")
+        cav003 = [d for d in diags if d.code == "CAV003"]
+        self.assertGreaterEqual(len(cav003), 1)
+        self.assertTrue(any("middle_helper" in d.message for d in cav003))
 
     def test_json_output_format(self):
         """Asserts schema compliance of CLI execution with --format json."""

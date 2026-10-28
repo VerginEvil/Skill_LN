@@ -41,13 +41,13 @@ Historically, developing applications and extensions in Infor LN Studio required
 `ln_studio_skill` transforms Infor LN Studio into a **headless-capable, fully automated development ecosystem**:
 
 ### 🌟 Major Upgrades in Latest Release:
-1. **Headless JCA 1.6 Connectivity (`ln_server_client.py`)**: Direct BDE XML communication over HTTPS via bundled Eclipse JARs (`JCAAdapter4ERPln-10.8.10.jar`) and JDK 11, eliminating the requirement to keep the Eclipse GUI running and focused.
-2. **Multi-Environment & `.ionapi` Manager (`ln_env_manager.py`)**: Seamless import of customer credentials (`SCS_TST`, `DNT_TRN`, `RDT_TST`, etc.), handling OAuth2 tokens (Desktop `oob://localhost/lnstudio` authorization code intercept & Service Account `saak`/`sask` grants), bidirectionally synchronizing Eclipse `cloudenv.prefs` and `connectivity.prefs`.
-3. **Remote Server Explorers (`ln_project_activity_manager.py`, `ln_component_explorer.py`)**: Browse remote Applications, Software Projects, Activities, and Components across all 12 types without touching Eclipse.
-4. **Complete 12-Component Ecore Generators**: Full declarative generation for Tables (`.tbl`), Sessions (`.ses`), Domains (`.dmn`), Libraries (`.lib`), Menus (`.mnu`), Labels (`.lbl`), Reports (`.rpt`/`.rptdsrc`), Messages (`.msg`), Questions (`.qst`/`.que`), Include Functions (`.fnc`/`.fun`), and Additional Files (`.add`), plus server-to-custom cloning (`clone-component`).
-5. **Pre-Commit SCM Engine & `deploy-test` (`ln_scm_engine.py`, `ln_build_pipeline.py`)**: Full automation of `Get` (Read-Only / inspect memory), `Check-Out`, `Uncheckout`, `Put`, `Compile`, `ConvertToRuntime` (`crdd`), `CreateTables`, `VSC`, and `Check-In` with immediate testing on Cloud Activity VRC (`ext`).
-6. **Strict Human-in-the-Loop Commit Gate (ADR 0007)**: Hard-blocks `End Activity` / `Commit Activity` in both CLI and MCP. Delivers `prepare-end-activity` to verify workspace integrity and output handoff reports so human engineers perform final delivery.
-7. **Native Stdio MCP Server (`ln_studio_mcp.py`)**: Exposes all capabilities via JSON-RPC 2.0 stdio with 16 tools, ready for Claude Desktop, Cursor, Antigravity, and AI Agents.
+1. **Headless JCA 1.6 Connectivity & BYOJ (`ln_server_client.py`)**: Direct BDE XML communication over HTTPS via auto-discovered local Eclipse JARs (`JCAAdapter4ERPln-10.8.10.jar` + `lnstudio_commoncore.jar` from `LN_STUDIO_HOME`, zero proprietary JARs tracked in Git) and JDK 11 (~150MB RAM footprint for Python CLI + Headless JVM Daemon).
+2. **3-Tier Automated OAuth2 Token Lifecycle (`ln_env_manager.py`)**: Persistent per-workspace token cache at `~/.ln_studio/tokens/<workspace>.json` with a 5-minute safety buffer, silent refresh via `refresh_token` or Service Account (`saak`/`sask`), and interactive browser login (`webbrowser.open`) + `--manual-auth` paste fallback for headless/SSH/WSL environments.
+3. **Remote Server Explorers & Workspace Reference Sync (`ln_component_explorer.py`)**: Browse remote Applications, Software Projects, Activities, and Components across all 12 types, or pull Read-Only reference copies (`sync-reference`) into `.reference/<type>/` while automatically indexing `.tbl` and `.dmn` XMLs into `.ln_dd_cache.json`.
+4. **Complete 12-Component Ecore Generators & Report Cloning**: Declarative generation for Tables (`.tbl`), Sessions (`.ses`), Domains (`.dmn`), Libraries (`.lib`), Menus (`.mnu`), Labels (`.lbl`), Messages (`.msg`), Questions (`.qst`/`.que`), Include Functions (`.fnc`/`.fun`), and Additional Files (`.add`), plus baseline report/component cloning (`clone-component --source-type report`).
+5. **Pre-Commit SCM Engine & Split `deploy-test` (`ln_scm_engine.py`, `ln_build_pipeline.py`)**: Safe `--mode compile-only` (default: `Put -> Compile -> VSC -> CheckIn`) and `--mode schema-crdd` (`Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn` with `--dry-run` pre-check and active LN UI session lock warning).
+6. **Strict Human-in-the-Loop Commit Gate (ADR 0007 & ADR 0008)**: Hard-blocks `End Activity` / `CloseTask` / `FinalizeActivity` in CLI, MCP, and at the Java protocol level inside `LNStudioJcaBridge.java`.
+7. **Native Stdio MCP Server (`ln_studio_mcp.py`)**: Exposes all capabilities via JSON-RPC 2.0 stdio with 18 tools (including `ln_sync_reference`), ready for Claude Desktop, Cursor, Antigravity, and AI Agents.
 
 ---
 
@@ -325,20 +325,26 @@ python ln_studio_skill/tools/ln_component_builder.py function --code txcmgfnc01 
 python ln_studio_skill/tools/ln_component_builder.py additional --code txcmgcfg --desc "Config" --activity <act>
 python ln_studio_skill/tools/ln_component_builder.py report --code txcmg041101000 --desc "Billing Report" --activity <act>
 
-# Clone server component into custom tx activity:
+# Clone server component (recommended for complex Reports and standard customizations) into custom tx activity:
+python ln_studio_skill/tools/ln_component_builder.py clone-component --source-type report --source-name tdsls440101000 --target-name txsls440101000 --activity <act>
 python ln_studio_skill/tools/ln_component_builder.py clone-component --source-type table --source-name whwmd400 --target-name txwmd400 --activity <act>
 
 # -------------------------------------------------------------
-# 4. SCM & Automated Remote Build Pipeline
+# 4. SCM, Reference Sync & Automated Remote Build Pipeline
 # -------------------------------------------------------------
+python ln_studio_skill/tools/ln_component_builder.py sync-reference --type table --name "tdsls40*" --workspace SCS_TST
 python ln_studio_skill/tools/ln_component_builder.py get-component --type table --name whwmd400 --inspect
 python ln_studio_skill/tools/ln_component_builder.py get-component --type table --name whwmd400 --activity <act>
 python ln_studio_skill/tools/ln_component_builder.py checkout-component --type table --name txcmg011 --activity <act> --comment "Modify batch"
 python ln_studio_skill/tools/ln_component_builder.py uncheckout-component --type table --name txcmg011 --activity <act>
 python ln_studio_skill/tools/ln_component_builder.py checkin-component --type table --name txcmg011 --activity <act> --comment "Updated"
 
-# Composite deploy & test on Cloud Activity VRC (Put -> Compile -> CRDD -> Tables -> VSC -> CheckIn):
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity <act> --comment "Deploy for QA"
+# Safe Script-Only Deploy & Test (Default --mode compile-only: Put -> Compile -> VSC -> CheckIn):
+python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity <act> --mode compile-only --comment "Deploy script"
+
+# Full Schema Reconfiguration (--mode schema-crdd: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn):
+python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity <act> --mode schema-crdd --dry-run
+python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity <act> --mode schema-crdd --comment "Deploy schema"
 
 # Prepare End-Activity pre-commit verification & handoff:
 python ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity <act>

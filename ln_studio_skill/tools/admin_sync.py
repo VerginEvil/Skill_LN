@@ -47,10 +47,19 @@ def get_java_executable() -> str:
 
 
 def get_admin_helper_classpath() -> str:
-    """Returns classpath string including ln_studio_skill/tools/lib and lnstudio_commoncore.jar."""
+    """Returns classpath string including ln_studio_skill/tools/lib and dynamically resolved lnstudio_commoncore.jar (BYOJ)."""
     lib_dir = _TOOLS_DIR / "lib"
+    sep = ";" if sys.platform == "win32" else ":"
+    try:
+        from ln_server_client import resolve_ln_studio_jars
+        jar_info = resolve_ln_studio_jars()
+        commoncore = jar_info.get("commoncore_jar")
+        if commoncore:
+            return f"{lib_dir}{sep}{commoncore}"
+    except Exception:
+        pass
     jar_path = lib_dir / "lnstudio_commoncore.jar"
-    return f"{lib_dir};{jar_path}"
+    return f"{lib_dir}{sep}{jar_path}"
 
 
 def ensure_helper_compiled() -> None:
