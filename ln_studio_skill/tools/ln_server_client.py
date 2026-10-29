@@ -244,6 +244,7 @@ class JcaTransport(ABC):
         method_name: str,
         request_xml: str,
         connection_point: str = "ProjectServer",
+        context_xml: Optional[str] = None,
     ) -> str:
         """Executes a BDE call and returns the XML response string."""
         pass
@@ -258,7 +259,8 @@ class MockJcaTransport(JcaTransport):
     def __init__(self):
         self.responses: Dict[Tuple[str, str], str] = {}
         self.errors: Dict[Tuple[str, str], str] = {}
-        self.call_history: List[Dict[str, str]] = []
+        self.handlers: Dict[Tuple[str, str], Any] = {}
+        self.call_history: List[Dict[str, Any]] = []
         self.ping_result = True
 
     def register_response(self, bde_name: str, method_name: str, response_xml: str) -> None:
@@ -266,6 +268,9 @@ class MockJcaTransport(JcaTransport):
 
     def register_error(self, bde_name: str, method_name: str, error_message: str) -> None:
         self.errors[(bde_name, method_name)] = error_message
+
+    def register_handler(self, bde_name: str, method_name: str, callback: Any) -> None:
+        self.handlers[(bde_name, method_name)] = callback
 
     def ping(self) -> bool:
         return self.ping_result
@@ -276,6 +281,7 @@ class MockJcaTransport(JcaTransport):
         method_name: str,
         request_xml: str,
         connection_point: str = "ProjectServer",
+        context_xml: Optional[str] = None,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
 
@@ -284,9 +290,13 @@ class MockJcaTransport(JcaTransport):
             "method": method_name,
             "request": request_xml,
             "connection_point": connection_point,
+            "context_xml": context_xml,
         })
 
         key = (bde_name, method_name)
+        if key in self.handlers:
+            return self.handlers[key](request_xml, connection_point, context_xml)
+
         if key in self.errors:
             raise BdeExecutionError(
                 self.errors[key],
@@ -388,6 +398,7 @@ class HeadlessJavaJcaTransport(JcaTransport):
         method_name: str,
         request_xml: str,
         connection_point: str = "ProjectServer",
+        context_xml: Optional[str] = None,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
 
@@ -417,6 +428,8 @@ class HeadlessJavaJcaTransport(JcaTransport):
             "--cp",
             connection_point,
         ]
+        if context_xml:
+            cmd.extend(["--context", context_xml])
         if self.workspace_path:
             cmd.extend(["--workspace", str(self.workspace_path)])
 
@@ -455,6 +468,7 @@ class LNStudioServerClient:
         method_name: str,
         request_xml: str,
         connection_point: str = "ProjectServer",
+        context_xml: Optional[str] = None,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
         return self.transport.do_bde_call(
@@ -462,4 +476,5 @@ class LNStudioServerClient:
             method_name=method_name,
             request_xml=request_xml,
             connection_point=connection_point,
+            context_xml=context_xml,
         )

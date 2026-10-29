@@ -41,7 +41,8 @@ from ln_component_explorer import (
 )
 from ln_scm_engine import (
     checkout_component, uncheckout_component, put_component, checkin_component,
-    end_activity_gate, PreCommitBoundaryError, ReadOnlyComponentError
+    checkout_activity, checkin_activity, end_activity_gate, PreCommitBoundaryError,
+    ReadOnlyComponentError, ServerSCMExecutionError
 )
 from ln_build_pipeline import (
     deploy_test, prepare_end_activity, compile_component, convert_to_runtime,
@@ -261,6 +262,35 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
                 "mock": {"type": "boolean", "description": "Use mock transport for testing"}
             },
             "required": ["type", "name", "activity"]
+        }
+    },
+    {
+        "name": "ln_checkout_activity",
+        "description": "Batch Check-Out for all components in an activity ordered by architectural dependency. Halts immediately on first failure without blind rollback.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "activity": {"type": "string", "description": "Target activity directory or name"},
+                "project": {"type": "string", "description": "Software Project name (e.g. EXTce01107)"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["activity"]
+        }
+    },
+    {
+        "name": "ln_checkin_activity",
+        "description": "Batch Check-In for all modified components in an activity with a single comment. Automatically segregates Extension Modeler components (ADR 0006). Halts immediately on first failure without blind rollback.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "activity": {"type": "string", "description": "Target activity directory or name"},
+                "project": {"type": "string", "description": "Software Project name (e.g. EXTce01107)"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "comment": {"type": "string", "description": "Check-in comment"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["activity", "comment"]
         }
     },
     {
@@ -576,9 +606,14 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "ln_checkout_component":
             comp_type = arguments["type"]
             name_val = arguments["name"]
-            act_dir = Path(arguments["activity"])
+            act_arg = arguments["activity"]
             proj = arguments.get("project", "EXTce01107")
             mock = arguments.get("mock", False)
+            if Path(act_arg).is_dir() or "/" in str(act_arg) or "\\" in str(act_arg):
+                act_dir = Path(act_arg).resolve()
+            else:
+                act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
+                act_dir = Path(act_info["path"])
             client = _resolve_client(
                 workspace_name=arguments.get("workspace"),
                 mock=mock,
@@ -587,17 +622,23 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 target_activity=str(act_dir),
             )
             res_path = checkout_component(client, comp_type, name_val, act_dir, proj)
+            receipt_data = res_path.receipt.to_dict() if hasattr(res_path, "receipt") and res_path.receipt else None
             return {
-                "content": [{"type": "text", "text": json.dumps({"checked_out": True, "path": str(res_path)}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps({"checked_out": True, "path": str(res_path), "receipt": receipt_data}, indent=2)}],
                 "isError": False
             }
 
         elif name == "ln_uncheckout_component":
             comp_type = arguments["type"]
             name_val = arguments["name"]
-            act_dir = Path(arguments["activity"])
+            act_arg = arguments["activity"]
             proj = arguments.get("project", "EXTce01107")
             mock = arguments.get("mock", False)
+            if Path(act_arg).is_dir() or "/" in str(act_arg) or "\\" in str(act_arg):
+                act_dir = Path(act_arg).resolve()
+            else:
+                act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
+                act_dir = Path(act_info["path"])
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             ok = uncheckout_component(client, comp_type, name_val, act_dir, proj)
             return {
@@ -608,14 +649,65 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "ln_checkin_component":
             comp_type = arguments["type"]
             name_val = arguments["name"]
-            act_dir = Path(arguments["activity"])
+            act_arg = arguments["activity"]
             proj = arguments.get("project", "EXTce01107")
             comment = arguments.get("comment", f"Check-in {name_val}")
             mock = arguments.get("mock", False)
+            if Path(act_arg).is_dir() or "/" in str(act_arg) or "\\" in str(act_arg):
+                act_dir = Path(act_arg).resolve()
+            else:
+                act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
+                act_dir = Path(act_info["path"])
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            ok = checkin_component(client, comp_type, name_val, act_dir, proj, comment=comment)
+            receipt = checkin_component(client, comp_type, name_val, act_dir, proj, comment=comment)
+            receipt_data = receipt.to_dict() if hasattr(receipt, "to_dict") else receipt
             return {
-                "content": [{"type": "text", "text": json.dumps({"checkin": ok}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps({"checkin": True, "receipt": receipt_data}, indent=2)}],
+                "isError": False
+            }
+
+        elif name == "ln_checkout_activity":
+            act_arg = arguments["activity"]
+            proj = arguments.get("project", "EXTce01107")
+            mock = arguments.get("mock", False)
+            client = _resolve_client(
+                workspace_name=arguments.get("workspace"),
+                mock=mock,
+                target_object="activity",
+                target_type="activity",
+                target_activity=str(act_arg),
+            )
+            if Path(act_arg).is_dir() or "/" in str(act_arg) or "\\" in str(act_arg):
+                act_dir = Path(act_arg).resolve()
+            else:
+                act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
+                act_dir = Path(act_info["path"])
+            res = checkout_activity(client, act_dir, proj)
+            return {
+                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "isError": False
+            }
+
+        elif name == "ln_checkin_activity":
+            act_arg = arguments["activity"]
+            proj = arguments.get("project", "EXTce01107")
+            comment = arguments.get("comment", "Automated activity check-in")
+            mock = arguments.get("mock", False)
+            client = _resolve_client(
+                workspace_name=arguments.get("workspace"),
+                mock=mock,
+                target_object="activity",
+                target_type="activity",
+                target_activity=str(act_arg),
+            )
+            if Path(act_arg).is_dir() or "/" in str(act_arg) or "\\" in str(act_arg):
+                act_dir = Path(act_arg).resolve()
+            else:
+                act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
+                act_dir = Path(act_info["path"])
+            res = checkin_activity(client, act_dir, proj, comment=comment)
+            return {
+                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
                 "isError": False
             }
 
@@ -747,6 +839,11 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
     except PreCommitBoundaryError as pe:
         return {
             "content": [{"type": "text", "text": f"PreCommitBoundaryError: {str(pe)}"}],
+            "isError": True
+        }
+    except ServerSCMExecutionError as se:
+        return {
+            "content": [{"type": "text", "text": f"ServerSCMExecutionError: {str(se)}"}],
             "isError": True
         }
     except ReadOnlyComponentError as re:

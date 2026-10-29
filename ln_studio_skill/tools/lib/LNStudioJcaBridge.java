@@ -81,6 +81,7 @@ public class LNStudioJcaBridge {
         String bdeName = "";
         String methodName = "";
         String connectionPoint = "ProjectServer";
+        String contextXml = "";
 
         for (int i = 0; i < args.length; i++) {
             if ("--ping".equals(args[i])) {
@@ -98,6 +99,8 @@ public class LNStudioJcaBridge {
                 methodName = args[++i];
             } else if ("--cp".equals(args[i]) && i + 1 < args.length) {
                 connectionPoint = args[++i];
+            } else if (("--context".equals(args[i]) || "--context-xml".equals(args[i])) && i + 1 < args.length) {
+                contextXml = args[++i];
             }
         }
 
@@ -147,6 +150,7 @@ public class LNStudioJcaBridge {
                 host = host + "/" + tenant + "/LN/webservice";
             }
             spec.setBackend(host);
+            spec.setApplication("LN");
 
             spec.setOAuth2Callback(new OAuth2Callback() {
                 @Override
@@ -155,9 +159,47 @@ public class LNStudioJcaBridge {
                 }
             });
 
+            if (connectionPoint != null && !connectionPoint.isEmpty()) {
+                try {
+                    spec.setConnectionPoint(connectionPoint);
+                } catch (Exception e) {
+                    System.err.println("[WARN] setConnectionPoint failed: " + e.getMessage());
+                }
+            }
+
             ConnectionFactoryImpl factory = new ConnectionFactoryImpl();
+            try {
+                File tempCpFile = File.createTempFile("ln_connectionpoints_", ".xml");
+                tempCpFile.deleteOnExit();
+                String cpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                    + "<connectionpoints>\n"
+                    + "  <connectionpoint name=\"ProjectServer\" hostname=\"" + host + "\" port=\"0\" timerdelay=\"0\" maxconnections=\"1\" maxreferences=\"-1\" maxthreads=\"0\" forcecleanup=\"true\">\n"
+                    + "    <activation type=\"http_oauth2\" bse=\"\" bshell=\"\" tenant=\"" + tenant + "\"/>\n"
+                    + "  </connectionpoint>\n"
+                    + (connectionPoint != null && !connectionPoint.isEmpty() && !"ProjectServer".equals(connectionPoint)
+                        ? "  <alias name=\"" + connectionPoint + "\" linkto=\"ProjectServer\"/>\n" : "")
+                    + "</connectionpoints>\n";
+                try (FileWriter fw = new FileWriter(tempCpFile)) {
+                    fw.write(cpXml);
+                }
+                factory.setLocation(tempCpFile.getAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("[WARN] Failed to configure connectionpoints XML: " + e.getMessage());
+            }
+
             Connection conn = factory.getConnection(spec);
             JcaBdeManager bdeMgr = new JcaBdeManager(conn);
+
+            if (contextXml != null && !contextXml.trim().isEmpty()) {
+                try {
+                    DocumentBuilderFactory cDbf = DocumentBuilderFactory.newInstance();
+                    cDbf.setNamespaceAware(true);
+                    Document cDoc = cDbf.newDocumentBuilder().parse(new InputSource(new StringReader(contextXml)));
+                    bdeMgr.setadditionalControlAreaElement(cDoc.getDocumentElement());
+                } catch (Exception e) {
+                    System.err.println("[WARN] Failed to set ActivityID context element: " + e.getMessage());
+                }
+            }
 
             if ("ping".equals(mode)) {
                 bdeMgr.ping();
@@ -174,16 +216,40 @@ public class LNStudioJcaBridge {
                     reqElement = doc.getDocumentElement();
                 }
 
-                Element respElement = bdeMgr.doBdeCall(bdeName, methodName, reqElement);
+                Element respElement = null;
+                if (reqElement != null) {
+                    respElement = bdeMgr.executeMethod(reqElement, methodName);
+                } else {
+                    respElement = bdeMgr.doBdeCall(bdeName, methodName, null);
+                }
 
-                TransformerFactory tf = TransformerFactory.newInstance();
-                Transformer transformer = tf.newTransformer();
-                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                StringWriter writer = new StringWriter();
-                transformer.transform(new DOMSource(respElement), new StreamResult(writer));
+                if (bdeMgr.hasInformation()) {
+                    try {
+                        com.infor.erpln.jca.bdeclient.BdeMessageIterator iter = bdeMgr.getInformation();
+                        StringBuilder infoSb = new StringBuilder();
+                        while (iter.hasMoreElements()) {
+                            com.infor.erpln.jca.bdeclient.BdeMessage msg = iter.nextElement();
+                            infoSb.append(msg.getMessageText()).append("\n");
+                        }
+                        if (infoSb.length() > 0) {
+                            System.err.println("[BDE_INFORMATION] " + infoSb.toString().trim());
+                        }
+                    } catch (Exception e) {
+                        // ignore information logging failure
+                    }
+                }
 
-                System.out.print(writer.toString());
+                if (respElement != null) {
+                    TransformerFactory tf = TransformerFactory.newInstance();
+                    Transformer transformer = tf.newTransformer();
+                    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                    StringWriter writer = new StringWriter();
+                    transformer.transform(new DOMSource(respElement), new StreamResult(writer));
+                    System.out.print(writer.toString());
+                } else {
+                    System.out.print("<Success/>");
+                }
                 conn.close();
                 System.exit(0);
             } else {

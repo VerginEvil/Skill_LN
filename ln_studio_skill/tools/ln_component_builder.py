@@ -19,6 +19,7 @@ Master CLI entrypoint that unifies:
 
 import os
 import sys
+import re
 import argparse
 import json
 from pathlib import Path
@@ -65,7 +66,8 @@ from ln_component_explorer import (
 )
 from ln_scm_engine import (
     checkout_component, uncheckout_component, put_component, checkin_component,
-    end_activity_gate, PreCommitBoundaryError
+    checkout_activity, checkin_activity, end_activity_gate, PreCommitBoundaryError,
+    ServerSCMExecutionError
 )
 from ln_build_pipeline import (
     parse_compile_diagnostics, compile_component, convert_to_runtime,
@@ -625,7 +627,13 @@ def cmd_checkout_component(args):
         activity_dir=act_dir,
         project_name=project_name or "EXTce01107",
     )
-    print(f"[SUCCESS] Checked out {args.type} '{args.name}' into '{checked_out}'")
+    receipt_data = checked_out.receipt.to_dict() if hasattr(checked_out, "receipt") and checked_out.receipt else None
+    if getattr(args, "json", False):
+        print(json.dumps({"checked_out": True, "path": str(checked_out), "receipt": receipt_data}, indent=2))
+    else:
+        print(f"[SUCCESS] Checked out {args.type} '{args.name}' into '{checked_out}'")
+        if receipt_data:
+            print(f"Receipt: Activity={receipt_data.get('task_id')}, Status={receipt_data.get('status')}, Timestamp={receipt_data.get('timestamp')}")
 
 
 def cmd_uncheckout_component(args):
@@ -669,7 +677,7 @@ def cmd_checkin_component(args):
             project_name = m.group(1)
 
     comment = getattr(args, "comment", None) or "Automated check-in for LN UI Cloud testing"
-    checkin_component(
+    receipt = checkin_component(
         client=client,
         comp_type=args.type,
         comp_name=args.name,
@@ -677,7 +685,91 @@ def cmd_checkin_component(args):
         project_name=project_name or "EXTce01107",
         comment=comment,
     )
-    print(f"[SUCCESS] Checked in {args.type} '{args.name}' (comment: '{comment}')")
+    receipt_data = receipt.to_dict() if hasattr(receipt, "to_dict") else receipt
+    if getattr(args, "json", False):
+        print(json.dumps({"checkin": True, "receipt": receipt_data}, indent=2))
+    else:
+        print(f"[SUCCESS] Checked in {args.type} '{args.name}' (comment: '{comment}')")
+        if isinstance(receipt_data, dict):
+            print(f"Receipt: Activity={receipt_data.get('task_id')}, Status={receipt_data.get('status')}, Timestamp={receipt_data.get('timestamp')}")
+
+
+def cmd_checkout_activity(args):
+    """Handles 'checkout-activity' subcommand."""
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+        notify=not getattr(args, "json", False),
+    )
+    if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
+        act_dir = Path(args.activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+        act_dir = Path(act_info["path"])
+
+    project_name = getattr(args, "project", None) or env_info.get("dev_point", "").replace("_dev", "")
+    if not project_name:
+        m = re.search(r"\[([A-Za-z0-9_]+)\]$", act_dir.name)
+        if m:
+            project_name = m.group(1)
+
+    result = checkout_activity(
+        client=client,
+        activity_dir=act_dir,
+        project_name=project_name or "EXTce01107",
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"[SUCCESS] Checked out {result['checked_out_count']} components in activity '{result['activity']}'")
+        for r in result.get("receipts", []):
+            print(f"  - ({r['component_type']}) {r['component_name']}: {r['status']}")
+        if result.get("segregated_extensions"):
+            print(f"[NOTE] {len(result['segregated_extensions'])} Extension Modeler components segregated (ADR 0006):")
+            for ext in result["segregated_extensions"]:
+                print(f"  * {ext['name']} ({ext['type']})")
+        print(f"\n[NEXT STEP] {result['f5_refresh_prompt']}")
+
+
+def cmd_checkin_activity(args):
+    """Handles 'checkin-activity' subcommand."""
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+        notify=not getattr(args, "json", False),
+    )
+    if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
+        act_dir = Path(args.activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+        act_dir = Path(act_info["path"])
+
+    project_name = getattr(args, "project", None) or env_info.get("dev_point", "").replace("_dev", "")
+    if not project_name:
+        m = re.search(r"\[([A-Za-z0-9_]+)\]$", act_dir.name)
+        if m:
+            project_name = m.group(1)
+
+    comment = getattr(args, "comment", None) or "Automated activity check-in"
+    result = checkin_activity(
+        client=client,
+        activity_dir=act_dir,
+        project_name=project_name or "EXTce01107",
+        comment=comment,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"[SUCCESS] Checked in {result['checked_in_count']} components in activity '{result['activity']}' (comment: '{comment}')")
+        for r in result.get("receipts", []):
+            print(f"  - ({r['component_type']}) {r['component_name']}: {r['status']}")
+        if result.get("segregated_extensions"):
+            print(f"[NOTE] {len(result['segregated_extensions'])} Extension Modeler components segregated (ADR 0006):")
+            for ext in result["segregated_extensions"]:
+                print(f"  * {ext['name']} ({ext['type']})")
+        print(f"\n[NEXT STEP] {result['f5_refresh_prompt']}")
 
 
 def cmd_end_activity(args):
@@ -1564,6 +1656,7 @@ def main():
     sp_chkout.add_argument("--activity", help="Target activity name or directory path")
     sp_chkout.add_argument("--project", help="Software Project name (e.g. EXTce01107)")
     sp_chkout.add_argument("--workspace", help="Target workspace folder name")
+    sp_chkout.add_argument("--json", action="store_true", help="Output results in JSON format")
     sp_chkout.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
     # uncheckout-component
@@ -1583,7 +1676,25 @@ def main():
     sp_chkin.add_argument("--activity", help="Target activity name or directory path")
     sp_chkin.add_argument("--project", help="Software Project name")
     sp_chkin.add_argument("--workspace", help="Target workspace folder name")
+    sp_chkin.add_argument("--json", action="store_true", help="Output results in JSON format")
     sp_chkin.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # checkout-activity
+    sp_chkact = subparsers.add_parser("checkout-activity", help="Batch Check-Out all components in an activity ordered by architectural dependency")
+    sp_chkact.add_argument("--activity", help="Target activity name or directory path")
+    sp_chkact.add_argument("--project", help="Software Project name (e.g. EXTce01107)")
+    sp_chkact.add_argument("--workspace", help="Target workspace folder name")
+    sp_chkact.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_chkact.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # checkin-activity
+    sp_chkinact = subparsers.add_parser("checkin-activity", help="Batch Check-In all modified components in an activity with single comment")
+    sp_chkinact.add_argument("--activity", help="Target activity name or directory path")
+    sp_chkinact.add_argument("--project", help="Software Project name (e.g. EXTce01107)")
+    sp_chkinact.add_argument("--workspace", help="Target workspace folder name")
+    sp_chkinact.add_argument("--comment", default="Automated activity check-in", help="Check-in comment")
+    sp_chkinact.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_chkinact.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
     # end-activity (hard-blocked)
     sp_endact = subparsers.add_parser("end-activity", help="Hard-blocked: Human review gate before activity delivery")
@@ -1695,6 +1806,8 @@ def main():
         "checkout-component": cmd_checkout_component,
         "uncheckout-component": cmd_uncheckout_component,
         "checkin-component": cmd_checkin_component,
+        "checkout-activity": cmd_checkout_activity,
+        "checkin-activity": cmd_checkin_activity,
         "end-activity": cmd_end_activity,
         "deploy-test": cmd_deploy_test,
         "prepare-end-activity": cmd_prepare_end_activity,

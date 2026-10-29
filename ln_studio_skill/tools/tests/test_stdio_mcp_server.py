@@ -130,6 +130,23 @@ class TestStdioMcpServer(unittest.TestCase):
             "mock": True
         })
         self.assertFalse(chk_res.get("isError", False))
+        chk_data = json.loads(chk_res["content"][0]["text"])
+        self.assertTrue(chk_data.get("checked_out"))
+        self.assertIn("receipt", chk_data)
+
+        # Check-in standard component (mock)
+        chkin_res = execute_tool("ln_checkin_component", {
+            "type": "table",
+            "name": "ttadv300",
+            "activity": str(self.act_dir),
+            "project": "EXTce01107",
+            "comment": "Testing checkin receipt",
+            "mock": True
+        })
+        self.assertFalse(chkin_res.get("isError", False))
+        chkin_data = json.loads(chkin_res["content"][0]["text"])
+        self.assertTrue(chkin_data.get("checkin"))
+        self.assertIn("receipt", chkin_data)
 
         # Check-out tx extension component must be hard-blocked (ADR 0006)
         tx_chk_res = execute_tool("ln_checkout_component", {
@@ -157,6 +174,32 @@ class TestStdioMcpServer(unittest.TestCase):
         })
         self.assertTrue(gate_res.get("isError", True))
         self.assertIn("PreCommitBoundaryError", gate_res["content"][0]["text"])
+
+    def test_call_batch_checkout_and_checkin_activity_mcp(self):
+        from admin_sync import add_component
+        tbl = self.act_dir / "tables" / "txcmg010.tbl"
+        tbl.parent.mkdir(parents=True, exist_ok=True)
+        tbl.write_text("<DR_Table name='txcmg010'/>", encoding="utf-8")
+        add_component(self.act_dir, "tables/txcmg010.tbl")
+
+        chk_res = execute_tool("ln_checkout_activity", {
+            "activity": str(self.act_dir),
+            "project": "EXTce01107",
+            "mock": True
+        })
+        self.assertFalse(chk_res.get("isError", False))
+        data = json.loads(chk_res["content"][0]["text"])
+        self.assertIn("checked_out_count", data)
+
+        chkin_res = execute_tool("ln_checkin_activity", {
+            "activity": str(self.act_dir),
+            "project": "EXTce01107",
+            "comment": "Batch MCP test",
+            "mock": True
+        })
+        self.assertFalse(chkin_res.get("isError", False))
+        data_in = json.loads(chkin_res["content"][0]["text"])
+        self.assertIn("checked_in_count", data_in)
 
     def test_mcp_setup_config_generation(self):
         cfg = generate_mcp_config(client="generic")

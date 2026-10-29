@@ -89,6 +89,35 @@ def find_activity_root(path: Path) -> Optional[Path]:
     return None
 
 
+def is_project_scm_enabled(activity_path: Path) -> Tuple[bool, str]:
+    """
+    Determines whether Infor LN SCM is enabled for this activity's project.
+    Checks properties.index in workspace metadata or local .settings for ApplicationUseSCM.
+    Returns (True, "SCM enabled") or (False, "ApplicationUseSCM=no").
+    """
+    act = activity_path.resolve()
+    ws = act.parent
+    props_candidates = [
+        ws / ".metadata" / ".plugins" / "org.eclipse.core.resources" / ".projects" / act.name / ".indexes" / "properties.index",
+        act / ".settings" / "properties.index",
+        act / "properties.index",
+    ]
+    for props_file in props_candidates:
+        if props_file.exists():
+            try:
+                raw = props_file.read_bytes()
+                idx = raw.find(b"ApplicationUseSCM")
+                if idx != -1:
+                    snippet = raw[idx:idx+50].lower()
+                    if b"no" in snippet:
+                        return False, f"ApplicationUseSCM=no in {props_file.name}"
+                    elif b"yes" in snippet:
+                        return True, f"ApplicationUseSCM=yes in {props_file.name}"
+            except Exception:
+                pass
+    return True, "default (SCM enabled)"
+
+
 def is_tracked_checked_in(path: Path, activity_path: Optional[Path] = None) -> Tuple[bool, Optional[str]]:
     """
     Checks if the component file is tracked in the activity's .admin SCM cache
@@ -96,6 +125,10 @@ def is_tracked_checked_in(path: Path, activity_path: Optional[Path] = None) -> T
     """
     act_path = activity_path or find_activity_root(path)
     if not act_path or not (act_path / ".admin").exists():
+        return False, None
+
+    scm_enabled, _ = is_project_scm_enabled(act_path)
+    if not scm_enabled:
         return False, None
 
     try:
