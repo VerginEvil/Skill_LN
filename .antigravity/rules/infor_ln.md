@@ -113,3 +113,25 @@ python ln_studio_skill/tools/ln_component_builder.py build --activity "<activity
 ```
 
 If compilation errors exist, the tool prints exact files, line numbers, and error descriptions. Fix the code in `scripts/`, re-inject, and rebuild until 0 errors are reported.
+
+---
+
+## 4. Pre-Fetch Authentication Verification & User Alert Guardrail (ADR 0010)
+
+Before executing any operation that fetches, downloads, inspects, extracts, checks out, or synchronizes remote code, scripts, or components from an Infor LN server or activity (e.g. `get-component`, `sync-reference`, `checkout-component`, `extract`, `explorer`, `ln_get_component`, `ln_checkout_component`):
+
+### 4.1 Mandatory User Notification
+The AI Assistant and CLI tools MUST explicitly notify the user beforehand:
+- **Target Object & Type**: e.g. Library `txibddllitem01`, Table `whwmd400`, Session `txcmg0110m100`.
+- **Target Workspace & Cloud Environment**: e.g. `SCS_TST`.
+- **Target Software Project & Activity**: e.g. Project `EXTce01107`, Activity `dev_natt_1107-1`.
+- **Operation Mode**: In-Memory Inspection, Read-Only Fetch, or Check-Out.
+
+### 4.2 Mandatory Authentication Pre-Flight Check & Auto-Authenticate
+1. **Token Status Check**: Verify cached OAuth2 token in `~/.ln_studio/tokens/<env>.json`.
+2. **Auto-Refresh**: If token is expired or within the 300s safety buffer, automatically perform silent refresh using `refresh_token`.
+3. **Auto-Authenticate / Alert**: If token is missing or refresh fails:
+   - Alert the user immediately that authentication is required.
+   - Launch or guide the user through the self-contained multi-channel SSO login (`ln_login` / `ln_auth_helper.py` via Windows `oob://` protocol handler or clipboard detection).
+4. **Resilience**: Never fail silently or crash unexpectedly without alerting the user of the authentication and connection status.
+

@@ -40,6 +40,9 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
    - In Studio workspaces, extension files are strictly Read-Only / "Get" mode for viewing and debugging.
    - All extension authoring must be performed directly in local project repositories (`extensions/<type>/<component>_ext.4gl`) and deployed via LN UI (`ttext1500m000`).
    - The toolchain intercepts write/inject actions on extension components with `ReadOnlyComponentError`, and `validate` marks them as `[GET_ONLY_EXTENSION]`, suppressing false-positive SCM errors.
+5. **Pre-Fetch Server Authentication & User Alert Guardrail (ADR 0010)**:
+   - Before executing operations that fetch, download, inspect, check out, or synchronize remote code, scripts, or components from an Infor LN server or activity, the toolchain and AI assistant must verify the environment authentication state and alert the user with target object, server, and activity metadata.
+   - Missing or expired tokens trigger automatic multi-channel SSO login (`ln_login` / `ln_auth_helper.py`), alerting the user in chat/terminal.
 
 ---
 
@@ -49,6 +52,7 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 |---|---|
 | Inspect workspaces and activities | `python <skill_dir>/tools/ln_component_builder.py workspace --list` / `--activities` |
 | List configured cloud environments | `python <skill_dir>/tools/ln_component_builder.py environments [--workspace-root <path>]` |
+| Auto SSO Login & Token Acquisition | `python <skill_dir>/tools/ln_component_builder.py login [--workspace <ws>] [--ionapi <path>] [--register-protocol]` |
 | Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>] [--manual-auth]` |
 | Browse remote projects & apps | `python <skill_dir>/tools/ln_component_builder.py project [--app <code>] [--project <p>]` |
 | Browse/create remote activities | `python <skill_dir>/tools/ln_component_builder.py activity --project <p> [--create <act>] [--desc <d>]` |
@@ -148,11 +152,12 @@ Running `validate --fix` performs non-destructive automatic repairs:
 
 ## Native Stdio Model Context Protocol (MCP) Server (`ln_studio_mcp.py`)
 
-The skill exposes a zero-dependency Stdio MCP server (`ln_studio_mcp.py`) implementing JSON-RPC 2.0. It exposes 16 structured tools for AI coding assistants (Claude Desktop, Cursor, Antigravity):
+The skill exposes a zero-dependency Stdio MCP server (`ln_studio_mcp.py`) implementing JSON-RPC 2.0. It exposes 17 structured tools for AI coding assistants (Claude Desktop, Cursor, Antigravity):
 
 | MCP Tool | Capability | Guardrail / Policy |
 |---|---|---|
 | `ln_list_environments` | Lists customer workspaces, cloud configs, active dev/runtime endpoints | Read-only |
+| `ln_login` | Multi-channel SSO login, Windows oob protocol capture & token acquisition | Production |
 | `ln_connect` | Imports `.ionapi` credentials, syncs `cloudenv.prefs` & `connectivity.prefs` | Idempotent |
 | `ln_explore_projects` | Lists remote Applications and Software Projects | Read-only Headless JCA |
 | `ln_explore_activities` | Lists remote Activities under a Software Project | Read-only Headless JCA |
@@ -184,12 +189,48 @@ python <skill_dir>/tools/ln_component_builder.py mcp-setup --client generic --dr
 
 ---
 
+## Self-Contained OAuth2 Login & 'oob://' Protocol Resolution (ADR 0009)
+
+Infor CloudSuite PingFederate OAuth2 for LN Studio Desktop Clients (`dt=11`) enforces two strict constraints:
+1. **Password Grant Blocked**: Direct `grant_type=password` is disallowed by Infor SSO policy (`Unsupported grant type password. Expected one of authorization_code`).
+2. **Custom 'oob://' URI Scheme**: Authorization codes are redirected to `oob://localhost/lnstudio?code=<CODE>&state=<UUID>`. Standard web browsers (Chrome, Edge) do not recognize `oob://`, aborting with `net::ERR_ABORTED` or `ERR_UNKNOWN_URL_SCHEME` and appearing as a broken or blank page.
+3. **Federation Hub Sensitivity**: Requesting unconfigured scopes (e.g. `scope=openid`) causes Infor OS Federation Hub to abort with *"InforOS Federation Hub service has encountered an error"*.
+
+### Zero-Click Multi-Channel Solution (`ln_auth_helper.py`):
+Running `python <skill_dir>/tools/ln_component_builder.py login --workspace <ws>` solves this end-to-end:
+* **Channel 1 (Windows Registry Protocol Handler)**: Auto-registers `HKCU\Software\Classes\oob` to launch `capture_oob.py`. When the user clicks "Allow" in their browser, Chrome/Edge forwards the redirect directly to the helper, which extracts the code, closes the loop, and displays a clean confirmation tab.
+* **Channel 2 (Real-Time Clipboard Auto-Detection)**: A 64-bit safe `ctypes.windll.user32` thread monitors clipboard changes. If the user copies the address bar URL or code, it is instantly captured within 0.4s without pressing Enter.
+* **Channel 3 (Interactive Fallback)**: Terminal prompt accepts pasted URLs or raw codes.
+* **PingFederate Fix**: Automatically generates a cryptographically secure UUID `state` parameter and suppresses empty/unconfigured scopes, eliminating Federation Hub errors.
+
+---
+
+## Pre-Fetch Server Authentication & User Alert Guardrail (ADR 0010)
+
+Before executing any remote operation to pull code, scripts, or object definitions (e.g. `get-component`, `sync-reference`, `checkout-component`, `extract`, `explorer`, `ln_get_component`):
+
+### 1. Mandatory Pre-Fetch User Alert
+The toolchain emits an explicit user-facing notification banner in stdout and structured MCP responses:
+```text
+[PRE-FETCH ALERT] Accessing Infor LN Server / Activity:
+  Target:     <component_type> '<object_name>' | Activity: <activity_name>
+  Workspace:  <workspace_name> (CloudEnv: <cloud_env>)
+```
+
+### 2. Pre-Flight Authentication Verification & Auto-Authenticate
+- `OAuth2TokenManager.check_token_status` inspects cached token validity (with a 300s safety buffer).
+- If near expiry, automatically performs a silent refresh using `refresh_token`.
+- If missing or un-refreshable, automatically initiates the multi-channel SSO login flow (`execute_login`), alerting the user to authorize via browser, and capturing the authorization code via the registered Windows `oob://` protocol handler or clipboard detection.
+- Connects and verifies JCA server/activity reachability before retrieving components.
+
+---
+
 ## Toolchain & Reference Layout
 
 ```
 tools/                          Self-contained automation toolchain:
   ln_component_builder.py         Master CLI orchestrator (37 subcommands)
-  ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (16 tools)
+  ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (17 tools)
   ln_env_manager.py               .ionapi parser, token refresh & Eclipse prefs synchronizer
   ln_server_client.py             JCA WebClient transport & BDE call executor
   ln_project_activity_manager.py  Software Project & Activity explorer + local bootstrapper

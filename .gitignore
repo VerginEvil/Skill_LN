@@ -1,7 +1,9 @@
 .scratch/
 knowledge_docs/
 implementation/
-docs/
+docs/*
+!docs/adr/
+!docs/adr/**
 __pycache__/
 *.pyc
 *.pyo
@@ -10,6 +12,8 @@ ln_studio_skill/tools/lib/tools/
 ln_studio_skill/tools/lib/*.jar
 **/JCAAdapter4ERPln*.jar
 **/lnstudio_commoncore.jar
+export/*.cln
+export/*.dal
 output/
 .ln_studio_config.json
 .ln_dd_cache.json

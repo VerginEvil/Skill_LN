@@ -81,6 +81,19 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
         }
     },
     {
+        "name": "ln_login",
+        "description": "Authenticates with Infor CloudSuite SSO, registers Windows oob protocol, captures authorization code via multi-channel auto-detect, and saves active tokens.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "workspace": {"type": "string", "description": "Target customer workspace or CloudEnvironment name (e.g. SCS_TST)"},
+                "ionapi_file": {"type": "string", "description": "Optional path to .ionapi credential file"},
+                "register_protocol_only": {"type": "boolean", "description": "Only register Windows oob:// protocol handler without logging in"},
+                "check_only": {"type": "boolean", "description": "Check current token validity and status without initiating browser login"}
+            }
+        }
+    },
+    {
         "name": "ln_connect",
         "description": "Imports .ionapi credentials and synchronizes Eclipse global and workspace connectivity preferences.",
         "inputSchema": {
@@ -357,10 +370,24 @@ def list_registered_tools() -> List[Dict[str, Any]]:
     return TOOLS_REGISTRY
 
 
-def _resolve_client(workspace_name: Optional[str] = None, mock: bool = False) -> LNStudioServerClient:
-    """Builds an LNStudioServerClient with either mock or live JCA transport."""
+def _resolve_client(
+    workspace_name: Optional[str] = None,
+    mock: bool = False,
+    target_object: Optional[str] = None,
+    target_type: Optional[str] = None,
+    target_activity: Optional[str] = None,
+    notify: bool = False,
+) -> LNStudioServerClient:
+    """Builds an LNStudioServerClient with either mock or live JCA transport, enforcing pre-fetch verification."""
     from ln_component_builder import get_server_client
-    client, _ = get_server_client(workspace_name=workspace_name, mock=mock)
+    client, _ = get_server_client(
+        workspace_name=workspace_name,
+        mock=mock,
+        target_object=target_object,
+        target_type=target_type,
+        target_activity=target_activity,
+        notify=notify,
+    )
     return client
 
 
@@ -375,6 +402,32 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             envs = list_configured_environments(workspace_root=root)
             return {
                 "content": [{"type": "text", "text": json.dumps({"workspaces": envs}, indent=2)}],
+                "isError": False
+            }
+
+        elif name == "ln_login":
+            from ln_auth_helper import register_oob_protocol, execute_login
+            from ln_env_manager import check_workspace_auth
+            if arguments.get("register_protocol_only"):
+                ok = register_oob_protocol()
+                return {"content": [{"type": "text", "text": json.dumps({"protocol_registered": ok})}], "isError": not ok}
+            ws = arguments.get("workspace")
+            if arguments.get("check_only"):
+                st = check_workspace_auth(workspace_name=ws)
+                return {"content": [{"type": "text", "text": json.dumps(st, indent=2)}], "isError": False}
+            from ln_component_builder import resolve_ionapi_config
+            env_name, cfg = resolve_ionapi_config(workspace_name=ws, ionapi_file=arguments.get("ionapi_file"))
+            tok = execute_login(env_name=env_name, config=cfg, workspace_name=ws)
+            return {
+                "content": [{
+                    "type": "text",
+                    "text": json.dumps({
+                        "status": "success",
+                        "workspace": env_name,
+                        "token_type": tok.get("token_type"),
+                        "expires_in": tok.get("expires_in")
+                    }, indent=2)
+                }],
                 "isError": False
             }
 
@@ -473,7 +526,14 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             inspect_only = arguments.get("inspect_only", False)
             reference_only = arguments.get("reference_only", False) or comp_type.lower() == "extension"
             mock = arguments.get("mock", False)
-            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            act_arg = arguments.get("activity")
+            client = _resolve_client(
+                workspace_name=arguments.get("workspace"),
+                mock=mock,
+                target_object=name_val,
+                target_type=comp_type,
+                target_activity=act_arg,
+            )
 
             if inspect_only:
                 res = inspect_component(client, comp_type=comp_type, comp_name=name_val)
@@ -481,7 +541,6 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 ws_dir = Path(arguments.get("activity") or get_workspace_root() or Path.cwd())
                 res = sync_reference(client, comp_type=comp_type, name_pattern=name_val, workspace_dir=ws_dir)
             else:
-                act_arg = arguments.get("activity")
                 act_path = Path(act_arg) if act_arg else Path(get_workspace_root())
                 saved = get_component(client, comp_type=comp_type, comp_name=name_val, activity_dir=act_path)
                 res = {"saved_path": str(saved), "read_only": True}
@@ -496,7 +555,12 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             ws_dir = Path(arguments.get("workspace_dir") or get_workspace_root() or Path.cwd())
             dd_cache = Path(arguments["dd_cache_path"]) if arguments.get("dd_cache_path") else None
             mock = arguments.get("mock", False)
-            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            client = _resolve_client(
+                workspace_name=arguments.get("workspace"),
+                mock=mock,
+                target_object=name_val,
+                target_type=comp_type,
+            )
             res = sync_reference(
                 client=client,
                 comp_type=comp_type,
@@ -515,7 +579,13 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             act_dir = Path(arguments["activity"])
             proj = arguments.get("project", "EXTce01107")
             mock = arguments.get("mock", False)
-            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            client = _resolve_client(
+                workspace_name=arguments.get("workspace"),
+                mock=mock,
+                target_object=name_val,
+                target_type=comp_type,
+                target_activity=str(act_dir),
+            )
             res_path = checkout_component(client, comp_type, name_val, act_dir, proj)
             return {
                 "content": [{"type": "text", "text": json.dumps({"checked_out": True, "path": str(res_path)}, indent=2)}],

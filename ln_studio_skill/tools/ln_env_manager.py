@@ -25,6 +25,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
@@ -418,16 +419,123 @@ class OAuth2TokenManager:
         self,
         config: IonapiConfig,
         redirect_uri: Optional[str] = None,
+        state: Optional[str] = None,
     ) -> str:
         eff_redirect = redirect_uri or config.redirect_uri or DEFAULT_REDIRECT_URI
+        eff_state = state or str(uuid.uuid4())
         params = {
             "client_id": config.client_id,
             "response_type": "code",
             "redirect_uri": eff_redirect,
-            "scope": config.scope or "openid",
+            "state": eff_state,
         }
+        if config.scope and config.scope.strip() and config.scope.strip() != "openid":
+            params["scope"] = config.scope.strip()
+
         sep = "&" if "?" in config.auth_url else "?"
         return f"{config.auth_url}{sep}{urllib.parse.urlencode(params)}"
+
+    def check_token_status(self, env_name: str) -> Dict[str, Any]:
+        """
+        Inspects the status of the cached OAuth2 token for an environment.
+        Returns:
+            dict with keys:
+                - status: 'valid', 'needs_refresh', 'expired', 'missing'
+                - expires_in: seconds remaining (or None)
+                - has_refresh_token: bool
+                - access_token: str (if valid)
+                - refresh_token: str (if present)
+        """
+        cached = self.load_token(env_name)
+        if not cached or "access_token" not in cached:
+            return {"status": "missing", "expires_in": None, "has_refresh_token": False}
+
+        now = time.time()
+        expires_at = float(cached.get("expires_at", 0))
+        has_refresh = bool(cached.get("refresh_token"))
+        time_left = expires_at - now
+
+        if time_left > self.SAFETY_BUFFER_SECONDS:
+            return {
+                "status": "valid",
+                "expires_in": time_left,
+                "has_refresh_token": has_refresh,
+                "access_token": cached["access_token"],
+                "refresh_token": cached.get("refresh_token"),
+            }
+        elif has_refresh:
+            return {
+                "status": "needs_refresh",
+                "expires_in": max(0.0, time_left),
+                "has_refresh_token": True,
+                "refresh_token": cached.get("refresh_token"),
+            }
+        else:
+            return {
+                "status": "expired",
+                "expires_in": max(0.0, time_left),
+                "has_refresh_token": False,
+            }
+
+    def ensure_authenticated_token(
+        self,
+        env_name: str,
+        config: IonapiConfig,
+        auto_login: bool = True,
+        notify_fn: Optional[Callable[[str], None]] = None,
+    ) -> str:
+        """
+        Ensures a valid OAuth2 token exists, attempting silent refresh or interactive login if needed,
+        emitting user-facing notifications via notify_fn.
+        """
+        st = self.check_token_status(env_name)
+        if st["status"] == "valid":
+            if notify_fn:
+                notify_fn(f"[AUTH STATUS] Active token verified for '{env_name}' (valid for {int(st['expires_in'])}s).")
+            return st["access_token"]
+
+        if st["status"] == "needs_refresh":
+            if notify_fn:
+                notify_fn(f"[AUTH ALERT] Token for '{env_name}' is near expiry or expired. Refreshing silently...")
+            try:
+                refreshed = self.refresh_access_token(config, st["refresh_token"])
+                if refreshed and "access_token" in refreshed:
+                    if "refresh_token" not in refreshed:
+                        refreshed["refresh_token"] = st["refresh_token"]
+                    if "expires_at" not in refreshed and "expires_in" in refreshed:
+                        refreshed["expires_at"] = time.time() + float(refreshed["expires_in"])
+                    self.save_token(env_name, refreshed)
+                    if notify_fn:
+                        notify_fn(f"[AUTH STATUS] Token successfully refreshed for '{env_name}'.")
+                    return refreshed["access_token"]
+            except Exception as e:
+                if notify_fn:
+                    notify_fn(f"[AUTH WARN] Silent token refresh failed: {e}")
+
+        # If Service Account is available:
+        if config.has_service_account():
+            if notify_fn:
+                notify_fn(f"[AUTH STATUS] Acquiring token using Service Account credentials for '{env_name}'...")
+            tok = self.acquire_service_account_token(config)
+            self.save_token(env_name, tok)
+            return tok["access_token"]
+
+        # Missing or un-refreshable:
+        if auto_login:
+            if notify_fn:
+                notify_fn(f"[AUTH ALERT] Authentication required for '{env_name}'. Initiating SSO login flow...")
+            from ln_auth_helper import execute_login
+            tok = execute_login(env_name=env_name, config=config, ping_after=False)
+            if notify_fn:
+                notify_fn(f"[AUTH SUCCESS] Authentication complete. Token acquired for '{env_name}'.")
+            return tok["access_token"]
+        else:
+            auth_url = self.build_authorization_url(config)
+            raise PermissionError(
+                f"No valid token or refresh token for environment '{env_name}'. "
+                f"Please login via 'python ln_studio_skill/tools/ln_component_builder.py login --workspace {env_name}' "
+                f"or authenticate via browser: {auth_url}"
+            )
 
     def get_access_token(
         self,
@@ -510,7 +618,8 @@ class OAuth2TokenManager:
           prompting the user to paste the `oob://localhost/lnstudio?code=...` redirect URL / code.
         """
         eff_redirect = redirect_uri or config.redirect_uri or DEFAULT_REDIRECT_URI
-        auth_url = self.build_authorization_url(config, redirect_uri=eff_redirect)
+        state = str(uuid.uuid4())
+        auth_url = self.build_authorization_url(config, redirect_uri=eff_redirect, state=state)
         prompt_fn = input_fn or input
 
         captured_code: Optional[str] = None
@@ -529,6 +638,18 @@ class OAuth2TokenManager:
                     port=port,
                     timeout=loopback_timeout,
                 )
+            elif eff_redirect.startswith("oob://") and input_fn is None:
+                # Use multi-channel auto-capture (Windows oob protocol + clipboard auto-detect)
+                try:
+                    from ln_auth_helper import listen_and_capture_auth_code
+                    captured_code = listen_and_capture_auth_code(
+                        env_name=env_name,
+                        auth_url=auth_url,
+                        expected_state=state,
+                        timeout=loopback_timeout,
+                    )
+                except Exception as e:
+                    print(f"[WARN] Multi-channel auto-capture fell back: {e}", file=sys.stderr)
             else:
                 try:
                     webbrowser.open(auth_url)
@@ -682,3 +803,27 @@ class OAuth2TokenManager:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return data
+
+
+def check_workspace_auth(workspace_name: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Checks the authentication status of a given workspace or the default workspace.
+    Returns status dict with environment name, token status, time left, etc.
+    """
+    from ln_workspace_manager import get_workspace_root, load_config
+    ws_root = get_workspace_root()
+    envs = list_configured_environments(ws_root)
+    ws = workspace_name
+    if not ws:
+        cfg = load_config()
+        ws = cfg.get("default_workspace") or (list(envs.keys())[0] if envs else None)
+    if not ws or ws not in envs:
+        return {"status": "workspace_not_found", "workspace": ws}
+    cloud_env = envs[ws]["cloud_env"] or ws
+    mgr = OAuth2TokenManager()
+    st = mgr.check_token_status(cloud_env)
+    st["workspace"] = ws
+    st["cloud_env"] = cloud_env
+    return st
+
+

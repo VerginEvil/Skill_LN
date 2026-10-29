@@ -177,8 +177,109 @@ def cmd_connect(args):
             sys.exit(1)
 
 
-def get_server_client(workspace_name: Optional[str] = None, mock: bool = False) -> Tuple[LNStudioServerClient, Dict[str, Any]]:
+def resolve_ionapi_config(
+    workspace_name: Optional[str] = None,
+    env_name: Optional[str] = None,
+    ionapi_file: Optional[str] = None,
+) -> Tuple[str, IonapiConfig]:
+    """Resolves IonapiConfig from explicit file, knowledge_docs, or cloudenv.prefs."""
+    if ionapi_file:
+        p = Path(ionapi_file).resolve()
+        if not p.exists():
+            raise FileNotFoundError(f".ionapi file not found: {p}")
+        cfg = parse_ionapi(p)
+        name = env_name or p.stem
+        return name, cfg
+
+    eff_env = env_name or workspace_name
+    from ln_workspace_manager import get_repo_root
+    repo_root = get_repo_root()
+
+    # 1. Search knowledge_docs/*.ionapi
+    if eff_env:
+        cand = repo_root / "knowledge_docs" / f"{eff_env}.ionapi"
+        if cand.exists():
+            return eff_env, parse_ionapi(cand)
+        for f in (repo_root / "knowledge_docs").glob("*.ionapi"):
+            if eff_env.lower() in f.stem.lower():
+                return f.stem, parse_ionapi(f)
+
+    # 2. Check cloudenv.prefs in studio_path
+    from ln_workspace_manager import get_studio_installation_path
+    studio_path = get_studio_installation_path()
+    cloudenv_prefs = studio_path / "configuration" / ".settings" / "com.infor.erpln.jca.connectivity.cloudenv.prefs"
+    if cloudenv_prefs.exists():
+        from ln_env_manager import _read_prefs_file
+        props = _read_prefs_file(cloudenv_prefs)
+        count = int(props.get("EnvironmentsCount", "0"))
+        for i in range(count):
+            name_i = props.get(f"EnvironmentName{i}", "")
+            if not eff_env or name_i.lower() == eff_env.lower():
+                cfg = IonapiConfig(
+                    tenant_id=props.get(f"TenantID{i}", ""),
+                    client_name="LNStudio",
+                    device_type="11",
+                    client_id=props.get(f"ClientID{i}", ""),
+                    client_secret=props.get(f"ClientSecret{i}", ""),
+                    gateway_url=props.get(f"GatewayURL{i}", ""),
+                    auth_url=props.get(f"AuthorizationCodeURL{i}", ""),
+                    token_url=props.get(f"RequestTokenURL{i}", ""),
+                    revoke_url=props.get(f"RevokeTokenURL{i}", ""),
+                    scope=props.get(f"AppScope{i}", ""),
+                )
+                return name_i, cfg
+
+    raise ValueError(f"Could not resolve .ionapi credentials for '{eff_env or 'unknown'}'. Please pass --ionapi <path>.")
+
+
+def cmd_login(args):
+    """Handles 'login' subcommand with multi-channel auto-capture."""
+    from ln_auth_helper import register_oob_protocol, unregister_oob_protocol, execute_login
+
+    if getattr(args, "register_protocol", False):
+        if register_oob_protocol():
+            print("[SUCCESS] Registered Windows 'oob://' custom URI scheme handler in HKCU.")
+        else:
+            print("[ERROR] Failed to register protocol handler.", file=sys.stderr)
+        return
+
+    if getattr(args, "unregister_protocol", False):
+        if unregister_oob_protocol():
+            print("[SUCCESS] Unregistered Windows 'oob://' protocol handler from HKCU.")
+        return
+
+    ws = args.workspace
+    env_name, config = resolve_ionapi_config(
+        workspace_name=ws,
+        env_name=args.env_name,
+        ionapi_file=args.ionapi,
+    )
+
+    execute_login(
+        env_name=env_name,
+        config=config,
+        workspace_name=ws,
+        ping_after=not getattr(args, "no_ping", False),
+        timeout=getattr(args, "timeout", 180.0),
+    )
+
+
+def get_server_client(
+    workspace_name: Optional[str] = None,
+    mock: bool = False,
+    target_object: Optional[str] = None,
+    target_type: Optional[str] = None,
+    target_activity: Optional[str] = None,
+    notify: bool = True,
+    auto_auth: bool = True,
+) -> Tuple[LNStudioServerClient, Dict[str, Any]]:
     """Helper to resolve workspace connectivity and instantiate LNStudioServerClient."""
+    if target_object and notify:
+        act_info = f" | Activity: {target_activity}" if target_activity else ""
+        print(f"\n[PRE-FETCH ALERT] Accessing Infor LN Server / Activity:")
+        print(f"  Target:     {target_type or 'component'} '{target_object}'{act_info}")
+        print(f"  Workspace:  {workspace_name or 'default'}")
+
     if mock:
         transport = MockJcaTransport()
         transport.register_response(
@@ -270,8 +371,20 @@ def get_server_client(workspace_name: Optional[str] = None, mock: bool = False) 
     if not cfg_found:
         raise RuntimeError(f"CloudEnvironment '{cloud_env}' not found in cloudenv.prefs. Run 'connect' first.")
 
+    if notify:
+        print(f"[PRE-FLIGHT] Verifying authentication for workspace '{ws}' (CloudEnv: '{cloud_env}')...")
+
     token_mgr = OAuth2TokenManager()
-    token = token_mgr.get_access_token(cloud_env, cfg_found)
+    def _notify_auth(msg: str):
+        if notify:
+            print(f"  {msg}")
+
+    token = token_mgr.ensure_authenticated_token(
+        env_name=cloud_env,
+        config=cfg_found,
+        auto_login=auto_auth,
+        notify_fn=_notify_auth,
+    )
 
     transport = HeadlessJavaJcaTransport(
         gateway_url=cfg_found.gateway_url,
@@ -366,7 +479,13 @@ def cmd_clean_activity(args):
 
 def cmd_explorer(args):
     """Handles 'explorer' subcommand."""
-    client, _ = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, _ = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_object=getattr(args, "filter", "*"),
+        target_type=getattr(args, "type", "all"),
+        notify=not getattr(args, "json", False),
+    )
     comps = browse_components(
         client=client,
         package=getattr(args, "package", "") or "",
@@ -386,7 +505,14 @@ def cmd_explorer(args):
 
 def cmd_get_component(args):
     """Handles 'get-component' subcommand."""
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_object=args.name,
+        target_type=args.type,
+        target_activity=getattr(args, "activity", None),
+        notify=not getattr(args, "json", False),
+    )
     if getattr(args, "inspect", False):
         summary = inspect_component(client=client, comp_type=args.type, comp_name=args.name)
         if getattr(args, "json", False):
@@ -419,7 +545,13 @@ def cmd_get_component(args):
 
 def cmd_sync_reference(args):
     """Handles 'sync-reference' subcommand: downloads read-only reference objects into .reference/<type>/ and updates .ln_dd_cache.json."""
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_object=args.name,
+        target_type=args.type,
+        notify=not getattr(args, "json", False),
+    )
     ws_dir = Path(args.output_dir).resolve() if getattr(args, "output_dir", None) else Path(env_info.get("workspace_path") or Path.cwd()).resolve()
     dd_cache = Path(args.dd_cache).resolve() if getattr(args, "dd_cache", None) else (ws_dir / ".ln_dd_cache.json")
     res = sync_reference(
@@ -441,7 +573,14 @@ def cmd_sync_reference(args):
 
 def cmd_clone_component(args):
     """Handles 'clone-component' subcommand."""
-    client, _ = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, _ = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_object=args.source,
+        target_type=args.type,
+        target_activity=getattr(args, "activity", None),
+        notify=not getattr(args, "json", False),
+    )
     act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
     act_dir = Path(act_info["path"])
     reg = not getattr(args, "no_server_register", False)
@@ -459,7 +598,14 @@ def cmd_clone_component(args):
 
 def cmd_checkout_component(args):
     """Handles 'checkout-component' subcommand."""
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_object=args.name,
+        target_type=args.type,
+        target_activity=getattr(args, "activity", None),
+        notify=not getattr(args, "json", False),
+    )
     if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
         act_dir = Path(args.activity).resolve()
     else:
@@ -1327,6 +1473,16 @@ def main():
     sp_envs.add_argument("--workspace-root", help="Custom workspace discovery root directory")
     sp_envs.add_argument("--json", action="store_true", help="Output results in JSON format")
 
+    # login
+    sp_login = subparsers.add_parser("login", help="Authenticate with Infor CloudSuite SSO and acquire active OAuth2 tokens")
+    sp_login.add_argument("--workspace", help="Target customer workspace or CloudEnvironment name (e.g. SCS_TST)")
+    sp_login.add_argument("--ionapi", help="Path to .ionapi credentials file (auto-discovered from workspace if omitted)")
+    sp_login.add_argument("--env-name", help="Custom CloudEnvironment name")
+    sp_login.add_argument("--register-protocol", action="store_true", help="Register Windows 'oob://' custom URI scheme handler in HKCU")
+    sp_login.add_argument("--unregister-protocol", action="store_true", help="Unregister Windows 'oob://' custom URI scheme handler")
+    sp_login.add_argument("--no-ping", action="store_true", help="Skip live JCA ping verification after acquiring token")
+    sp_login.add_argument("--timeout", type=float, default=180.0, help="Timeout in seconds to wait for login (default: 180s)")
+
     # connect
     sp_conn = subparsers.add_parser("connect", help="Import .ionapi credentials and synchronize Eclipse preferences")
     sp_conn.add_argument("--ionapi", required=True, help="Path to .ionapi credentials file")
@@ -1527,6 +1683,7 @@ def main():
     commands = {
         "workspace": cmd_workspace,
         "environments": cmd_environments,
+        "login": cmd_login,
         "connect": cmd_connect,
         "project": cmd_project,
         "activity": cmd_activity,
