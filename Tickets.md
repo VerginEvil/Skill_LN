@@ -1,173 +1,42 @@
-# Task Tickets: Infor LN Studio Headless JCA Connectivity, Explorers, 12-Component Generators, Pre-Commit SCM & Stdio MCP Server
+# Task Tickets: Automated BDE SCM Check-Out / Check-In Engine, Protocol Recovery & Batch Automation
 
-- **Active Specification**: [`docs/SPEC_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md`](docs/SPEC_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md)
-- **Active Implementation Plan**: [`docs/PLAN_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md`](docs/PLAN_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md)
-- **Architecture Decision Records**:
-  - [`docs/adr/0001-plan-skill-update-and-coding-best-practices.md`](docs/adr/0001-plan-skill-update-and-coding-best-practices.md)
-  - [`docs/adr/0002-ln-studio-skill-self-contained-toolchain.md`](docs/adr/0002-ln-studio-skill-self-contained-toolchain.md)
-  - [`docs/adr/0003-ln-studio-object-modeling-and-static-verification.md`](docs/adr/0003-ln-studio-object-modeling-and-static-verification.md)
-  - [`docs/adr/0004-4gl-coding-standards-and-caveats.md`](docs/adr/0004-4gl-coding-standards-and-caveats.md)
-  - [`docs/adr/0005-progguide-studio-dictionaries-and-audit-engine.md`](docs/adr/0005-progguide-studio-dictionaries-and-audit-engine.md)
-  - [`docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md`](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md)
-  - [`docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md`](docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md)
+- **Active Specification**: [`docs/SPEC_AUTOMATED_SCM_CHECKIN_CHECKOUT.md`](docs/SPEC_AUTOMATED_SCM_CHECKIN_CHECKOUT.md)
+- **Active Implementation Plan**: [`docs/PLAN_AUTOMATED_SCM_CHECKIN_CHECKOUT.md`](docs/PLAN_AUTOMATED_SCM_CHECKIN_CHECKOUT.md)
+- **Architecture Decision Record**: [`docs/adr/0011-automated-scm-engine-refactoring-and-protocol-recovery.md`](docs/adr/0011-automated-scm-engine-refactoring-and-protocol-recovery.md)
 - **Target Skill**: `ln_studio_skill`
 
 ---
 
-## Active Batch Dependency Graph (`Batch3: Headless JCA, Explorers, 12-Type Generators, SCM & MCP`)
+## Active Batch Dependency Graph (`Batch: Automated SCM Engine Refactoring & DV2600401 Delivery`)
 
 ```mermaid
 flowchart TD
-    subgraph Batch3["Batch: Headless JCA Connectivity, Explorers, 12-Type Generators, Pre-Commit SCM & MCP"]
-        J01["01: .ionapi Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge"]
-        J02["02: Software Project & Activity Explorers + Local Activity Bootstrap"]
-        J03["03: Component Explorer & Server Get / Clone Workflows"]
-        J04["04: Pre-Commit SCM Engine (Check-Out, Uncheckout, Put, Check-In & End-Activity Block)"]
-        J05["05: Remote Server Build (Compile, CRDD, CreateTables, VSC), deploy-test & prepare-end-activity"]
-        J06["06: Message (.msg), Question (.qst/.que), Function (.fnc/.fun) & Additional File (.add) Generators"]
-        J07["07: Report (.rpt & .rptdsrc) Ecore Generator & Script Synchronizer"]
-        J08["08: Native Stdio MCP Server (ln_studio_mcp.py), mcp-setup CLI & Documentation Sync"]
+    T01["01: Authentic BDE SCM XML Protocol Engine"]
+    T02["02: Verification Receipts & Anti-Deception Hard Guardrail"]
+    T03["03: Batch Activity SCM & Dirty Component Auto-Discovery"]
+    T04["04: Extension Modeler Auto-Segregation & Stdio MCP Server Suite"]
+    T05["05: End-to-End Verification & Live DV2600401 Delivery"]
 
-        J01 --> J02
-        J01 --> J03
-        J02 --> J04
-        J03 --> J04
-        J04 --> J05
-        J01 --> J06
-        J06 --> J07
-        J05 --> J08
-        J07 --> J08
-    end
+    T01 --> T02
+    T01 --> T03
+    T02 --> T03
+    T03 --> T04
+    T04 --> T05
 
     classDef ready fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
-    class J01,J02,J03,J04,J05,J06,J07,J08 ready;
+    class T01,T02,T03,T04,T05 ready;
 ```
 
 ---
 
-## Active Ticket Roster (Batch: Headless JCA Connectivity, Explorers, 12-Component Generators, Pre-Commit SCM & Stdio MCP Server)
+## Active Ticket Roster
 
-- **Local Issues Directory**: [`.scratch/headless-jca-scm-mcp/issues/`](.scratch/headless-jca-scm-mcp/issues/)
+- **Local Issues Directory**: [`.scratch/scm-protocol-recovery-and-batch-automation/issues/`](.scratch/scm-protocol-recovery-and-batch-automation/issues/)
 
 | ID | Title | Blocked by | Status | Ticket File |
 |---|---|---|---|---|
-| **01** | `.ionapi` Environment Manager, OAuth2 Lifecycle & Headless JCA Bridge | *None* | `completed` | [`01-ionapi-env-manager-and-jca-bridge.md`](.scratch/headless-jca-scm-mcp/issues/01-ionapi-env-manager-and-jca-bridge.md) |
-| **02** | Software Project & Activity Explorers + Local Activity Bootstrap | **01** | `completed` | [`02-project-and-activity-explorers.md`](.scratch/headless-jca-scm-mcp/issues/02-project-and-activity-explorers.md) |
-| **03** | Component Explorer & Server `Get` / `Clone` Workflows | **01** | `completed` | [`03-component-explorer-get-and-clone.md`](.scratch/headless-jca-scm-mcp/issues/03-component-explorer-get-and-clone.md) |
-| **04** | Pre-Commit SCM Engine (`Check-Out`, `Uncheckout`, `Put`, `Check-In` & Hard-Blocked `End Activity`) | **02, 03** | `completed` | [`04-pre-commit-scm-engine.md`](.scratch/headless-jca-scm-mcp/issues/04-pre-commit-scm-engine.md) |
-| **05** | Remote Server Build (`Compile`, `CRDD`, `CreateTables`, `VSC`), `deploy-test` & `prepare-end-activity` | **04** | `completed` | [`05-remote-build-deploy-test-and-precommit.md`](.scratch/headless-jca-scm-mcp/issues/05-remote-build-deploy-test-and-precommit.md) |
-| **06** | Message (`.msg`), Question (`.qst`/`.que`), Function (`.fnc`/`.fun`) & Additional File (`.add`) Generators | **01** | `completed` | [`06-msg-qst-fnc-add-generators.md`](.scratch/headless-jca-scm-mcp/issues/06-msg-qst-fnc-add-generators.md) |
-| **07** | Report (`.rpt` & `.rptdsrc`) Ecore Generator & Script Synchronizer | **06** | `completed` | [`07-report-ecore-generator-and-validator.md`](.scratch/headless-jca-scm-mcp/issues/07-report-ecore-generator-and-validator.md) |
-| **08** | Native Stdio MCP Server (`ln_studio_mcp.py`), `mcp-setup` CLI & Documentation Sync | **05, 07** | `completed` | [`08-stdio-mcp-server-and-docs.md`](.scratch/headless-jca-scm-mcp/issues/08-stdio-mcp-server-and-docs.md) |
-
----
-
-## Previous Dependency Graph (Completed Batches 1 & 2)
-
-```mermaid
-flowchart TD
-    subgraph Batch1["Batch: Build 0640 Dictionaries & Standalone Auditor"]
-        T01["01: Multi-Tier Knowledge Extractor"]
-        T02["02: Enriched Grep-Friendly Function Index"]
-        T03["03: Standalone 4GL & DAL Audit Engine"]
-        T04["04: Synchronized Rule Alignment in ln_studio_skill"]
-        T05["05: Export VS Code Extension Assets Package"]
-        T06["06: Test Suite, Documentation & Catalog Indexing"]
-
-        T01 --> T02
-        T01 --> T03
-        T02 --> T03
-        T03 --> T04
-        T01 --> T05
-        T03 --> T06
-        T04 --> T06
-        T05 --> T06
-    end
-
-    subgraph Batch2["Batch: Extension Modeler Boundary & Local Hook Workflow"]
-        T07["07: SCM Guardrails & Extension Write Interception"]
-        T08["08: Extension Templates & Project Scaffolding CLI"]
-        T09["09: Studio Ingestion & Hook Extraction CLI"]
-        T10["10: Static Verification Engine for Extension Hooks"]
-        T11["11: Activity Validator Realignment"]
-        T12["12: Test Suite, Verification & Skill Documentation"]
-
-        T07 --> T11
-        T08 --> T09
-        T08 --> T10
-        T07 --> T12
-        T09 --> T12
-        T10 --> T12
-        T11 --> T12
-    end
-
-    classDef done fill:#d4edda,stroke:#28a745,stroke-width:2px;
-
-    class T01,T02,T03,T04,T05,T06,T07,T08,T09,T10,T11,T12 done;
-```
-
----
-
-## Completed Ticket Roster (Batch: Build 0640 Dictionaries, Cloud Governance & Standalone Auditor)
-
-| ID | Title | Blocked by | Status | Target Deliverable |
-|---|---|---|---|---|
-| **01** | Multi-Tier Knowledge Extractor | *None* | `done` | `tools/extract_studio_knowledge.py`, `functions_db.json`, `studio_syntax_completion.json`, `templates/` |
-| **02** | Enriched Grep-Friendly Function Index | **01** | `done` | `erp-ln-progguide/references/FUNCTION_INDEX.md` |
-| **03** | Standalone 4GL & DAL Audit Engine | **01, 02** | `done` | `erp-ln-progguide/scripts/audit_4gl.py` |
-| **04** | Synchronized Rule Alignment with `ln_studio_skill` | **01, 03** | `done` | `ln_studio_skill/tools/check_4gl_script.py` |
-| **05** | Export VS Code Extension Assets Package | **01** | `done` | `export/vscode/syntaxes/`, `snippets/`, `language-configuration.json`, `completions.json`, `README.md` |
-| **06** | Test Suite, Documentation & Catalog Indexing | **03, 04, 05** | `done` | `erp-ln-progguide/tests/test_audit_4gl.py`, `erp-ln-progguide/SKILL.md`, `INDEX.tsv` |
-
----
-
-## Completed Ticket Roster (Batch: Extension Modeler Boundary & Local Hook Workflow)
-- **Specification**: [`docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/SPEC_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
-- **Implementation Plan**: [`docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md`](docs/PLAN_LN_STUDIO_EXTENSION_READONLY_AND_LNUI_WORKFLOW.md)
-- **ADR**: [`docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md`](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md)
-
-| ID | Title | Blocked by | Status | Target Deliverable |
-|---|---|---|---|---|
-| **07** | SCM Guardrails & Extension Write Interception | *None* | `done` | `scm_guardrails.py`, `inject_ln_script.py`, `generate_ln_library.py` |
-| **08** | Extension Templates & Project Scaffolding CLI (`new-extension`) | *None* | `done` | `templates/*_extension_template.4gl`, `ln_extension_manager.py`, `ln_component_builder.py` |
-| **09** | Studio Ingestion & Hook Extraction CLI (`import-extension` & `extension-hooks`) | **08** | `done` | `ln_extension_manager.py`, `ln_component_builder.py` |
-| **10** | Static Verification Engine for Extension Hooks | **08** | `done` | `check_4gl_script.py`, `scripts/audit_4gl.py` |
-| **11** | Activity Validator Realignment (`validate_ln_activity.py`) | **07** | `done` | `validate_ln_activity.py`, `admin_sync.py` |
-| **12** | Test Suite, Verification & Skill Documentation | **07, 09, 10, 11** | `done` | `test_extension_workflow.py`, `SKILL.md`, `README.md`, `GLOSSARY.md` |
-
----
-
-## Archive / Completed Batches
-
-<details>
-<summary><b>Batch: Baan 4GL Coding Standards, Anti-Patterns & Runtime Caveats (Completed)</b></summary>
-
-- **Specification**: [`docs/SPEC_4GL_CODING_STANDARDS_AND_CAVEATS.md`](docs/SPEC_4GL_CODING_STANDARDS_AND_CAVEATS.md)
-- **Local Issues Directory**: [`.scratch/4gl-coding-standards-and-caveats/issues/`](.scratch/4gl-coding-standards-and-caveats/issues/)
-
-| ID | Title | Status | Ticket File |
-|---|---|---|---|
-| **01** | Domain, Scope & Preprocessor Standards | `done` | [`01-domain-scope-and-preprocessor-standards.md`](.scratch/4gl-coding-standards-and-caveats/issues/01-domain-scope-and-preprocessor-standards.md) |
-| **02** | Function Contracts & Buffer Collision Protection | `done` | [`02-function-contracts-and-buffer-collision-protection.md`](.scratch/4gl-coding-standards-and-caveats/issues/02-function-contracts-and-buffer-collision-protection.md) |
-| **03** | Array Dimensions & Fatal Runtime Caveats | `done` | [`03-array-dimensions-and-fatal-runtime-caveats.md`](.scratch/4gl-coding-standards-and-caveats/issues/03-array-dimensions-and-fatal-runtime-caveats.md) |
-| **04** | Skill Guardrails Elevation & Cross-Linking | `done` | [`04-skill-guardrails-elevation-and-cross-linking.md`](.scratch/4gl-coding-standards-and-caveats/issues/04-skill-guardrails-elevation-and-cross-linking.md) |
-| **05** | Catalog Indexing & End-to-End Verification | `done` | [`05-catalog-indexing-and-search-verification.md`](.scratch/4gl-coding-standards-and-caveats/issues/05-catalog-indexing-and-search-verification.md) |
-
-</details>
-
-<details>
-<summary><b>Batch: LN Studio Object Modeling, SCM Guardrails & Static Verification Engine (Completed)</b></summary>
-
-- **Specification**: [`docs/SPEC_LN_STUDIO_OBJECT_AND_VALIDATION.md`](docs/SPEC_LN_STUDIO_OBJECT_AND_VALIDATION.md)
-- **Local Issues Directory**: [`.scratch/ln-studio-object-validation/issues/`](.scratch/ln-studio-object-validation/issues/)
-
-| ID | Title | Status | Ticket File |
-|---|---|---|---|
-| **01** | Pinned Studio Path, Explicit Workspace Resolution, Read-Only Guardrails & 12-Extension `.admin` Sync | `done` | [`01-workspace-scm-guardrails-and-admin-sync.md`](.scratch/ln-studio-object-validation/issues/01-workspace-scm-guardrails-and-admin-sync.md) |
-| **02** | High-Fidelity Table, Domain & Label Modeling and Generation | `done` | [`02-table-domain-label-fidelity-and-generation.md`](.scratch/ln-studio-object-validation/issues/02-table-domain-label-fidelity-and-generation.md) |
-| **03** | Multi-Archetype Session, MMT Controller/Satellite, Library & Menu Generation | `done` | [`03-session-mmt-library-and-menu-generation.md`](.scratch/ln-studio-object-validation/issues/03-session-mmt-library-and-menu-generation.md) |
-| **04** | LN Studio Syntax Highlighting & Code Completion Extractor + Static 4GL Inspector | `done` | [`04-studio-syntax-completion-extractor-and-script-checker.md`](.scratch/ln-studio-object-validation/issues/04-studio-syntax-completion-extractor-and-script-checker.md) |
-| **05** | Four-Layer Object, Cross-Reference & Script Validator (`validate` & `--fix`) | `done` | [`05-four-layer-object-and-workspace-validator.md`](.scratch/ln-studio-object-validation/issues/05-four-layer-object-and-workspace-validator.md) |
-| **06** | Skill Seam Alignment, XML Schema Reference Expansion, Indexing & Live Deployment Sync | `done` | [`06-skill-seam-reference-indexing-and-live-sync.md`](.scratch/ln-studio-object-validation/issues/06-skill-seam-reference-indexing-and-live-sync.md) |
-
-</details>
+| **01** | Authentic BDE SCM XML Protocol Engine | *None* | `ready-for-agent` | [`01-authentic-bde-scm-protocol-engine.md`](.scratch/scm-protocol-recovery-and-batch-automation/issues/01-authentic-bde-scm-protocol-engine.md) |
+| **02** | Verification Receipts & Anti-Deception Hard Guardrail | **01** | `ready-for-agent` | [`02-verification-receipts-and-anti-deception-guardrail.md`](.scratch/scm-protocol-recovery-and-batch-automation/issues/02-verification-receipts-and-anti-deception-guardrail.md) |
+| **03** | Batch Activity SCM & Dirty Component Auto-Discovery | **01, 02** | `ready-for-agent` | [`03-batch-activity-scm-and-dirty-auto-discovery.md`](.scratch/scm-protocol-recovery-and-batch-automation/issues/03-batch-activity-scm-and-dirty-auto-discovery.md) |
+| **04** | Extension Modeler Auto-Segregation & Stdio MCP Server Suite | **03** | `ready-for-agent` | [`04-extension-modeler-segregation-and-mcp-suite.md`](.scratch/scm-protocol-recovery-and-batch-automation/issues/04-extension-modeler-segregation-and-mcp-suite.md) |
+| **05** | End-to-End Verification & Live DV2600401 Delivery | **04** | `ready-for-agent` | [`05-end-to-end-verification-and-dv2600401-delivery.md`](.scratch/scm-protocol-recovery-and-batch-automation/issues/05-end-to-end-verification-and-dv2600401-delivery.md) |
