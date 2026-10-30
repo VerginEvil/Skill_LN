@@ -4,6 +4,8 @@ implementation/
 docs/*
 !docs/adr/
 !docs/adr/**
+!docs/agents/
+!docs/agents/**
 __pycache__/
 *.pyc
 *.pyo
