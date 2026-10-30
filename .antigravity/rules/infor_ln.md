@@ -135,3 +135,34 @@ The AI Assistant and CLI tools MUST explicitly notify the user beforehand:
    - Launch or guide the user through the self-contained multi-channel SSO login (`ln_login` / `ln_auth_helper.py` via Windows `oob://` protocol handler or clipboard detection).
 4. **Resilience**: Never fail silently or crash unexpectedly without alerting the user of the authentication and connection status.
 
+---
+
+## 5. Extension Modeler (`ttext1500m000`) Compiler Rules & Static Guardrails (ADR 0013)
+
+Infor ERP LN Cloud Extension Modeler (`ttext1500m000`) generates 4GL code from discrete hook blocks wrapped in `#context_on "<hook>"` ... `#context_off`. To eliminate Baan C compiler errors (`bic6.2`), developers and AI assistants MUST enforce the following guardrails:
+
+### 5.1 Declarations Context & Header Placement (`EXT001`)
+- The Extension Modeler code generator **only** routes code enclosed in `#context_on "declarations"` ... `#context_off` into the declarations segment of the compiled script.
+- Any `#include` header (such as `<bic_dam>`, `<bic_dal2>`, `<bic_sessionext>`, `<bic_tableext>`, `<bic_text>`) placed outside `#context_on "declarations"` is ignored by the code generator, resulting in compiler failures (`Unresolved reference to function 'dal.*'`).
+- Whenever `dal.*` operations (`dal.change.object`, `dal.set.field`, `dal.save.object`, etc.) are invoked in extension scripts, `#include <bic_dam>` (or `<bic_dal2>`) MUST be present inside `#context_on "declarations"`.
+
+### 5.2 Form Command Hook Prototypes & Void Return Constraints (`DAL002`, `DAL003`)
+- **Form Command Hooks**:
+  - Visibility / Enablement hooks (`.is.visible`, `.is.enabled`): Prototype MUST return `boolean` (`return(true)` / `return(false)`).
+  - Command execution hooks (`.before.command`, `.after.command`): Standard prototype is `void` (or `long`).
+- **Void Function Return Constraint**: In Baan 4GL, returning any expression with a value (e.g. `return(true)` or `return(0)`) from a `void` function triggers a fatal compiler error: `Return value for void function not allowed`. Always use bare `return` (or `return()`) without an argument.
+- **Command Interception**: To cancel standard command execution inside a `function.<cmd>.before.command()` hook, call `choice.again()` and issue `return;`.
+
+### 5.3 Cross-Component Hook Scope Separation (`EXT002`)
+- **Table Extensions (`.est`, `^[a-z]{5}\d{3}$`)**:
+  - Supported: Table DAL hooks (`before.save.object`, `after.save.object`, `before.destroy.object`, `method.is.allowed`, field hooks).
+  - Prohibited: Form Command hooks (`function.<cmd>.before.command`, `function.<cmd>.is.enabled`, etc.).
+- **Session Extensions (`.ess`, `m\d{3}$`)**:
+  - Supported: Form Command hooks, session UI hooks, custom helper functions.
+  - Prohibited: Table DAL lifecycle hooks (`before.save.object`, `after.save.object`, etc.).
+
+### 5.4 Session Extension Archetype & Transaction Boundaries
+- Session Extensions (`whinh4131m000.cln`, `ess`) are classified under the `general` archetype (UI program scripts).
+- When a Session Extension coordinates business operations across secondary tables via DAL 2 (`dal.change.object()`), it is fully permitted to initiate and manage its own transaction boundaries (`db.retry.point()`, `commit.transaction()`, `abort.transaction()`). The auditor MUST NOT flag `DAL005` on Session Extensions.
+
+

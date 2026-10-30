@@ -77,15 +77,22 @@ DEFAULT_DAL_FIELD_HOOK_SUFFIXES = {
 
 
 class Diagnostic:
-    def __init__(self, file_path: str, line: int, col: int, severity: str, message: str):
+    def __init__(self, file_path: str, line: int, col: int, severity: str, message_or_code: str, message: Optional[str] = None, raw_line: str = ""):
         self.file_path = file_path
         self.line = line
         self.col = col
         self.severity = severity.upper()  # ERROR or WARNING
-        self.message = message
+        if message is not None:
+            self.code = message_or_code
+            self.message = message
+        else:
+            self.code = ""
+            self.message = message_or_code
+        self.raw_line = raw_line
 
     def __str__(self) -> str:
-        return f"[{self.severity}] {self.file_path}:{self.line}:{self.col}: {self.message}"
+        code_str = f" [{self.code}]" if self.code else ""
+        return f"[{self.severity}]{code_str} {self.file_path}:{self.line}:{self.col}: {self.message}"
 
 
 def load_syntax_catalog() -> Dict[str, Any]:
@@ -264,7 +271,21 @@ class ScriptChecker:
                     inc_name = inc_name[:-2]
                 includes_found.add(inc_name)
 
-        is_dal = (
+        path_lower = file_path.lower()
+        content_lower = script_text.lower()
+        stem = Path(file_path).stem.lower() if file_path and file_path != "<stdin>" else ""
+
+        is_session = (
+            re.search(r"[a-z]{5}\d{3,4}[ms]\d{3}", path_lower) is not None
+            or re.search(r"m\d{3}", path_lower) is not None
+            or "bic_sessionext" in content_lower
+            or "bic_interface" in content_lower
+            or "/session" in file_path.replace("\\", "/").lower()
+            or "\\session" in path_lower
+            or "ess" in path_lower
+        )
+
+        is_dal = not is_session and (
             file_path.lower().endswith((".dal", ".dalsrc"))
             or "dal2" in file_path.lower()
             or "before.save.object" in script_text.lower()
@@ -274,6 +295,32 @@ class ScriptChecker:
             or "/table/" in file_path.replace("\\", "/").lower()
             or "\\table\\" in file_path.lower()
         )
+
+        is_extension = (
+            "#context_on" in content_lower
+            or path_lower.endswith(".cln")
+            or "_ext.4gl" in path_lower
+            or "/est/" in file_path.replace("\\", "/").lower()
+            or "/ess/" in file_path.replace("\\", "/").lower()
+            or "table_extension" in path_lower
+            or "session_extension" in path_lower
+        )
+        is_session_ext = is_extension and is_session
+        is_table_ext = is_extension and not is_session and (
+            re.match(r"^(?:txest)?[a-z]{5}\d{3}(?:_ext)?$", stem) is not None
+            or "bic_tableext" in content_lower
+            or "/table" in file_path.replace("\\", "/").lower()
+            or "\\table" in path_lower
+            or "est" in path_lower
+        )
+
+        current_context: Optional[str] = None
+        declarations_includes: Set[str] = set()
+        dal_call_lines: List[Tuple[int, str]] = []
+        current_func_name: Optional[str] = None
+        current_func_ret_type: Optional[str] = None
+        current_func_is_void: bool = False
+        current_func_hook_suffix: Optional[str] = None
 
         # Block balance stacks: (block_type, line_number)
         block_stack: List[Tuple[str, int]] = []
@@ -321,9 +368,10 @@ class ScriptChecker:
             # 2. Block Balance Checks
             # ----------------------------------------------------
             # #context_on / #context_off check
-            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', code_line, re.IGNORECASE)
+            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', raw_line, re.IGNORECASE)
             if m_ctx:
                 ctx_name = m_ctx.group(1) or "unknown"
+                current_context = ctx_name.lower().strip()
                 if context_stack:
                     parent_name, parent_line = context_stack[-1]
                     diagnostics.append(Diagnostic(
@@ -331,7 +379,37 @@ class ScriptChecker:
                         f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_name}' (line {parent_line})."
                     ))
                 context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
-            if re.match(r"^\s*#context_off\b", code_line, re.IGNORECASE):
+
+                # Check EXT002 on context block name
+                ctx_lower = ctx_name.lower().strip()
+                is_cmd_hook = (
+                    ctx_lower.startswith("function.")
+                    and (ctx_lower.endswith(".before.command") or ctx_lower.endswith(".after.command")
+                         or ctx_lower.endswith(".is.enabled") or ctx_lower.endswith(".is.visible"))
+                ) or ctx_lower.endswith(".before.command") or ctx_lower.endswith(".after.command")
+
+                is_dal_hook = (
+                    ctx_lower in ("before.save.object", "after.save.object", "before.destroy.object",
+                                  "after.destroy.object", "before.open.object.set", "after.open.object.set",
+                                  "method.is.allowed", "set.object.defaults", "ue.before.save", "ue.after.save")
+                    or any(ctx_lower.endswith(sfx) for sfx in self.dal_field_hook_suffixes)
+                )
+
+                if is_table_ext and is_cmd_hook:
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, 1, "ERROR", "EXT002",
+                        f"EXT002: Form Command hook '{ctx_name}' is not supported in Table Extension; Form Command hooks belong in Session Extensions.",
+                        raw_line
+                    ))
+                elif is_session_ext and is_dal_hook:
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, 1, "ERROR", "EXT002",
+                        f"EXT002: Table DAL hook '{ctx_name}' is not supported in Session Extension; Table DAL hooks belong in Table Extensions.",
+                        raw_line
+                    ))
+
+            if re.match(r"^\s*#context_off\b", raw_line, re.IGNORECASE):
+                current_context = None
                 if not context_stack:
                     diagnostics.append(Diagnostic(
                         file_path, line_no, 1, "ERROR",
@@ -339,6 +417,25 @@ class ScriptChecker:
                     ))
                 else:
                     context_stack.pop()
+
+            # EXT001: Check #include placement in Extension Scripts
+            if is_extension:
+                m_inc = re.match(r'^\s*#include\s+([<"][^>"]+[>"])', raw_line, re.IGNORECASE)
+                if m_inc:
+                    inc_raw = m_inc.group(1)
+                    inc_clean = inc_raw.strip("<>\".h").lower()
+                    if current_context == "declarations":
+                        declarations_includes.add(inc_clean)
+                    else:
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR", "EXT001",
+                            f"EXT001: Direct '#include {inc_raw}' outside '#context_on \"declarations\"' will not be compiled by Extension Modeler; move inside '#context_on \"declarations\"' block.",
+                            raw_line
+                        ))
+
+            # EXT001: Track DAL calls in Extension Scripts
+            if is_extension and re.search(r"\b(dal\.change\.object|dal\.set\.field|dal\.save\.object|dal\.new\.object|dal\.destroy\.object)\s*\(", code_line, re.IGNORECASE):
+                dal_call_lines.append((line_no, raw_line))
 
             # Curly braces balance
             for char_idx, char in enumerate(code_line):
@@ -352,6 +449,11 @@ class ScriptChecker:
                         ))
                     else:
                         brace_stack.pop()
+                        if not brace_stack:
+                            current_func_name = None
+                            current_func_ret_type = None
+                            current_func_is_void = False
+                            current_func_hook_suffix = None
 
             # ON CASE / ENDCASE
             if re.search(r"(?<![.\w])on\s+case(?![.\w])", code_line, re.IGNORECASE):
@@ -442,11 +544,48 @@ class ScriptChecker:
             # ----------------------------------------------------
             # 3. DAL & Extension Function Hook Signatures
             # ----------------------------------------------------
-            func_match = re.match(r"^\s*function(?:\s+extern)?(?:\s+([a-zA-Z0-9_.]+))?\s+([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line, re.IGNORECASE)
+            func_match = re.match(r"^\s*(?:function\s+)?(?:extern\s+)?(?:([a-zA-Z0-9_.]+)\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line, re.IGNORECASE)
+            if func_match:
+                f_cand = func_match.group(2).lower()
+                if f_cand in ("return", "if", "while", "for", "on", "case", "select", "endselect", "endif", "endwhile", "endfor", "endcase", "break", "continue") or f_cand.startswith(("db.", "dal.", "commit.", "abort.", "message", "ask.", "box", "show.")):
+                    func_match = None
             if func_match:
                 ret_type = (func_match.group(1) or "").lower()
                 func_name = func_match.group(2).lower()
                 params = func_match.group(3).strip()
+                current_func_name = func_name
+                current_func_ret_type = ret_type
+                current_func_is_void = (
+                    ret_type == "void"
+                    or (not ret_type and (func_name.endswith(".before.command") or func_name.endswith(".after.command")))
+                )
+                current_func_hook_suffix = None
+
+                # Check EXT002 on function declaration
+                is_cmd_hook = (
+                    func_name.startswith("function.")
+                    and (func_name.endswith(".before.command") or func_name.endswith(".after.command")
+                         or func_name.endswith(".is.enabled") or func_name.endswith(".is.visible"))
+                ) or func_name.endswith(".before.command") or func_name.endswith(".after.command")
+                is_dal_hook = (
+                    func_name in ("before.save.object", "after.save.object", "before.destroy.object",
+                                  "after.destroy.object", "before.open.object.set", "after.open.object.set",
+                                  "method.is.allowed", "set.object.defaults", "ue.before.save", "ue.after.save")
+                    or any(func_name.endswith(sfx) for sfx in self.dal_field_hook_suffixes)
+                )
+
+                if is_table_ext and is_cmd_hook:
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, 1, "ERROR", "EXT002",
+                        f"EXT002: Form Command hook '{func_name}' is not supported in Table Extension; Form Command hooks belong in Session Extensions.",
+                        raw_line
+                    ))
+                elif is_session_ext and is_dal_hook:
+                    diagnostics.append(Diagnostic(
+                        file_path, line_no, 1, "ERROR", "EXT002",
+                        f"EXT002: Table DAL hook '{func_name}' is not supported in Session Extension; Table DAL hooks belong in Table Extensions.",
+                        raw_line
+                    ))
 
                 # Specific Extension & DAL Lifecycle Hooks
                 if func_name == "before.save.object":
@@ -495,22 +634,26 @@ class ScriptChecker:
                             file_path, line_no, 1, "ERROR",
                             f"Field hook '{func_name}' must return 'boolean'. Found: '{ret_type}'."
                         ))
-                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".before.command")):
+                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".is.visible")):
                     if ret_type and ret_type != "boolean":
                         diagnostics.append(Diagnostic(
                             file_path, line_no, 1, "ERROR",
                             f"Command hook '{func_name}' must return 'boolean'. Found: '{ret_type}'."
                         ))
-                elif func_name.startswith("function.") and func_name.endswith(".after.command"):
+                elif func_name.startswith("function.") and (func_name.endswith(".before.command") or func_name.endswith(".after.command")):
                     if ret_type and ret_type not in ("void", "long"):
                         diagnostics.append(Diagnostic(
                             file_path, line_no, 1, "ERROR",
-                            f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'."
+                            f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'. Form Command execution hooks in Extension Modeler have a 'void' prototype."
                         ))
 
                 # Check if it looks like a DAL property hook: <col>.<suffix>
                 for sfx in self.dal_field_hook_suffixes:
                     if func_name.endswith(sfx):
+                        current_func_hook_suffix = sfx
+                        hook_info = self.dal_field_hooks_info.get(sfx.lower(), {})
+                        if "void" in hook_info.get("returnValue", ""):
+                            current_func_is_void = True
                         col_prefix = func_name[:-len(sfx)]
                         # Check required arguments
                         hook_info = self.dal_field_hooks_info.get(sfx.lower(), {})
@@ -538,6 +681,18 @@ class ScriptChecker:
                                     f"DAL property hook '{func_name}' references column '{col_prefix}' not found in owning table columns."
                                 ))
                         break
+
+            # Check return values inside void functions & hooks
+            if current_func_name is not None:
+                ret_match = re.search(r"\breturn\s*(?:\((.*?)\)|([a-zA-Z0-9_.+\-*/\"':]+))", code_line, re.IGNORECASE)
+                if ret_match:
+                    ret_val = (ret_match.group(1) or ret_match.group(2) or "").strip()
+                    if current_func_is_void and ret_val:
+                        diagnostics.append(Diagnostic(
+                            file_path, line_no, 1, "ERROR", "DAL003",
+                            f"DAL003: Void function / hook '{current_func_name}' cannot return value '{ret_val}'; compiler blocks with 'Return value for void function not allowed'. Use bare 'return' or 'return()' without an expression.",
+                            raw_line
+                        ))
 
             # ----------------------------------------------------
             # 4. Prohibited Interactive Dialogs & Transaction Controls in DAL / Table Extensions
@@ -579,6 +734,16 @@ class ScriptChecker:
                             file_path, line_no, cm.start() + 1, "WARNING",
                             f"Function '{called_fn}' requires '#include <{req_inc}>', which is missing."
                         ))
+
+        # EXT001: Missing #include <bic_dam> or <bic_dal2> in declarations context
+        if is_extension and dal_call_lines:
+            if "bic_dam" not in declarations_includes and "bic_dal2" not in declarations_includes:
+                first_line, first_raw = dal_call_lines[0]
+                diagnostics.append(Diagnostic(
+                    file_path, first_line, 1, "ERROR", "EXT001",
+                    "EXT001: Missing '#include <bic_dam>' (or '<bic_dal2>') inside '#context_on \"declarations\"'; Extension Modeler compiler will fail with unresolved reference to function 'dal.*'.",
+                    first_raw
+                ))
 
         # Check for unclosed blocks at EOF
         while block_stack:

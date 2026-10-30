@@ -304,6 +304,132 @@ function extern void before.save.object(long mode)
         errors = [d for d in diags if d.severity == "ERROR" and "must return 'long'" in d.message]
         self.assertTrue(len(errors) > 0, "Expected return type error for before.save.object")
 
+    def test_session_extension_allows_db_transaction_and_accepts_void_command_hook(self):
+        script = """
+#context_on "declarations"
+#include <bic_sessionext>
+#include <bic_dam>
+#context_off
+
+#context_on "functions"
+function extern void perform_tx_update()
+{
+    db.retry.point()
+    commit.transaction()
+}
+#context_off
+
+#context_on "function.cust.action.before.command"
+function extern void function.cust.action.before.command()
+{
+    perform_tx_update()
+}
+#context_off
+"""
+        diags = self.checker.check_script(script, file_path="extensions/session/whinh4131m000_ext.4gl")
+        errors = [d for d in diags if d.severity == "ERROR"]
+        self.assertEqual(len(errors), 0, f"Expected 0 errors for session extension with transactions and void command hook, got: {[str(e) for e in errors]}")
+
+    def test_command_hook_with_return_value_and_boolean_signature_fails(self):
+        # 1. Test returning boolean signature for before.command
+        script_bool = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+#context_on "function.cust.before.command"
+function extern boolean function.cust.before.command()
+{
+    return(true)
+}
+#context_off
+"""
+        diags_bool = self.checker.check_script(script_bool, file_path="extensions/session/whinh4131m000_ext.4gl")
+        sig_errors = [d for d in diags_bool if d.severity == "ERROR" and "must return 'void' or 'long'" in d.message]
+        self.assertTrue(len(sig_errors) > 0, "Expected signature error for boolean before.command")
+
+        # 2. Test void function returning a value expression (DAL003)
+        script_void_ret = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+#context_on "function.cust.before.command"
+function extern void function.cust.before.command()
+{
+    return(true)
+}
+#context_off
+"""
+        diags_ret = self.checker.check_script(script_void_ret, file_path="extensions/session/whinh4131m000_ext.4gl")
+        ret_errors = [d for d in diags_ret if d.severity == "ERROR" and "Void function" in d.message]
+        self.assertTrue(len(ret_errors) > 0, "Expected DAL003 void return value error")
+
+    def test_ext001_includes_outside_declarations_or_missing_bic_dam(self):
+        # Include outside declarations
+        script_outside = """
+#include <bic_dam>
+#context_on "declarations"
+table twhwmd400
+#context_off
+"""
+        diags_out = self.checker.check_script(script_outside, file_path="extensions/table/whwmd400_ext.4gl")
+        ext001_out = [d for d in diags_out if d.severity == "ERROR" and "EXT001" in d.message]
+        self.assertTrue(len(ext001_out) > 0, "Expected EXT001 error for include outside declarations")
+
+        # Calling dal.* without <bic_dam> inside declarations
+        script_missing = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+#context_on "functions"
+function extern void update_record()
+{
+    dal.change.object("whinh435")
+}
+#context_off
+"""
+        diags_missing = self.checker.check_script(script_missing, file_path="extensions/session/whinh4131m000_ext.4gl")
+        ext001_missing = [d for d in diags_missing if d.severity == "ERROR" and "Missing '#include <bic_dam>'" in d.message]
+        self.assertTrue(len(ext001_missing) > 0, "Expected EXT001 error for missing <bic_dam>")
+
+    def test_ext002_hook_scope_mismatch(self):
+        # Table extension declaring Form Command hook
+        script_table = """
+#context_on "declarations"
+table twhwmd400
+#include <bic_dal2>
+#include <bic_tableext>
+#context_off
+
+#context_on "function.cust.before.command"
+function extern void function.cust.before.command()
+{
+}
+#context_off
+"""
+        diags_tbl = self.checker.check_script(script_table, file_path="extensions/table/whwmd400_ext.4gl")
+        ext002_tbl = [d for d in diags_tbl if d.severity == "ERROR" and "EXT002" in d.message and "Form Command hook" in d.message]
+        self.assertTrue(len(ext002_tbl) > 0, "Expected EXT002 error for Form Command hook in Table Extension")
+
+        # Session extension declaring Table DAL hook
+        script_ses = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    return(0)
+}
+#context_off
+"""
+        diags_ses = self.checker.check_script(script_ses, file_path="extensions/session/whinh4131m000_ext.4gl")
+        ext002_ses = [d for d in diags_ses if d.severity == "ERROR" and "EXT002" in d.message and "Table DAL hook" in d.message]
+        self.assertTrue(len(ext002_ses) > 0, "Expected EXT002 error for Table DAL hook in Session Extension")
+
 
 class TestActivityValidatorExtensionRealignment(unittest.TestCase):
     """Ticket 11: Activity Validator treats tx* extensions as [GET_ONLY_EXTENSION]."""

@@ -1121,10 +1121,25 @@ class Auditor4GL:
         if path_lower.endswith(".ue") or "uedll" in path_lower:
             return "uedll"
 
+        # Explicit session / session extension indicators
+        is_session = (
+            re.search(r"[a-z]{5}\d{3,4}[ms]\d{3}", path_lower) is not None
+            or re.search(r"m\d{3}", path_lower) is not None
+            or "bic_sessionext" in content.lower()
+            or "bic_interface" in content.lower()
+            or "/session" in path_lower.replace("\\", "/")
+            or "\\session" in path_lower
+            or "ess" in path_lower
+        )
+        if is_session:
+            return "general"
+
         # Content heuristics
-        if "function extern long before.save.object" in content.lower() or "dal.set.error.message" in content.lower() or "bic_tableext" in content.lower() or "bic_dal2" in content.lower():
+        if "function extern long before.save.object" in content.lower() or "dal.set.error.message" in content.lower() or "bic_tableext" in content.lower():
             return "dal2"
-        if ("table" in path_lower or "est" in path_lower) and ("_ext.4gl" in path_lower or ".4gl" in path_lower):
+        if ("table" in path_lower or "est" in path_lower) and ("_ext.4gl" in path_lower or ".4gl" in path_lower or ".cln" in path_lower):
+            return "dal2"
+        if "bic_dal2" in content.lower():
             return "dal2"
         if "ue.before.save" in content.lower() or "ue.after.save" in content.lower():
             return "uedll"
@@ -1288,16 +1303,124 @@ class Auditor4GL:
 
         in_case_block = False
         brace_depth = 0
+        had_positive_brace = False
         current_func_name: Optional[str] = None
+        current_func_ret_type: Optional[str] = None
+        current_func_is_void: bool = False
         current_func_hook_suffix: Optional[str] = None
         reported_tbl001: Set[Tuple[str, int]] = set()
         fetched_attempts: Set[Tuple[str, str]] = set()
+
+        # Extension Modeler state
+        path_lower = file_path.lower()
+        stem = Path(file_path).stem.lower() if file_path and file_path != "<stdin>" else ""
+        content_lower = content.lower()
+        is_extension = (
+            "#context_on" in content_lower
+            or path_lower.endswith(".cln")
+            or "_ext.4gl" in path_lower
+            or "/est/" in path_lower.replace("\\", "/")
+            or "/ess/" in path_lower.replace("\\", "/")
+            or "table_extension" in path_lower
+            or "session_extension" in path_lower
+        )
+        is_session_ext = is_extension and (
+            re.search(r"[a-z]{5}\d{3,4}[ms]\d{3}", path_lower) is not None
+            or re.search(r"m\d{3}", path_lower) is not None
+            or "bic_sessionext" in content_lower
+            or "bic_interface" in content_lower
+            or "/session" in path_lower.replace("\\", "/")
+            or "\\session" in path_lower
+            or "ess" in path_lower
+        )
+        is_table_ext = is_extension and not is_session_ext and (
+            re.match(r"^(?:txest)?[a-z]{5}\d{3}(?:_ext)?$", stem) is not None
+            or "bic_tableext" in content_lower
+            or "/table" in path_lower.replace("\\", "/")
+            or "\\table" in path_lower
+            or "est" in path_lower
+        )
+        current_context: Optional[str] = None
+        declarations_includes: Set[str] = set()
+        dal_call_lines: List[Tuple[int, str]] = []
 
         for line_no, raw_line in enumerate(lines, start=1):
             code_line = cleaned_lines[line_no - 1] if line_no - 1 < len(cleaned_lines) else ""
             code_line_stripped = code_line.strip()
             if not code_line_stripped:
                 continue
+
+            # Directives (#context_on / #context_off)
+            m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', raw_line, re.IGNORECASE)
+            if m_ctx:
+                ctx_name = (m_ctx.group(1) or "").strip()
+                current_context = ctx_name.lower()
+                ctx_lower = ctx_name.lower()
+                is_cmd_hook = (
+                    ctx_lower.startswith("function.")
+                    and (ctx_lower.endswith(".before.command") or ctx_lower.endswith(".after.command")
+                         or ctx_lower.endswith(".is.enabled") or ctx_lower.endswith(".is.visible"))
+                ) or ctx_lower.endswith(".before.command") or ctx_lower.endswith(".after.command")
+
+                is_dal_hook = (
+                    ctx_lower in ("before.save.object", "after.save.object", "before.destroy.object",
+                                  "after.destroy.object", "before.open.object.set", "after.open.object.set",
+                                  "method.is.allowed", "set.object.defaults", "ue.before.save", "ue.after.save")
+                    or any(ctx_lower.endswith(sfx) for sfx in self.dal_field_hooks)
+                )
+
+                if is_table_ext and is_cmd_hook:
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT002",
+                            f"Form Command hook '{ctx_name}' is not supported in Table Extension; Form Command hooks belong in Session Extensions.",
+                            raw_line,
+                        )
+                    )
+                elif is_session_ext and is_dal_hook:
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT002",
+                            f"Table DAL hook '{ctx_name}' is not supported in Session Extension; Table DAL hooks belong in Table Extensions.",
+                            raw_line,
+                        )
+                    )
+
+            if re.match(r"^\s*#context_off\b", raw_line, re.IGNORECASE):
+                current_context = None
+
+            # EXT001: Check #include placement in Extension Scripts
+            if is_extension:
+                m_inc = re.match(r'^\s*#include\s+([<"][^>"]+[>"])', raw_line, re.IGNORECASE)
+                if m_inc:
+                    inc_raw = m_inc.group(1)
+                    inc_clean = inc_raw.strip("<>\".h").lower()
+                    if current_context == "declarations":
+                        declarations_includes.add(inc_clean)
+                    else:
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "EXT001",
+                                f"Direct '#include {inc_raw}' outside '#context_on \"declarations\"' will not be compiled by Extension Modeler; move inside '#context_on \"declarations\"' block.",
+                                raw_line,
+                            )
+                        )
+
+            # EXT001: Track DAL calls in Extension Scripts
+            if is_extension and re.search(r"\b(dal\.change\.object|dal\.set\.field|dal\.save\.object|dal\.new\.object|dal\.destroy\.object)\s*\(", code_line, re.IGNORECASE):
+                dal_call_lines.append((line_no, raw_line))
 
             # Track case context for section header disambiguation
             if re.search(r"(?<![.\w])on\s+case(?![.\w])", code_line, re.IGNORECASE):
@@ -1308,11 +1431,9 @@ class Auditor4GL:
             for ch in code_line:
                 if ch == "{":
                     brace_depth += 1
+                    had_positive_brace = True
                 elif ch == "}":
                     brace_depth = max(0, brace_depth - 1)
-                    if current_func_name and brace_depth == 0:
-                        current_func_name = None
-                        current_func_hook_suffix = None
 
             # ----------------------------------------------------
             # 1. Section Header Checks (SYN002)
@@ -1436,11 +1557,59 @@ class Auditor4GL:
                 re.IGNORECASE,
             )
             if func_decl_match:
+                f_candidate = func_decl_match.group(2).lower()
+                if f_candidate in ("return", "if", "while", "for", "on", "case", "select", "endselect", "endif", "endwhile", "endfor", "endcase", "break", "continue") or f_candidate.startswith(("db.", "dal.", "commit.", "abort.", "message", "ask.", "box", "show.")):
+                    func_decl_match = None
+
+            if func_decl_match:
                 ret_type = (func_decl_match.group(1) or "").lower()
                 func_name = func_decl_match.group(2).lower()
                 params = func_decl_match.group(3).strip()
                 current_func_name = func_name
+                current_func_ret_type = ret_type
+                current_func_is_void = (
+                    ret_type == "void"
+                    or (not ret_type and (func_name.endswith(".before.command") or func_name.endswith(".after.command")))
+                )
                 current_func_hook_suffix = None
+
+                # Check EXT002 on function declaration
+                is_cmd_hook = (
+                    func_name.startswith("function.")
+                    and (func_name.endswith(".before.command") or func_name.endswith(".after.command")
+                         or func_name.endswith(".is.enabled") or func_name.endswith(".is.visible"))
+                ) or func_name.endswith(".before.command") or func_name.endswith(".after.command")
+                is_dal_hook = (
+                    func_name in ("before.save.object", "after.save.object", "before.destroy.object",
+                                  "after.destroy.object", "before.open.object.set", "after.open.object.set",
+                                  "method.is.allowed", "set.object.defaults", "ue.before.save", "ue.after.save")
+                    or any(func_name.endswith(sfx) for sfx in self.dal_field_hooks)
+                )
+
+                if is_table_ext and is_cmd_hook:
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT002",
+                            f"Form Command hook '{func_name}' is not supported in Table Extension; Form Command hooks belong in Session Extensions.",
+                            raw_line,
+                        )
+                    )
+                elif is_session_ext and is_dal_hook:
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT002",
+                            f"Table DAL hook '{func_name}' is not supported in Session Extension; Table DAL hooks belong in Table Extensions.",
+                            raw_line,
+                        )
+                    )
 
                 # Specific Extension & DAL Lifecycle Hooks
                 if func_name == "before.save.object":
@@ -1545,7 +1714,7 @@ class Auditor4GL:
                                 raw_line,
                             )
                         )
-                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".before.command")):
+                elif func_name.startswith("function.") and (func_name.endswith(".is.enabled") or func_name.endswith(".is.visible")):
                     if ret_type and ret_type != "boolean":
                         diagnostics.append(
                             Diagnostic(
@@ -1558,7 +1727,7 @@ class Auditor4GL:
                                 raw_line,
                             )
                         )
-                elif func_name.startswith("function.") and func_name.endswith(".after.command"):
+                elif func_name.startswith("function.") and (func_name.endswith(".before.command") or func_name.endswith(".after.command")):
                     if ret_type and ret_type not in ("void", "long"):
                         diagnostics.append(
                             Diagnostic(
@@ -1567,7 +1736,7 @@ class Auditor4GL:
                                 1,
                                 "ERROR",
                                 "DAL002",
-                                f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'.",
+                                f"Command hook '{func_name}' must return 'void' or 'long'. Found: '{ret_type}'. Form Command execution hooks in Extension Modeler have a 'void' prototype.",
                                 raw_line,
                             )
                         )
@@ -1576,6 +1745,8 @@ class Auditor4GL:
                 for sfx, sfx_def in self.dal_field_hooks.items():
                     if func_name.endswith(sfx):
                         current_func_hook_suffix = sfx
+                        if "void" in sfx_def.get("returnValue", ""):
+                            current_func_is_void = True
                         req_args = sfx_def.get("arguments", "")
                         if "long i.mode" in req_args:
                             if not re.search(r"\blong\s+i\.mode\b", params, re.IGNORECASE):
@@ -1605,17 +1776,43 @@ class Auditor4GL:
                                 )
                         break
 
-            # DAL003 Check: return values inside DAL hooks
-            if current_func_hook_suffix:
-                ret_match = re.search(r"\breturn\s*\((.*?)\)", code_line, re.IGNORECASE)
+            # DAL003 Check: return values inside void functions & DAL hooks
+            if current_func_name is not None:
+                ret_match = re.search(r"\breturn\s*(?:\((.*?)\)|([a-zA-Z0-9_.+\-*/\"':]+))", code_line, re.IGNORECASE)
                 if ret_match:
-                    ret_val = ret_match.group(1).strip()
-                    hook_info = self.dal_field_hooks.get(current_func_hook_suffix, {})
-                    expected_ret = hook_info.get("returnValue", "")
+                    ret_val = (ret_match.group(1) or ret_match.group(2) or "").strip()
+                    if current_func_is_void and ret_val:
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                1,
+                                "ERROR",
+                                "DAL003",
+                                f"Return value '{ret_val}' inside void function/hook '{current_func_name}' is not allowed in Baan 4GL; compiler blocks with 'Return value for void function not allowed'. Use bare 'return' or 'return()' without an expression.",
+                                raw_line,
+                            )
+                        )
+                    elif current_func_hook_suffix:
+                        hook_info = self.dal_field_hooks.get(current_func_hook_suffix, {})
+                        expected_ret = hook_info.get("returnValue", "")
 
-                    if "boolean" in expected_ret:
-                        if ret_val and ret_val.lower() not in ("true", "false", "0", "1"):
-                            if "dalhookerror" in ret_val.lower() or ret_val.startswith("-"):
+                        if "boolean" in expected_ret:
+                            if ret_val and ret_val.lower() not in ("true", "false", "0", "1"):
+                                if "dalhookerror" in ret_val.lower() or ret_val.startswith("-"):
+                                    diagnostics.append(
+                                        Diagnostic(
+                                            file_path,
+                                            line_no,
+                                            1,
+                                            "ERROR",
+                                            "DAL003",
+                                            f"Boolean DAL hook '{current_func_name}' cannot return error code '{ret_val}'; must return true or false.",
+                                            raw_line,
+                                        )
+                                    )
+                        elif "void" in expected_ret:
+                            if ret_val:
                                 diagnostics.append(
                                     Diagnostic(
                                         file_path,
@@ -1623,23 +1820,10 @@ class Auditor4GL:
                                         1,
                                         "ERROR",
                                         "DAL003",
-                                        f"Boolean DAL hook '{current_func_name}' cannot return error code '{ret_val}'; must return true or false.",
+                                        f"Void DAL hook '{current_func_name}' cannot return a value '{ret_val}'.",
                                         raw_line,
                                     )
                                 )
-                    elif "void" in expected_ret:
-                        if ret_val:
-                            diagnostics.append(
-                                Diagnostic(
-                                    file_path,
-                                    line_no,
-                                    1,
-                                    "ERROR",
-                                    "DAL003",
-                                    f"Void DAL hook '{current_func_name}' cannot return a value '{ret_val}'.",
-                                    raw_line,
-                                )
-                            )
 
             # ----------------------------------------------------
             # 4. Prohibited Interactive UI & Transaction Controls in DAL / Table Extensions (DAL001, DAL005)
@@ -1680,21 +1864,29 @@ class Auditor4GL:
             # ----------------------------------------------------
             if mode == "general":
                 db_mut_matches = re.finditer(
-                    r"(?<![.\w])(db\.insert|db\.update|db\.delete|db\.write)\s*\(", code_line, re.IGNORECASE
+                    r"(?<![.\w])(db\.insert|db\.update|db\.delete|db\.write)\s*\(\s*([a-zA-Z0-9_]+)", code_line, re.IGNORECASE
                 )
                 for dbm in db_mut_matches:
                     mut_fn = dbm.group(1).lower()
-                    diagnostics.append(
-                        Diagnostic(
-                            file_path,
-                            line_no,
-                            dbm.start() + 1,
-                            "ERROR",
-                            "DAL004",
-                            f"Direct database mutation '{mut_fn}()' in UI script violates Separation of Concerns; use DAL2 instead.",
-                            raw_line,
+                    target_tbl = dbm.group(2).lower()
+                    tbl_name = target_tbl[1:] if target_tbl.startswith("t") and len(target_tbl) > 1 else target_tbl
+                    is_temp = "temp" in tbl_name or tbl_name.endswith("010")
+                    if active_dd_cache.has_table(tbl_name):
+                        desc = (active_dd_cache.tables.get(tbl_name, {}).get("description") or "").lower()
+                        if "temp" in desc:
+                            is_temp = True
+                    if not is_temp:
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                dbm.start() + 1,
+                                "ERROR",
+                                "DAL004",
+                                f"Direct database mutation '{mut_fn}()' on table '{tbl_name}' in UI script violates Separation of Concerns; use DAL2 instead.",
+                                raw_line,
+                            )
                         )
-                    )
 
             # ----------------------------------------------------
             # 6. Direct Transaction Statements in DAL/UEDLL Subroutines (CAV003)
@@ -1784,6 +1976,32 @@ class Auditor4GL:
                                 raw_line,
                             )
                         )
+
+            # Reset current function state when exiting function curly braces
+            if had_positive_brace and brace_depth == 0:
+                current_func_name = None
+                current_func_ret_type = None
+                current_func_is_void = False
+                current_func_hook_suffix = None
+                had_positive_brace = False
+
+        # ----------------------------------------------------
+        # EXT001: Missing #include <bic_dam> or <bic_dal2> in declarations context
+        # ----------------------------------------------------
+        if is_extension and dal_call_lines:
+            if "bic_dam" not in declarations_includes and "bic_dal2" not in declarations_includes:
+                first_line, first_raw = dal_call_lines[0]
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        first_line,
+                        1,
+                        "ERROR",
+                        "EXT001",
+                        "Missing '#include <bic_dam>' (or '<bic_dal2>') inside '#context_on \"declarations\"'; Extension Modeler compiler will fail with unresolved reference to function 'dal.*'.",
+                        first_raw,
+                    )
+                )
 
         # ----------------------------------------------------
         # 9. Intra-File Call Graph Nested Transaction Detection (CAV003)

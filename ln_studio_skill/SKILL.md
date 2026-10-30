@@ -110,7 +110,7 @@ In Studio, extensions exist solely as Read-Only "Get" cache for viewing and debu
 ### Mandatory Agent Protocol (Guide-and-Paste):
 When an AI agent or engineer is asked to author or modify an Infor LN Extension:
 1. **Local Authoring**: Scaffold or edit the extension `.4gl` file inside the local project repository (under `extensions/<type>/<component>_ext.4gl`) with standard `#context_on "<hook_name>"` ... `#context_off` blocks.
-2. **Offline Verification**: Run `check_4gl_script.py` to ensure 0 syntax errors, balanced blocks, valid hook signatures, and full Cloud Governance compliance (no interactive dialogs or transaction controls in DAL/Table extensions).
+2. **Offline Verification**: Run `check_4gl_script.py` to ensure 0 syntax errors, balanced blocks, valid hook signatures (`void` for command before/after hooks without return values), declarations include placement (`EXT001`), hook scope separation (`EXT002`), and full Cloud Governance compliance (no interactive dialogs or transaction controls in Table extensions; session extensions may coordinate transactions for secondary DAL tables).
 3. **Interactive Step-by-Step Delivery**: In chat, output structured Markdown instructing the developer:
    - Target Session: `ttext1500m000` (Extension Modeler)
    - Component Selection: e.g. Table Extension for `whwmd400`

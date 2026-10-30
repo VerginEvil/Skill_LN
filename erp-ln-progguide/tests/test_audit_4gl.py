@@ -380,5 +380,203 @@ function void outer_batch_process()
         self.assertIsInstance(data["diagnostics"], list)
 
 
+    # =========================================================================
+    # Task: Extension Modeler Hardening (DAL002, DAL003, EXT001, EXT002)
+    # =========================================================================
+    def test_dal002_command_hook_return_types(self):
+        """Asserts DAL002 enforces boolean for .is.enabled/.is.visible and void/long for before/after command."""
+        # Invalid before.command returning boolean
+        script_invalid_before = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.approve.before.command"
+function extern boolean function.approve.before.command()
+{
+    return(true)
+}
+#context_off
+"""
+        diags = self.auditor.audit_content(script_invalid_before, "whinh4131m000.cln")
+        dal002_diags = [d for d in diags if d.code == "DAL002"]
+        self.assertGreaterEqual(len(dal002_diags), 1)
+        self.assertTrue(any("must return 'void' or 'long'" in d.message for d in dal002_diags))
+
+        # Valid before.command returning void
+        script_valid_before = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.approve.before.command"
+function extern void function.approve.before.command()
+{
+}
+#context_off
+"""
+        diags_valid = self.auditor.audit_content(script_valid_before, "whinh4131m000.cln")
+        dal002_valid = [d for d in diags_valid if d.code == "DAL002"]
+        self.assertEqual(len(dal002_valid), 0)
+
+        # Valid is.enabled returning boolean
+        script_valid_enabled = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.approve.is.enabled"
+function extern boolean function.approve.is.enabled()
+{
+    return(true)
+}
+#context_off
+"""
+        diags_enabled = self.auditor.audit_content(script_valid_enabled, "whinh4131m000.cln")
+        dal002_enabled = [d for d in diags_enabled if d.code == "DAL002"]
+        self.assertEqual(len(dal002_enabled), 0)
+
+    def test_dal003_void_function_return_expression_rejected(self):
+        """Asserts DAL003 triggers when a void function or before.command contains return(value)."""
+        script_return_val = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.approve.before.command"
+function extern void function.approve.before.command()
+{
+    return(true)
+}
+#context_off
+"""
+        diags = self.auditor.audit_content(script_return_val, "whinh4131m000.cln")
+        dal003_diags = [d for d in diags if d.code == "DAL003"]
+        self.assertGreaterEqual(len(dal003_diags), 1)
+        self.assertTrue(any("Return value 'true' inside void function/hook" in d.message for d in dal003_diags))
+
+        # Bare return or return() is valid
+        script_bare_return = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.approve.before.command"
+function extern void function.approve.before.command()
+{
+    return
+}
+#context_off
+"""
+        diags_bare = self.auditor.audit_content(script_bare_return, "whinh4131m000.cln")
+        dal003_bare = [d for d in diags_bare if d.code == "DAL003"]
+        self.assertEqual(len(dal003_bare), 0)
+
+    def test_session_extension_archetype_detection_and_tx_control(self):
+        """Asserts Session Extension (whinh4131m000.cln) with bic_dal2 is classified as 'general' and permits transactions."""
+        script = """
+#context_on "declarations"
+#include <bic_sessionext>
+#include <bic_dam>
+#include <bic_dal2>
+#context_off
+
+#context_on "function.update.status.before.command"
+function extern void function.update.status.before.command()
+{
+    db.retry.point()
+    dal.change.object("whinh435")
+    dal.set.field("whinh435.stat", 5)
+    dal.save.object("whinh435")
+    commit.transaction()
+}
+#context_off
+"""
+        mode = self.auditor.detect_archetype("whinh4131m000.cln", script)
+        self.assertEqual(mode, "general")
+
+        diags = self.auditor.audit_content(script, "whinh4131m000.cln")
+        dal005_diags = [d for d in diags if d.code == "DAL005"]
+        self.assertEqual(len(dal005_diags), 0, f"Session Extension must not trigger DAL005: {[str(d) for d in dal005_diags]}")
+
+    def test_ext001_declarations_include_boundary(self):
+        """Asserts EXT001 flags direct #include outside declarations and missing include for dal.* calls."""
+        # Include outside declarations
+        script_outside = """
+#include <bic_dam>
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+"""
+        diags_outside = self.auditor.audit_content(script_outside, "whinh4131m000.cln")
+        ext001_outside = [d for d in diags_outside if d.code == "EXT001" and "outside" in d.message]
+        self.assertGreaterEqual(len(ext001_outside), 1)
+
+        # Missing include <bic_dam> for dal.* operations
+        script_missing_dal = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "function.run.before.command"
+function extern void function.run.before.command()
+{
+    dal.change.object("whinh435")
+}
+#context_off
+"""
+        diags_missing = self.auditor.audit_content(script_missing_dal, "whinh4131m000.cln")
+        ext001_missing = [d for d in diags_missing if d.code == "EXT001" and "Missing '#include <bic_dam>'" in d.message]
+        self.assertGreaterEqual(len(ext001_missing), 1)
+
+        # Fully compliant script with <bic_dam> inside declarations
+        script_ok = """
+#context_on "declarations"
+#include <bic_sessionext>
+#include <bic_dam>
+#context_off
+#context_on "function.run.before.command"
+function extern void function.run.before.command()
+{
+    dal.change.object("whinh435")
+}
+#context_off
+"""
+        diags_ok = self.auditor.audit_content(script_ok, "whinh4131m000.cln")
+        ext001_ok = [d for d in diags_ok if d.code == "EXT001"]
+        self.assertEqual(len(ext001_ok), 0)
+
+    def test_ext002_hook_scope_mismatch(self):
+        """Asserts EXT002 flags Form Command hooks in Table Extensions and DAL hooks in Session Extensions."""
+        # Form command hook in Table Extension (whinh431.cln)
+        script_tbl_with_cmd = """
+#context_on "declarations"
+table twhinh431
+#include <bic_dal2>
+#include <bic_tableext>
+#context_off
+#context_on "function.approve.before.command"
+function extern void function.approve.before.command()
+{
+}
+#context_off
+"""
+        diags_tbl = self.auditor.audit_content(script_tbl_with_cmd, "whinh431.cln")
+        ext002_tbl = [d for d in diags_tbl if d.code == "EXT002"]
+        self.assertGreaterEqual(len(ext002_tbl), 1)
+        self.assertTrue(any("Form Command hook" in d.message for d in ext002_tbl))
+
+        # Table DAL hook in Session Extension (whinh4131m000.cln)
+        script_ses_with_dal = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    return(0)
+}
+#context_off
+"""
+        diags_ses = self.auditor.audit_content(script_ses_with_dal, "whinh4131m000.cln")
+        ext002_ses = [d for d in diags_ses if d.code == "EXT002"]
+        self.assertGreaterEqual(len(ext002_ses), 1)
+        self.assertTrue(any("Table DAL hook" in d.message for d in ext002_ses))
+
+
 if __name__ == "__main__":
     unittest.main()

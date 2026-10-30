@@ -31,9 +31,10 @@ function extern boolean function.custom.action.is.enabled()
 
 | Hook function.custom.action.before.command
 #context_on "function.custom.action.before.command"
-function extern boolean function.custom.action.before.command()
+function extern void function.custom.action.before.command()
 {
-    return(true)
+    | Logic executed before command runs
+    | Call choice.again() to cancel command execution
 }
 #context_off
 
