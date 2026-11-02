@@ -1,6 +1,8 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,13 +19,23 @@ import org.xml.sax.InputSource;
 import com.infor.erpln.jca.ConnectionFactoryImpl;
 import com.infor.erpln.jca.ConnectionSpecImpl;
 import com.infor.erpln.jca.OAuth2Callback;
+import com.infor.erpln.jca.bdeclient.BdeElementIterator;
+import com.infor.erpln.jca.bdeclient.BdeFilter;
+import com.infor.erpln.jca.bdeclient.BdeSelection;
 import com.infor.erpln.jca.bdeclient.JcaBdeManager;
 
 /**
  * LNStudioJcaBridge
  * Headless Infor LN JCA 1.6 Bridge for automated BDE execution, explorers, and SCM.
  *
- * Protocol-Level Safety Guarantee (ADR 0007 / ADR 0008):
+ * Supports 5 BdeManager execution modes:
+ * - LIST (0): executeList wrapped in <DataArea>
+ * - SHOW (1): executeShow
+ * - BDE (2): executeMethod / doBdeCall
+ * - SPECIALLIST (3): executeSpecialList wrapped in <DataArea>
+ * - BROWSELIST (4): executeList with controlling attributes wrapped in <DataArea>
+ *
+ * Protocol-Level Safety Guarantee (ADR 0007 / ADR 0008 / ADR 0012):
  * Execution of EndActivity, CloseTask, FinalizeActivity, or Deliver is physically blocked
  * at the Java bridge layer before any JCA connection or BDE call can occur.
  * Only read-only verification (ValidateDevelopmentActivity / executeVSC) is permitted
@@ -73,8 +85,113 @@ public class LNStudioJcaBridge {
         return false;
     }
 
+    private static void printXml(Element elem) throws Exception {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(elem), new StreamResult(writer));
+        System.out.print(writer.toString());
+    }
+
+    private static BdeFilter.Expression parseSingleCondition(BdeFilter bdeFilter, String condition) {
+        Pattern p = Pattern.compile("^([a-zA-Z0-9_.]+)\\s*(==|!=|<=|>=|<>|=|<|>|LIKE)\\s*(.*)$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(condition.trim());
+        if (m.matches()) {
+            String field = m.group(1).trim();
+            String op = m.group(2).trim().toUpperCase(Locale.ROOT);
+            String val = m.group(3).trim();
+            if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith("\"") && val.endsWith("\""))) {
+                val = val.substring(1, val.length() - 1);
+            }
+            if ("==".equals(op) || "=".equals(op)) {
+                return bdeFilter.createComparisonEqual(field, val);
+            } else if ("!=".equals(op) || "<>".equals(op)) {
+                return bdeFilter.createComparisonNotEqual(field, val);
+            } else if (">=".equals(op)) {
+                return bdeFilter.createComparisonGreaterOrEqual(field, val);
+            } else if ("<=".equals(op)) {
+                return bdeFilter.createComparisonLessOrEqual(field, val);
+            } else if (">".equals(op)) {
+                return bdeFilter.createComparisonGreater(field, val);
+            } else if ("<".equals(op)) {
+                return bdeFilter.createComparisonLess(field, val);
+            } else if ("LIKE".equals(op)) {
+                return bdeFilter.createComparisonLike(field, val);
+            }
+        }
+        return null;
+    }
+
+    private static BdeFilter.Expression parseFilterExpression(BdeFilter bdeFilter, String exprStr) {
+        if (exprStr == null || exprStr.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = exprStr.trim();
+        if (trimmed.toUpperCase(Locale.ROOT).contains(" AND ")) {
+            String[] parts = trimmed.split("(?i)\\s+AND\\s+");
+            BdeFilter.Expression combined = null;
+            for (String part : parts) {
+                BdeFilter.Expression sub = parseSingleCondition(bdeFilter, part);
+                if (sub != null) {
+                    if (combined == null) {
+                        combined = sub;
+                    } else {
+                        combined = bdeFilter.createLogicalAnd(combined, sub);
+                    }
+                }
+            }
+            return combined;
+        } else if (trimmed.toUpperCase(Locale.ROOT).contains(" OR ")) {
+            String[] parts = trimmed.split("(?i)\\s+OR\\s+");
+            BdeFilter.Expression combined = null;
+            for (String part : parts) {
+                BdeFilter.Expression sub = parseSingleCondition(bdeFilter, part);
+                if (sub != null) {
+                    if (combined == null) {
+                        combined = sub;
+                    } else {
+                        combined = bdeFilter.createLogicalOr(combined, sub);
+                    }
+                }
+            }
+            return combined;
+        } else {
+            return parseSingleCondition(bdeFilter, trimmed);
+        }
+    }
+
+    public static void applyControllingAttributes(JcaBdeManager bdeMgr, String methodName, Map<String, String> ctrlAttrs) throws Exception {
+        if (ctrlAttrs == null || ctrlAttrs.isEmpty()) {
+            return;
+        }
+        StringBuilder metaSb = new StringBuilder();
+        List<String> values = new ArrayList<>();
+        for (Map.Entry<String, String> entry : ctrlAttrs.entrySet()) {
+            String key = entry.getKey().trim();
+            String val = entry.getValue();
+            if (metaSb.length() > 0) {
+                metaSb.append(":;:");
+            }
+            if (key.contains(";")) {
+                metaSb.append(key);
+            } else if (key.contains(":")) {
+                metaSb.append(key.replace(":", ";")).append(";false");
+            } else {
+                metaSb.append(methodName).append(";").append(key).append(";in;false");
+            }
+            values.add(val);
+        }
+        bdeMgr.setSpecificControlAttributeMetaData(metaSb.toString());
+        for (int i = 0; i < values.size(); i++) {
+            bdeMgr.setSpecificControlAttribute(i, values.get(i));
+        }
+    }
+
     public static void main(String[] args) {
-        String mode = "";
+        String cliAction = "";
+        String dispatchMode = "BDE";
         String backend = "";
         String tenant = "";
         String token = "";
@@ -82,10 +199,14 @@ public class LNStudioJcaBridge {
         String methodName = "";
         String connectionPoint = "ProjectServer";
         String contextXml = "";
+        String filterExpr = null;
+        int maxObjects = 0;
+        List<String> selectionFields = new ArrayList<>();
+        Map<String, String> controllingAttrs = new LinkedHashMap<>();
 
         for (int i = 0; i < args.length; i++) {
             if ("--ping".equals(args[i])) {
-                mode = "ping";
+                cliAction = "ping";
             } else if ("--backend".equals(args[i]) && i + 1 < args.length) {
                 backend = args[++i];
             } else if ("--tenant".equals(args[i]) && i + 1 < args.length) {
@@ -94,20 +215,43 @@ public class LNStudioJcaBridge {
                 token = args[++i];
             } else if ("--bde".equals(args[i]) && i + 1 < args.length) {
                 bdeName = args[++i];
-                mode = "bde";
+                cliAction = "bde";
             } else if ("--method".equals(args[i]) && i + 1 < args.length) {
                 methodName = args[++i];
             } else if ("--cp".equals(args[i]) && i + 1 < args.length) {
                 connectionPoint = args[++i];
             } else if (("--context".equals(args[i]) || "--context-xml".equals(args[i])) && i + 1 < args.length) {
                 contextXml = args[++i];
+            } else if ("--mode".equals(args[i]) && i + 1 < args.length) {
+                dispatchMode = args[++i].toUpperCase(Locale.ROOT);
+            } else if ("--ctrl-attr".equals(args[i]) && i + 1 < args.length) {
+                String pair = args[++i];
+                int eq = pair.indexOf('=');
+                if (eq > 0) {
+                    controllingAttrs.put(pair.substring(0, eq).trim(), pair.substring(eq + 1).trim());
+                }
+            } else if ("--select".equals(args[i]) && i + 1 < args.length) {
+                String[] fields = args[++i].split(",");
+                for (String f : fields) {
+                    if (!f.trim().isEmpty()) {
+                        selectionFields.add(f.trim());
+                    }
+                }
+            } else if ("--filter".equals(args[i]) && i + 1 < args.length) {
+                filterExpr = args[++i];
+            } else if ("--max-objects".equals(args[i]) && i + 1 < args.length) {
+                try {
+                    maxObjects = Integer.parseInt(args[++i]);
+                } catch (NumberFormatException e) {
+                    maxObjects = 0;
+                }
             }
         }
 
         try {
             // Read stdin early in BDE mode so we can inspect both methodName and XML payload BEFORE connecting
             String reqXml = "";
-            if ("bde".equals(mode)) {
+            if ("bde".equals(cliAction)) {
                 if (isProhibitedOperation(bdeName, methodName, "")) {
                     System.err.println(
                         "[SECURITY_BLOCK] Protocol-level guardrail (ADR 0008): Operation '" +
@@ -117,7 +261,7 @@ public class LNStudioJcaBridge {
                     System.exit(3);
                 }
 
-                if (System.in.available() > 0 || !"ping".equals(mode)) {
+                if (System.in.available() > 0 || !"ping".equals(cliAction)) {
                     StringBuilder sb = new StringBuilder();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
                     String line;
@@ -201,12 +345,36 @@ public class LNStudioJcaBridge {
                 }
             }
 
-            if ("ping".equals(mode)) {
+            if ("ping".equals(cliAction)) {
                 bdeMgr.ping();
                 System.out.println("PING_OK");
                 conn.close();
                 System.exit(0);
-            } else if ("bde".equals(mode)) {
+            } else if ("bde".equals(cliAction)) {
+                // Apply controlling attributes if provided
+                if (!controllingAttrs.isEmpty()) {
+                    applyControllingAttributes(bdeMgr, methodName, controllingAttrs);
+                }
+
+                // Build BdeSelection if fields provided
+                BdeSelection bdeSelection = null;
+                if (!selectionFields.isEmpty()) {
+                    bdeSelection = bdeMgr.createBdeSelection();
+                    for (String f : selectionFields) {
+                        bdeSelection.addSelection(f);
+                    }
+                }
+
+                // Build BdeFilter if expression provided
+                BdeFilter bdeFilter = null;
+                if (filterExpr != null && !filterExpr.trim().isEmpty()) {
+                    bdeFilter = bdeMgr.createBdeFilter();
+                    BdeFilter.Expression expr = parseFilterExpression(bdeFilter, filterExpr);
+                    if (expr != null) {
+                        bdeFilter.setExpression(expr);
+                    }
+                }
+
                 Element reqElement = null;
                 if (!reqXml.isEmpty()) {
                     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -216,11 +384,62 @@ public class LNStudioJcaBridge {
                     reqElement = doc.getDocumentElement();
                 }
 
-                Element respElement = null;
-                if (reqElement != null) {
-                    respElement = bdeMgr.executeMethod(reqElement, methodName);
+                String execMode = dispatchMode.toUpperCase(Locale.ROOT);
+                if ("LIST".equals(execMode) || "BROWSELIST".equals(execMode)) {
+                    // Mode 0 (LIST) and Mode 4 (BROWSELIST)
+                    BdeElementIterator iter = bdeMgr.executeList(bdeName, methodName, bdeSelection, bdeFilter, maxObjects);
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setNamespaceAware(true);
+                    Document outDoc = dbf.newDocumentBuilder().newDocument();
+                    Element dataArea = outDoc.createElement("DataArea");
+                    outDoc.appendChild(dataArea);
+                    if (iter != null) {
+                        while (iter.hasNext()) {
+                            Element item = iter.nextElement();
+                            if (item != null) {
+                                dataArea.appendChild(outDoc.importNode(item, true));
+                            }
+                        }
+                    }
+                    printXml(dataArea);
+                } else if ("SHOW".equals(execMode)) {
+                    // Mode 1 (SHOW)
+                    Element respElement = bdeMgr.executeShow(reqElement, methodName, bdeSelection, bdeFilter);
+                    if (respElement != null) {
+                        printXml(respElement);
+                    } else {
+                        System.out.print("<Success/>");
+                    }
+                } else if ("SPECIALLIST".equals(execMode)) {
+                    // Mode 3 (SPECIALLIST)
+                    BdeElementIterator iter = bdeMgr.executeSpecialList(bdeName, methodName, bdeSelection, reqElement);
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setNamespaceAware(true);
+                    Document outDoc = dbf.newDocumentBuilder().newDocument();
+                    Element dataArea = outDoc.createElement("DataArea");
+                    outDoc.appendChild(dataArea);
+                    if (iter != null) {
+                        while (iter.hasNext()) {
+                            Element item = iter.nextElement();
+                            if (item != null) {
+                                dataArea.appendChild(outDoc.importNode(item, true));
+                            }
+                        }
+                    }
+                    printXml(dataArea);
                 } else {
-                    respElement = bdeMgr.doBdeCall(bdeName, methodName, null);
+                    // Default Mode 2 (BDE)
+                    Element respElement = null;
+                    if (reqElement != null) {
+                        respElement = bdeMgr.executeMethod(reqElement, methodName);
+                    } else {
+                        respElement = bdeMgr.doBdeCall(bdeName, methodName, null);
+                    }
+                    if (respElement != null) {
+                        printXml(respElement);
+                    } else {
+                        System.out.print("<Success/>");
+                    }
                 }
 
                 if (bdeMgr.hasInformation()) {
@@ -239,17 +458,6 @@ public class LNStudioJcaBridge {
                     }
                 }
 
-                if (respElement != null) {
-                    TransformerFactory tf = TransformerFactory.newInstance();
-                    Transformer transformer = tf.newTransformer();
-                    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                    StringWriter writer = new StringWriter();
-                    transformer.transform(new DOMSource(respElement), new StreamResult(writer));
-                    System.out.print(writer.toString());
-                } else {
-                    System.out.print("<Success/>");
-                }
                 conn.close();
                 System.exit(0);
             } else {

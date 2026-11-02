@@ -313,6 +313,109 @@ class TestJcaBridgeAndByojCompliance(unittest.TestCase):
         xml_resp = client.do_bde_call("Application", "List", "<Request/>")
         self.assertIn("<Application>", xml_resp)
 
+    def test_five_mode_bde_manager_dispatch_and_mock_recording(self):
+        """Asserts MockJcaTransport accurately handles and records 5 BdeManager modes and controlling attributes."""
+        transport = MockJcaTransport()
+        client = LNStudioServerClient(transport=transport)
+
+        # 1. Mode 0: LIST
+        transport.register_response(
+            "Application",
+            "List",
+            "<DataArea><Application><name>LN</name></Application></DataArea>",
+            mode="LIST",
+        )
+        resp_list = client.do_bde_call(
+            "Application",
+            "List",
+            "",
+            mode="LIST",
+            selection_fields=["Application.name", "Application.description"],
+            filter_expression="Application.name == 'LN'",
+            max_objects=50,
+        )
+        self.assertIn("<DataArea>", resp_list)
+        last_call = transport.call_history[-1]
+        self.assertEqual(last_call["mode"], "LIST")
+        self.assertEqual(last_call["selection_fields"], ["Application.name", "Application.description"])
+        self.assertEqual(last_call["filter_expression"], "Application.name == 'LN'")
+        self.assertEqual(last_call["max_objects"], 50)
+
+        # 2. Mode 1: SHOW
+        transport.register_response(
+            "SoftwareProject_V2",
+            "Show",
+            "<SoftwareProject_V2><projectName>EXTce01107</projectName></SoftwareProject_V2>",
+            mode="SHOW",
+        )
+        resp_show = client.do_bde_call(
+            "SoftwareProject_V2",
+            "Show",
+            "<SoftwareProject_V2><projectName>EXTce01107</projectName></SoftwareProject_V2>",
+            mode="SHOW",
+        )
+        self.assertIn("EXTce01107", resp_show)
+        self.assertEqual(transport.call_history[-1]["mode"], "SHOW")
+
+        # 3. Mode 2: BDE (default)
+        transport.register_response(
+            "StudioComponent",
+            "CmGet",
+            "<StudioComponent><name>txcmg011</name></StudioComponent>",
+            mode="BDE",
+        )
+        resp_bde = client.do_bde_call(
+            "StudioComponent",
+            "CmGet",
+            "<StudioComponent><name>txcmg011</name></StudioComponent>",
+            mode="BDE",
+            connection_point="EXTce01107_dev",
+            context_xml="<ActivityID><activityUUID>uuid-123</activityUUID></ActivityID>",
+        )
+        self.assertIn("txcmg011", resp_bde)
+        self.assertEqual(transport.call_history[-1]["connection_point"], "EXTce01107_dev")
+        self.assertIn("uuid-123", transport.call_history[-1]["context_xml"])
+
+        # 4. Mode 3: SPECIALLIST
+        resp_spec = client.do_bde_call(
+            "StudioComponent",
+            "SpecialList",
+            "<RequestSpecial/>",
+            mode="SPECIALLIST",
+            selection_fields=["compName"],
+        )
+        self.assertIn("<DataArea>", resp_spec)
+        self.assertEqual(transport.call_history[-1]["mode"], "SPECIALLIST")
+
+        # 5. Mode 4: BROWSELIST with Controlling Attributes
+        transport.register_response(
+            "StudioComponent",
+            "GetBrowseList",
+            "<DataArea><DR_Table><name>txcmg011</name></DR_Table></DataArea>",
+            mode="BROWSELIST",
+        )
+        ctrl_attrs = {
+            "package": "tx",
+            "type": "table",
+            "includeExpired": "no",
+            "includeProjectLock": "yes",
+        }
+        resp_browse = client.do_bde_call(
+            "StudioComponent",
+            "GetBrowseList",
+            "",
+            mode="BROWSELIST",
+            controlling_attributes=ctrl_attrs,
+            selection_fields=["DR_Table.name", "DR_Table.description"],
+            filter_expression="DR_Table.name >= 'txcmg' AND DR_Table.name < 'txcmh'",
+            max_objects=500,
+        )
+        self.assertIn("<DR_Table>", resp_browse)
+        last_browse = transport.call_history[-1]
+        self.assertEqual(last_browse["mode"], "BROWSELIST")
+        self.assertEqual(last_browse["controlling_attributes"]["package"], "tx")
+        self.assertEqual(last_browse["max_objects"], 500)
+
     def test_byoj_jar_autodiscovery(self):
         """Asserts resolve_ln_studio_jars locates JCAAdapter4ERPln and lnstudio_commoncore from local Eclipse installation."""
         jars = resolve_ln_studio_jars()

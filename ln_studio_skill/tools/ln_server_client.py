@@ -245,31 +245,60 @@ class JcaTransport(ABC):
         request_xml: str,
         connection_point: str = "ProjectServer",
         context_xml: Optional[str] = None,
+        mode: str = "BDE",
+        controlling_attributes: Optional[Dict[str, str]] = None,
+        selection_fields: Optional[List[str]] = None,
+        filter_expression: Optional[str] = None,
+        max_objects: int = 0,
     ) -> str:
-        """Executes a BDE call and returns the XML response string."""
+        """Executes a BDE call across 5 BdeManager modes and returns the XML response string."""
         pass
 
 
 class MockJcaTransport(JcaTransport):
     """
     In-memory mock JCA transport for 100% offline testing and deterministic behavior.
-    Enforces protocol-level removal of EndActivity / CloseTask.
+    Enforces protocol-level removal of EndActivity / CloseTask across 5 BdeManager modes.
     """
 
     def __init__(self):
-        self.responses: Dict[Tuple[str, str], str] = {}
-        self.errors: Dict[Tuple[str, str], str] = {}
-        self.handlers: Dict[Tuple[str, str], Any] = {}
+        self.responses: Dict[Any, str] = {}
+        self.errors: Dict[Any, str] = {}
+        self.handlers: Dict[Any, Any] = {}
         self.call_history: List[Dict[str, Any]] = []
         self.ping_result = True
 
-    def register_response(self, bde_name: str, method_name: str, response_xml: str) -> None:
+    def register_response(
+        self,
+        bde_name: str,
+        method_name: str,
+        response_xml: str,
+        mode: Optional[str] = None,
+    ) -> None:
+        if mode:
+            self.responses[(mode.upper(), bde_name, method_name)] = response_xml
         self.responses[(bde_name, method_name)] = response_xml
 
-    def register_error(self, bde_name: str, method_name: str, error_message: str) -> None:
+    def register_error(
+        self,
+        bde_name: str,
+        method_name: str,
+        error_message: str,
+        mode: Optional[str] = None,
+    ) -> None:
+        if mode:
+            self.errors[(mode.upper(), bde_name, method_name)] = error_message
         self.errors[(bde_name, method_name)] = error_message
 
-    def register_handler(self, bde_name: str, method_name: str, callback: Any) -> None:
+    def register_handler(
+        self,
+        bde_name: str,
+        method_name: str,
+        callback: Any,
+        mode: Optional[str] = None,
+    ) -> None:
+        if mode:
+            self.handlers[(mode.upper(), bde_name, method_name)] = callback
         self.handlers[(bde_name, method_name)] = callback
 
     def ping(self) -> bool:
@@ -282,33 +311,83 @@ class MockJcaTransport(JcaTransport):
         request_xml: str,
         connection_point: str = "ProjectServer",
         context_xml: Optional[str] = None,
+        mode: str = "BDE",
+        controlling_attributes: Optional[Dict[str, str]] = None,
+        selection_fields: Optional[List[str]] = None,
+        filter_expression: Optional[str] = None,
+        max_objects: int = 0,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
 
-        self.call_history.append({
+        record = {
             "bde": bde_name,
             "method": method_name,
             "request": request_xml,
             "connection_point": connection_point,
             "context_xml": context_xml,
-        })
+            "mode": mode.upper() if mode else "BDE",
+            "controlling_attributes": dict(controlling_attributes) if controlling_attributes else {},
+            "selection_fields": list(selection_fields) if selection_fields else [],
+            "filter_expression": filter_expression,
+            "max_objects": max_objects,
+        }
+        self.call_history.append(record)
 
-        key = (bde_name, method_name)
-        if key in self.handlers:
-            return self.handlers[key](request_xml, connection_point, context_xml)
+        m_upper = mode.upper() if mode else "BDE"
+        key_mode = (m_upper, bde_name, method_name)
+        key_plain = (bde_name, method_name)
 
-        if key in self.errors:
+        if key_mode in self.handlers:
+            return self._invoke_handler(self.handlers[key_mode], record)
+        if key_plain in self.handlers:
+            return self._invoke_handler(self.handlers[key_plain], record)
+
+        if key_mode in self.errors:
             raise BdeExecutionError(
-                self.errors[key],
+                self.errors[key_mode],
                 bde=bde_name,
                 method=method_name,
-                raw_response=f"<Error>{self.errors[key]}</Error>",
+                raw_response=f"<Error>{self.errors[key_mode]}</Error>",
+            )
+        if key_plain in self.errors:
+            raise BdeExecutionError(
+                self.errors[key_plain],
+                bde=bde_name,
+                method=method_name,
+                raw_response=f"<Error>{self.errors[key_plain]}</Error>",
             )
 
-        if key in self.responses:
-            return self.responses[key]
+        if key_mode in self.responses:
+            return self.responses[key_mode]
+        if key_plain in self.responses:
+            return self.responses[key_plain]
+
+        if m_upper in ("LIST", "BROWSELIST", "SPECIALLIST"):
+            return f"<DataArea><{bde_name}><status>success</status><method>{method_name}</method></{bde_name}></DataArea>"
 
         return f"<{bde_name}Response><status>success</status><method>{method_name}</method></{bde_name}Response>"
+
+    def _invoke_handler(self, handler: Any, record: Dict[str, Any]) -> str:
+        try:
+            return handler(
+                record["request"],
+                record["connection_point"],
+                record["context_xml"],
+                mode=record["mode"],
+                controlling_attributes=record["controlling_attributes"],
+                selection_fields=record["selection_fields"],
+                filter_expression=record["filter_expression"],
+                max_objects=record["max_objects"],
+            )
+        except TypeError:
+            try:
+                return handler(
+                    record["request"],
+                    record["connection_point"],
+                    record["context_xml"],
+                )
+            except TypeError:
+                return handler(record["request"])
 
 
 class HeadlessJavaJcaTransport(JcaTransport):
@@ -368,7 +447,7 @@ class HeadlessJavaJcaTransport(JcaTransport):
         if not class_file.exists() or java_src.stat().st_mtime > class_file.stat().st_mtime:
             javac = self._get_javac_exe()
             cp = self._get_classpath()
-            cmd = [javac, "-cp", cp, str(java_src)]
+            cmd = [javac, "--release", "11", "-cp", cp, str(java_src)]
             res = subprocess.run(cmd, capture_output=True, text=True)
             if res.returncode != 0:
                 print(f"[WARN] Failed to compile LNStudioJcaBridge.java: {res.stderr}", file=sys.stderr)
@@ -399,6 +478,11 @@ class HeadlessJavaJcaTransport(JcaTransport):
         request_xml: str,
         connection_point: str = "ProjectServer",
         context_xml: Optional[str] = None,
+        mode: str = "BDE",
+        controlling_attributes: Optional[Dict[str, str]] = None,
+        selection_fields: Optional[List[str]] = None,
+        filter_expression: Optional[str] = None,
+        max_objects: int = 0,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
 
@@ -427,11 +511,22 @@ class HeadlessJavaJcaTransport(JcaTransport):
             self.access_token,
             "--cp",
             connection_point,
+            "--mode",
+            mode,
         ]
         if context_xml:
             cmd.extend(["--context", context_xml])
         if self.workspace_path:
             cmd.extend(["--workspace", str(self.workspace_path)])
+        if controlling_attributes:
+            for k, v in controlling_attributes.items():
+                cmd.extend(["--ctrl-attr", f"{k}={v}"])
+        if selection_fields:
+            cmd.extend(["--select", ",".join(selection_fields)])
+        if filter_expression:
+            cmd.extend(["--filter", filter_expression])
+        if max_objects > 0:
+            cmd.extend(["--max-objects", str(max_objects)])
 
         res = subprocess.run(cmd, input=request_xml, capture_output=True, text=True)
         if res.returncode == 3:
@@ -466,9 +561,14 @@ class LNStudioServerClient:
         self,
         bde_name: str,
         method_name: str,
-        request_xml: str,
+        request_xml: str = "",
         connection_point: str = "ProjectServer",
         context_xml: Optional[str] = None,
+        mode: str = "BDE",
+        controlling_attributes: Optional[Dict[str, str]] = None,
+        selection_fields: Optional[List[str]] = None,
+        filter_expression: Optional[str] = None,
+        max_objects: int = 0,
     ) -> str:
         assert_not_prohibited_activity_closure(bde_name, method_name, request_xml)
         return self.transport.do_bde_call(
@@ -477,4 +577,9 @@ class LNStudioServerClient:
             request_xml=request_xml,
             connection_point=connection_point,
             context_xml=context_xml,
+            mode=mode,
+            controlling_attributes=controlling_attributes,
+            selection_fields=selection_fields,
+            filter_expression=filter_expression,
+            max_objects=max_objects,
         )
