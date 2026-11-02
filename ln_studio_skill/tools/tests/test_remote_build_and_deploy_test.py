@@ -96,7 +96,7 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
 
     def test_deploy_test_default_compile_only_mode(self):
         """Asserts default deploy_test mode is 'compile-only' (Put -> Compile -> executeVSC -> CheckIn without CRDD)."""
-        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file = self.act_dir / "tx" / "table" / "ibd" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
 
@@ -125,7 +125,7 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
 
     def test_deploy_test_schema_crdd_mode_and_dry_run_precheck(self):
         """Asserts mode='schema-crdd' supports dry_run pre-check + lock warning and full CRDD execution."""
-        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file = self.act_dir / "tx" / "table" / "ibd" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
 
@@ -176,7 +176,7 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         )
 
     def test_prepare_end_activity_reporting(self):
-        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file = self.act_dir / "tx" / "table" / "ibd" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
 
@@ -257,11 +257,11 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         self.assertIsNotNone(ct_call["context_xml"])
 
     def test_execute_vsc_authentic_xml_and_admin_sync(self):
-        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file = self.act_dir / "tx" / "table" / "ibd" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
         from admin_sync import admin_after_get, list_admin_components
-        admin_after_get(self.act_dir, "tables/txibd001.tbl")
+        admin_after_get(self.act_dir, "tx/table/ibd/txibd001.tbl")
 
         # Test compliant VSC
         self.transport.register_response(
@@ -295,11 +295,11 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         self.assertFalse(matching_fail[0]["isVSCHappy"])
 
     def test_prepare_end_activity_authentic_validate_development_activity(self):
-        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file = self.act_dir / "tx" / "table" / "ibd" / "txibd001.tbl"
         tbl_file.parent.mkdir(parents=True, exist_ok=True)
         tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
         from admin_sync import admin_after_get
-        admin_after_get(self.act_dir, "tables/txibd001.tbl")
+        admin_after_get(self.act_dir, "tx/table/ibd/txibd001.tbl")
 
         self.transport.register_response(
             "CMLabel",
