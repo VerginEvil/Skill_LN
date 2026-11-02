@@ -1259,6 +1259,170 @@ def cmd_prepare_end_activity(args):
         print(f"\n[NEXT STEP] {res['human_action_required']}")
 
 
+def cmd_compile_source(args):
+    """Handles 'compile-source' subcommand (Ad-Hoc Server Compile)."""
+    from ln_code_intelligence import compile_source_adhoc
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    source_code = ""
+    if getattr(args, "source_file", None):
+        source_code = Path(args.source_file).read_text(encoding="utf-8")
+    elif getattr(args, "code", None):
+        source_code = args.code
+    else:
+        print("[ERROR] Either --source-file or --code must be provided.", file=sys.stderr)
+        sys.exit(1)
+
+    res = compile_source_adhoc(
+        client=client,
+        package_code=args.package,
+        source_code=source_code,
+        flags=getattr(args, "flags", "") or "",
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res["success"] else "[FAILED]"
+        print(f"{status_str} Ad-Hoc compile for package '{args.package}': {len(res['errors'])} errors, {len(res['warnings'])} warnings")
+        if res.get("bic_command"):
+            print(f"  Compiler: {res['bic_command']}")
+        for err in res["errors"]:
+            print(f"  [ERROR] line {err['line']}: {err['message']} (source: {err.get('source','')})")
+        for warn in res["warnings"]:
+            print(f"  [WARN]  line {warn['line']}: {warn['message']} (level: {warn.get('code','')})")
+
+
+def cmd_search_server(args):
+    """Handles 'search-server' subcommand (Global Server Search)."""
+    from ln_code_intelligence import search_server_pattern
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    res = search_server_pattern(
+        client=client,
+        pattern=args.pattern,
+        package_code=getattr(args, "package", "") or "",
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"[SEARCH RESULTS] Found {res['total_matches']} match(es) for pattern '{args.pattern}':")
+        for m in res["matches"]:
+            print(f"  {m.get('package','')}.{m.get('component','')} (line {m.get('line',0)}): {m.get('snippet','')}")
+
+
+def cmd_call_hierarchy(args):
+    """Handles 'call-hierarchy' subcommand (Function Call Hierarchy / Where-Used)."""
+    from ln_code_intelligence import get_call_hierarchy
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    res = get_call_hierarchy(
+        client=client,
+        source_file_name=args.source_file,
+        function_name=args.function,
+        call_mode=getattr(args, "mode", "callers") or "callers",
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        valid_tag = "[VALID]" if res["is_valid"] else "[INVALID]"
+        print(f"{valid_tag} Call Hierarchy ({res['call_mode']}) for '{args.function}' in '{args.source_file}': {res['total_nodes']} node(s)")
+        for n in res["hierarchy"]:
+            print(f"  -> {n.get('function','')} ({n.get('type','')}) at {n.get('source_file','')}:{n.get('line',0)}")
+
+
+def cmd_open_declaration(args):
+    """Handles 'open-declaration' subcommand."""
+    from ln_code_intelligence import open_declaration
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    res = open_declaration(
+        client=client,
+        comp_code=args.comp,
+        comp_type=args.type,
+        function_name=args.function,
+        context=getattr(args, "context", "") or "",
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        if res["found"]:
+            print(f"[FOUND] {res['function']} -> {res['component_code']} ({res['component_type']}) at line {res['line_number']}")
+        else:
+            print(f"[NOT FOUND] Declaration for '{args.function}' not found in {args.comp}")
+
+
+def cmd_related_components(args):
+    """Handles 'related-components' subcommand."""
+    from ln_code_intelligence import get_related_script_components
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    source_code = ""
+    if getattr(args, "source_file", None):
+        source_code = Path(args.source_file).read_text(encoding="utf-8")
+    elif getattr(args, "code", None):
+        source_code = args.code
+    else:
+        print("[ERROR] Either --source-file or --code must be provided.", file=sys.stderr)
+        sys.exit(1)
+
+    res = get_related_script_components(
+        client=client,
+        package_code=args.package,
+        source_code=source_code,
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"[RELATED COMPONENTS] Found {res['total_components']} component(s) referenced in package '{args.package}':")
+        for c in res["components"]:
+            print(f"  {c.get('name','')} ({c.get('type','')}) [version: {c.get('version_id','')}]")
+
+
 def cmd_pipeline(args):
     """
     Executes full autonomous pipeline:
@@ -1789,6 +1953,62 @@ def main():
     sp_mcpset.add_argument("--apply", action="store_true", help="Write configuration changes to target file")
     sp_mcpset.add_argument("--dry-run", action="store_true", help="Preview configuration without writing")
 
+    # compile-source (Ad-Hoc Server Compile)
+    sp_cmpsrc = subparsers.add_parser("compile-source", help="Ad-Hoc Server Compile via FglStudio.compileSource (SHOW mode)")
+    sp_cmpsrc.add_argument("--package", required=True, help="Package code (e.g. tx, tc, td)")
+    sp_cmpsrc.add_argument("--source-file", help="Path to 4GL source file to compile")
+    sp_cmpsrc.add_argument("--code", help="Inline 4GL source code snippet")
+    sp_cmpsrc.add_argument("--flags", default="", help="bic6.2 compiler flags")
+    sp_cmpsrc.add_argument("--activity", help="Target activity folder")
+    sp_cmpsrc.add_argument("--project", help="Software Project name")
+    sp_cmpsrc.add_argument("--workspace", help="Target workspace folder name")
+    sp_cmpsrc.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_cmpsrc.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # search-server (Global Server Search)
+    sp_srchsrv = subparsers.add_parser("search-server", help="Global Server Search via FglStudio.Searchpattern (BDE mode)")
+    sp_srchsrv.add_argument("--pattern", required=True, help="Search pattern or regex")
+    sp_srchsrv.add_argument("--package", default="", help="Optional package code filter (e.g. tx, td)")
+    sp_srchsrv.add_argument("--activity", help="Target activity folder")
+    sp_srchsrv.add_argument("--project", help="Software Project name")
+    sp_srchsrv.add_argument("--workspace", help="Target workspace folder name")
+    sp_srchsrv.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_srchsrv.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # call-hierarchy (Function Call Hierarchy & Where-Used)
+    sp_callh = subparsers.add_parser("call-hierarchy", help="Function Call Hierarchy / Where-Used via fglstudio (BDE mode)")
+    sp_callh.add_argument("--source-file", required=True, help="Source file name (e.g. ottstpstandard)")
+    sp_callh.add_argument("--function", required=True, help="Function name (e.g. zoom.to$ or my.func)")
+    sp_callh.add_argument("--mode", choices=["callers", "callees"], default="callers", help="Call hierarchy mode: callers (where-used) or callees")
+    sp_callh.add_argument("--activity", help="Target activity folder")
+    sp_callh.add_argument("--project", help="Software Project name")
+    sp_callh.add_argument("--workspace", help="Target workspace folder name")
+    sp_callh.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_callh.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # open-declaration
+    sp_opndcl = subparsers.add_parser("open-declaration", help="Locate function declaration via FglStudio.OpenDeclarationFunction (BDE mode)")
+    sp_opndcl.add_argument("--comp", required=True, help="Originating component code")
+    sp_opndcl.add_argument("--type", required=True, help="Originating component type")
+    sp_opndcl.add_argument("--function", required=True, help="Function name to locate")
+    sp_opndcl.add_argument("--context", default="", help="Optional context string")
+    sp_opndcl.add_argument("--activity", help="Target activity folder")
+    sp_opndcl.add_argument("--project", help="Software Project name")
+    sp_opndcl.add_argument("--workspace", help="Target workspace folder name")
+    sp_opndcl.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_opndcl.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # related-components
+    sp_relcomp = subparsers.add_parser("related-components", help="Discover referenced includes, libraries, and tables via FglStudio.GetScriptComponents (BDE mode)")
+    sp_relcomp.add_argument("--package", required=True, help="Package code (e.g. tx, td)")
+    sp_relcomp.add_argument("--source-file", help="Path to 4GL source file")
+    sp_relcomp.add_argument("--code", help="Inline 4GL source code snippet")
+    sp_relcomp.add_argument("--activity", help="Target activity folder")
+    sp_relcomp.add_argument("--project", help="Software Project name")
+    sp_relcomp.add_argument("--workspace", help="Target workspace folder name")
+    sp_relcomp.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_relcomp.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
     args = parser.parse_args()
 
     commands = {
@@ -1811,6 +2031,11 @@ def main():
         "end-activity": cmd_end_activity,
         "deploy-test": cmd_deploy_test,
         "prepare-end-activity": cmd_prepare_end_activity,
+        "compile-source": cmd_compile_source,
+        "search-server": cmd_search_server,
+        "call-hierarchy": cmd_call_hierarchy,
+        "open-declaration": cmd_open_declaration,
+        "related-components": cmd_related_components,
         "table": cmd_table,
         "session": cmd_session,
         "domain": cmd_domain,
