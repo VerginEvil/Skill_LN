@@ -39,7 +39,7 @@ from admin_sync import (
     list_admin_components, add_component, remove_component, scan_and_sync_activity,
     init_admin_file, admin_after_get, admin_after_create, admin_after_checkout,
     admin_after_put, admin_after_checkin, admin_after_uncheckout, repair_admin_file,
-    normalize_admin_path, get_tde_component_rel_path, find_component_file
+    normalize_admin_path, get_tde_component_rel_path, find_component_file, find_component_by_coords
 )
 from ln_error_reader import (
     parse_eclipse_markers_file, read_activity_diagnostics

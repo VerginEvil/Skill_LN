@@ -226,6 +226,31 @@ def build_activity_context_xml(
     parts.append("</ActivityID>")
     return "".join(parts)
 
+def resolve_activity_context_xml(
+    activity_dir: Optional[Path],
+    project_name: str = ""
+) -> Tuple[Optional[str], str]:
+    """
+    Resolves SCM context XML (<ActivityID>...</ActivityID>) and development connection point
+    for an activity workspace or project. (ADR 0014 helper consolidation).
+    """
+    context_xml = None
+    dev_cp = f"{project_name}_dev" if project_name else "ProjectServer"
+    if activity_dir:
+        meta = resolve_activity_scm_metadata(activity_dir)
+        task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+        label_uuid = meta["labelUUID"] or task_id
+        dev_cp = meta["taskContext"] or dev_cp
+        context_xml = build_activity_context_xml(
+            activity_name=task_id,
+            base_vrc=meta["baseVRC"],
+            connection_point=dev_cp,
+            activity_guid=label_uuid,
+            documentation=meta["taskDocumentation"] or None,
+        )
+    return context_xml, dev_cp
+
+
 
 def build_checkout_payload(
     bde_name: str,

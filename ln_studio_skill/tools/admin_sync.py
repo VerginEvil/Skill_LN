@@ -103,7 +103,7 @@ def get_tde_component_rel_path(
         return f"{pkg}/{ctype}/{name}{ext}"
 
 
-def find_component_file(
+def find_component_by_coords(
     activity_path: Path,
     package: str,
     comp_type: str,
@@ -534,3 +534,5 @@ if __name__ == "__main__":
 
 
 sync_admin_file = scan_and_sync_activity
+
+find_component_file = find_component_by_coords
