@@ -1423,6 +1423,189 @@ def cmd_related_components(args):
             print(f"  {c.get('name','')} ({c.get('type','')}) [version: {c.get('version_id','')}]")
 
 
+def cmd_revisions(args):
+    """Handles 'revisions' subcommand (Revision History)."""
+    from ln_revision_diff import list_component_revisions
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    res = list_component_revisions(
+        client=client,
+        comp_type=args.type,
+        comp_name=args.name,
+        version_id=args.version,
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"[REVISIONS] {args.type} '{args.name}' (Version {args.version}): {res['total_revisions']} revision(s)")
+        for r in res["revisions"]:
+            print(f"  Rev {r['number']} | {r['date']} {r['time']} | Author: {r['author']} | Task: {r['task']} | {r['comment']}")
+
+
+def cmd_diff_component(args):
+    """Handles 'diff-component' subcommand (Script & Structural XML Diff)."""
+    from ln_revision_diff import diff_component
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
+        act_dir = Path(args.activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+        act_dir = Path(act_info["path"])
+
+    rev_num = int(args.revision) if getattr(args, "revision", None) else None
+    res = diff_component(
+        client=client,
+        comp_type=args.type,
+        comp_name=args.name,
+        activity_dir=act_dir,
+        target_version_id=getattr(args, "version", None),
+        target_rev_number=rev_num,
+        project_name=getattr(args, "project", "") or "",
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"=== Diff for {args.type} '{args.name}' (Target Revision: {res['target_revision'] or 'base'}) ===")
+        if res["has_script_changes"]:
+            print("\n--- 4GL Script Diff ---")
+            print(res["script_diff"])
+        else:
+            print("\n[INFO] No 4GL script differences.")
+
+        sd = res["structural_diff"]
+        if res["has_structural_changes"]:
+            print("\n--- Structural XML Diff ---")
+            for a in sd["added_elements"]:
+                print(f"  [+] Added: {a['tag']} ({a['name']})")
+            for r in sd["removed_elements"]:
+                print(f"  [-] Removed: {r['tag']} ({r['name']})")
+            for m in sd["modified_elements"]:
+                print(f"  [*] Modified: {m['key']}")
+        else:
+            print("[INFO] No structural XML differences.")
+
+
+def cmd_generate_report_server(args):
+    """Handles 'generate-report-server' subcommand (Server Report Wizard)."""
+    from ln_revision_diff import generate_report_on_server
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    act_dir = None
+    if getattr(args, "activity", None):
+        if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
+            act_dir = Path(args.activity).resolve()
+        else:
+            act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+            act_dir = Path(act_info["path"])
+
+    fields = [f.strip() for f in args.fields.split(",") if f.strip()] if getattr(args, "fields", None) else None
+    res = generate_report_on_server(
+        client=client,
+        report_name=args.code,
+        table_name=args.table,
+        version_id=args.version,
+        description=getattr(args, "desc", "") or "",
+        report_size=getattr(args, "paper_width", "80") or "80",
+        report_type=getattr(args, "report_type", "1") or "1",
+        used_index=getattr(args, "index", "1") or "1",
+        input_fields=fields,
+        overwrite=not getattr(args, "no_overwrite", False),
+        project_name=getattr(args, "project", "") or "",
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res["success"] else "[FAILED]"
+        print(f"{status_str} Generated Report '{args.code}' for table '{args.table}' (Version {args.version})")
+        if res.get("output_file"):
+            print(f"  Output: {res['output_file']}")
+
+
+def cmd_move_components(args):
+    """Handles 'move-components' subcommand (FglStudio.MoveComponent)."""
+    from ln_revision_diff import move_activity_components
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    if args.source_activity and (Path(args.source_activity).is_dir() or "/" in args.source_activity or "\\" in args.source_activity):
+        src_dir = Path(args.source_activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.source_activity, workspace_name=args.workspace)
+        src_dir = Path(act_info["path"])
+
+    tgt_dir = None
+    if getattr(args, "target_activity", None):
+        if Path(args.target_activity).is_dir() or "/" in args.target_activity or "\\" in args.target_activity:
+            tgt_dir = Path(args.target_activity).resolve()
+        else:
+            try:
+                t_info = resolve_activity(activity_name=args.target_activity, workspace_name=args.workspace)
+                tgt_dir = Path(t_info["path"])
+            except Exception:
+                pass
+
+    comps = []
+    for item in args.components.split(","):
+        parts = item.strip().split(":")
+        if len(parts) == 2:
+            comps.append({"type": parts[0], "name": parts[1]})
+        elif len(parts) == 1 and parts[0]:
+            comps.append({"type": getattr(args, "type", "table"), "name": parts[0]})
+
+    res = move_activity_components(
+        client=client,
+        components=comps,
+        source_activity_dir=src_dir,
+        target_task_name=args.target_task,
+        target_task_uuid=getattr(args, "target_uuid", args.target_task) or args.target_task,
+        target_base_vrc=getattr(args, "target_vrc", "1") or "1",
+        target_context=getattr(args, "target_context", "ProjectServer") or "ProjectServer",
+        target_activity_dir=tgt_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res["success"] else "[FAILED]"
+        print(f"{status_str} Moved {res['moved_components']} component(s) to '{args.target_task}'")
+
+
+def cmd_clean_components(args):
+    """Handles 'clean-components' subcommand (FglStudio.CleanComponents)."""
+    from ln_revision_diff import clean_activity_components
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
+        act_dir = Path(args.activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+        act_dir = Path(act_info["path"])
+
+    comps = []
+    for item in args.components.split(","):
+        parts = item.strip().split(":")
+        if len(parts) == 2:
+            comps.append({"type": parts[0], "name": parts[1]})
+        elif len(parts) == 1 and parts[0]:
+            comps.append({"type": getattr(args, "type", "table"), "name": parts[0]})
+
+    res = clean_activity_components(
+        client=client,
+        components=comps,
+        activity_dir=act_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res["success"] else "[FAILED]"
+        print(f"{status_str} Cleaned {res['cleaned_components']} component(s) from activity '{act_dir.name}'")
+
+
 def cmd_pipeline(args):
     """
     Executes full autonomous pipeline:
@@ -2009,6 +2192,69 @@ def main():
     sp_relcomp.add_argument("--json", action="store_true", help="Output results in JSON format")
     sp_relcomp.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
+    # revisions (Revision History)
+    sp_revs = subparsers.add_parser("revisions", help="Query server revision history via FglStudio.GetRevisions (BDE mode)")
+    sp_revs.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
+    sp_revs.add_argument("--name", required=True, help="Component name (e.g. txcmg011)")
+    sp_revs.add_argument("--version", default="1", help="Version ID (e.g. 1, 2, B61U_a)")
+    sp_revs.add_argument("--activity", help="Target activity folder")
+    sp_revs.add_argument("--project", help="Software Project name")
+    sp_revs.add_argument("--workspace", help="Target workspace folder name")
+    sp_revs.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_revs.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # diff-component (Script and Structural XML Diff)
+    sp_diffcomp = subparsers.add_parser("diff-component", help="Diff local workarea component against server revision or base copy")
+    sp_diffcomp.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
+    sp_diffcomp.add_argument("--name", required=True, help="Component name (e.g. txcmg011)")
+    sp_diffcomp.add_argument("--revision", type=int, help="Target historical revision number to compare against (default: base/current)")
+    sp_diffcomp.add_argument("--version", help="Target version ID")
+    sp_diffcomp.add_argument("--activity", help="Target activity folder")
+    sp_diffcomp.add_argument("--project", help="Software Project name")
+    sp_diffcomp.add_argument("--workspace", help="Target workspace folder name")
+    sp_diffcomp.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_diffcomp.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # generate-report-server (Server Report Wizard)
+    sp_genrpt = subparsers.add_parser("generate-report-server", help="Server Report Wizard via DR_Report.Generate (BDE mode)")
+    sp_genrpt.add_argument("--code", required=True, help="Report code (e.g. txcmg04010100)")
+    sp_genrpt.add_argument("--table", required=True, help="Primary table code (e.g. txcmg001)")
+    sp_genrpt.add_argument("--version", default="1", help="Version ID")
+    sp_genrpt.add_argument("--desc", default="", help="Description")
+    sp_genrpt.add_argument("--paper-width", choices=["80", "132"], default="80", help="Paper width (80 or 132)")
+    sp_genrpt.add_argument("--report-type", choices=["1", "2", "3"], default="1", help="Report layout type (1, 2, or 3)")
+    sp_genrpt.add_argument("--index", default="1", help="Used index number (default 1)")
+    sp_genrpt.add_argument("--fields", help="Comma-separated input field names")
+    sp_genrpt.add_argument("--no-overwrite", action="store_true", help="Do not overwrite if exists")
+    sp_genrpt.add_argument("--activity", help="Target activity folder")
+    sp_genrpt.add_argument("--project", help="Software Project name")
+    sp_genrpt.add_argument("--workspace", help="Target workspace folder name")
+    sp_genrpt.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_genrpt.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # move-components (FglStudio.MoveComponent)
+    sp_movcomp = subparsers.add_parser("move-components", help="Move components between activities on server via FglStudio.MoveComponent")
+    sp_movcomp.add_argument("--components", required=True, help="Comma-separated component list (e.g. 'table:txcmg001,session:txcmg0101m000')")
+    sp_movcomp.add_argument("--source-activity", required=True, help="Source activity folder or name")
+    sp_movcomp.add_argument("--target-task", required=True, help="Target activity task name")
+    sp_movcomp.add_argument("--target-uuid", help="Target activity label UUID")
+    sp_movcomp.add_argument("--target-vrc", default="1", help="Target base VRC")
+    sp_movcomp.add_argument("--target-context", default="ProjectServer", help="Target task context")
+    sp_movcomp.add_argument("--target-activity", help="Optional target activity folder on local disk")
+    sp_movcomp.add_argument("--type", default="table", help="Default component type if not prefixed")
+    sp_movcomp.add_argument("--workspace", help="Target workspace folder name")
+    sp_movcomp.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_movcomp.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # clean-components (FglStudio.CleanComponents)
+    sp_clncomps = subparsers.add_parser("clean-components", help="Clean/remove components from activity workarea via FglStudio.CleanComponents")
+    sp_clncomps.add_argument("--components", required=True, help="Comma-separated component list (e.g. 'table:txcmg001,session:txcmg0101m000')")
+    sp_clncomps.add_argument("--activity", required=True, help="Target activity folder or name")
+    sp_clncomps.add_argument("--type", default="table", help="Default component type if not prefixed")
+    sp_clncomps.add_argument("--workspace", help="Target workspace folder name")
+    sp_clncomps.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_clncomps.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
     args = parser.parse_args()
 
     commands = {
@@ -2036,6 +2282,11 @@ def main():
         "call-hierarchy": cmd_call_hierarchy,
         "open-declaration": cmd_open_declaration,
         "related-components": cmd_related_components,
+        "revisions": cmd_revisions,
+        "diff-component": cmd_diff_component,
+        "generate-report-server": cmd_generate_report_server,
+        "move-components": cmd_move_components,
+        "clean-components": cmd_clean_components,
         "table": cmd_table,
         "session": cmd_session,
         "domain": cmd_domain,
