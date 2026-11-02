@@ -30,12 +30,113 @@ JAVA_BIN_CANDIDATES = [
     shutil.which("java") or "java"
 ]
 
-# 12 Managed LN Studio Component Extensions (plus aliases .que and .fun)
+# 12 Managed LN Studio Component Extensions
 MANAGED_EXTENSIONS = {
-    ".tbl", ".ses", ".lib", ".dmn", ".lbl",
-    ".mnu", ".rpt", ".rptdsrc", ".msg", ".qst", ".que",
-    ".add", ".fnc", ".fun"
+    ".tbl", ".ses", ".lib", ".fnc", ".dmn", ".lbl",
+    ".mnu", ".rpt", ".msg", ".qst", ".add", ".bus"
 }
+EXCLUDED_EXTENSIONS = {
+    ".src", ".4gl", ".dal", ".clnsrc", ".rptdsrc"
+}
+MODULE_SCOPED_TYPES = {
+    "table", "session", "library", "function", "report", "menu", "additional", "businessobject"
+}
+PACKAGE_SCOPED_TYPES = {
+    "domain", "label", "message", "question", "chart"
+}
+TYPE_EXTENSION_MAP = {
+    "table": ".tbl",
+    "session": ".ses",
+    "library": ".lib",
+    "function": ".fnc",
+    "report": ".rpt",
+    "menu": ".mnu",
+    "domain": ".dmn",
+    "label": ".lbl",
+    "message": ".msg",
+    "question": ".qst",
+    "additional": ".add",
+    "businessobject": ".bus",
+    "chart": ".cha",
+}
+
+
+def normalize_admin_path(path_str: str) -> str:
+    """Normalizes relative paths to project-relative paths without leading slash or :<activity>/ prefix."""
+    p = str(path_str).replace("\\", "/").strip()
+    while p.startswith("/"):
+        p = p[1:]
+    if p.startswith(":"):
+        slash = p.find("/")
+        p = p[slash + 1 :] if slash != -1 else p[1:]
+    while p.startswith("/"):
+        p = p[1:]
+    return p
+
+
+def get_tde_component_rel_path(
+    package: str,
+    comp_type: str,
+    module: str = "",
+    name: str = "",
+    ext: Optional[str] = None,
+) -> str:
+    """
+    Computes Native Single-XML TDE project-relative path:
+    - Module-scoped types: {pkg}/{type}/{mod}/{name}.{ext}
+    - Package-scoped types: {pkg}/{type}/{name}.{ext}
+    """
+    pkg = package.lower()
+    ctype = comp_type.lower()
+    if not ext:
+        ext = TYPE_EXTENSION_MAP.get(ctype, f".{ctype[:3]}")
+    if not ext.startswith("."):
+        ext = f".{ext}"
+
+    if ctype in MODULE_SCOPED_TYPES:
+        mod = (module or (name[len(pkg):len(pkg)+3] if len(name) >= len(pkg)+3 else "")).lower()
+        if mod:
+            return f"{pkg}/{ctype}/{mod}/{name}{ext}"
+        return f"{pkg}/{ctype}/{name}{ext}"
+    else:
+        return f"{pkg}/{ctype}/{name}{ext}"
+
+
+def find_component_file(
+    activity_path: Path,
+    package: str,
+    comp_type: str,
+    module: str = "",
+    name: str = "",
+    ext: Optional[str] = None,
+) -> Optional[Path]:
+    """Finds a component file on disk, checking TDE path first then legacy plural subfolders."""
+    tde_rel = get_tde_component_rel_path(package, comp_type, module, name, ext)
+    tde_path = activity_path / tde_rel
+    if tde_path.exists():
+        return tde_path
+
+    if not ext:
+        ext = TYPE_EXTENSION_MAP.get(comp_type.lower(), f".{comp_type.lower()[:3]}")
+    if not ext.startswith("."):
+        ext = f".{ext}"
+
+    plural = f"{comp_type.lower()}s"
+    candidates = [
+        activity_path / plural / f"{name}{ext}",
+        activity_path / plural / module.lower() / f"{name}{ext}",
+        activity_path / comp_type.lower() / f"{name}{ext}",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+
+    target_filename = f"{name}{ext}".lower()
+    for f in activity_path.rglob(f"*{ext}"):
+        if f.is_file() and f.name.lower() == target_filename:
+            return f
+
+    return None
 
 
 def get_java_executable() -> str:
@@ -67,11 +168,12 @@ def ensure_helper_compiled() -> None:
     lib_dir = _TOOLS_DIR / "lib"
     class_file = lib_dir / "tools" / "lib" / "AdminSyncHelper.class"
     java_file = lib_dir / "AdminSyncHelper.java"
-    if not class_file.exists() and java_file.exists():
+    if not class_file.exists() or java_file.stat().st_mtime > class_file.stat().st_mtime:
         java_exe = get_java_executable()
         javac_cand = java_exe.replace("java.exe", "javac.exe")
         javac_exe = javac_cand if os.path.isfile(javac_cand) else (shutil.which("javac") or "javac")
-        cmd = [javac_exe, "-d", str(lib_dir), str(java_file)]
+        cp = get_admin_helper_classpath()
+        cmd = [javac_exe, "--release", "11", "-cp", cp, "-d", str(lib_dir), str(java_file)]
         subprocess.run(cmd, capture_output=True, text=True, check=False)
 
 
@@ -88,7 +190,7 @@ def run_helper(admin_file: Path, cmd: str, args: Optional[List[str]] = None) -> 
 
 
 def list_admin_components(activity_path: Path) -> List[Dict[str, Any]]:
-    """Lists components registered in activity's .admin file."""
+    """Lists components registered in activity's .admin file with all 7 AdministrationComponent fields."""
     admin_file = activity_path / ".admin"
     if not admin_file.exists():
         return []
@@ -101,22 +203,38 @@ def list_admin_components(activity_path: Path) -> List[Dict[str, Any]]:
     for line in res.stdout.strip().splitlines():
         if line.startswith("ENTRY\t"):
             parts = line.split("\t")
-            if len(parts) >= 6:
+            if len(parts) >= 8:
+                norm_p = normalize_admin_path(parts[1])
                 components.append({
-                    "path": parts[1],
+                    "path": norm_p,
                     "isCreated": parts[2].lower() == "true",
                     "isCheckedOut": parts[3].lower() == "true",
+                    "isEverCheckedIn": parts[4].lower() == "true",
+                    "isExpired": parts[5].lower() == "true",
+                    "isDirty": parts[6].lower() == "true",
+                    "isVSCHappy": parts[7].lower() == "true",
+                    "m_path": normalize_admin_path(parts[8]) if len(parts) > 8 else norm_p,
+                })
+            elif len(parts) >= 6:
+                norm_p = normalize_admin_path(parts[1])
+                components.append({
+                    "path": norm_p,
+                    "isCreated": parts[2].lower() == "true",
+                    "isCheckedOut": parts[3].lower() == "true",
+                    "isEverCheckedIn": False,
+                    "isExpired": False,
                     "isDirty": parts[4].lower() == "true",
                     "isVSCHappy": parts[5].lower() == "true",
+                    "m_path": norm_p,
                 })
     return components
 
 
 def add_component(activity_path: Path, rel_path: str) -> bool:
-    """Registers a component in the activity's .admin file."""
+    """Registers a component in the activity's .admin file with exact project-relative path."""
     admin_file = activity_path / ".admin"
-    act_folder = activity_path.name
-    res = run_helper(admin_file, "add", [rel_path, act_folder])
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "add", [norm_path])
     if res.returncode != 0:
         raise RuntimeError(f"Failed to add component to .admin: {res.stderr}")
     return True
@@ -125,10 +243,68 @@ def add_component(activity_path: Path, rel_path: str) -> bool:
 def remove_component(activity_path: Path, rel_path: str) -> bool:
     """Removes a component from the activity's .admin file."""
     admin_file = activity_path / ".admin"
-    res = run_helper(admin_file, "remove", [rel_path])
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "remove", [norm_path])
     if res.returncode != 0:
         raise RuntimeError(f"Failed to remove component from .admin: {res.stderr}")
     return True
+
+
+def admin_after_get(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after Get (isCreated=false, isCheckedout=false, m_isDirty=false)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_get", [norm_path])
+    return res.returncode == 0
+
+
+def admin_after_create(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after DR_Create (isCreated=true, isCheckedout=true, m_isDirty=true)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_create", [norm_path])
+    return res.returncode == 0
+
+
+def admin_after_checkout(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after CheckOut (isCreated=false, isCheckedout=true, m_isDirty=false)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_checkout", [norm_path])
+    return res.returncode == 0
+
+
+def admin_after_put(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after Put (m_isDirty=false, retaining isCheckedout=true)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_put", [norm_path])
+    return res.returncode == 0
+
+
+def admin_after_checkin(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after CheckIn (isCreated=false, isCheckedout=false, isEvercheckedIn=true)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_checkin", [norm_path])
+    return res.returncode == 0
+
+
+def admin_after_uncheckout(activity_path: Path, rel_path: str) -> bool:
+    """CMStudio state transition after UndoCheckOut (removes uncommitted new component or resets flags)."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "after_uncheckout", [norm_path])
+    return res.returncode == 0
+
+
+def repair_admin_file(activity_path: Path) -> bool:
+    """Repairs an existing .admin file by removing :<activity>/ prefixes and pruning standalone script files."""
+    admin_file = activity_path / ".admin"
+    if not admin_file.exists():
+        return True
+    res = run_helper(admin_file, "repair")
+    return res.returncode == 0
 
 
 def init_admin_file(admin_path: Path, initial_data: Optional[Dict[str, Any]] = None) -> None:
@@ -169,18 +345,19 @@ def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
     12 LN Studio component extensions, registers untracked files, and removes
     obsolete entries only when they match managed extensions.
     """
+    repair_admin_file(activity_path)
     admin_file = activity_path / ".admin"
     registered = {c["path"]: c for c in list_admin_components(activity_path)}
 
-    # Scan files on disk across all 12 managed extensions
+    # Scan files on disk across all 12 managed extensions (excluding standalone scripts)
     disk_files = set()
 
     for p in activity_path.rglob("*"):
-        if p.is_file() and p.suffix.lower() in MANAGED_EXTENSIONS:
+        if p.is_file() and p.suffix.lower() in MANAGED_EXTENSIONS and p.suffix.lower() not in EXCLUDED_EXTENSIONS:
             # Skip read-only Extension Modeler components
             if is_extension_component(p):
                 continue
-            rel = p.relative_to(activity_path).as_posix()
+            rel = normalize_admin_path(p.relative_to(activity_path).as_posix())
             disk_files.add(rel)
 
     to_add = sorted(list(disk_files - set(registered.keys())))
@@ -216,6 +393,7 @@ def main():
     parser.add_argument("--workspace", help="Filter by workspace name")
     parser.add_argument("--status", action="store_true", help="Display registered components in .admin")
     parser.add_argument("--scan-and-update", action="store_true", help="Scan disk files and synchronize .admin")
+    parser.add_argument("--repair", action="store_true", help="Repair .admin: remove :<activity>/ prefixes and prune standalone scripts")
     parser.add_argument("--add", help="Add specific relative path to .admin")
     parser.add_argument("--remove", help="Remove specific relative path from .admin")
 
@@ -255,6 +433,11 @@ def main():
             if c["isDirty"]: flags.append("Dirty")
             flags_str = ",".join(flags) if flags else "Synced"
             print(f"  [{flags_str:<12}] {c['path']}")
+        return
+
+    if args.repair:
+        repair_admin_file(act_path)
+        print(f"[SUCCESS] Repaired .admin for '{act_path.name}'.")
         return
 
     if args.scan_and_update:
