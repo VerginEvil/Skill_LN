@@ -319,13 +319,13 @@ class TestPrecommitScmEngine(unittest.TestCase):
         # Set up properties.index with ApplicationUseSCM: no
         settings_dir = self.act_dir / ".settings"
         settings_dir.mkdir(parents=True, exist_ok=True)
-        (settings_dir / "properties.index").write_bytes(b"version=1\nApplicationUseSCM=no\n")
+        (settings_dir / "properties.index").write_bytes(b"version=1\nApplicationUsesSCM=no\n")
 
         # Verify is_project_scm_enabled returns False
         from scm_guardrails import is_project_scm_enabled, is_tracked_checked_in
         scm_enabled, reason = is_project_scm_enabled(self.act_dir)
         self.assertFalse(scm_enabled)
-        self.assertIn("ApplicationUseSCM=no", reason)
+        self.assertIn("ApplicationUsesSCM=no", reason)
 
         # Create a component file
         tbl = self.act_dir / "tables" / "txcmg011.tbl"

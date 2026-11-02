@@ -210,6 +210,109 @@ class TestComponentExplorerAndClone(unittest.TestCase):
                 activity_dir=self.act_dir,
             )
 
+    def test_browse_components_browselist_mode_and_controlling_attributes(self):
+        """Asserts browse_components uses BROWSELIST mode, controlling attributes, selection fields, and parses DataArea."""
+        self.transport.register_response(
+            "StudioComponent",
+            "GetBrowseList",
+            """<GetBrowseListResponse>
+                <ControlArea><status>success</status></ControlArea>
+                <DataArea>
+                    <DR_Table name="txsls040" type="table" package="tx" module="sls" description="Sales Orders Header" versionID="{uuid-1}"/>
+                    <DR_Table name="txsls041" type="table" package="tx" module="sls" description="Sales Orders Lines" versionID="{uuid-2}"/>
+                </DataArea>
+            </GetBrowseListResponse>""",
+            mode="BROWSELIST",
+        )
+        comps = browse_components(self.client, package="tx", comp_type="table", name_filter="txsls04*")
+        self.assertEqual(len(comps), 2)
+        self.assertEqual(comps[0]["name"], "txsls040")
+        self.assertEqual(comps[0]["package"], "tx")
+        self.assertEqual(comps[0]["versionID"], "{uuid-1}")
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["mode"], "BROWSELIST")
+        self.assertEqual(last_call["controlling_attributes"]["package"], "tx")
+        self.assertEqual(last_call["controlling_attributes"]["type"], "table")
+        self.assertEqual(last_call["controlling_attributes"]["includeExpired"], "no")
+        self.assertEqual(last_call["controlling_attributes"]["includeProjectLock"], "yes")
+        self.assertIn("DR_Table.name", last_call["selection_fields"])
+
+    def test_inspect_component_cmget_authentic_payload(self):
+        """Asserts inspect_component dispatches authentic CmGet payload."""
+        self.transport.register_response(
+            "DR_Table",
+            "CmGet",
+            """<DR_Table name="txcmg011" package="tx" module="cmg">
+                <description>Batch Control</description>
+                <Column>
+                    <datatype><name>tcmcs.long</name><nativeDatatype>3</nativeDatatype></datatype>
+                    <name>btno</name>
+                    <fieldLabel>txcmg011.btno</fieldLabel>
+                </Column>
+            </DR_Table>""",
+        )
+        summary = inspect_component(self.client, "table", "txcmg011")
+        self.assertEqual(summary["name"], "txcmg011")
+        self.assertEqual(len(summary["fields"]), 1)
+        self.assertEqual(summary["fields"][0]["name"], "btno")
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["method"], "CmGet")
+        self.assertIn("<name>txcmg011</name>", last_call["request"])
+        self.assertIn("<includeCustomerFields>yes</includeCustomerFields>", last_call["request"])
+        self.assertIn("<optionalContent>yes</optionalContent>", last_call["request"])
+
+    def test_clone_component_raw_dr_create_payload(self):
+        """Asserts clone_component dispatches raw <DR_*> root XML without wrappers and registers in .admin via after_create."""
+        self.transport.register_response(
+            "DR_Table",
+            "CmGet",
+            """<DR_Table name="tcibd001" package="tc" module="ibd">
+                <description>General Item Data</description>
+                <Column>
+                    <datatype><name>tcitem</name><nativeDatatype>7</nativeDatatype></datatype>
+                    <name>item</name>
+                    <fieldLabel>tcibd001.item</fieldLabel>
+                </Column>
+            </DR_Table>""",
+        )
+        self.transport.register_response(
+            "DR_Table",
+            "DR_Create",
+            "<DR_Table><status>created</status></DR_Table>",
+        )
+
+        cloned_file = clone_component(
+            client=self.client,
+            comp_type="table",
+            source_name="tcibd001",
+            target_name="txibd001",
+            activity_dir=self.act_dir,
+            register_on_server=True,
+            activity_uuid="{activity-uuid-1234}",
+        )
+        self.assertTrue(cloned_file.exists())
+        self.assertEqual(cloned_file.name, "txibd001.tbl")
+
+        # Verify raw <DR_Table> payload sent in DR_Create (no DR_CreateRequest wrapper)
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["method"], "DR_Create")
+        self.assertNotIn("DR_CreateRequest", last_call["request"])
+        self.assertIn('<DR_Table name="txibd001" package="tx" module="ibd">', last_call["request"])
+        self.assertEqual(last_call["context_xml"], "<ActivityID>{activity-uuid-1234}</ActivityID>")
+
+        # Verify .admin entry registered with isCreated=True, isCheckedOut=True, isDirty=True
+        from admin_sync import list_admin_components
+        comps = list_admin_components(self.act_dir)
+        rel_norm = "tx/table/ibd/txibd001.tbl"
+        matching = [c for c in comps if c["path"] == rel_norm]
+        self.assertEqual(len(matching), 1)
+        comp_entry = matching[0]
+        self.assertTrue(comp_entry["isCreated"])
+        self.assertTrue(comp_entry["isCheckedOut"])
+        self.assertTrue(comp_entry["isDirty"])
+
 
 if __name__ == "__main__":
     unittest.main()

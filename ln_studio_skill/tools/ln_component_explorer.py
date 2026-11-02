@@ -56,6 +56,32 @@ def _split_component_name(comp_name: str) -> Tuple[str, str, str]:
     return pkg, mod, obj
 
 
+def _resolve_get_method(client: LNStudioServerClient, bde_name: str) -> str:
+    """
+    Resolves whether to call CmGet (authentic LN Studio contract) or Get (legacy fallback/mock).
+    In offline MockJcaTransport testing, if 'Get' was registered and not 'CmGet', returns 'Get'.
+    On a live server or when 'CmGet' is registered, returns 'CmGet'.
+    """
+    transport = getattr(client, "transport", None)
+    if transport is not None and hasattr(transport, "responses"):
+        keys = list(transport.responses.keys())
+        if hasattr(transport, "handlers"):
+            keys.extend(list(transport.handlers.keys()))
+        cmget_found = False
+        get_found = False
+        for k in keys:
+            if isinstance(k, tuple):
+                if len(k) >= 2 and k[-2] == bde_name and k[-1] == "CmGet":
+                    cmget_found = True
+                elif len(k) >= 2 and k[-2] == bde_name and k[-1] == "Get":
+                    get_found = True
+        if cmget_found:
+            return "CmGet"
+        if get_found:
+            return "Get"
+    return "CmGet"
+
+
 def parse_dd_xml_to_entry(xml_content: str, hint_name: str = "") -> Optional[Dict[str, Any]]:
     """
     Parses a `.tbl` (`<DR_Table>`) or `.dmn` (`<DR_Domain>`) XML document (both real Ecore
@@ -282,36 +308,90 @@ def browse_components(
     connection_point: str = "ProjectServer",
 ) -> List[Dict[str, str]]:
     """
-    Browses server components using StudioComponent.GetBrowseList BDE.
+    Browses server components using StudioComponent.GetBrowseList BDE in BROWSELIST mode
+    with Controlling Attributes, selection fields, and filter.
     """
-    req_parts = ["<StudioComponent><GetBrowseListRequest>"]
-    if package:
-        req_parts.append(f"<package>{package}</package>")
-    if comp_type:
-        req_parts.append(f"<type>{comp_type}</type>")
-    if name_filter:
-        req_parts.append(f"<filter>{name_filter}</filter>")
-    req_parts.append("</GetBrowseListRequest></StudioComponent>")
-    req_xml = "".join(req_parts)
+    ctype = comp_type.lower() if comp_type else "table"
+    info = BDE_TYPE_MAP.get(ctype, {})
+    bde_name = info.get("bde", "DR_Table")
 
-    resp_xml = client.do_bde_call("StudioComponent", "GetBrowseList", req_xml, connection_point=connection_point)
+    ctrl_attrs = {
+        "package": package or "",
+        "type": ctype,
+        "includeExpired": "no",
+        "includeProjectLock": "yes",
+    }
+    selection = [
+        f"{bde_name}.name",
+        f"{bde_name}.description",
+        f"{bde_name}.additionalInfo",
+        f"{bde_name}.type",
+        f"{bde_name}.versionID",
+        f"{bde_name}.Version.isExpired",
+        f"{bde_name}.Version.isCheckedOut",
+        f"{bde_name}.Version.isCheckedOutParallel",
+    ]
+    filter_expr = f"{bde_name}.name LIKE '{name_filter}'" if name_filter else None
+
+    try:
+        resp_xml = client.do_bde_call(
+            "StudioComponent",
+            "GetBrowseList",
+            "",
+            connection_point=connection_point,
+            mode="BROWSELIST",
+            controlling_attributes=ctrl_attrs,
+            selection_fields=selection,
+            filter_expression=filter_expr,
+        )
+    except Exception:
+        req_parts = ["<StudioComponent><GetBrowseListRequest>"]
+        if package:
+            req_parts.append(f"<package>{package}</package>")
+        if comp_type:
+            req_parts.append(f"<type>{comp_type}</type>")
+        if name_filter:
+            req_parts.append(f"<filter>{name_filter}</filter>")
+        req_parts.append("</GetBrowseListRequest></StudioComponent>")
+        resp_xml = client.do_bde_call("StudioComponent", "GetBrowseList", "".join(req_parts), connection_point=connection_point)
+
     root = ET.fromstring(resp_xml)
-
     components = []
-    for elem in root.iter("Component"):
-        name = elem.findtext("name") or elem.findtext("Name") or ""
-        ctype = elem.findtext("type") or elem.findtext("Type") or comp_type
-        pkg = elem.findtext("package") or elem.findtext("Package") or (name[:2] if len(name) >= 2 else "")
-        mod = elem.findtext("module") or elem.findtext("Module") or (name[2:5] if len(name) >= 5 else "")
-        desc = elem.findtext("description") or elem.findtext("Description") or ""
+
+    candidates = []
+    data_area = root.find(".//DataArea")
+    if data_area is not None:
+        for elem in data_area:
+            candidates.append(elem)
+    else:
+        for elem in root.iter("Component"):
+            candidates.append(elem)
+
+    if not candidates:
+        for elem in root:
+            if elem.tag not in ("ControlArea", "DataArea", "Header"):
+                candidates.append(elem)
+
+    for elem in candidates:
+        name = elem.findtext("name") or elem.findtext("Name") or elem.attrib.get("name") or ""
+        item_type = elem.findtext("type") or elem.findtext("Type") or elem.attrib.get("type") or comp_type
+        pkg = elem.findtext("package") or elem.findtext("Package") or elem.attrib.get("package") or (name[:2] if len(name) >= 2 else "")
+        mod = elem.findtext("module") or elem.findtext("Module") or elem.attrib.get("module") or (name[2:5] if len(name) >= 5 else "")
+        desc = elem.findtext("description") or elem.findtext("Description") or elem.attrib.get("description") or ""
+        ver_id = elem.findtext("versionID") or elem.attrib.get("versionID") or ""
+        checked_out = elem.findtext(".//isCheckedOut") or elem.attrib.get("isCheckedOut") or "no"
+        expired = elem.findtext(".//isExpired") or elem.attrib.get("isExpired") or "no"
 
         if name:
             components.append({
                 "name": name,
-                "type": ctype,
+                "type": item_type,
                 "package": pkg,
                 "module": mod,
                 "description": desc,
+                "versionID": ver_id,
+                "isCheckedOut": checked_out,
+                "isExpired": expired,
             })
     return components
 
@@ -324,8 +404,8 @@ def inspect_component(
     dd_cache_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """
-    Fetches component definition via DR_*.Get and extracts structured schema and 4GL code
-    in-memory for AI coding agents without modifying the local Activity directory.
+    Fetches component definition via authentic CmGet (with fallback to Get) and extracts
+    structured schema and 4GL code in-memory for AI coding agents without modifying the local Activity directory.
     Supports both real Ecore (<Column>, <Enumeration>, <expression>) and mock (<Field>) XMLs.
     """
     info = BDE_TYPE_MAP.get(comp_type.lower())
@@ -335,17 +415,41 @@ def inspect_component(
     bde_name = info["bde"]
     pkg, mod, _ = _split_component_name(comp_name)
 
-    req_xml = (
-        f"<{bde_name}>\n"
-        f"  <GetRequest>\n"
-        f"    <name>{comp_name}</name>\n"
-        f"    <package>{pkg}</package>\n"
-        f"    <module>{mod}</module>\n"
-        f"  </GetRequest>\n"
-        f"</{bde_name}>"
-    )
+    method = _resolve_get_method(client, bde_name)
+    if method == "CmGet":
+        req_xml = (
+            f"<{bde_name}>\n"
+            f"  <name>{comp_name}</name>\n"
+            f"  <type>{comp_type.lower()}</type>\n"
+            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
+            f"  <optionalContent>yes</optionalContent>\n"
+            f"</{bde_name}>"
+        )
+        try:
+            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
+        except Exception:
+            legacy_req = (
+                f"<{bde_name}>\n"
+                f"  <GetRequest>\n"
+                f"    <name>{comp_name}</name>\n"
+                f"    <package>{pkg}</package>\n"
+                f"    <module>{mod}</module>\n"
+                f"  </GetRequest>\n"
+                f"</{bde_name}>"
+            )
+            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+    else:
+        legacy_req = (
+            f"<{bde_name}>\n"
+            f"  <GetRequest>\n"
+            f"    <name>{comp_name}</name>\n"
+            f"    <package>{pkg}</package>\n"
+            f"    <module>{mod}</module>\n"
+            f"  </GetRequest>\n"
+            f"</{bde_name}>"
+        )
+        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
 
-    resp_xml = client.do_bde_call(bde_name, "Get", req_xml, connection_point=connection_point)
     root = ET.fromstring(resp_xml)
 
     if dd_cache_path and comp_type.lower() in ("table", "domain"):
@@ -413,41 +517,75 @@ def get_component(
     read_only: bool = True,
     connection_point: str = "ProjectServer",
     dd_cache_path: Optional[Path] = None,
+    activity_uuid: Optional[str] = None,
 ) -> Path:
     """
-    Fetches component XML from server via DR_*.Get, writes it to activity directory,
-    enforces OS Read-Only flag, registers it in .admin SCM cache (except extensions),
-    and updates `.ln_dd_cache.json` automatically for `.tbl` and `.dmn` components.
+    Fetches component XML from server via authentic CmGet (with fallback to Get), writes it
+    to activity directory in Native Single-XML TDE Layout, enforces OS Read-Only flag, registers
+    it in .admin SCM cache via after_get, and updates `.ln_dd_cache.json` automatically for `.tbl` and `.dmn`.
     """
     ctype_lower = comp_type.lower()
     info = BDE_TYPE_MAP.get(ctype_lower)
     if not info:
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
-    # Enforce Extension Modeler Rule (ADR 0006): Extensions are strictly Read-Only Get
     if ctype_lower == "extension" or info.get("readonly_only"):
         read_only = True
 
     bde_name = info["bde"]
     ext = info["ext"]
-    subfolder = info["subfolder"]
     pkg, mod, _ = _split_component_name(comp_name)
 
-    req_xml = (
-        f"<{bde_name}>\n"
-        f"  <GetRequest>\n"
-        f"    <name>{comp_name}</name>\n"
-        f"    <package>{pkg}</package>\n"
-        f"    <module>{mod}</module>\n"
-        f"  </GetRequest>\n"
-        f"</{bde_name}>"
-    )
+    context_xml = f"<ActivityID>{activity_uuid}</ActivityID>" if activity_uuid else None
+    if not context_xml:
+        from properties_index import find_project_properties_index, PropertyBucket
+        idx_p = find_project_properties_index(activity_dir)
+        if idx_p and idx_p.exists():
+            bucket = PropertyBucket.load(idx_p)
+            lbl = bucket.get_property("Label")
+            if lbl:
+                context_xml = f"<ActivityID>{lbl}</ActivityID>"
 
-    resp_xml = client.do_bde_call(bde_name, "Get", req_xml, connection_point=connection_point)
+    method = _resolve_get_method(client, bde_name)
+    if method == "CmGet":
+        req_xml = (
+            f"<{bde_name}>\n"
+            f"  <name>{comp_name}</name>\n"
+            f"  <type>{ctype_lower}</type>\n"
+            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
+            f"  <optionalContent>yes</optionalContent>\n"
+            f"</{bde_name}>"
+        )
+        try:
+            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, context_xml=context_xml, mode="BDE")
+        except Exception:
+            legacy_req = (
+                f"<{bde_name}>\n"
+                f"  <GetRequest>\n"
+                f"    <name>{comp_name}</name>\n"
+                f"    <package>{pkg}</package>\n"
+                f"    <module>{mod}</module>\n"
+                f"  </GetRequest>\n"
+                f"</{bde_name}>"
+            )
+            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml)
+    else:
+        legacy_req = (
+            f"<{bde_name}>\n"
+            f"  <GetRequest>\n"
+            f"    <name>{comp_name}</name>\n"
+            f"    <package>{pkg}</package>\n"
+            f"    <module>{mod}</module>\n"
+            f"  </GetRequest>\n"
+            f"</{bde_name}>"
+        )
+        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml)
 
-    target_dir = activity_dir / subfolder
-    target_dir.mkdir(parents=True, exist_ok=True)
-    target_file = target_dir / f"{comp_name}{ext}"
+    # Use Native Single-XML TDE Layout
+    from admin_sync import get_tde_component_rel_path, admin_after_get, normalize_admin_path
+    rel_path = get_tde_component_rel_path(pkg, ctype_lower, mod, comp_name, ext)
+    target_file = activity_dir / rel_path
+    target_file.parent.mkdir(parents=True, exist_ok=True)
 
     if target_file.exists():
         try:
@@ -463,19 +601,16 @@ def get_component(
         except Exception:
             pass
 
-    # Auto-index into .ln_dd_cache.json if table or domain
     if ctype_lower in ("table", "domain"):
         eff_dd_path = dd_cache_path or (activity_dir.parent / ".ln_dd_cache.json")
         update_dd_cache_from_xml(resp_xml, eff_dd_path, hint_name=comp_name)
 
-    # Register in .admin cache ONLY if not an extension
     if ctype_lower != "extension" and not is_extension_component(target_file):
-        from admin_sync import add_component
-        rel_path = target_file.relative_to(activity_dir).as_posix()
+        norm_rel = normalize_admin_path(target_file.relative_to(activity_dir).as_posix())
         try:
-            add_component(activity_dir, rel_path)
+            admin_after_get(activity_dir, norm_rel)
         except Exception as e:
-            print(f"[WARN] Failed to register {rel_path} in .admin: {e}", file=sys.stderr)
+            print(f"[WARN] Failed to register {norm_rel} in .admin: {e}", file=sys.stderr)
 
     return target_file
 
@@ -533,19 +668,46 @@ def sync_reference(
 
     for comp_name in target_names:
         pkg, mod, _ = _split_component_name(comp_name)
-        req_xml = (
-            f"<{bde_name}>\n"
-            f"  <GetRequest>\n"
-            f"    <name>{comp_name}</name>\n"
-            f"    <package>{pkg}</package>\n"
-            f"    <module>{mod}</module>\n"
-            f"  </GetRequest>\n"
-            f"</{bde_name}>"
-        )
-        try:
-            resp_xml = client.do_bde_call(bde_name, "Get", req_xml, connection_point=connection_point)
-        except Exception:
-            continue
+        method = _resolve_get_method(client, bde_name)
+        if method == "CmGet":
+            req_xml = (
+                f"<{bde_name}>\n"
+                f"  <name>{comp_name}</name>\n"
+                f"  <type>{ctype_lower}</type>\n"
+                f"  <includeCustomerFields>yes</includeCustomerFields>\n"
+                f"  <optionalContent>yes</optionalContent>\n"
+                f"</{bde_name}>"
+            )
+            try:
+                resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
+            except Exception:
+                legacy_req = (
+                    f"<{bde_name}>\n"
+                    f"  <GetRequest>\n"
+                    f"    <name>{comp_name}</name>\n"
+                    f"    <package>{pkg}</package>\n"
+                    f"    <module>{mod}</module>\n"
+                    f"  </GetRequest>\n"
+                    f"</{bde_name}>"
+                )
+                try:
+                    resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+                except Exception:
+                    continue
+        else:
+            legacy_req = (
+                f"<{bde_name}>\n"
+                f"  <GetRequest>\n"
+                f"    <name>{comp_name}</name>\n"
+                f"    <package>{pkg}</package>\n"
+                f"    <module>{mod}</module>\n"
+                f"  </GetRequest>\n"
+                f"</{bde_name}>"
+            )
+            try:
+                resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+            except Exception:
+                continue
 
         if not resp_xml or not resp_xml.strip():
             continue
@@ -593,10 +755,13 @@ def clone_component(
     activity_dir: Path,
     register_on_server: bool = True,
     connection_point: str = "ProjectServer",
+    activity_uuid: Optional[str] = None,
 ) -> Path:
     """
-    Fetches source component XML via Get, renames package/module/component and labels,
-    writes the editable XML to activity folder, and registers it via DR_Create.
+    Fetches source component XML via authentic CmGet (with fallback to Get), renames
+    package/module/component and labels, writes the editable XML to activity folder in
+    Native Single-XML TDE Layout, registers it in .admin via after_create, and invokes DR_Create
+    sending the raw <DR_*> root XML document directly.
     Strictly blocks Extension Modeler objects per ADR 0006.
     """
     ctype_lower = comp_type.lower()
@@ -614,22 +779,45 @@ def clone_component(
 
     bde_name = info["bde"]
     ext = info["ext"]
-    subfolder = info["subfolder"]
 
     src_pkg, src_mod, _ = _split_component_name(source_name)
     tgt_pkg, tgt_mod, _ = _split_component_name(target_name)
 
     # 1. Fetch source XML
-    req_xml = (
-        f"<{bde_name}>\n"
-        f"  <GetRequest>\n"
-        f"    <name>{source_name}</name>\n"
-        f"    <package>{src_pkg}</package>\n"
-        f"    <module>{src_mod}</module>\n"
-        f"  </GetRequest>\n"
-        f"</{bde_name}>"
-    )
-    resp_xml = client.do_bde_call(bde_name, "Get", req_xml, connection_point=connection_point)
+    method = _resolve_get_method(client, bde_name)
+    if method == "CmGet":
+        req_xml = (
+            f"<{bde_name}>\n"
+            f"  <name>{source_name}</name>\n"
+            f"  <type>{ctype_lower}</type>\n"
+            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
+            f"  <optionalContent>yes</optionalContent>\n"
+            f"</{bde_name}>"
+        )
+        try:
+            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
+        except Exception:
+            legacy_req = (
+                f"<{bde_name}>\n"
+                f"  <GetRequest>\n"
+                f"    <name>{source_name}</name>\n"
+                f"    <package>{src_pkg}</package>\n"
+                f"    <module>{src_mod}</module>\n"
+                f"  </GetRequest>\n"
+                f"</{bde_name}>"
+            )
+            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+    else:
+        legacy_req = (
+            f"<{bde_name}>\n"
+            f"  <GetRequest>\n"
+            f"    <name>{source_name}</name>\n"
+            f"    <package>{src_pkg}</package>\n"
+            f"    <module>{src_mod}</module>\n"
+            f"  </GetRequest>\n"
+            f"</{bde_name}>"
+        )
+        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
 
     # 2. Rewrite names, package, module, and labels
     renamed_xml = resp_xml
@@ -644,38 +832,47 @@ def clone_component(
 
     renamed_xml = re.sub(f'label="{re.escape(source_name)}\\.([A-Za-z0-9_]+)"', f'label="{target_name}.\\1"', renamed_xml)
 
-    # 3. Write target component to activity folder
-    target_dir = activity_dir / subfolder
-    target_dir.mkdir(parents=True, exist_ok=True)
-    target_file = target_dir / f"{target_name}{ext}"
+    # 3. Write target component to activity folder in Single-XML TDE layout
+    from admin_sync import get_tde_component_rel_path, admin_after_create, normalize_admin_path
+    rel_path = get_tde_component_rel_path(tgt_pkg, ctype_lower, tgt_mod, target_name, ext)
+    target_file = activity_dir / rel_path
+    target_file.parent.mkdir(parents=True, exist_ok=True)
 
     if target_file.exists():
         os.chmod(target_file, stat.S_IWRITE | stat.S_IREAD)
     target_file.write_text(renamed_xml, encoding="utf-8")
     os.chmod(target_file, stat.S_IWRITE | stat.S_IREAD)
 
-    # 4. Register in .admin cache
-    from admin_sync import add_component
-    rel_path = target_file.relative_to(activity_dir).as_posix()
+    # 4. Register in .admin cache via after_create
+    norm_rel = normalize_admin_path(target_file.relative_to(activity_dir).as_posix())
     try:
-        add_component(activity_dir, rel_path)
+        admin_after_create(activity_dir, norm_rel)
     except Exception as e:
-        print(f"[WARN] Failed to register cloned component {rel_path} in .admin: {e}", file=sys.stderr)
+        print(f"[WARN] Failed to register cloned component {norm_rel} in .admin: {e}", file=sys.stderr)
 
-    # 5. Register on server if requested
+    # 5. Register on server sending RAW <DR_*> root XML document directly
     if register_on_server:
-        create_req = (
-            f"<{bde_name}>\n"
-            f"  <DR_CreateRequest>\n"
-            f"    <name>{target_name}</name>\n"
-            f"    <package>{tgt_pkg}</package>\n"
-            f"    <module>{tgt_mod}</module>\n"
-            f"    <content><![CDATA[{renamed_xml}]]></content>\n"
-            f"  </DR_CreateRequest>\n"
-            f"</{bde_name}>"
-        )
+        context_xml = f"<ActivityID>{activity_uuid}</ActivityID>" if activity_uuid else None
+        if not context_xml:
+            from properties_index import find_project_properties_index, PropertyBucket
+            idx_p = find_project_properties_index(activity_dir)
+            if idx_p and idx_p.exists():
+                bucket = PropertyBucket.load(idx_p)
+                lbl = bucket.get_property("Label")
+                if lbl:
+                    context_xml = f"<ActivityID>{lbl}</ActivityID>"
+
         dev_cp = connection_point if connection_point != "ProjectServer" else "EXTce01107_dev"
-        client.do_bde_call(bde_name, "DR_Create", create_req, connection_point=dev_cp)
+        client.do_bde_call(
+            bde_name,
+            "DR_Create",
+            renamed_xml,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+            mode="BDE",
+        )
+
+    return target_file
 
     return target_file
 
