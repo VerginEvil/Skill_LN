@@ -26,6 +26,8 @@ from ln_project_activity_manager import (
     list_remote_activities,
     get_remote_activity_details,
     create_remote_activity,
+    open_remote_activity,
+    list_activity_modified_components,
     clean_remote_activity,
     bootstrap_local_activity,
 )
@@ -342,6 +344,150 @@ class TestProjectAndActivityExplorers(unittest.TestCase):
         self.assertEqual(bucket.get_property("Label"), "uuid-bin-999")
         self.assertEqual(bucket.get_property("ApplicationUsesSCM"), "yes")
         self.assertEqual(bucket.get_property("repository", qualifier="org.eclipse.team.core"), "com.infor.ln.studio.apps.core.cmprovider")
+
+    def test_new_activity_createsoftwaretaskv2_payload_and_server_response(self):
+        """Tests create_remote_activity with full CreateSoftwareTaskV2.xml payload and labelUUID parsing."""
+        self.transport.register_response(
+            "SoftwareProject_V2",
+            "Change",
+            """<SoftwareProject_V2>
+                <Task>
+                    <taskName>dev_natt_01109</taskName>
+                    <labelUUID>uuid-created-5566-7788</labelUUID>
+                    <taskVersionID>1</taskVersionID>
+                    <taskStatus>created</taskStatus>
+                </Task>
+            </SoftwareProject_V2>""",
+        )
+        res = create_remote_activity(
+            client=self.client,
+            project_name="EXTce01109",
+            task_id="dev_natt_01109",
+            description="Task for ticket 06 testing",
+            task_documentation="Comprehensive docs",
+            task_requirement_id="REQ-8899",
+            type_of_task="enhancement",
+            assigned_to="developer1",
+            severity="high",
+            functional_change="yes",
+        )
+        self.assertEqual(res["task_id"], "dev_natt_01109")
+        self.assertEqual(res["labelUUID"], "uuid-created-5566-7788")
+        self.assertEqual(res["taskVersionID"], "1")
+        self.assertEqual(res["status"], "created")
+
+        # Verify outgoing request payload matches CreateSoftwareTaskV2.xml
+        call = self.transport.call_history[-1]
+        self.assertEqual(call["bde"], "SoftwareProject_V2")
+        self.assertEqual(call["method"], "Change")
+        req = call["request"]
+        self.assertIn('<SoftwareProject_V2 actionType="unchanged">', req)
+        self.assertIn('<projectName>EXTce01109</projectName>', req)
+        self.assertIn('<Task actionType="create">', req)
+        self.assertIn('<taskName>dev_natt_01109</taskName>', req)
+        self.assertIn('<assignedTo>developer1</assignedTo>', req)
+        self.assertIn('<taskDescription>Task for ticket 06 testing</taskDescription>', req)
+        self.assertIn('<taskDocumentation>Comprehensive docs</taskDocumentation>', req)
+        self.assertIn('<taskRequirementID>REQ-8899</taskRequirementID>', req)
+        self.assertIn('<taskSeverity>high</taskSeverity>', req)
+        self.assertIn('<functionalChange>yes</functionalChange>', req)
+
+    def test_open_remote_activity_lifecycle(self):
+        """Tests open_remote_activity status transition, properties.index write, and modified components check."""
+        # 1. Project details response
+        self.transport.register_response(
+            "SoftwareProject_V2",
+            "Show",
+            """<SoftwareProject_V2>
+                <projectName>EXTce01105</projectName>
+                <projectVersionID>B61O_a_ext</projectVersionID>
+                <developmentEnvironment>EXT</developmentEnvironment>
+                <developmentRepositoryAddress>EXTce01105_dev</developmentRepositoryAddress>
+                <runtimeRepositoryAddress>EXTce01105_rt</runtimeRepositoryAddress>
+                <Tasks>
+                    <Task>
+                        <taskName>dev_natt_01105</taskName>
+                        <labelUUID>dce45112-c35b-45e1-949a-b8b4b3664f99</labelUUID>
+                        <taskVersionID>1</taskVersionID>
+                        <taskStatus>created</taskStatus>
+                    </Task>
+                </Tasks>
+            </SoftwareProject_V2>""",
+        )
+        # 2. Status change to opened
+        self.transport.register_response(
+            "SoftwareProject",
+            "Change",
+            """<SoftwareProject>
+                <Task>
+                    <taskName>dev_natt_01105</taskName>
+                    <taskStatus>opened</taskStatus>
+                    <taskVersionID>2</taskVersionID>
+                </Task>
+            </SoftwareProject>""",
+        )
+        # 3. Modified components
+        self.transport.register_response(
+            "CMLabel",
+            "GetModifiedComponents",
+            """<CMLabel>
+                <ModifiedComponent>
+                    <name>txcmg011</name>
+                    <type>table</type>
+                    <package>tx</package>
+                </ModifiedComponent>
+            </CMLabel>""",
+        )
+
+        res = open_remote_activity(
+            client=self.client,
+            project_name="EXTce01105",
+            task_name="dev_natt_01105",
+            workspace_path=self.workspace_path,
+            sync_modified=True,
+        )
+
+        self.assertEqual(res["task_id"], "dev_natt_01105")
+        self.assertEqual(res["labelUUID"], "dce45112-c35b-45e1-949a-b8b4b3664f99")
+        self.assertEqual(res["taskVersionID"], "2")
+        self.assertEqual(res["status"], "opened")
+        self.assertEqual(len(res["modified_components"]), 1)
+        self.assertEqual(res["modified_components"][0]["name"], "txcmg011")
+
+        # Verify binary properties.index
+        meta_file = (
+            self.workspace_path / ".metadata" / ".plugins" / "org.eclipse.core.resources" /
+            ".projects" / "dev_natt_01105 [EXTce01105]" / ".indexes" / "properties.index"
+        )
+        self.assertTrue(meta_file.exists())
+        bucket = PropertyBucket.load(meta_file)
+        self.assertEqual(bucket.get_property("Label"), "dce45112-c35b-45e1-949a-b8b4b3664f99")
+        self.assertEqual(bucket.get_property("ApplicationRelease"), "B61O_a_ext")
+        self.assertEqual(bucket.get_property("TaskVersionID"), "2")
+        self.assertEqual(bucket.get_property("TaskContext"), "EXTce01105_dev")
+        self.assertEqual(bucket.get_property("DevelopmentEnvironment"), "EXT")
+
+    def test_clean_remote_activity_authentic_payload_and_control_area(self):
+        """Tests clean_remote_activity sending CleanActivity with ProjectClean and ActivityID in ControlArea."""
+        self.transport.register_response(
+            "FglStudio",
+            "CleanActivity",
+            "<Success/>",
+        )
+        res = clean_remote_activity(
+            client=self.client,
+            project_name="EXTce01105",
+            task_id="dev_natt_01105",
+            activity_uuid="uuid-clean-target-123",
+            project_clean=False,
+        )
+        self.assertTrue(res)
+        call = self.transport.call_history[-1]
+        self.assertEqual(call["bde"], "FglStudio")
+        self.assertEqual(call["method"], "CleanActivity")
+        self.assertEqual(call["connection_point"], "EXTce01105_dev")
+        self.assertIn("<ProjectClean>no</ProjectClean>", call["request"])
+        self.assertIn("<ActivityID>uuid-clean-target-123</ActivityID>", call["context_xml"])
 
 
 class TestProjectActivityCliIntegration(unittest.TestCase):

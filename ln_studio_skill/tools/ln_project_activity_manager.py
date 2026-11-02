@@ -291,59 +291,262 @@ def create_remote_activity(
     client: LNStudioServerClient,
     project_name: str,
     task_id: str,
-    description: str,
-) -> Dict[str, str]:
+    description: str = "",
+    task_documentation: str = "",
+    task_requirement_id: str = "",
+    type_of_task: str = "enhancement",
+    assigned_to: str = "",
+    severity: str = "medium",
+    functional_change: str = "no",
+    auto_open: bool = False,
+    workspace_path: Optional[Union[str, Path]] = None,
+) -> Dict[str, Any]:
     """
-    Creates a new Activity on the Infor LN Server via SoftwareProject_V2.Change BDE with action='create'.
+    Creates a new Activity on the Infor LN Server via SoftwareProject_V2.Change BDE (CreateSoftwareTaskV2.xml).
+    Optionally auto-opens the activity and bootstraps the local Eclipse workspace folder.
     """
+    task_desc = description or f"Activity {task_id}"
     req_xml = (
-        f"<SoftwareProject_V2>\n"
-        f"  <name>{project_name}</name>\n"
-        f"  <Tasks action=\"create\">\n"
-        f"    <Task>\n"
-        f"      <taskId>{task_id}</taskId>\n"
-        f"      <description>{description}</description>\n"
-        f"    </Task>\n"
-        f"  </Tasks>\n"
-        f"</SoftwareProject_V2>"
+        f'<SoftwareProject_V2 actionType="unchanged">\n'
+        f'  <projectName>{project_name}</projectName>\n'
+        f'  <Task actionType="create">\n'
+        f'    <taskName>{task_id}</taskName>\n'
+        f'    <assignedTo>{assigned_to}</assignedTo>\n'
+        f'    <taskDescription>{task_desc}</taskDescription>\n'
+        f'    <taskDocumentation>{task_documentation}</taskDocumentation>\n'
+        f'    <taskRequirementID>{task_requirement_id}</taskRequirementID>\n'
+        f'    <taskStatus>created</taskStatus>\n'
+        f'    <taskVersionID></taskVersionID>\n'
+        f'    <typeOfTask>{type_of_task}</typeOfTask>\n'
+        f'    <taskUUID></taskUUID>\n'
+        f'    <Assignee actionType="createOrChange"><assigneeName>{assigned_to}</assigneeName></Assignee>\n'
+        f'    <taskSeverity>{severity}</taskSeverity>\n'
+        f'    <functionalChange>{functional_change}</functionalChange>\n'
+        f'  </Task>\n'
+        f'</SoftwareProject_V2>'
     )
-    resp_xml = client.do_bde_call("SoftwareProject_V2", "Change", req_xml, connection_point="ProjectServer")
+    resp_xml = client.do_bde_call("SoftwareProject_V2", "Change", req_xml, connection_point="ProjectServer", mode="BDE")
     root = ET.fromstring(resp_xml)
 
     created_task = root.find(".//Task")
     uuid_str = ""
+    label_uuid = ""
+    task_version_id = ""
     status = "created"
     if created_task is not None:
-        uuid_str = created_task.findtext("uuid") or created_task.findtext("UUID") or ""
-        status = created_task.findtext("status") or status
+        label_uuid = (
+            created_task.findtext("labelUUID")
+            or created_task.findtext("label")
+            or created_task.findtext("uuid")
+            or created_task.findtext("UUID")
+            or ""
+        )
+        uuid_str = label_uuid
+        task_version_id = created_task.findtext("taskVersionID") or ""
+        status = created_task.findtext("taskStatus") or created_task.findtext("status") or status
+
+    res: Dict[str, Any] = {
+        "task_id": task_id,
+        "taskName": task_id,
+        "project": project_name,
+        "projectName": project_name,
+        "uuid": uuid_str,
+        "labelUUID": label_uuid,
+        "taskVersionID": task_version_id,
+        "status": status,
+        "taskStatus": status,
+    }
+
+    if auto_open and workspace_path:
+        open_res = open_remote_activity(
+            client=client,
+            project_name=project_name,
+            task_name=task_id,
+            workspace_path=workspace_path,
+        )
+        res.update(open_res)
+
+    return res
+
+
+def open_remote_activity(
+    client: LNStudioServerClient,
+    project_name: str,
+    task_name: str,
+    workspace_path: Optional[Union[str, Path]] = None,
+    sync_modified: bool = True,
+) -> Dict[str, Any]:
+    """
+    Opens an Activity on the Infor LN Server:
+    1. Queries project version (Base VRC), repo addresses, labelUUID, and taskVersionID.
+    2. Transitions status to 'opened' via SoftwareProject.Change (ChangeSoftwareTaskStatus.xml).
+    3. Bootstraps local Eclipse folder with .project, .admin, and authentic binary properties.index.
+    4. Queries modified components via CMLabel.GetModifiedComponents.
+    """
+    details = get_remote_activity_details(client, project_name, task_name)
+    proj_info = get_software_project_details(client, project_name)
+
+    label_uuid = ""
+    task_ver_id = ""
+    if details:
+        label_uuid = details.get("labelUUID") or details.get("uuid") or ""
+        task_ver_id = details.get("taskVersionID") or ""
+
+    base_vrc = proj_info.get("projectVersionID") or proj_info.get("baseVRC") or ""
+    dev_env = proj_info.get("developmentEnvironment") or ""
+    dev_repo = proj_info.get("developmentRepositoryAddress") or f"{project_name}_dev"
+    rt_repo = proj_info.get("runtimeRepositoryAddress") or f"{project_name}_rt"
+
+    change_req = (
+        f'<SoftwareProject actionType="unchanged">\n'
+        f'  <projectName>{project_name}</projectName>\n'
+        f'  <Task actionType="change">\n'
+        f'    <taskName>{task_name}</taskName>\n'
+        f'    <taskStatus>opened</taskStatus>\n'
+        f'    <taskVersionID>{task_ver_id}</taskVersionID>\n'
+        f'  </Task>\n'
+        f'</SoftwareProject>'
+    )
+    resp_change = client.do_bde_call("SoftwareProject", "Change", change_req, connection_point="ProjectServer", mode="BDE")
+    c_root = ET.fromstring(resp_change)
+    upd_ver_elem = c_root.find(".//taskVersionID")
+    if upd_ver_elem is None:
+        upd_ver_elem = c_root.find(".//Task/taskVersionID")
+    if upd_ver_elem is not None and upd_ver_elem.text:
+        task_ver_id = upd_ver_elem.text.strip()
+    elif task_ver_id and task_ver_id.isdigit():
+        task_ver_id = str(int(task_ver_id) + 1)
+    else:
+        task_ver_id = task_ver_id or "1"
+
+    act_dir = None
+    if workspace_path:
+        ws_p = Path(workspace_path)
+        act_dir = bootstrap_local_activity(
+            workspace_path=ws_p,
+            task_id=task_name,
+            project_name=project_name,
+            activity_uuid=label_uuid,
+            dev_connection=dev_repo,
+        )
+
+        folder_name = f"{task_name} [{project_name}]"
+        meta_idx = ws_p / ".metadata" / ".plugins" / "org.eclipse.core.resources" / ".projects" / folder_name / ".indexes" / "properties.index"
+        from properties_index import PropertyBucket
+        bucket = PropertyBucket()
+        bucket.set_project_properties({
+            "ProjectName": project_name,
+            "TaskName": task_name,
+            "Label": label_uuid,
+            "ApplicationRelease": base_vrc,
+            "TaskVersionID": task_ver_id,
+            "TaskContext": dev_repo,
+            "DevelopmentEnvironment": dev_env,
+            "DevelopmentTimeRepositoryAddress": dev_repo,
+            "RunTimeRepositoryAddress": rt_repo,
+            "ApplicationUsesSCM": "yes",
+            "TaskStatus": "opened",
+        })
+        bucket.set_property("repository", "com.infor.ln.studio.apps.core.cmprovider", qualifier="org.eclipse.team.core")
+        bucket.save(meta_idx)
+
+    modified_components = []
+    if label_uuid:
+        try:
+            modified_components = list_activity_modified_components(client, project_name, label_uuid)
+        except Exception:
+            pass
 
     return {
-        "task_id": task_id,
+        "task_id": task_name,
+        "taskName": task_name,
         "project": project_name,
-        "uuid": uuid_str,
-        "status": status,
+        "projectName": project_name,
+        "labelUUID": label_uuid,
+        "uuid": label_uuid,
+        "taskVersionID": task_ver_id,
+        "status": "opened",
+        "taskStatus": "opened",
+        "workspace_path": str(act_dir) if act_dir else None,
+        "modified_components": modified_components,
     }
+
+
+def list_activity_modified_components(
+    client: LNStudioServerClient,
+    project_name: str,
+    activity_uuid: str,
+) -> List[Dict[str, Any]]:
+    """
+    Queries modified components belonging to an activity via CMLabel.GetModifiedComponents.
+    Context XML contains <ActivityID>{activity_uuid}</ActivityID>.
+    """
+    req_xml = "<CMLabel><timeStampSince>0</timeStampSince><type></type></CMLabel>"
+    context_xml = f"<ActivityID>{activity_uuid}</ActivityID>"
+    dev_cp = f"{project_name}_dev"
+    resp_xml = client.do_bde_call(
+        "CMLabel",
+        "GetModifiedComponents",
+        req_xml,
+        connection_point=dev_cp,
+        context_xml=context_xml,
+        mode="BDE",
+    )
+    root = ET.fromstring(resp_xml)
+    components = []
+    for c_elem in root.iter("ModifiedComponent"):
+        c_name = c_elem.findtext("name") or c_elem.findtext("componentName") or ""
+        c_type = c_elem.findtext("type") or c_elem.findtext("componentType") or ""
+        c_pkg = c_elem.findtext("package") or ""
+        if c_name:
+            components.append({
+                "name": c_name,
+                "type": c_type,
+                "package": c_pkg,
+            })
+    return components
 
 
 def clean_remote_activity(
     client: LNStudioServerClient,
     project_name: str,
     task_id: str,
+    activity_uuid: Optional[str] = None,
+    project_clean: bool = False,
 ) -> bool:
     """
     Cleans/recovers a stuck activity on the server via FglStudio.CleanActivity BDE call.
+    Uses exact payload <FglStudio><CleanActivity><ProjectClean>{yes|no}</ProjectClean></CleanActivity></FglStudio>
+    with <ActivityID> set in ControlArea.
     """
+    clean_val = "yes" if project_clean else "no"
     req_xml = (
         f"<FglStudio>\n"
-        f"  <CleanActivityRequest>\n"
-        f"    <project>{project_name}</project>\n"
-        f"    <task>{task_id}</task>\n"
-        f"  </CleanActivityRequest>\n"
+        f"  <CleanActivity>\n"
+        f"    <ProjectClean>{clean_val}</ProjectClean>\n"
+        f"  </CleanActivity>\n"
         f"</FglStudio>"
     )
+    label_uuid = activity_uuid
+    if not label_uuid:
+        try:
+            details = get_remote_activity_details(client, project_name, task_id)
+            if details:
+                label_uuid = details.get("labelUUID") or details.get("uuid")
+        except Exception:
+            pass
+
+    context_xml = f"<ActivityID>{label_uuid}</ActivityID>" if label_uuid else None
     dev_cp = f"{project_name}_dev"
-    resp_xml = client.do_bde_call("FglStudio", "CleanActivity", req_xml, connection_point=dev_cp)
-    return "success" in resp_xml.lower() or "ok" in resp_xml.lower()
+    resp_xml = client.do_bde_call(
+        "FglStudio",
+        "CleanActivity",
+        req_xml,
+        connection_point=dev_cp,
+        context_xml=context_xml,
+        mode="BDE",
+    )
+    return "success" in resp_xml.lower() or "ok" in resp_xml.lower() or "<Success/>" in resp_xml
 
 
 def bootstrap_local_activity(
