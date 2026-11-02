@@ -530,6 +530,41 @@ def _resolve_client(
     return client
 
 
+def _make_envelope(
+    action: str,
+    result: Any = None,
+    message: str = "",
+    status: str = "success"
+) -> Dict[str, Any]:
+    """
+    Builds a normalized MCP response envelope adhering to ADR 0014:
+    {
+      "status": "success" | "error",
+      "action": "<action>",
+      "result": <data_or_wrapped_dict>,
+      "message": "<message>"
+    }
+    """
+    if isinstance(result, Path):
+        result = str(result)
+    elif isinstance(result, bool):
+        result = {"success": result}
+
+    env: Dict[str, Any] = {
+        "status": status,
+        "action": action,
+        "result": result,
+        "message": message or ("Success" if status == "success" else "Error"),
+    }
+    # For backward-compatibility with callers asserting direct keys (e.g. data.get("projects")),
+    # expose dictionary keys on the outer envelope if they don't collide with envelope metadata.
+    if isinstance(result, dict):
+        for k, v in result.items():
+            if k not in env:
+                env[k] = v
+    return env
+
+
 def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
     """
     Executes an MCP tool by name with arguments.
@@ -539,8 +574,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         if name == "ln_list_environments":
             root = Path(arguments.get("workspace_root")) if arguments.get("workspace_root") else None
             envs = list_configured_environments(workspace_root=root)
+            env = _make_envelope(name, {"workspaces": envs}, f"Found {len(envs)} workspaces")
             return {
-                "content": [{"type": "text", "text": json.dumps({"workspaces": envs}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -549,24 +585,23 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             from ln_env_manager import check_workspace_auth
             if arguments.get("register_protocol_only"):
                 ok = register_oob_protocol()
-                return {"content": [{"type": "text", "text": json.dumps({"protocol_registered": ok})}], "isError": not ok}
+                env = _make_envelope(name, {"protocol_registered": ok}, "Protocol registered" if ok else "Registration failed", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             ws = arguments.get("workspace")
             if arguments.get("check_only"):
                 st = check_workspace_auth(workspace_name=ws)
-                return {"content": [{"type": "text", "text": json.dumps(st, indent=2)}], "isError": False}
+                env = _make_envelope(name, st, "Workspace auth status")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             from ln_component_builder import resolve_ionapi_config
             env_name, cfg = resolve_ionapi_config(workspace_name=ws, ionapi_file=arguments.get("ionapi_file"))
             tok = execute_login(env_name=env_name, config=cfg, workspace_name=ws)
+            env = _make_envelope(name, {
+                "workspace": env_name,
+                "token_type": tok.get("token_type"),
+                "expires_in": tok.get("expires_in")
+            }, "Login successful")
             return {
-                "content": [{
-                    "type": "text",
-                    "text": json.dumps({
-                        "status": "success",
-                        "workspace": env_name,
-                        "token_type": tok.get("token_type"),
-                        "expires_in": tok.get("expires_in")
-                    }, indent=2)
-                }],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -577,17 +612,15 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             ws_res = False
             if arguments.get("workspace"):
                 ws_res = sync_connectivity_prefs(cfg, workspace_name=arguments["workspace"])
+            env = _make_envelope(name, {
+                "imported": True,
+                "description": cfg.description,
+                "token_url": cfg.token_url,
+                "cloudenv_prefs_updated": cloud_res,
+                "connectivity_prefs_updated": ws_res
+            }, "Connected and preferences updated")
             return {
-                "content": [{
-                    "type": "text",
-                    "text": json.dumps({
-                        "imported": True,
-                        "description": cfg.description,
-                        "token_url": cfg.token_url,
-                        "cloudenv_prefs_updated": cloud_res,
-                        "connectivity_prefs_updated": ws_res
-                    }, indent=2)
-                }],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -595,8 +628,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             projs = list_software_projects(client)
+            env = _make_envelope(name, {"projects": projs}, f"Found {len(projs)} projects")
             return {
-                "content": [{"type": "text", "text": json.dumps({"projects": projs}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -605,8 +639,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             acts = list_remote_activities(client, project_name=project)
+            env = _make_envelope(name, {"project": project, "activities": acts}, f"Found {len(acts)} activities")
             return {
-                "content": [{"type": "text", "text": json.dumps({"project": project, "activities": acts}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -617,18 +652,19 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             comps = browse_components(client, component_type=comp_type, name_filter=flt, project=project)
+            env = _make_envelope(name, {"type": comp_type, "components": comps}, f"Found {len(comps)} components")
             return {
-                "content": [{"type": "text", "text": json.dumps({"type": comp_type, "components": comps}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
         elif name == "ln_create_activity":
             project = arguments["project"]
-            act_id = arguments["activity_id"]
+            act_id = arguments.get("task_id") or arguments.get("activity_id") or arguments.get("task", "")
             desc = arguments.get("description", act_id)
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            created_act = create_remote_activity(client, project_name=project, activity_id=act_id, description=desc)
+            created_act = create_remote_activity(client, project_name=project, task_id=act_id, description=desc)
             local_path = None
             if arguments.get("bootstrap_local", True):
                 ws_root = get_workspace_root()
@@ -636,26 +672,25 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 target_dir = ws_root / ws_name / f"{act_id} [{project}]"
                 bootstrap_local_activity(target_dir, project_name=project)
                 local_path = str(target_dir)
+            env = _make_envelope(name, {
+                "success": True,
+                "activity": created_act,
+                "local_path": local_path
+            }, f"Activity {act_id} created")
             return {
-                "content": [{
-                    "type": "text",
-                    "text": json.dumps({
-                        "success": True,
-                        "activity": created_act,
-                        "local_path": local_path
-                    }, indent=2)
-                }],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
         elif name == "ln_clean_activity":
             project = arguments["project"]
-            act_id = arguments["activity_id"]
+            act_id = arguments.get("task_id") or arguments.get("activity_id") or arguments.get("task", "")
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            cleaned = clean_remote_activity(client, project_name=project, activity_id=act_id)
+            cleaned = clean_remote_activity(client, project_name=project, task_id=act_id)
+            env = _make_envelope(name, {"cleaned": bool(cleaned)}, f"Activity {act_id} cleaned")
             return {
-                "content": [{"type": "text", "text": json.dumps({"cleaned": cleaned}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -683,8 +718,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 act_path = Path(act_arg) if act_arg else Path(get_workspace_root())
                 saved = get_component(client, comp_type=comp_type, comp_name=name_val, activity_dir=act_path)
                 res = {"saved_path": str(saved), "read_only": True}
+            env = _make_envelope(name, res, f"Fetched component {name_val}")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -707,8 +743,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 workspace_dir=ws_dir,
                 dd_cache_path=dd_cache,
             )
+            env = _make_envelope(name, res, f"Reference {name_val} synced")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -732,8 +769,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             )
             res_path = checkout_component(client, comp_type, name_val, act_dir, proj)
             receipt_data = res_path.receipt.to_dict() if hasattr(res_path, "receipt") and res_path.receipt else None
+            env = _make_envelope(name, {"checked_out": True, "path": str(res_path), "receipt": receipt_data}, f"Checked out {name_val}")
             return {
-                "content": [{"type": "text", "text": json.dumps({"checked_out": True, "path": str(res_path), "receipt": receipt_data}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -750,8 +788,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 act_dir = Path(act_info["path"])
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             ok = uncheckout_component(client, comp_type, name_val, act_dir, proj)
+            env = _make_envelope(name, {"uncheckout": bool(ok)}, f"Uncheckout {name_val}")
             return {
-                "content": [{"type": "text", "text": json.dumps({"uncheckout": ok}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -770,8 +809,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             receipt = checkin_component(client, comp_type, name_val, act_dir, proj, comment=comment)
             receipt_data = receipt.to_dict() if hasattr(receipt, "to_dict") else receipt
+            env = _make_envelope(name, {"checkin": True, "receipt": receipt_data}, f"Checked in {name_val}")
             return {
-                "content": [{"type": "text", "text": json.dumps({"checkin": True, "receipt": receipt_data}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -792,8 +832,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
                 act_dir = Path(act_info["path"])
             res = checkout_activity(client, act_dir, proj)
+            env = _make_envelope(name, res, "Activity checked out")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -815,8 +856,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 act_info = resolve_activity(activity_name=act_arg, workspace_name=arguments.get("workspace"))
                 act_dir = Path(act_info["path"])
             res = checkin_activity(client, act_dir, proj, comment=comment)
+            env = _make_envelope(name, res, "Activity checked in")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -849,30 +891,43 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 spec = {"name": code, "description": desc, "type": spec_extra.get("data_type", "String"), "length": spec_extra.get("length", 30)}
                 created_files = generate_domains(spec, activity_name=str(act_dir), dry_run=dry)
             else:
+                env = _make_envelope(name, None, f"Component type '{ctype}' generation via MCP must use schema parser or specific generator.", status="error")
                 return {
-                    "content": [{"type": "text", "text": f"Component type '{ctype}' generation via MCP must use schema parser or specific generator."}],
+                    "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                     "isError": True
                 }
 
+            env = _make_envelope(name, {"created_files": [str(p) for p in created_files]}, f"Created {len(created_files)} files")
             return {
-                "content": [{"type": "text", "text": json.dumps({"created_files": created_files}, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
         elif name == "ln_clone_component":
-            stype = arguments["source_type"]
+            stype = arguments.get("comp_type") or arguments.get("source_type", "")
             sname = arguments["source_name"]
             tname = arguments["target_name"]
             act_dir = Path(arguments["activity"])
             tdesc = arguments.get("target_desc", tname)
             proj = arguments.get("project", "EXTce01107")
             mock = arguments.get("mock", False)
+            register = arguments.get("register_on_server", True)
+            cp = arguments.get("connection_point", "ProjectServer")
+            act_uuid = arguments.get("activity_uuid")
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            cloned = clone_component(client, source_type=stype, source_name=sname,
-                                     target_name=tname, activity_path=act_dir,
-                                     target_description=tdesc, project=proj)
+            cloned = clone_component(
+                client=client,
+                comp_type=stype,
+                source_name=sname,
+                target_name=tname,
+                activity_dir=act_dir,
+                register_on_server=register,
+                connection_point=cp,
+                activity_uuid=act_uuid,
+            )
+            env = _make_envelope(name, {"cloned_path": str(cloned)}, f"Cloned {sname} to {tname}")
             return {
-                "content": [{"type": "text", "text": json.dumps(cloned, indent=2)}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -880,17 +935,19 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             act_dir = Path(arguments["activity"])
             strict = arguments.get("strict", False)
             report = validate_activity(act_dir, strict=strict)
+            is_valid = len(report.errors) == 0
             summary = {
                 "files_scanned": report.files_scanned,
                 "errors_count": len(report.errors),
                 "warnings_count": len(report.warnings),
                 "errors": [str(e) for e in report.errors],
                 "warnings": [str(w) for w in report.warnings],
-                "valid": len(report.errors) == 0
+                "valid": is_valid
             }
+            env = _make_envelope(name, summary, "Activity valid" if is_valid else "Activity validation failed", status="success" if is_valid else "error")
             return {
-                "content": [{"type": "text", "text": json.dumps(summary, indent=2)}],
-                "isError": len(report.errors) > 0
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
+                "isError": not is_valid
             }
 
         elif name == "ln_deploy_test":
@@ -913,9 +970,11 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 mode=mode,
                 dry_run=dry_run,
             )
+            ok = bool(res.get("success", False))
+            env = _make_envelope(name, res, "Deploy test completed" if ok else "Deploy test failed", status="success" if ok else "error")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
-                "isError": not res.get("success", False)
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
+                "isError": not ok
             }
 
         elif name == "ln_prepare_end_activity":
@@ -924,9 +983,11 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             res = prepare_end_activity(client, activity_dir=act_dir, project_name=proj)
+            ok = bool(res.get("ready_for_human_review", False))
+            env = _make_envelope(name, res, "Ready for human review" if ok else "Not ready for review", status="success" if ok else "error")
             return {
-                "content": [{"type": "text", "text": json.dumps(res, indent=2)}],
-                "isError": not res.get("ready_for_human_review", False)
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
+                "isError": not ok
             }
 
         elif name == "ln_end_activity":
@@ -934,8 +995,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             proj = arguments.get("project", "EXTce01107")
             task = arguments.get("activity", "task_01")
             end_activity_gate(project_name=proj, task_id=task)
+            env = _make_envelope(name, {"completed": True}, "End activity completed")
             return {
-                "content": [{"type": "text", "text": "End activity completed."}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": False
             }
 
@@ -945,32 +1007,50 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
             if action == "project_info":
                 details = get_software_project_details(client, arguments["project"])
-                return {"content": [{"type": "text", "text": json.dumps(details, indent=2)}], "isError": False}
+                env = _make_envelope("project_info", details, f"Project info for {arguments['project']}")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "list_activities":
                 acts = list_remote_activities(client, project_name=arguments["project"])
-                return {"content": [{"type": "text", "text": json.dumps({"activities": acts}, indent=2)}], "isError": False}
+                env = _make_envelope("list_activities", {"activities": acts}, f"Activities for {arguments['project']}")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "new_activity":
+                task_id = arguments.get("task_id") or arguments.get("task", "")
+                auto_open = not arguments.get("no_open", False) if "no_open" in arguments else arguments.get("auto_open", False)
+                ws_path = arguments.get("workspace_path") or arguments.get("workspace")
                 res = create_remote_activity(
                     client=client,
                     project_name=arguments["project"],
-                    task_name=arguments["task"],
+                    task_id=task_id,
                     description=arguments.get("description", ""),
-                    assigned_to=arguments.get("assigned_to"),
-                    open_activity=not arguments.get("no_open", False),
+                    assigned_to=arguments.get("assigned_to", ""),
+                    auto_open=auto_open,
+                    workspace_path=ws_path,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("created") or res.get("status") == "success")}
+                ok = bool(res.get("created") or res.get("status") == "success" or res.get("task_id"))
+                env = _make_envelope("new_activity", res, f"Activity {task_id} created" if ok else "Failed to create activity", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             elif action == "open_activity":
+                task_id = arguments.get("task_id") or arguments.get("task", "")
+                ws_path = arguments.get("workspace_path") or arguments.get("workspace")
                 res = open_remote_activity(
                     client=client,
                     project_name=arguments["project"],
-                    task_name=arguments["task"],
+                    task_name=task_id,
                     sync_modified=arguments.get("sync_modified", True),
-                    workspace_dir=arguments.get("workspace"),
+                    workspace_path=ws_path,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("opened") or res.get("status") == "success")}
+                ok = bool(res.get("opened") or res.get("status") == "opened" or res.get("status") == "success")
+                env = _make_envelope("open_activity", res, f"Activity {task_id} opened" if ok else "Failed to open activity", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             elif action == "clean_activity":
-                res = clean_remote_activity(client=client, project_name=arguments["project"], task_name=arguments["task"])
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("cleaned") or res.get("status") == "success")}
+                task_id = arguments.get("task_id") or arguments.get("task", "")
+                cleaned = clean_remote_activity(
+                    client=client,
+                    project_name=arguments["project"],
+                    task_id=task_id,
+                )
+                env = _make_envelope("clean_activity", {"cleaned": bool(cleaned)}, f"Activity {task_id} cleaned")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not bool(cleaned)}
             elif action == "move_components":
                 src_dir = Path(arguments["source_activity"]).resolve()
                 tgt_dir = Path(arguments["target_activity"]).resolve() if arguments.get("target_activity") else None
@@ -987,16 +1067,21 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     target_context=arguments.get("context", "ProjectServer"),
                     target_activity_dir=tgt_dir,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+                ok = bool(res.get("success", False))
+                env = _make_envelope("move_components", res, "Moved components" if ok else "Failed to move components", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             elif action == "clean_components":
                 act_dir = Path(arguments["activity"]).resolve()
                 comps = arguments.get("components", [])
                 if isinstance(comps, str):
                     comps = [{"type": item.split(":")[0], "name": item.split(":")[1]} for item in comps.split(",") if ":" in item]
                 res = clean_activity_components(client=client, components=comps, activity_dir=act_dir)
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+                ok = bool(res.get("success", False))
+                env = _make_envelope("clean_components", res, "Cleaned components" if ok else "Failed to clean components", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             else:
-                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+                env = _make_envelope(action, None, f"Unknown action: '{action}'", status="error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": True}
 
         elif name == "ln_code_intelligence":
             action = arguments["action"]
@@ -1011,7 +1096,8 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     project_name=arguments.get("project", ""),
                     activity_dir=act_dir,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+                env = _make_envelope("search_server", res, "Server search completed")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "call_hierarchy":
                 res = get_call_hierarchy(
                     client=client,
@@ -1021,7 +1107,8 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     project_name=arguments.get("project", ""),
                     activity_dir=act_dir,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+                env = _make_envelope("call_hierarchy", res, "Call hierarchy retrieved")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "open_declaration":
                 res = open_declaration(
                     client=client,
@@ -1032,7 +1119,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     project_name=arguments.get("project", ""),
                     activity_dir=act_dir,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("found", False)}
+                ok = bool(res.get("found", False))
+                env = _make_envelope("open_declaration", res, "Declaration found" if ok else "Declaration not found", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             elif action == "generate_report_server":
                 res = generate_report_on_server(
                     client=client,
@@ -1046,9 +1135,12 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     activity_dir=act_dir,
                     project_name=arguments.get("project", ""),
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+                ok = bool(res.get("success", False))
+                env = _make_envelope("generate_report_server", res, "Server report generated" if ok else "Report generation failed", status="success" if ok else "error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
             else:
-                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+                env = _make_envelope(action, None, f"Unknown action: '{action}'", status="error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": True}
 
         elif name == "ln_version_diff":
             action = arguments["action"]
@@ -1064,7 +1156,8 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     project_name=arguments.get("project", ""),
                     activity_dir=act_dir,
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+                env = _make_envelope("list_revisions", res, "Component revisions listed")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "get_revision":
                 rev_num = int(arguments.get("rev_number", 1))
                 res_xml = get_component_revision(
@@ -1076,10 +1169,12 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     project_name=arguments.get("project", ""),
                     activity_dir=act_dir,
                 )
-                return {"content": [{"type": "text", "text": res_xml}], "isError": False}
+                env = _make_envelope("get_revision", {"xml": res_xml}, "Revision XML fetched")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             elif action == "diff_component":
                 if not act_dir:
-                    return {"content": [{"type": "text", "text": "activity is required for diff_component"}], "isError": True}
+                    env = _make_envelope("diff_component", None, "activity is required for diff_component", status="error")
+                    return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": True}
                 rev_num = int(arguments["rev_number"]) if arguments.get("rev_number") is not None else None
                 res = diff_component(
                     client=client,
@@ -1090,9 +1185,11 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                     target_rev_number=rev_num,
                     project_name=arguments.get("project", ""),
                 )
-                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+                env = _make_envelope("diff_component", res, "Component diffed")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": False}
             else:
-                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+                env = _make_envelope(action, None, f"Unknown action: '{action}'", status="error")
+                return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": True}
 
         elif name == "ln_adhoc_compile":
             mock = arguments.get("mock", False)
@@ -1106,33 +1203,40 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 project_name=arguments.get("project", ""),
                 activity_dir=act_dir,
             )
-            return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+            ok = bool(res.get("success", False))
+            env = _make_envelope(name, res, "Adhoc compile succeeded" if ok else "Adhoc compile failed", status="success" if ok else "error")
+            return {"content": [{"type": "text", "text": json.dumps(env, indent=2)}], "isError": not ok}
 
         else:
+            env = _make_envelope(name, None, f"Unknown tool: '{name}'", status="error")
             return {
-                "content": [{"type": "text", "text": f"Unknown tool: '{name}'"}],
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": True
             }
 
     except PreCommitBoundaryError as pe:
+        env = _make_envelope(name, None, f"PreCommitBoundaryError: {str(pe)}", status="error")
         return {
-            "content": [{"type": "text", "text": f"PreCommitBoundaryError: {str(pe)}"}],
+            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
             "isError": True
         }
     except ServerSCMExecutionError as se:
+        env = _make_envelope(name, None, f"ServerSCMExecutionError: {str(se)}", status="error")
         return {
-            "content": [{"type": "text", "text": f"ServerSCMExecutionError: {str(se)}"}],
+            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
             "isError": True
         }
     except ReadOnlyComponentError as re:
+        env = _make_envelope(name, None, f"ReadOnlyComponentError: {str(re)}", status="error")
         return {
-            "content": [{"type": "text", "text": f"ReadOnlyComponentError: {str(re)}"}],
+            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
             "isError": True
         }
     except Exception as e:
         logger.exception(f"Error executing tool {name}")
+        env = _make_envelope(name, None, f"{type(e).__name__}: {str(e)}", status="error")
         return {
-            "content": [{"type": "text", "text": f"{type(e).__name__}: {str(e)}"}],
+            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
             "isError": True
         }
 
