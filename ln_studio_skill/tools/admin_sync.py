@@ -299,6 +299,14 @@ def admin_after_uncheckout(activity_path: Path, rel_path: str) -> bool:
     return res.returncode == 0
 
 
+def admin_set_vsc_happy(activity_path: Path, rel_path: str, is_vsc_happy: bool = True) -> bool:
+    """Updates m_isVSCHappy in activity's .admin file."""
+    admin_file = activity_path / ".admin"
+    norm_path = normalize_admin_path(rel_path)
+    res = run_helper(admin_file, "set-vsc", [norm_path, str(is_vsc_happy).lower()])
+    return res.returncode == 0
+
+
 def repair_admin_file(activity_path: Path) -> bool:
     """Repairs an existing .admin file by removing :<activity>/ prefixes and pruning standalone script files."""
     admin_file = activity_path / ".admin"

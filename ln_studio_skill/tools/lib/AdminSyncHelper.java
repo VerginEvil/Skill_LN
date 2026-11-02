@@ -325,6 +325,21 @@ public class AdminSyncHelper {
                 setField(comp, "isExpired", false);
                 saveAdmin(adminFile, map);
                 System.out.println("[OK] Updated status: " + normPath);
+            } else if ("set-vsc".equals(cmd)) {
+                if (args.length < 4) {
+                    System.err.println("Usage: set-vsc <rel_path> <isVSCHappy>");
+                    System.exit(1);
+                }
+                String normPath = normalizeRelPath(args[2]);
+                boolean isVSCHappy = Boolean.parseBoolean(args[3]);
+                Object comp = map.get(normPath);
+                if (comp == null) {
+                    comp = createComponent(compClass, normPath);
+                    map.put(normPath, comp);
+                }
+                setField(comp, "m_isVSCHappy", isVSCHappy);
+                saveAdmin(adminFile, map);
+                System.out.println("[OK] Set m_isVSCHappy=" + isVSCHappy + " for " + normPath);
             } else {
                 System.err.println("Unknown command: " + cmd);
                 System.exit(1);

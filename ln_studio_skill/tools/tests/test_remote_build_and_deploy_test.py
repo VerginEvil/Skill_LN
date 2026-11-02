@@ -193,6 +193,141 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         self.assertIn("txibd001", str(report["components"]))
         self.assertIn("End Activity", report["human_action_required"])
 
+    def test_parse_compile_diagnostics_authentic_xml(self):
+        xml_resp = """<compileResult>
+            <summary errors="1" warnings="1"/>
+            <error line="10" source="txibd001"><![CDATA[Error in expression: syntax error]]></error>
+            <warning line="25" source="txibd001" level="2"><![CDATA[Unused variable]]></warning>
+            <bicCommand>bic6.2 -z</bicCommand>
+        </compileResult>"""
+        diags = parse_compile_diagnostics(xml_resp)
+        self.assertEqual(len(diags), 2)
+        self.assertEqual(diags[0]["severity"], "error")
+        self.assertEqual(diags[0]["line"], 10)
+        self.assertEqual(diags[0]["source"], "txibd001")
+        self.assertEqual(diags[0]["message"], "Error in expression: syntax error")
+        self.assertEqual(diags[1]["severity"], "warning")
+        self.assertEqual(diags[1]["line"], 25)
+        self.assertEqual(diags[1]["code"], "2")
+        self.assertEqual(diags[1]["source"], "txibd001")
+
+    def test_compile_component_authentic_show_mode_and_activity_context(self):
+        self.transport.register_response(
+            "DR_Table",
+            "Compile",
+            """<compileResult>
+                <summary errors="0" warnings="0"/>
+            </compileResult>""",
+        )
+        res = compile_component(
+            client=self.client,
+            comp_type="table",
+            comp_name="txibd001",
+            project_name="EXTce01107",
+            activity_dir=self.act_dir,
+            is_checked_out=True,
+        )
+        self.assertTrue(res["success"])
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["bde"], "DR_Table")
+        self.assertEqual(last_call["method"], "Compile")
+        self.assertEqual(last_call["mode"], "SHOW")
+        self.assertIn("<isCheckedOut>yes</isCheckedOut>", last_call["request"])
+        self.assertIn("<name>txibd001</name>", last_call["request"])
+        self.assertIsNotNone(last_call["context_xml"])
+
+    def test_convert_to_runtime_and_create_tables_authentic_bde_mode(self):
+        self.transport.register_response("DR_Table", "ConvertToRuntime", "<ConvertToRuntimeResponse>OK</ConvertToRuntimeResponse>")
+        self.transport.register_response("DR_Table", "CreateTables", "<CreateTablesResponse>OK</CreateTablesResponse>")
+
+        crdd_ok = convert_to_runtime(self.client, "table", "txibd001", "EXTce01107", activity_dir=self.act_dir)
+        self.assertTrue(crdd_ok)
+
+        ct_ok = create_tables(self.client, "txibd001", "EXTce01107", activity_dir=self.act_dir)
+        self.assertTrue(ct_ok)
+
+        crdd_call = self.transport.call_history[-2]
+        self.assertEqual(crdd_call["mode"], "BDE")
+        self.assertEqual(crdd_call["controlling_attributes"], {"executionMethod": "synchronous"})
+        self.assertIsNotNone(crdd_call["context_xml"])
+
+        ct_call = self.transport.call_history[-1]
+        self.assertEqual(ct_call["mode"], "BDE")
+        self.assertEqual(ct_call["controlling_attributes"], {"executionMethod": "synchronous"})
+        self.assertIsNotNone(ct_call["context_xml"])
+
+    def test_execute_vsc_authentic_xml_and_admin_sync(self):
+        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file.parent.mkdir(parents=True, exist_ok=True)
+        tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
+        from admin_sync import admin_after_get, list_admin_components
+        admin_after_get(self.act_dir, "tables/txibd001.tbl")
+
+        # Test compliant VSC
+        self.transport.register_response(
+            "VSC",
+            "executeVSC",
+            """<vscResult verificationCode="COMPLIANT">
+                <warning accepted="true" blocking="false" warningID="W1" messageID="M1"><![CDATA[Minor hint]]></warning>
+            </vscResult>""",
+        )
+        res = execute_vsc(self.client, "table", "txibd001", "EXTce01107", activity_dir=self.act_dir)
+        self.assertTrue(res["passed"])
+        self.assertEqual(res["verification_code"], "COMPLIANT")
+        self.assertEqual(len(res["warnings"]), 1)
+        comps = list_admin_components(self.act_dir)
+        matching = [c for c in comps if "txibd001.tbl" in c["path"]]
+        self.assertTrue(len(matching) > 0)
+        self.assertTrue(matching[0]["isVSCHappy"])
+
+        # Test blocking VSC
+        self.transport.register_response(
+            "VSC",
+            "executeVSC",
+            """<vscResult verificationCode="ERROR">
+                <warning accepted="false" blocking="true" warningID="ERR1" messageID="M2"><![CDATA[Critical failure]]></warning>
+            </vscResult>""",
+        )
+        res_fail = execute_vsc(self.client, "table", "txibd001", "EXTce01107", activity_dir=self.act_dir)
+        self.assertFalse(res_fail["passed"])
+        comps_fail = list_admin_components(self.act_dir)
+        matching_fail = [c for c in comps_fail if "txibd001.tbl" in c["path"]]
+        self.assertFalse(matching_fail[0]["isVSCHappy"])
+
+    def test_prepare_end_activity_authentic_validate_development_activity(self):
+        tbl_file = self.act_dir / "tables" / "txibd001.tbl"
+        tbl_file.parent.mkdir(parents=True, exist_ok=True)
+        tbl_file.write_text("<DR_Table name='txibd001'/>", encoding="utf-8")
+        from admin_sync import admin_after_get
+        admin_after_get(self.act_dir, "tables/txibd001.tbl")
+
+        self.transport.register_response(
+            "CMLabel",
+            "GetModifiedComponents",
+            """<CMLabel>
+                <ModifiedComponent><name>txibd001</name><type>table</type></ModifiedComponent>
+            </CMLabel>""",
+        )
+        self.transport.register_response(
+            "DR_Solution",
+            "ValidateDevelopmentActivity",
+            "<DR_Solution><result>valid</result></DR_Solution>",
+        )
+        self.transport.register_response("VSC", "executeVSC", "<vscResult verificationCode='COMPLIANT'/>")
+
+        report = prepare_end_activity(
+            client=self.client,
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+        )
+        self.assertTrue(report["server_valid"])
+        self.assertTrue(report["ready_for_human_review"])
+        val_call = [c for c in self.transport.call_history if c["method"] == "ValidateDevelopmentActivity"][-1]
+        self.assertEqual(val_call["mode"], "SHOW")
+        self.assertIn("<projectName>EXTce01107</projectName>", val_call["request"])
+        self.assertIn("<taskName>task_build_01</taskName>", val_call["request"])
+        self.assertIn("<CMLabel><CMLabel><ModifiedComponent>", val_call["request"])
+
 
 class TestBuildCliIntegration(unittest.TestCase):
     def test_cmd_deploy_test_and_prepare_end_activity(self):
