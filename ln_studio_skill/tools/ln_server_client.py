@@ -15,10 +15,13 @@ Provides:
 """
 
 import glob
+import hashlib
 import json
 import os
+import socket
 import subprocess
 import sys
+import time
 import xml.etree.ElementTree as ET
 import zipfile
 from abc import ABC, abstractmethod
@@ -404,10 +407,15 @@ class HeadlessJavaJcaTransport(JcaTransport):
         jdk_path: Optional[Union[str, Path]] = None,
         studio_path: Optional[Union[str, Path]] = None,
         workspace_path: Optional[Union[str, Path]] = None,
+        use_daemon: bool = True,
+        daemon_idle_timeout: int = 1800,
     ):
         self.gateway_url = gateway_url.rstrip("/")
         self.tenant_id = tenant_id
         self.access_token = access_token
+        self.use_daemon = use_daemon
+        self.daemon_idle_timeout = daemon_idle_timeout
+        self._daemon_proc: Optional[subprocess.Popen] = None
 
         if jdk_path:
             self.jdk_path = Path(jdk_path)
@@ -419,6 +427,194 @@ class HeadlessJavaJcaTransport(JcaTransport):
         self.studio_path = Path(self.jar_info["studio_home"]) if self.jar_info.get("studio_home") else None
         self.workspace_path = Path(workspace_path) if workspace_path else None
         self._ensure_bridge_compiled()
+
+    def _get_daemon_reg_file(self) -> Path:
+        ln_dir = Path.home() / ".ln_studio"
+        ln_dir.mkdir(parents=True, exist_ok=True)
+        if self.workspace_path:
+            h = hashlib.sha256(str(self.workspace_path).encode("utf-8")).hexdigest()[:16]
+            return ln_dir / f"daemon_{h}.json"
+        return ln_dir / "daemon_global.json"
+
+    def _is_daemon_alive(self, port: int) -> bool:
+        try:
+            s = socket.create_connection(("127.0.0.1", port), timeout=1.5)
+            s.sendall(b'{"jsonrpc":"2.0","id":1,"method":"ping"}\n')
+            s_file = s.makefile("r", encoding="utf-8")
+            line = s_file.readline()
+            s.close()
+            if line:
+                data = json.loads(line)
+                return data.get("result", {}).get("status") == "ok"
+        except Exception:
+            return False
+        return False
+
+    def _send_daemon_rpc(self, req_data: Dict[str, Any], timeout: float = 30.0) -> Dict[str, Any]:
+        reg_file = self._get_daemon_reg_file()
+        if not reg_file.exists():
+            raise RuntimeError(f"Daemon registration file not found: {reg_file}")
+        with open(reg_file, "r", encoding="utf-8") as f:
+            info = json.load(f)
+        port = int(info["port"])
+
+        s = socket.create_connection(("127.0.0.1", port), timeout=timeout)
+        try:
+            payload = json.dumps(req_data) + "\n"
+            s.sendall(payload.encode("utf-8"))
+            s_file = s.makefile("r", encoding="utf-8")
+            line = s_file.readline()
+            if not line:
+                raise RuntimeError("Empty response from JCA daemon")
+            return json.loads(line)
+        finally:
+            try:
+                s.close()
+            except Exception:
+                pass
+
+    def _ensure_daemon_running(self) -> int:
+        reg_file = self._get_daemon_reg_file()
+        if reg_file.exists():
+            try:
+                with open(reg_file, "r", encoding="utf-8") as f:
+                    info = json.load(f)
+                port = int(info["port"])
+                if self._is_daemon_alive(port):
+                    return port
+            except Exception:
+                pass
+            try:
+                reg_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+
+        self._ensure_bridge_compiled()
+        java_exe = self._get_java_exe()
+        cp = self._get_classpath()
+        cmd = [
+            java_exe,
+            "-cp",
+            cp,
+            "LNStudioJcaBridge",
+            "--daemon",
+            "--port",
+            "0",
+            "--idle-timeout",
+            str(self.daemon_idle_timeout),
+        ]
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+        )
+        ready_line = ""
+        start_time = time.time()
+        while time.time() - start_time < 15.0:
+            line = proc.stdout.readline()
+            if "DAEMON_READY" in line:
+                ready_line = line
+                break
+            if proc.poll() is not None:
+                err = proc.stderr.read()
+                raise RuntimeError(f"JCA Daemon process exited prematurely (code {proc.returncode}): {err}")
+            time.sleep(0.05)
+
+        if not ready_line:
+            proc.kill()
+            raise TimeoutError("Timed out waiting for JCA Daemon to become ready")
+
+        port = 0
+        pid = 0
+        for token in ready_line.strip().split():
+            if token.startswith("port="):
+                port = int(token.split("=")[1])
+            elif token.startswith("pid="):
+                pid = int(token.split("=")[1])
+
+        if port == 0:
+            proc.kill()
+            raise RuntimeError(f"Failed to parse port from DAEMON_READY line: {ready_line}")
+
+        try:
+            if proc.stdout:
+                proc.stdout.close()
+            if proc.stderr:
+                proc.stderr.close()
+        except Exception:
+            pass
+
+        self._daemon_proc = proc
+
+        with open(reg_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "port": port,
+                "pid": pid,
+                "workspace": str(self.workspace_path) if self.workspace_path else None,
+                "started_at": time.time(),
+            }, f, indent=2)
+
+        return port
+
+    def daemon_status(self) -> Dict[str, Any]:
+        reg_file = self._get_daemon_reg_file()
+        if not reg_file.exists():
+            return {"status": "stopped", "running": False}
+        try:
+            with open(reg_file, "r", encoding="utf-8") as f:
+                info = json.load(f)
+            port = int(info["port"])
+            if not self._is_daemon_alive(port):
+                return {"status": "stale", "running": False, "port": port, "pid": info.get("pid")}
+            resp = self._send_daemon_rpc({"jsonrpc": "2.0", "id": 1, "method": "status"}, timeout=3.0)
+            res = resp.get("result", {})
+            res["running"] = True
+            return res
+        except Exception as e:
+            return {"status": "error", "running": False, "error": str(e)}
+
+    def stop_daemon(self) -> bool:
+        reg_file = self._get_daemon_reg_file()
+        try:
+            self._send_daemon_rpc({"jsonrpc": "2.0", "id": 1, "method": "shutdown"}, timeout=3.0)
+        except Exception:
+            pass
+        if self._daemon_proc is not None:
+            try:
+                self._daemon_proc.wait(timeout=3.0)
+            except Exception:
+                try:
+                    self._daemon_proc.kill()
+                except Exception:
+                    pass
+            self._daemon_proc = None
+        if reg_file.exists():
+            try:
+                reg_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+        return True
+
+    def restart_daemon(self) -> bool:
+        self.stop_daemon()
+        time.sleep(0.5)
+        self._ensure_daemon_running()
+        return True
+
+    def update_daemon_token(self, new_token: str) -> bool:
+        self.access_token = new_token
+        try:
+            resp = self._send_daemon_rpc({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "update_token",
+                "params": {"token": new_token},
+            }, timeout=3.0)
+            return resp.get("result", {}).get("status") == "updated"
+        except Exception:
+            return False
 
     def _get_java_exe(self) -> str:
         java_bin = self.jdk_path / "bin" / "java.exe"
@@ -491,6 +687,46 @@ class HeadlessJavaJcaTransport(JcaTransport):
                 "BYOJ Error: Could not locate 'JCAAdapter4ERPln*.jar'. "
                 "Please set the LN_STUDIO_HOME environment variable to your Infor LN Studio installation directory."
             )
+
+        if self.use_daemon:
+            try:
+                self._ensure_daemon_running()
+                rpc_req = {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "execute_bde",
+                    "params": {
+                        "backend": self.gateway_url,
+                        "tenant": self.tenant_id,
+                        "token": self.access_token,
+                        "connectionPoint": connection_point,
+                        "bde": bde_name,
+                        "method": method_name,
+                        "requestXml": request_xml,
+                        "contextXml": context_xml,
+                        "mode": mode,
+                        "controllingAttributes": controlling_attributes or {},
+                        "selectionFields": selection_fields or [],
+                        "filterExpression": filter_expression,
+                        "maxObjects": max_objects,
+                    },
+                }
+                resp = self._send_daemon_rpc(rpc_req)
+                if "error" in resp:
+                    err = resp["error"]
+                    if err.get("code") == -32003:
+                        raise PermissionError(err.get("message", "EndActivity is physically blocked by LNStudioJcaBridge."))
+                    raise BdeExecutionError(
+                        f"Daemon BDE call {bde_name}.{method_name} failed: {err.get('message')}",
+                        bde=bde_name,
+                        method=method_name,
+                    )
+                return resp.get("result", {}).get("xml", "<Success/>")
+            except PermissionError:
+                raise
+            except Exception:
+                # Transparent fallback to one-shot CLI execution
+                pass
 
         java_exe = self._get_java_exe()
         cp = self._get_classpath()
@@ -583,3 +819,23 @@ class LNStudioServerClient:
             filter_expression=filter_expression,
             max_objects=max_objects,
         )
+
+    def daemon_status(self) -> Dict[str, Any]:
+        if hasattr(self.transport, "daemon_status"):
+            return self.transport.daemon_status()
+        return {"status": "unsupported", "running": False}
+
+    def stop_daemon(self) -> bool:
+        if hasattr(self.transport, "stop_daemon"):
+            return self.transport.stop_daemon()
+        return True
+
+    def restart_daemon(self) -> bool:
+        if hasattr(self.transport, "restart_daemon"):
+            return self.transport.restart_daemon()
+        return False
+
+    def update_daemon_token(self, new_token: str) -> bool:
+        if hasattr(self.transport, "update_daemon_token"):
+            return self.transport.update_daemon_token(new_token)
+        return False

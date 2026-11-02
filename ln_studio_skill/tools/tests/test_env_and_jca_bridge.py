@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import time
+import socket
 import subprocess
 import tempfile
 import unittest
@@ -466,6 +467,162 @@ class TestJcaBridgeAndByojCompliance(unittest.TestCase):
             )
             self.assertEqual(proc.returncode, 3)
             self.assertIn("SECURITY_BLOCK", proc.stderr)
+
+    def test_daemon_json_rpc_lifecycle(self):
+        """Tests persistent background JCA daemon loopback over localhost JSON-RPC 2.0."""
+        real_transport = HeadlessJavaJcaTransport(
+            gateway_url="https://example.com",
+            tenant_id="TEST_TENANT",
+            access_token="dummy_token_init",
+        )
+        java_exe = real_transport._get_java_exe()
+        class_file = SKILL_TOOLS / "lib" / "LNStudioJcaBridge.class"
+        if not (Path(java_exe).exists() and class_file.exists()):
+            self.skipTest("Java or LNStudioJcaBridge.class not available for daemon test")
+
+        cp = real_transport._get_classpath()
+        proc = subprocess.Popen(
+            [
+                java_exe,
+                "-cp",
+                cp,
+                "LNStudioJcaBridge",
+                "--daemon",
+                "--port",
+                "0",
+                "--idle-timeout",
+                "30",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+        )
+        try:
+            # Wait for DAEMON_READY line
+            ready_line = ""
+            for _ in range(50):
+                line = proc.stdout.readline()
+                if "DAEMON_READY" in line:
+                    ready_line = line
+                    break
+                time.sleep(0.1)
+
+            self.assertIn("DAEMON_READY", ready_line)
+            port = 0
+            for tok in ready_line.strip().split():
+                if tok.startswith("port="):
+                    port = int(tok.split("=")[1])
+            self.assertGreater(port, 0)
+
+            # Helper for JSON-RPC over raw socket
+            def send_rpc(msg: dict) -> dict:
+                s = socket.create_connection(("127.0.0.1", port), timeout=3.0)
+                try:
+                    s.sendall((json.dumps(msg) + "\n").encode("utf-8"))
+                    f = s.makefile("r", encoding="utf-8")
+                    resp_line = f.readline()
+                    return json.loads(resp_line)
+                finally:
+                    s.close()
+
+            # 1. Ping
+            pong = send_rpc({"jsonrpc": "2.0", "id": 1, "method": "ping"})
+            self.assertEqual(pong.get("result", {}).get("status"), "ok")
+
+            # 2. Status
+            status_resp = send_rpc({"jsonrpc": "2.0", "id": 2, "method": "status"})
+            res = status_resp.get("result", {})
+            self.assertEqual(res.get("status"), "running")
+            self.assertEqual(res.get("port"), port)
+
+            # 3. Update token
+            upd_resp = send_rpc({
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "update_token",
+                "params": {"token": "updated_secret_token_123"},
+            })
+            self.assertEqual(upd_resp.get("result", {}).get("status"), "updated")
+
+            # 4. Prohibited operation guardrail check via execute_bde
+            sec_resp = send_rpc({
+                "jsonrpc": "2.0",
+                "id": 4,
+                "method": "execute_bde",
+                "params": {
+                    "backend": "https://example.com",
+                    "tenant": "TEST_TENANT",
+                    "token": "tok",
+                    "bde": "DR_Solution",
+                    "method": "EndActivity",
+                },
+            })
+            self.assertIn("error", sec_resp)
+            self.assertEqual(sec_resp["error"].get("code"), -32003)
+            self.assertIn("SECURITY_BLOCK", sec_resp["error"].get("message"))
+
+            # 5. Clean shutdown
+            shut_resp = send_rpc({"jsonrpc": "2.0", "id": 5, "method": "shutdown"})
+            self.assertEqual(shut_resp.get("result", {}).get("status"), "shutting_down")
+            proc.wait(timeout=5)
+            self.assertEqual(proc.returncode, 0)
+
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+            try:
+                if proc.stdout:
+                    proc.stdout.close()
+                if proc.stderr:
+                    proc.stderr.close()
+            except Exception:
+                pass
+
+    def test_headless_java_jca_transport_daemon_lifecycle(self):
+        """Tests HeadlessJavaJcaTransport daemon management: status, update_token, stop."""
+        with tempfile.TemporaryDirectory() as temp_ws:
+            ws_path = Path(temp_ws)
+            transport = HeadlessJavaJcaTransport(
+                gateway_url="https://example.com",
+                tenant_id="TEST_TENANT",
+                access_token="initial_token",
+                workspace_path=ws_path,
+                daemon_idle_timeout=60,
+            )
+            java_exe = transport._get_java_exe()
+            class_file = SKILL_TOOLS / "lib" / "LNStudioJcaBridge.class"
+            if not (Path(java_exe).exists() and class_file.exists()):
+                self.skipTest("Java or LNStudioJcaBridge.class not available for daemon test")
+
+            try:
+                # 1. Initially stopped
+                stat = transport.daemon_status()
+                self.assertFalse(stat.get("running"))
+
+                # 2. Ensure running spawns the daemon and registers port
+                port = transport._ensure_daemon_running()
+                self.assertGreater(port, 0)
+                reg_file = transport._get_daemon_reg_file()
+                self.assertTrue(reg_file.exists())
+
+                # 3. Status reports running
+                stat2 = transport.daemon_status()
+                self.assertTrue(stat2.get("running"))
+                self.assertEqual(stat2.get("status"), "running")
+
+                # 4. Token update
+                self.assertTrue(transport.update_daemon_token("new_test_token"))
+
+                # 5. Stop daemon
+                self.assertTrue(transport.stop_daemon())
+                time.sleep(0.5)
+                self.assertFalse(reg_file.exists())
+                stat3 = transport.daemon_status()
+                self.assertFalse(stat3.get("running"))
+
+            finally:
+                transport.stop_daemon()
 
 
 if __name__ == "__main__":

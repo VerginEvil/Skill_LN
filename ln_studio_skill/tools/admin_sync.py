@@ -30,13 +30,14 @@ JAVA_BIN_CANDIDATES = [
     shutil.which("java") or "java"
 ]
 
-# 12 Managed LN Studio Component Extensions
+# 12 Managed LN Studio Component Extensions (plus aliases .que and .fun)
 MANAGED_EXTENSIONS = {
-    ".tbl", ".ses", ".lib", ".fnc", ".dmn", ".lbl",
-    ".mnu", ".rpt", ".msg", ".qst", ".add", ".bus"
+    ".tbl", ".ses", ".lib", ".dmn", ".lbl",
+    ".mnu", ".rpt", ".rptdsrc", ".msg", ".qst", ".que",
+    ".add", ".fnc", ".fun"
 }
 EXCLUDED_EXTENSIONS = {
-    ".src", ".4gl", ".dal", ".clnsrc", ".rptdsrc"
+    ".src", ".4gl", ".dal", ".clnsrc"
 }
 MODULE_SCOPED_TYPES = {
     "table", "session", "library", "function", "report", "menu", "additional", "businessobject"
