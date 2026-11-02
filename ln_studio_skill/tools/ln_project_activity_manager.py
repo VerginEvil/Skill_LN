@@ -23,52 +23,49 @@ from ln_server_client import LNStudioServerClient, BdeExecutionError
 
 def list_applications(client: LNStudioServerClient) -> List[Dict[str, str]]:
     """
-    Lists Applications available on Infor LN Server via Application.List BDE.
+    Lists Applications available on Infor LN Server via Application.List BDE (mode='LIST').
     """
     req_xml = "<ApplicationListRequest/>"
-    resp_xml = client.do_bde_call("Application", "List", req_xml, connection_point="ProjectServer")
+    selection = ["Application.name", "Application.description", "Application.release"]
+    resp_xml = client.do_bde_call(
+        "Application",
+        "List",
+        req_xml,
+        connection_point="ProjectServer",
+        mode="LIST",
+        selection_fields=selection,
+    )
     root = ET.fromstring(resp_xml)
     apps = []
     for app_elem in root.iter("Application"):
         name = app_elem.findtext("name") or app_elem.findtext("Name") or ""
         desc = app_elem.findtext("description") or app_elem.findtext("title") or app_elem.findtext("Description") or ""
+        rel = app_elem.findtext("release") or app_elem.findtext("Release") or app_elem.findtext("releaseID") or ""
         if name:
-            apps.append({"name": name, "description": desc})
+            apps.append({"name": name, "description": desc, "release": rel})
     return apps
 
 
-def list_software_projects(client: LNStudioServerClient) -> List[Dict[str, str]]:
+def show_application(client: LNStudioServerClient, app_name: str) -> Dict[str, Any]:
     """
-    Lists Software Projects available on Infor LN Server via SoftwareProject.List BDE.
+    Queries detailed metadata for an Application via Application.Show BDE (mode='SHOW').
     """
-    req_xml = "<SoftwareProjectListRequest/>"
-    resp_xml = client.do_bde_call("SoftwareProject", "List", req_xml, connection_point="ProjectServer")
+    req_xml = f"<Application><name>{app_name}</name></Application>"
+    resp_xml = client.do_bde_call(
+        "Application",
+        "Show",
+        req_xml,
+        connection_point="ProjectServer",
+        mode="SHOW",
+    )
     root = ET.fromstring(resp_xml)
-    projs = []
-    for p_elem in root.iter("SoftwareProject"):
-        name = p_elem.findtext("name") or p_elem.findtext("Name") or ""
-        desc = p_elem.findtext("description") or p_elem.findtext("Description") or ""
-        status = p_elem.findtext("status") or p_elem.findtext("Status") or "active"
-        if name:
-            projs.append({"name": name, "description": desc, "status": status})
-    return projs
-
-
-def get_software_project_details(client: LNStudioServerClient, project_name: str) -> Dict[str, Any]:
-    """
-    Retrieves VRC hierarchy and assigned packages for a Software Project via SoftwareProject_V2.Show BDE.
-    """
-    req_xml = f"<SoftwareProject_V2><name>{project_name}</name></SoftwareProject_V2>"
-    resp_xml = client.do_bde_call("SoftwareProject_V2", "Show", req_xml, connection_point="ProjectServer")
-    root = ET.fromstring(resp_xml)
-
-    name = root.findtext(".//name") or project_name
-    desc = root.findtext(".//description") or ""
-    base_vrc = root.findtext(".//baseVRC") or ""
-    workset_vrc = root.findtext(".//workSetVRC") or root.findtext(".//workSet") or ""
+    app_elem = root.find(".//Application") or root
+    name = app_elem.findtext("name") or app_name
+    desc = app_elem.findtext("description") or ""
+    release = app_elem.findtext("release") or app_elem.findtext("releaseID") or ""
 
     packages = []
-    for pkg_elem in root.iter("Package"):
+    for pkg_elem in app_elem.iter("Package"):
         txt = (pkg_elem.text or "").strip()
         if txt:
             packages.append(txt)
@@ -76,38 +73,218 @@ def get_software_project_details(client: LNStudioServerClient, project_name: str
     return {
         "name": name,
         "description": desc,
-        "baseVRC": base_vrc,
-        "workSetVRC": workset_vrc,
+        "release": release,
         "packages": packages,
         "raw_xml": resp_xml,
     }
 
 
-def list_remote_activities(client: LNStudioServerClient, project_name: str) -> List[Dict[str, str]]:
+def list_software_projects(client: LNStudioServerClient) -> List[Dict[str, Any]]:
+    """
+    Lists Software Projects available on Infor LN Server via SoftwareProject.List BDE (mode='LIST').
+    """
+    req_xml = "<SoftwareProjectListRequest/>"
+    selection = [
+        "projectName",
+        "projectDescription",
+        "projectStatus",
+        "typeOfProject",
+        "Task.taskName",
+        "Task.taskDescription",
+        "Task.taskStatus",
+        "Task.typeOfTask",
+        "Task.assignedTo",
+    ]
+    resp_xml = client.do_bde_call(
+        "SoftwareProject",
+        "List",
+        req_xml,
+        connection_point="ProjectServer",
+        mode="LIST",
+        selection_fields=selection,
+    )
+    root = ET.fromstring(resp_xml)
+    projs = []
+    for p_elem in root.iter("SoftwareProject"):
+        name = p_elem.findtext("projectName") or p_elem.findtext("name") or p_elem.findtext("Name") or ""
+        desc = p_elem.findtext("projectDescription") or p_elem.findtext("description") or p_elem.findtext("Description") or ""
+        status = p_elem.findtext("projectStatus") or p_elem.findtext("status") or p_elem.findtext("Status") or "active"
+        proj_type = p_elem.findtext("typeOfProject") or p_elem.findtext("type") or ""
+
+        tasks = []
+        for t_elem in p_elem.iter("Task"):
+            t_name = t_elem.findtext("taskName") or t_elem.findtext("taskId") or t_elem.findtext("name") or ""
+            if t_name:
+                tasks.append({
+                    "task_name": t_name,
+                    "task_id": t_name,
+                    "description": t_elem.findtext("taskDescription") or t_elem.findtext("description") or "",
+                    "status": t_elem.findtext("taskStatus") or t_elem.findtext("status") or "open",
+                    "type": t_elem.findtext("typeOfTask") or "",
+                    "assigned_to": t_elem.findtext("assignedTo") or "",
+                })
+
+        if name:
+            proj_dict = {
+                "name": name,
+                "projectName": name,
+                "description": desc,
+                "projectDescription": desc,
+                "status": status,
+                "projectStatus": status,
+                "typeOfProject": proj_type,
+            }
+            if tasks:
+                proj_dict["tasks"] = tasks
+            projs.append(proj_dict)
+    return projs
+
+
+def get_software_project_details(
+    client: LNStudioServerClient,
+    project_name: str,
+    filter_expression: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Retrieves full metadata and tasks for a Software Project via SoftwareProject_V2.Show BDE (mode='SHOW').
+    Extracts projectVersionID (Base VRC), development/runtime repository addresses, packages,
+    and task list with labelUUID vs taskUUID distinction.
+    """
+    req_xml = f"<SoftwareProject_V2><projectName>{project_name}</projectName></SoftwareProject_V2>"
+    resp_xml = client.do_bde_call(
+        "SoftwareProject_V2",
+        "Show",
+        req_xml,
+        connection_point="ProjectServer",
+        mode="SHOW",
+        filter_expression=filter_expression,
+    )
+    root = ET.fromstring(resp_xml)
+
+    name = root.findtext(".//projectName") or root.findtext(".//name") or project_name
+    desc = root.findtext(".//projectDescription") or root.findtext(".//description") or ""
+    proj_version = root.findtext(".//projectVersionID") or root.findtext(".//baseVRC") or ""
+    workset_vrc = root.findtext(".//workSetVRC") or root.findtext(".//workSet") or ""
+    dev_env = root.findtext(".//developmentEnvironment") or ""
+    dev_repo = root.findtext(".//developmentRepositoryAddress") or f"{project_name}_dev"
+    rt_repo = root.findtext(".//runtimeRepositoryAddress") or f"{project_name}_rt"
+    app_server = root.findtext(".//applicationServer") or ""
+    app_name = root.findtext(".//applicationName") or ""
+    app_release = root.findtext(".//applicationRelease") or ""
+
+    is_partial_end = (root.findtext(".//isPartialEndAllowed") or "true").lower() in ("true", "yes", "1")
+    is_sharing = (root.findtext(".//isSharingActivitiesAllowed") or "true").lower() in ("true", "yes", "1")
+    pmc_integration = (root.findtext(".//integrationWithPMC") or "false").lower() in ("true", "yes", "1")
+
+    packages = []
+    for pkg_elem in root.iter("Package"):
+        txt = (pkg_elem.text or "").strip()
+        if txt:
+            packages.append(txt)
+    for pkg_elem in root.iter("package"):
+        txt = (pkg_elem.text or "").strip()
+        if txt and txt not in packages:
+            packages.append(txt)
+
+    tasks = []
+    for task_elem in root.iter("Task"):
+        task_name = task_elem.findtext("taskName") or task_elem.findtext("taskId") or task_elem.findtext("name") or ""
+        label_uuid = task_elem.findtext("labelUUID") or task_elem.findtext("label") or task_elem.findtext("uuid") or ""
+        task_uuid = task_elem.findtext("taskUUID") or ""
+        task_v_id = task_elem.findtext("taskVersionID") or ""
+        task_desc = task_elem.findtext("taskDescription") or task_elem.findtext("description") or ""
+        task_doc = task_elem.findtext("taskDocumentation") or ""
+        task_req = task_elem.findtext("taskRequirementID") or ""
+        type_of_task = task_elem.findtext("typeOfTask") or task_elem.findtext("type") or ""
+        assigned_to = task_elem.findtext("assignedTo") or task_elem.findtext("owner") or ""
+        task_status = task_elem.findtext("taskStatus") or task_elem.findtext("status") or "open"
+        task_sev = task_elem.findtext("taskSeverity") or ""
+        func_change = task_elem.findtext("functionalChange") or ""
+
+        # Activity relationships
+        relationships = []
+        for rel_elem in task_elem.iter("ActivityRelationship"):
+            rel_act = rel_elem.findtext("relatedActivityName") or rel_elem.findtext("activity") or ""
+            rel_type = rel_elem.findtext("relationshipType") or rel_elem.findtext("type") or ""
+            if rel_act:
+                relationships.append({"relatedActivityName": rel_act, "relationshipType": rel_type})
+
+        if task_name:
+            tasks.append({
+                "taskName": task_name,
+                "task_id": task_name,
+                "labelUUID": label_uuid,
+                "uuid": label_uuid,
+                "taskUUID": task_uuid,
+                "taskVersionID": task_v_id,
+                "taskDescription": task_desc,
+                "description": task_desc,
+                "taskDocumentation": task_doc,
+                "taskRequirementID": task_req,
+                "typeOfTask": type_of_task,
+                "assignedTo": assigned_to,
+                "owner": assigned_to,
+                "taskStatus": task_status,
+                "status": task_status,
+                "taskSeverity": task_sev,
+                "functionalChange": func_change,
+                "relationships": relationships,
+            })
+
+    return {
+        "name": name,
+        "projectName": name,
+        "description": desc,
+        "projectDescription": desc,
+        "projectVersionID": proj_version,
+        "baseVRC": proj_version,
+        "workSetVRC": workset_vrc,
+        "developmentEnvironment": dev_env,
+        "developmentRepositoryAddress": dev_repo,
+        "runtimeRepositoryAddress": rt_repo,
+        "applicationServer": app_server,
+        "applicationName": app_name,
+        "applicationRelease": app_release,
+        "isPartialEndAllowed": is_partial_end,
+        "isSharingActivitiesAllowed": is_sharing,
+        "integrationWithPMC": pmc_integration,
+        "packages": packages,
+        "tasks": tasks,
+        "raw_xml": resp_xml,
+    }
+
+
+def list_remote_activities(client: LNStudioServerClient, project_name: str) -> List[Dict[str, Any]]:
     """
     Lists all remote Activities (Tasks) under a Software Project via SoftwareProject_V2.Show.
     """
-    req_xml = f"<SoftwareProject_V2><name>{project_name}</name></SoftwareProject_V2>"
-    resp_xml = client.do_bde_call("SoftwareProject_V2", "Show", req_xml, connection_point="ProjectServer")
-    root = ET.fromstring(resp_xml)
+    details = get_software_project_details(client, project_name)
+    return details.get("tasks", [])
 
-    activities = []
-    for task_elem in root.iter("Task"):
-        task_id = task_elem.findtext("taskId") or task_elem.findtext("TaskId") or task_elem.findtext("name") or ""
-        uuid_str = task_elem.findtext("uuid") or task_elem.findtext("UUID") or ""
-        desc = task_elem.findtext("description") or task_elem.findtext("Description") or ""
-        owner = task_elem.findtext("owner") or task_elem.findtext("Owner") or ""
-        status = task_elem.findtext("status") or task_elem.findtext("Status") or "open"
 
-        if task_id:
-            activities.append({
-                "task_id": task_id,
-                "uuid": uuid_str,
-                "description": desc,
-                "owner": owner,
-                "status": status,
-            })
-    return activities
+def get_remote_activity_details(
+    client: LNStudioServerClient,
+    project_name: str,
+    task_name: str,
+) -> Optional[Dict[str, Any]]:
+    """
+    Retrieves full details for a specific remote activity via SoftwareProject_V2.Show with filter.
+    """
+    filter_expr = f"Task.taskName == '{task_name}'"
+    try:
+        details = get_software_project_details(client, project_name, filter_expression=filter_expr)
+        for t in details.get("tasks", []):
+            if t["taskName"] == task_name or t["task_id"] == task_name:
+                return t
+    except Exception:
+        pass
+
+    # Fallback without filter
+    details = get_software_project_details(client, project_name)
+    for t in details.get("tasks", []):
+        if t["taskName"] == task_name or t["task_id"] == task_name:
+            return t
+    return None
 
 
 def create_remote_activity(
@@ -213,7 +390,26 @@ def bootstrap_local_activity(
     if not admin_path.exists():
         write_admin_file(admin_path, {})
 
-    # 3. Write Eclipse persistent project properties (.settings/properties.index)
+    # 3. Write binary PropertyBucket to workspace metadata
+    from properties_index import PropertyBucket
+    meta_idx = workspace_path / ".metadata" / ".plugins" / "org.eclipse.core.resources" / ".projects" / folder_name / ".indexes" / "properties.index"
+    try:
+        bucket = PropertyBucket()
+        bucket.set_project_properties({
+            "ProjectName": project_name,
+            "TaskName": task_id,
+            "Label": activity_uuid,
+            "DevelopmentTimeRepositoryAddress": dev_connection or f"{project_name}_dev",
+            "RunTimeRepositoryAddress": f"{project_name}_rt",
+            "ApplicationUsesSCM": "yes",
+            "TaskStatus": "opened",
+        })
+        bucket.set_property("repository", "com.infor.ln.studio.apps.core.cmprovider", qualifier="org.eclipse.team.core")
+        bucket.save(meta_idx)
+    except Exception:
+        pass
+
+    # 4. Write Eclipse persistent project properties (.settings/properties.index)
     settings_dir = act_dir / ".settings"
     settings_dir.mkdir(parents=True, exist_ok=True)
     props_index = settings_dir / "properties.index"

@@ -17,11 +17,14 @@ if str(SKILL_TOOLS) not in sys.path:
     sys.path.insert(0, str(SKILL_TOOLS))
 
 from ln_server_client import MockJcaTransport, LNStudioServerClient
+from properties_index import PropertyBucket
 from ln_project_activity_manager import (
     list_applications,
+    show_application,
     list_software_projects,
     get_software_project_details,
     list_remote_activities,
+    get_remote_activity_details,
     create_remote_activity,
     clean_remote_activity,
     bootstrap_local_activity,
@@ -197,6 +200,148 @@ class TestProjectAndActivityExplorers(unittest.TestCase):
         call = self.transport.call_history[-1]
         self.assertEqual(call["bde"], "FglStudio")
         self.assertEqual(call["method"], "CleanActivity")
+
+    def test_show_application(self):
+        """Tests show_application querying Application.Show in SHOW mode."""
+        self.transport.register_response(
+            "Application",
+            "Show",
+            """<Application>
+                <name>LN</name>
+                <description>Infor Enterprise CloudSuite LN</description>
+                <release>B61O_a_ext</release>
+                <Packages>
+                    <Package>tc</Package>
+                    <Package>td</Package>
+                    <Package>tx</Package>
+                </Packages>
+            </Application>""",
+        )
+        app = show_application(self.client, "LN")
+        self.assertEqual(app["name"], "LN")
+        self.assertEqual(app["description"], "Infor Enterprise CloudSuite LN")
+        self.assertEqual(app["release"], "B61O_a_ext")
+        self.assertIn("tx", app["packages"])
+        call = self.transport.call_history[-1]
+        self.assertEqual(call["mode"], "SHOW")
+        self.assertEqual(call["bde"], "Application")
+        self.assertEqual(call["method"], "Show")
+
+    def test_software_project_v2_show_full_metadata_and_task_fields(self):
+        """Tests SoftwareProject_V2.Show extracting full project version, repo addresses, and task labelUUID vs taskUUID."""
+        self.transport.register_response(
+            "SoftwareProject_V2",
+            "Show",
+            """<SoftwareProject_V2>
+                <projectName>EXTce01105</projectName>
+                <projectDescription>Customer Customizations 01105</projectDescription>
+                <projectVersionID>B61O_a_ext</projectVersionID>
+                <developmentEnvironment>EXT</developmentEnvironment>
+                <developmentRepositoryAddress>EXTce01105_dev</developmentRepositoryAddress>
+                <runtimeRepositoryAddress>EXTce01105_rt</runtimeRepositoryAddress>
+                <applicationServer>app_server_ln01</applicationServer>
+                <isPartialEndAllowed>true</isPartialEndAllowed>
+                <isSharingActivitiesAllowed>true</isSharingActivitiesAllowed>
+                <integrationWithPMC>false</integrationWithPMC>
+                <package>tc</package>
+                <package>tx</package>
+                <Tasks>
+                    <Task>
+                        <taskName>dev_natt_01105</taskName>
+                        <labelUUID>dce45112-c35b-45e1-949a-b8b4b3664f99</labelUUID>
+                        <taskUUID>SOL-PMC-998811</taskUUID>
+                        <taskVersionID>2</taskVersionID>
+                        <taskDescription>Dev. Natthaphon 01105</taskDescription>
+                        <taskDocumentation>Documentation notes</taskDocumentation>
+                        <taskRequirementID>REQ-7744</taskRequirementID>
+                        <typeOfTask>enhancement</typeOfTask>
+                        <assignedTo>nsrikase</assignedTo>
+                        <taskStatus>opened</taskStatus>
+                        <taskSeverity>medium</taskSeverity>
+                        <functionalChange>yes</functionalChange>
+                        <ActivityRelationships>
+                            <ActivityRelationship>
+                                <relatedActivityName>dev_natt_01103</relatedActivityName>
+                                <relationshipType>predecessor</relationshipType>
+                            </ActivityRelationship>
+                        </ActivityRelationships>
+                    </Task>
+                </Tasks>
+            </SoftwareProject_V2>""",
+        )
+        proj = get_software_project_details(self.client, "EXTce01105")
+        self.assertEqual(proj["projectName"], "EXTce01105")
+        self.assertEqual(proj["projectVersionID"], "B61O_a_ext")
+        self.assertEqual(proj["baseVRC"], "B61O_a_ext")
+        self.assertEqual(proj["developmentEnvironment"], "EXT")
+        self.assertEqual(proj["developmentRepositoryAddress"], "EXTce01105_dev")
+        self.assertEqual(proj["runtimeRepositoryAddress"], "EXTce01105_rt")
+        self.assertTrue(proj["isPartialEndAllowed"])
+        self.assertFalse(proj["integrationWithPMC"])
+        self.assertIn("tx", proj["packages"])
+
+        self.assertEqual(len(proj["tasks"]), 1)
+        task = proj["tasks"][0]
+        self.assertEqual(task["taskName"], "dev_natt_01105")
+        self.assertEqual(task["task_id"], "dev_natt_01105")
+        self.assertEqual(task["labelUUID"], "dce45112-c35b-45e1-949a-b8b4b3664f99")
+        self.assertEqual(task["uuid"], "dce45112-c35b-45e1-949a-b8b4b3664f99")
+        self.assertEqual(task["taskUUID"], "SOL-PMC-998811")
+        self.assertNotEqual(task["labelUUID"], task["taskUUID"])  # Ground truth distinction
+        self.assertEqual(task["taskVersionID"], "2")
+        self.assertEqual(task["typeOfTask"], "enhancement")
+        self.assertEqual(task["assignedTo"], "nsrikase")
+        self.assertEqual(task["taskStatus"], "opened")
+        self.assertEqual(len(task["relationships"]), 1)
+        self.assertEqual(task["relationships"][0]["relatedActivityName"], "dev_natt_01103")
+
+    def test_get_remote_activity_details_with_filter(self):
+        """Tests get_remote_activity_details passing filter_expression for specific task."""
+        self.transport.register_response(
+            "SoftwareProject_V2",
+            "Show",
+            """<SoftwareProject_V2>
+                <projectName>EXTce01105</projectName>
+                <Tasks>
+                    <Task>
+                        <taskName>dev_natt_01105</taskName>
+                        <labelUUID>uuid-1122-3344</labelUUID>
+                        <taskUUID>SOL-01</taskUUID>
+                        <taskStatus>opened</taskStatus>
+                        <assignedTo>nutdo</assignedTo>
+                    </Task>
+                </Tasks>
+            </SoftwareProject_V2>""",
+        )
+        act = get_remote_activity_details(self.client, "EXTce01105", "dev_natt_01105")
+        self.assertIsNotNone(act)
+        self.assertEqual(act["taskName"], "dev_natt_01105")
+        self.assertEqual(act["labelUUID"], "uuid-1122-3344")
+
+        # Verify filter expression was passed to transport
+        call = self.transport.call_history[-1]
+        self.assertEqual(call["filter_expression"], "Task.taskName == 'dev_natt_01105'")
+
+    def test_bootstrap_local_activity_writes_binary_properties_index(self):
+        """Asserts bootstrap_local_activity writes binary PropertyBucket in workspace .metadata."""
+        act_dir = bootstrap_local_activity(
+            workspace_path=self.workspace_path,
+            task_id="task_prop_bin",
+            project_name="EXTce01105",
+            activity_uuid="uuid-bin-999",
+            dev_connection="EXTce01105_dev",
+        )
+        meta_file = (
+            self.workspace_path / ".metadata" / ".plugins" / "org.eclipse.core.resources" /
+            ".projects" / "task_prop_bin [EXTce01105]" / ".indexes" / "properties.index"
+        )
+        self.assertTrue(meta_file.exists())
+        bucket = PropertyBucket.load(meta_file)
+        self.assertEqual(bucket.get_property("ProjectName"), "EXTce01105")
+        self.assertEqual(bucket.get_property("TaskName"), "task_prop_bin")
+        self.assertEqual(bucket.get_property("Label"), "uuid-bin-999")
+        self.assertEqual(bucket.get_property("ApplicationUsesSCM"), "yes")
+        self.assertEqual(bucket.get_property("repository", qualifier="org.eclipse.team.core"), "com.infor.ln.studio.apps.core.cmprovider")
 
 
 class TestProjectActivityCliIntegration(unittest.TestCase):
