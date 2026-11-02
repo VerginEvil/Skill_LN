@@ -136,12 +136,70 @@ def end_activity_gate(project_name: str, task_id: str) -> None:
     )
 
 
+def resolve_activity_scm_metadata(activity_dir: Path) -> Dict[str, str]:
+    """
+    Reads Label (labelUUID), ApplicationRelease (baseVRC), TaskName, TaskDocumentation,
+    TaskContext, and DevelopmentEnvironment from binary properties.index (or legacy text format).
+    Falls back to activity_dir folder name parsing if properties.index is missing.
+    """
+    meta = {
+        "labelUUID": "",
+        "baseVRC": "",
+        "taskName": "",
+        "taskDocumentation": "",
+        "taskContext": "",
+        "developmentEnvironment": "",
+    }
+    from properties_index import find_project_properties_index, PropertyBucket
+    idx_p = find_project_properties_index(activity_dir)
+    if idx_p and idx_p.exists():
+        try:
+            bucket = PropertyBucket.load(idx_p)
+            meta["labelUUID"] = bucket.get_property("Label") or ""
+            meta["baseVRC"] = bucket.get_property("ApplicationRelease") or ""
+            meta["taskName"] = bucket.get_property("TaskName") or ""
+            meta["taskDocumentation"] = bucket.get_property("TaskDocumentation") or ""
+            meta["taskContext"] = bucket.get_property("TaskContext") or ""
+            meta["developmentEnvironment"] = bucket.get_property("DevelopmentEnvironment") or ""
+        except Exception:
+            try:
+                raw_txt = idx_p.read_text(encoding="utf-8", errors="ignore")
+                for line in raw_txt.splitlines():
+                    if "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip()
+                        if k == "Label": meta["labelUUID"] = v
+                        elif k in ("ApplicationRelease", "baseVRC"): meta["baseVRC"] = v
+                        elif k == "TaskName": meta["taskName"] = v
+                        elif k == "TaskDocumentation": meta["taskDocumentation"] = v
+                        elif k == "TaskContext": meta["taskContext"] = v
+                        elif k == "DevelopmentEnvironment": meta["developmentEnvironment"] = v
+            except Exception:
+                pass
+
+    folder_name = activity_dir.name
+    if not meta["taskName"]:
+        meta["taskName"] = folder_name.split(" ")[0].strip("[]")
+    if not meta["labelUUID"]:
+        meta["labelUUID"] = meta["taskName"]
+    if not meta["taskContext"]:
+        if "[" in folder_name and "]" in folder_name:
+            proj = folder_name.split("[")[1].split("]")[0].strip()
+            meta["taskContext"] = f"{proj}_dev"
+    if not meta["baseVRC"]:
+        meta["baseVRC"] = "B61O_a_ext"
+
+    return meta
+
+
 def build_activity_context_xml(
     activity_name: str,
     base_vrc: str,
     connection_point: str,
     activity_guid: Optional[str] = None,
     description: str = "",
+    documentation: Optional[str] = None,
 ) -> str:
     """
     Generates authentic <ActivityID> XML envelope discovered via REA in ProjectProperties.class:
@@ -151,18 +209,22 @@ def build_activity_context_xml(
       <activityUUID>{activity_guid}</activityUUID>
       <baseVRC>{base_vrc}</baseVRC>
       <activityContext>{connection_point}</activityContext>
+      [<documentation>{documentation}</documentation>]
     </ActivityID>
     """
     guid = activity_guid or activity_name
-    return (
-        f"<ActivityID>"
-        f"<activityName>{activity_name}</activityName>"
-        f"<activityDescription>{description}</activityDescription>"
-        f"<activityUUID>{guid}</activityUUID>"
-        f"<baseVRC>{base_vrc}</baseVRC>"
-        f"<activityContext>{connection_point}</activityContext>"
-        f"</ActivityID>"
-    )
+    parts = [
+        "<ActivityID>",
+        f"<activityName>{activity_name}</activityName>",
+        f"<activityDescription>{description}</activityDescription>",
+        f"<activityUUID>{guid}</activityUUID>",
+        f"<baseVRC>{base_vrc}</baseVRC>",
+        f"<activityContext>{connection_point}</activityContext>",
+    ]
+    if documentation is not None:
+        parts.append(f"<documentation>{documentation}</documentation>")
+    parts.append("</ActivityID>")
+    return "".join(parts)
 
 
 def build_checkout_payload(
@@ -386,8 +448,7 @@ def find_component_file(activity_dir: Path, comp_name: str, comp_type: str) -> O
 def get_target_component_path(activity_dir: Path, comp_name: str, comp_type: str) -> Path:
     """
     Determines the target path for writing a checked-out component.
-    Prefers existing file location; otherwise defaults to Eclipse standard layout if activity has pkg directory,
-    or skill subfolder layout.
+    Prefers existing file location; otherwise defaults to Native Single-XML TDE layout.
     """
     existing = find_component_file(activity_dir, comp_name, comp_type)
     if existing:
@@ -395,17 +456,119 @@ def get_target_component_path(activity_dir: Path, comp_name: str, comp_type: str
 
     info = BDE_TYPE_MAP.get(comp_type.lower())
     ext = info["ext"] if info else f".{comp_type[:3]}"
-    subfolder = info["subfolder"] if info else f"{comp_type}s"
     pkg, mod, _ = _split_component_name(comp_name)
 
-    # If activity directory already contains package folder (e.g. 'tx'), use Eclipse layout
-    if pkg and (activity_dir / pkg).is_dir():
-        target = activity_dir / pkg / comp_type.lower() / mod / f"{comp_name}{ext}"
-    else:
-        target = activity_dir / subfolder / f"{comp_name}{ext}"
-
+    from admin_sync import get_tde_component_rel_path
+    rel_path = get_tde_component_rel_path(pkg, comp_type.lower(), mod, comp_name, ext)
+    target = activity_dir / rel_path
     target.parent.mkdir(parents=True, exist_ok=True)
     return target
+
+
+def find_standalone_script_file(activity_dir: Path, comp_name: str, comp_type: str) -> Optional[Path]:
+    """Finds a matching standalone script file (.4gl, .dal, .cl, .st, .src, .rptdsrc) in the activity."""
+    script_exts = [".4gl", ".dal", ".cl", ".st", ".src", ".rptdsrc"]
+    info = BDE_TYPE_MAP.get(comp_type.lower(), {})
+    ext = info.get("ext", "")
+
+    # 1. Look in the same directory as the component XML
+    comp_file = find_component_file(activity_dir, comp_name, comp_type)
+    if comp_file:
+        for sext in script_exts:
+            cand = comp_file.with_suffix(sext)
+            if cand.exists():
+                return cand
+
+    # 2. Look in scripts/ or dal/ or common script locations
+    candidates = [
+        activity_dir / "scripts" / f"{comp_name}.4gl",
+        activity_dir / "scripts" / f"{comp_name}.cl",
+        activity_dir / "dal" / f"{comp_name}.dal",
+    ]
+    for cand in candidates:
+        if cand.exists():
+            return cand
+
+    # 3. Recursive search
+    for sext in script_exts:
+        for cand in activity_dir.rglob(f"{comp_name}{sext}"):
+            if cand.is_file():
+                return cand
+
+    return None
+
+
+def pre_put_script_merge_and_validate(
+    activity_dir: Path,
+    target_file: Path,
+    comp_name: str,
+    comp_type: str,
+) -> str:
+    """
+    Pre-Put Script Merge & Non-Empty Source Guardrail:
+    1. Checks if a standalone script (.4gl, .dal, .cl, .st, .src) exists in the activity directory.
+    2. If present and newer or modified, merges it into the component XML (<expression>).
+    3. Validates the Non-Empty Source Guardrail: if the component is script-bearing
+       and the source expression is empty while an existing script existed on disk or in prior XML,
+       aborts with ServerSCMExecutionError to prevent wiping out code on the server.
+    4. Writes merged XML back to target_file and returns the final XML content.
+    """
+    from inject_ln_script import extract_script_from_xml, EXPRESSION_REGEX
+    xml_content = target_file.read_text(encoding="utf-8")
+    prior_script = extract_script_from_xml(xml_content)
+
+    script_file = find_standalone_script_file(activity_dir, comp_name, comp_type)
+    has_standalone = False
+    standalone_code = ""
+    if script_file and script_file.exists():
+        standalone_code = script_file.read_text(encoding="utf-8")
+        if standalone_code.strip():
+            has_standalone = True
+
+    # If standalone script exists and is different or newer
+    if has_standalone:
+        if (prior_script or "").strip() != standalone_code.strip() or script_file.stat().st_mtime >= target_file.stat().st_mtime:
+            m = EXPRESSION_REGEX.search(xml_content)
+            if m:
+                start, end = m.span(1)
+                xml_content = xml_content[:start] + f"<![CDATA[\n{standalone_code}\n]]>" + xml_content[end:]
+            else:
+                cdata_block = f"<Source><expression><![CDATA[\n{standalone_code}\n]]></expression></Source>"
+                if comp_type.lower() in ("table", "session") or "<DR_Module" in xml_content:
+                    if "</DR_Module>" in xml_content:
+                        idx = xml_content.rfind("</DR_Module>")
+                        xml_content = xml_content[:idx] + f"  {cdata_block}\n" + xml_content[idx:]
+                    else:
+                        root_close_idx = xml_content.rfind("</")
+                        if root_close_idx != -1:
+                            xml_content = xml_content[:root_close_idx] + f"  <DR_Module>\n    {cdata_block}\n  </DR_Module>\n" + xml_content[root_close_idx:]
+                else:
+                    root_close_idx = xml_content.rfind("</")
+                    if root_close_idx != -1:
+                        xml_content = xml_content[:root_close_idx] + f"  {cdata_block}\n" + xml_content[root_close_idx:]
+
+            target_file.write_text(xml_content, encoding="utf-8")
+
+    # Non-Empty Source Guardrail
+    ctype_lower = comp_type.lower()
+    current_script = extract_script_from_xml(xml_content)
+    is_empty = current_script is None or not current_script.strip()
+    if is_empty:
+        had_prior = bool((prior_script and prior_script.strip()) or has_standalone)
+        is_prohibited = (
+            ctype_lower in ("session", "library", "function", "report")
+            or (ctype_lower == "table" and had_prior)
+        )
+        if is_prohibited:
+            raise ServerSCMExecutionError(
+                f"[PRE-PUT GUARDRAIL] Aborted Put for '{comp_name}' ({comp_type}): "
+                f"Outgoing payload contains an empty source <expression>, but a non-empty script exists on disk or in previous XML. "
+                f"Wiping out code on the server is prohibited.",
+                component_name=comp_name,
+                operation="Put",
+            )
+
+    return xml_content
 
 
 def checkout_component(
@@ -435,8 +598,11 @@ def checkout_component(
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
     bde_name = info["bde"]
-    task_id = activity_dir.name.split(" ")[0].strip("[]")
-    dev_cp = dev_connection or f"{project_name}_dev"
+    meta = resolve_activity_scm_metadata(activity_dir)
+    task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+    label_uuid = meta["labelUUID"] or task_id
+    eff_base_vrc = base_vrc if base_vrc != "B61O_a_ext" and base_vrc else (meta["baseVRC"] or "B61O_a_ext")
+    dev_cp = dev_connection or meta["taskContext"] or f"{project_name}_dev"
 
     scm_enabled, reason = is_project_scm_enabled(activity_dir)
     target_file = get_target_component_path(activity_dir, comp_name, comp_type)
@@ -447,16 +613,28 @@ def checkout_component(
             except Exception:
                 pass
         rel_path = target_file.relative_to(activity_dir).as_posix()
+        from admin_sync import admin_after_checkout, normalize_admin_path
+        norm_rel = normalize_admin_path(rel_path)
         try:
-            set_component_status(
-                activity_path=activity_dir,
-                rel_path=rel_path,
-                is_created=False,
-                is_checked_out=True,
-                is_dirty=True,
-            )
-        except Exception as e:
-            print(f"[WARN] Failed to set isCheckedOut in .admin: {e}", file=sys.stderr)
+            if not admin_after_checkout(activity_dir, norm_rel):
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=True,
+                    is_dirty=True,
+                )
+        except Exception:
+            try:
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=True,
+                    is_dirty=True,
+                )
+            except Exception:
+                pass
 
         receipt = VerificationReceipt(
             component_name=comp_name,
@@ -464,9 +642,9 @@ def checkout_component(
             operation="CheckOut",
             status="SUCCESS",
             server_timestamp=datetime.now(timezone.utc).isoformat(),
-            version_id=base_vrc,
+            version_id=eff_base_vrc,
             activity_name=task_id,
-            activity_guid=task_id,
+            activity_guid=label_uuid,
             receipt_token=hashlib.sha256(f"NON_SCM_CKO:{comp_name}:{task_id}".encode()).hexdigest()[:16],
             raw_summary=f"Non-SCM project ({reason}): SCM server lock skipped; component is writable locally.",
             scm_mode="NON_SCM",
@@ -479,15 +657,15 @@ def checkout_component(
         bde_name=bde_name,
         comp_name=comp_name,
         comp_type=comp_type,
-        base_vrc=base_vrc,
+        base_vrc=eff_base_vrc,
         activity_name=task_id,
-        task_label=task_id,
+        task_label=label_uuid,
     )
     context_xml = build_activity_context_xml(
         activity_name=task_id,
-        base_vrc=base_vrc,
+        base_vrc=eff_base_vrc,
         connection_point=dev_cp,
-        activity_guid=task_id,
+        activity_guid=label_uuid,
     )
 
     resp_xml = client.do_bde_call(
@@ -505,8 +683,8 @@ def checkout_component(
         comp_type=comp_type,
         operation="CheckOut",
         activity_name=task_id,
-        activity_guid=task_id,
-        base_vrc=base_vrc,
+        activity_guid=label_uuid,
+        base_vrc=eff_base_vrc,
     )
 
     # Locate or create target file
@@ -524,17 +702,29 @@ def checkout_component(
         pass
 
     # Update .admin SCM cache
+    from admin_sync import admin_after_checkout, normalize_admin_path
     rel_path = target_file.relative_to(activity_dir).as_posix()
+    norm_rel = normalize_admin_path(rel_path)
     try:
-        set_component_status(
-            activity_path=activity_dir,
-            rel_path=rel_path,
-            is_created=False,
-            is_checked_out=True,
-            is_dirty=True,
-        )
-    except Exception as e:
-        print(f"[WARN] Failed to set isCheckedOut in .admin: {e}", file=sys.stderr)
+        if not admin_after_checkout(activity_dir, norm_rel):
+            set_component_status(
+                activity_path=activity_dir,
+                rel_path=rel_path,
+                is_created=False,
+                is_checked_out=True,
+                is_dirty=True,
+            )
+    except Exception:
+        try:
+            set_component_status(
+                activity_path=activity_dir,
+                rel_path=rel_path,
+                is_created=False,
+                is_checked_out=True,
+                is_dirty=True,
+            )
+        except Exception:
+            pass
 
     result_path = CheckedOutPath(target_file)
     result_path.receipt = receipt
@@ -559,33 +749,48 @@ def uncheckout_component(
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
     bde_name = info["bde"]
-    task_id = activity_dir.name.split(" ")[0].strip("[]")
-    dev_cp = dev_connection or f"{project_name}_dev"
+    meta = resolve_activity_scm_metadata(activity_dir)
+    task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+    label_uuid = meta["labelUUID"] or task_id
+    eff_base_vrc = base_vrc if base_vrc != "B61O_a_ext" and base_vrc else (meta["baseVRC"] or "B61O_a_ext")
+    dev_cp = dev_connection or meta["taskContext"] or f"{project_name}_dev"
 
     scm_enabled, reason = is_project_scm_enabled(activity_dir)
     if not scm_enabled:
         target_file = find_component_file(activity_dir, comp_name, comp_type)
         if target_file and target_file.exists():
             rel_path = target_file.relative_to(activity_dir).as_posix()
+            from admin_sync import admin_after_uncheckout, normalize_admin_path
+            norm_rel = normalize_admin_path(rel_path)
             try:
-                set_component_status(
-                    activity_path=activity_dir,
-                    rel_path=rel_path,
-                    is_created=False,
-                    is_checked_out=False,
-                    is_dirty=False,
-                )
+                if not admin_after_uncheckout(activity_dir, norm_rel):
+                    set_component_status(
+                        activity_path=activity_dir,
+                        rel_path=rel_path,
+                        is_created=False,
+                        is_checked_out=False,
+                        is_dirty=False,
+                    )
             except Exception:
-                pass
+                try:
+                    set_component_status(
+                        activity_path=activity_dir,
+                        rel_path=rel_path,
+                        is_created=False,
+                        is_checked_out=False,
+                        is_dirty=False,
+                    )
+                except Exception:
+                    pass
         receipt = VerificationReceipt(
             component_name=comp_name,
             component_type=comp_type,
             operation="UndoCheckOut",
             status="SUCCESS",
             server_timestamp=datetime.now(timezone.utc).isoformat(),
-            version_id=base_vrc,
+            version_id=eff_base_vrc,
             activity_name=task_id,
-            activity_guid=task_id,
+            activity_guid=label_uuid,
             receipt_token=hashlib.sha256(f"NON_SCM_UNCKO:{comp_name}:{task_id}".encode()).hexdigest()[:16],
             raw_summary=f"Non-SCM project ({reason}): Reverted local checkout state in .admin.",
             scm_mode="NON_SCM",
@@ -599,9 +804,9 @@ def uncheckout_component(
     )
     context_xml = build_activity_context_xml(
         activity_name=task_id,
-        base_vrc=base_vrc,
+        base_vrc=eff_base_vrc,
         connection_point=dev_cp,
-        activity_guid=task_id,
+        activity_guid=label_uuid,
     )
 
     resp_xml = client.do_bde_call(
@@ -618,8 +823,8 @@ def uncheckout_component(
         comp_type=comp_type,
         operation="UndoCheckOut",
         activity_name=task_id,
-        activity_guid=task_id,
-        base_vrc=base_vrc,
+        activity_guid=label_uuid,
+        base_vrc=eff_base_vrc,
     )
 
     target_file = find_component_file(activity_dir, comp_name, comp_type)
@@ -630,16 +835,28 @@ def uncheckout_component(
             pass
 
         rel_path = target_file.relative_to(activity_dir).as_posix()
+        from admin_sync import admin_after_uncheckout, normalize_admin_path
+        norm_rel = normalize_admin_path(rel_path)
         try:
-            set_component_status(
-                activity_path=activity_dir,
-                rel_path=rel_path,
-                is_created=False,
-                is_checked_out=False,
-                is_dirty=False,
-            )
+            if not admin_after_uncheckout(activity_dir, norm_rel):
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=False,
+                    is_dirty=False,
+                )
         except Exception:
-            pass
+            try:
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=False,
+                    is_dirty=False,
+                )
+            except Exception:
+                pass
 
     return receipt
 
@@ -655,26 +872,32 @@ def put_component(
 ) -> VerificationReceipt:
     """
     Uploads modified component XML to the server Activity workarea via DR_*.Put
-    without artificial wrappers. Returns VerificationReceipt.
+    with Pre-Put Script Merge & Non-Empty Source Guardrail, and updates .admin via after_put.
+    Returns VerificationReceipt.
     """
     info = BDE_TYPE_MAP.get(comp_type.lower())
     if not info:
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
     bde_name = info["bde"]
-    task_id = activity_dir.name.split(" ")[0].strip("[]")
-    dev_cp = dev_connection or f"{project_name}_dev"
+    meta = resolve_activity_scm_metadata(activity_dir)
+    task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+    label_uuid = meta["labelUUID"] or task_id
+    eff_base_vrc = base_vrc if base_vrc != "B61O_a_ext" and base_vrc else (meta["baseVRC"] or "B61O_a_ext")
+    dev_cp = dev_connection or meta["taskContext"] or f"{project_name}_dev"
 
     target_file = find_component_file(activity_dir, comp_name, comp_type)
     if not target_file or not target_file.exists():
         raise FileNotFoundError(f"Component file not found for '{comp_name}' in {activity_dir}")
 
-    content = target_file.read_text(encoding="utf-8")
+    # Pre-Put Script Merge & Non-Empty Source Guardrail
+    content = pre_put_script_merge_and_validate(activity_dir, target_file, comp_name, comp_type)
+
     context_xml = build_activity_context_xml(
         activity_name=task_id,
-        base_vrc=base_vrc,
+        base_vrc=eff_base_vrc,
         connection_point=dev_cp,
-        activity_guid=task_id,
+        activity_guid=label_uuid,
     )
 
     resp_xml = client.do_bde_call(
@@ -691,9 +914,18 @@ def put_component(
         comp_type=comp_type,
         operation="Put",
         activity_name=task_id,
-        activity_guid=task_id,
-        base_vrc=base_vrc,
+        activity_guid=label_uuid,
+        base_vrc=eff_base_vrc,
     )
+
+    from admin_sync import admin_after_put, normalize_admin_path
+    rel_path = target_file.relative_to(activity_dir).as_posix()
+    norm_rel = normalize_admin_path(rel_path)
+    try:
+        admin_after_put(activity_dir, norm_rel)
+    except Exception as e:
+        print(f"[WARN] Failed to run admin_after_put for {norm_rel}: {e}", file=sys.stderr)
+
     return receipt
 
 
@@ -708,8 +940,8 @@ def checkin_component(
     dev_connection: Optional[str] = None,
 ) -> VerificationReceipt:
     """
-    Uploads and checks in a component via DR_*.CheckIn with a comment embedded in
-    <Version><documentation>, sets local file to Read-Only, and updates .admin.
+    Uploads and checks in a component via DR_*.CheckIn with Pre-Put Script Merge & Non-Empty
+    Source Guardrail, sets local file to Read-Only, and updates .admin via after_checkin.
     Returns VerificationReceipt.
     """
     if is_extension_component(comp_name):
@@ -724,39 +956,56 @@ def checkin_component(
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
     bde_name = info["bde"]
-    task_id = activity_dir.name.split(" ")[0].strip("[]")
-    dev_cp = dev_connection or f"{project_name}_dev"
+    meta = resolve_activity_scm_metadata(activity_dir)
+    task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+    label_uuid = meta["labelUUID"] or task_id
+    eff_base_vrc = base_vrc if base_vrc != "B61O_a_ext" and base_vrc else (meta["baseVRC"] or "B61O_a_ext")
+    dev_cp = dev_connection or meta["taskContext"] or f"{project_name}_dev"
+    task_doc = meta["taskDocumentation"] or comment
 
     target_file = find_component_file(activity_dir, comp_name, comp_type)
     if not target_file or not target_file.exists():
         raise FileNotFoundError(f"Component file not found for '{comp_name}' in {activity_dir}")
 
-    content = target_file.read_text(encoding="utf-8")
+    # Pre-Put Script Merge & Non-Empty Source Guardrail
+    content = pre_put_script_merge_and_validate(activity_dir, target_file, comp_name, comp_type)
     req_xml = build_checkin_payload(content, comment)
 
     scm_enabled, reason = is_project_scm_enabled(activity_dir)
     if not scm_enabled:
         target_file.write_text(req_xml, encoding="utf-8")
         rel_path = target_file.relative_to(activity_dir).as_posix()
+        from admin_sync import admin_after_checkin, normalize_admin_path
+        norm_rel = normalize_admin_path(rel_path)
         try:
-            set_component_status(
-                activity_path=activity_dir,
-                rel_path=rel_path,
-                is_created=False,
-                is_checked_out=False,
-                is_dirty=False,
-            )
+            if not admin_after_checkin(activity_dir, norm_rel):
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=False,
+                    is_dirty=False,
+                )
         except Exception:
-            pass
+            try:
+                set_component_status(
+                    activity_path=activity_dir,
+                    rel_path=rel_path,
+                    is_created=False,
+                    is_checked_out=False,
+                    is_dirty=False,
+                )
+            except Exception:
+                pass
         receipt = VerificationReceipt(
             component_name=comp_name,
             component_type=comp_type,
             operation="CheckIn",
             status="SUCCESS",
             server_timestamp=datetime.now(timezone.utc).isoformat(),
-            version_id=base_vrc,
+            version_id=eff_base_vrc,
             activity_name=task_id,
-            activity_guid=task_id,
+            activity_guid=label_uuid,
             receipt_token=hashlib.sha256(f"NON_SCM_CKI:{comp_name}:{comment}".encode()).hexdigest()[:16],
             raw_summary=f"Non-SCM project ({reason}): Embedded check-in documentation '{comment}' into component definition.",
             scm_mode="NON_SCM",
@@ -765,9 +1014,10 @@ def checkin_component(
 
     context_xml = build_activity_context_xml(
         activity_name=task_id,
-        base_vrc=base_vrc,
+        base_vrc=eff_base_vrc,
         connection_point=dev_cp,
-        activity_guid=task_id,
+        activity_guid=label_uuid,
+        documentation=task_doc,
     )
 
     resp_xml = client.do_bde_call(
@@ -785,8 +1035,8 @@ def checkin_component(
         comp_type=comp_type,
         operation="CheckIn",
         activity_name=task_id,
-        activity_guid=task_id,
-        base_vrc=base_vrc,
+        activity_guid=label_uuid,
+        base_vrc=eff_base_vrc,
     )
 
     # Set to Read-Only upon verified server success
@@ -796,16 +1046,28 @@ def checkin_component(
         pass
 
     rel_path = target_file.relative_to(activity_dir).as_posix()
+    from admin_sync import admin_after_checkin, normalize_admin_path
+    norm_rel = normalize_admin_path(rel_path)
     try:
-        set_component_status(
-            activity_path=activity_dir,
-            rel_path=rel_path,
-            is_created=False,
-            is_checked_out=False,
-            is_dirty=False,
-        )
-    except Exception as e:
-        print(f"[WARN] Failed to set isCheckedOut=False in .admin: {e}", file=sys.stderr)
+        if not admin_after_checkin(activity_dir, norm_rel):
+            set_component_status(
+                activity_path=activity_dir,
+                rel_path=rel_path,
+                is_created=False,
+                is_checked_out=False,
+                is_dirty=False,
+            )
+    except Exception:
+        try:
+            set_component_status(
+                activity_path=activity_dir,
+                rel_path=rel_path,
+                is_created=False,
+                is_checked_out=False,
+                is_dirty=False,
+            )
+        except Exception:
+            pass
 
     return receipt
 

@@ -365,6 +365,182 @@ class TestPrecommitScmEngine(unittest.TestCase):
         content = tbl.read_text(encoding="utf-8")
         self.assertIn("<documentation>DV2600401: Billing system hardening</documentation>", content)
 
+    def test_resolve_activity_scm_metadata_and_label_uuid_in_checkout(self):
+        """Asserts resolve_activity_scm_metadata loads binary PropertyBucket and CheckOut passes labelUUID."""
+        from properties_index import PropertyBucket
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{test-label-uuid-9999}")
+        bucket.set_property("ApplicationRelease", "B61O_a_test")
+        bucket.set_property("TaskName", "task_99")
+        bucket.set_property("TaskDocumentation", "Fix critical issue")
+        bucket.set_property("TaskContext", "TST_dev")
+        bucket.set_property("ApplicationUsesSCM", "yes")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        from ln_scm_engine import resolve_activity_scm_metadata
+        meta = resolve_activity_scm_metadata(self.act_dir)
+        self.assertEqual(meta["labelUUID"], "{test-label-uuid-9999}")
+        self.assertEqual(meta["baseVRC"], "B61O_a_test")
+        self.assertEqual(meta["taskName"], "task_99")
+        self.assertEqual(meta["taskDocumentation"], "Fix critical issue")
+        self.assertEqual(meta["taskContext"], "TST_dev")
+
+        # Execute checkout
+        self.transport.register_response(
+            "DR_Table",
+            "CheckOut",
+            """<DR_Table name="txcmg011" package="tx" module="cmg">
+                <Version><versionID>B61O_a_test</versionID></Version>
+            </DR_Table>""",
+        )
+        res = checkout_component(
+            client=self.client,
+            comp_type="table",
+            comp_name="txcmg011",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+        )
+        self.assertTrue(res.exists())
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["method"], "CheckOut")
+        self.assertIn("<taskLabel>{test-label-uuid-9999}</taskLabel>", last_call["request"])
+        self.assertIn("<taskName>task_99</taskName>", last_call["request"])
+        self.assertIn("<versionID>B61O_a_test</versionID>", last_call["request"])
+        self.assertIn("<activityUUID>{test-label-uuid-9999}</activityUUID>", last_call["context_xml"])
+
+    def test_checkin_includes_documentation_in_activity_id(self):
+        """Asserts checkin_component includes TaskDocumentation in <ActivityID> context matching ProjectProperties."""
+        from properties_index import PropertyBucket
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{test-label-uuid-7777}")
+        bucket.set_property("ApplicationRelease", "B61O_a_test")
+        bucket.set_property("TaskName", "task_77")
+        bucket.set_property("TaskDocumentation", "Ticket 08 checkin verification")
+        bucket.set_property("TaskContext", "TST_dev")
+        bucket.set_property("ApplicationUsesSCM", "yes")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        tbl = self.act_dir / "tx" / "table" / "cmg" / "txcmg011.tbl"
+        tbl.parent.mkdir(parents=True, exist_ok=True)
+        tbl.write_text("<DR_Table name='txcmg011'><Version/></DR_Table>", encoding="utf-8")
+        from admin_sync import add_component
+        add_component(self.act_dir, "tx/table/cmg/txcmg011.tbl")
+
+        self.transport.register_response(
+            "DR_Table",
+            "CheckIn",
+            """<DR_Table name="txcmg011"><Version><status>checked_in</status></Version></DR_Table>""",
+        )
+        rec = checkin_component(
+            client=self.client,
+            comp_type="table",
+            comp_name="txcmg011",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+            comment="Automated test checkin",
+        )
+        self.assertEqual(rec["status"], "SUCCESS")
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["method"], "CheckIn")
+        self.assertIn("<documentation>Ticket 08 checkin verification</documentation>", last_call["context_xml"])
+        self.assertIn("<activityUUID>{test-label-uuid-7777}</activityUUID>", last_call["context_xml"])
+
+    def test_pre_put_script_merge_and_non_empty_guardrail(self):
+        """Asserts pre-put merges standalone scripts into XML and aborts if script-bearing component has empty expression."""
+        from properties_index import PropertyBucket
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{act-uuid}")
+        bucket.set_property("ApplicationUsesSCM", "yes")
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        # 1. Setup session XML and standalone .4gl script
+        ses_file = self.act_dir / "tx" / "session" / "sls" / "txsls0400m000.ses"
+        ses_file.parent.mkdir(parents=True, exist_ok=True)
+        ses_file.write_text(
+            """<DR_Session name="txsls0400m000">
+                <DR_Module>
+                    <Source><expression><![CDATA[\nold code\n]]></expression></Source>
+                </DR_Module>
+            </DR_Session>""",
+            encoding="utf-8",
+        )
+        script_file = self.act_dir / "tx" / "session" / "sls" / "txsls0400m000.4gl"
+        script_file.write_text("function extern main() { return(42) }", encoding="utf-8")
+        from admin_sync import add_component
+        add_component(self.act_dir, "tx/session/sls/txsls0400m000.ses")
+
+        self.transport.register_response(
+            "DR_Session",
+            "Put",
+            "<DR_Session><status>put_success</status></DR_Session>",
+        )
+
+        rec = put_component(
+            client=self.client,
+            comp_type="session",
+            comp_name="txsls0400m000",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+        )
+        self.assertEqual(rec["status"], "SUCCESS")
+
+        # Assert merged 4GL script was sent to server in Put payload
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["method"], "Put")
+        self.assertIn("function extern main() { return(42) }", last_call["request"])
+
+        # 2. Non-Empty Source Guardrail: wipe out expression on disk while script file existed
+        script_file.unlink() # delete standalone script
+        ses_file.write_text(
+            """<DR_Session name="txsls0400m000">
+                <DR_Module>
+                    <Source><expression></expression></Source>
+                </DR_Module>
+            </DR_Session>""",
+            encoding="utf-8",
+        )
+        # Attempting to put empty script when prior script existed must raise ServerSCMExecutionError
+        from ln_scm_engine import ServerSCMExecutionError
+        with self.assertRaises(ServerSCMExecutionError) as ctx:
+            put_component(
+                client=self.client,
+                comp_type="session",
+                comp_name="txsls0400m000",
+                activity_dir=self.act_dir,
+                project_name="EXTce01107",
+            )
+        self.assertIn("[PRE-PUT GUARDRAIL]", str(ctx.exception))
+
+    def test_standard_tx_components_allowed_and_extensions_blocked(self):
+        """Asserts standard custom tx* 4GL objects are allowed in SCM while Extension Modeler objects are blocked."""
+        from scm_guardrails import is_extension_component
+        # Standard custom 4GL objects
+        self.assertFalse(is_extension_component("txcmg011"))
+        self.assertFalse(is_extension_component("txsls0400m000"))
+        self.assertFalse(is_extension_component("txibddll001"))
+        self.assertFalse(is_extension_component("tx/table/cmg/txcmg011.tbl"))
+
+        # Native Extension Modeler objects
+        self.assertTrue(is_extension_component("txess001"))
+        self.assertTrue(is_extension_component("txest001"))
+        self.assertTrue(is_extension_component("txesb001"))
+        self.assertTrue(is_extension_component("txesm001"))
+        self.assertTrue(is_extension_component("txesr001"))
+        self.assertTrue(is_extension_component("tx/library/ess/hook.cl"))
+        self.assertTrue(is_extension_component("extension_hook.eso"))
+        self.assertTrue(is_extension_component("table_ext.eto"))
+        self.assertTrue(is_extension_component("report_ext.ere"))
+
 
 class TestScmCliIntegration(unittest.TestCase):
     def test_cmd_checkout_uncheckout_and_checkin(self):

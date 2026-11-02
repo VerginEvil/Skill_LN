@@ -29,9 +29,11 @@ def is_extension_component(path: Union[Path, str]) -> bool:
     name = p.name.lower()
     stem = p.stem.lower()
 
-    # 1. Official Extension Modeler component prefixes
+    # 1. Official Extension Modeler component prefixes or file extensions
     ext_prefixes = ("txess", "txest", "txesb", "txesm", "txesr")
     if name.startswith(ext_prefixes) or stem.startswith(ext_prefixes):
+        return True
+    if name.endswith((".eso", ".eto", ".ere")):
         return True
 
     # 2. Directory path check for Studio extension library subfolders
