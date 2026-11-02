@@ -401,7 +401,9 @@ def generate_report_on_server(
 
     output_path = None
     if activity_dir:
-        rpt_dir = activity_dir / "reports"
+        pkg = report_name[:2].lower() if len(report_name) >= 2 else "tx"
+        mod = report_name[2:5].lower() if len(report_name) >= 5 else "gen"
+        rpt_dir = activity_dir / pkg / "report" / mod
         rpt_dir.mkdir(parents=True, exist_ok=True)
         rpt_file = rpt_dir / f"{report_name}.rpt"
         # If server returned full DR_Report XML, use it; otherwise scaffold standard Single-XML TDE
@@ -414,7 +416,8 @@ def generate_report_on_server(
             f"</DR_Report>"
         )
         rpt_file.write_text(file_content, encoding="utf-8")
-        admin_after_create(activity_dir, f"reports/{report_name}.rpt")
+        rel_admin = f"{pkg}/report/{mod}/{report_name}.rpt"
+        admin_after_create(activity_dir, rel_admin)
         output_path = str(rpt_file)
 
     success = "error" not in resp_xml.lower() or "<DR_Report" in resp_xml

@@ -33,11 +33,11 @@ JAVA_BIN_CANDIDATES = [
 # 12 Managed LN Studio Component Extensions (plus aliases .que and .fun)
 MANAGED_EXTENSIONS = {
     ".tbl", ".ses", ".lib", ".dmn", ".lbl",
-    ".mnu", ".rpt", ".rptdsrc", ".msg", ".qst", ".que",
+    ".mnu", ".rpt", ".msg", ".qst", ".que",
     ".add", ".fnc", ".fun"
 }
 EXCLUDED_EXTENSIONS = {
-    ".src", ".4gl", ".dal", ".clnsrc"
+    ".src", ".4gl", ".dal", ".clnsrc", ".rptdsrc"
 }
 MODULE_SCOPED_TYPES = {
     "table", "session", "library", "function", "report", "menu", "additional", "businessobject"
@@ -348,12 +348,63 @@ def set_component_status(
 write_admin_file = init_admin_file
 
 
+
+LEGACY_PLURAL_DIRS = {
+    "reports", "tables", "sessions", "libraries", "domains",
+    "menus", "messages", "questions", "functions", "additionals",
+    "charts", "labels"
+}
+
+
+def validate_activity_layout(activity_dir: Path) -> List[str]:
+    """
+    Validates that an activity workspace strictly follows Single-XML TDE layout (ADR 0012, ADR 0014).
+    Detects any component file residing in legacy plural directories (reports/, tables/, sessions/, etc.)
+    or non-canonical depths.
+    Returns a list of error strings; an empty list indicates compliance.
+    """
+    errors: List[str] = []
+    if not activity_dir.exists() or not activity_dir.is_dir():
+        return errors
+
+    # Check for legacy plural directories containing managed components
+    for child in activity_dir.iterdir():
+        if child.is_dir() and child.name.lower() in LEGACY_PLURAL_DIRS:
+            for f in child.rglob("*"):
+                if f.is_file() and f.suffix.lower() in (MANAGED_EXTENSIONS | {".rpt", ".tbl", ".ses", ".lib", ".dmn", ".msg", ".qst", ".fnc", ".mnu"}):
+                    rel = f.relative_to(activity_dir).as_posix()
+                    errors.append(
+                        f"Single-XML TDE layout violation: Component '{rel}' resides in legacy plural directory '{child.name}'. "
+                        f"Components must follow canonical layout (e.g. {{pkg}}/{child.name.rstrip('s')}/...)."
+                    )
+
+    # Check depth of all managed files in activity
+    for f in activity_dir.rglob("*"):
+        if f.is_file() and f.suffix.lower() in MANAGED_EXTENSIONS:
+            rel = f.relative_to(activity_dir)
+            parts = rel.parts
+            # Ignore hidden directories like .admin, .settings, .metadata, .project
+            if any(p.startswith(".") for p in parts[:-1]):
+                continue
+            if len(parts) < 3:
+                errors.append(
+                    f"Single-XML TDE layout violation: Component '{rel.as_posix()}' is at invalid directory depth {len(parts)}. "
+                    f"Expected canonical TDE path {{package}}/{{type}}/[{{module}}/]{{name}}{{ext}}."
+                )
+
+    return sorted(list(set(errors)))
+
+
 def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
     """
     Scans activity folder on disk, compares against .admin entries across all
     12 LN Studio component extensions, registers untracked files, and removes
     obsolete entries only when they match managed extensions.
     """
+    layout_errors = validate_activity_layout(activity_path)
+    if layout_errors:
+        err_msg = "; ".join(layout_errors)
+        raise ValueError(f"Single-XML TDE layout violation in activity '{activity_path.name}': {err_msg}")
     repair_admin_file(activity_path)
     admin_file = activity_path / ".admin"
     registered = {c["path"]: c for c in list_admin_components(activity_path)}
@@ -480,3 +531,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+sync_admin_file = scan_and_sync_activity
