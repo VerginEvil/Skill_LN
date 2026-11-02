@@ -84,6 +84,10 @@ class TestStdioMcpServer(unittest.TestCase):
             "ln_validate_activity",
             "ln_deploy_test",
             "ln_prepare_end_activity",
+            "ln_project_activity",
+            "ln_code_intelligence",
+            "ln_version_diff",
+            "ln_adhoc_compile",
         }
         for et in expected_tools:
             self.assertIn(et, tool_names, f"Expected tool '{et}' missing from registered tools")
@@ -200,6 +204,29 @@ class TestStdioMcpServer(unittest.TestCase):
         self.assertFalse(chkin_res.get("isError", False))
         data_in = json.loads(chkin_res["content"][0]["text"])
         self.assertIn("checked_in_count", data_in)
+
+    def test_consolidated_mcp_tools(self):
+        # 1. ln_project_activity (project_info & list_activities)
+        res_pi = execute_tool("ln_project_activity", {"action": "project_info", "project": "EXTce01107", "mock": True})
+        self.assertFalse(res_pi.get("isError", False))
+
+        res_la = execute_tool("ln_project_activity", {"action": "list_activities", "project": "EXTce01107", "mock": True})
+        self.assertFalse(res_la.get("isError", False))
+
+        # 2. ln_code_intelligence (search_server & call_hierarchy)
+        res_ss = execute_tool("ln_code_intelligence", {"action": "search_server", "pattern": "item_code", "package_code": "tx", "mock": True})
+        self.assertFalse(res_ss.get("isError", False))
+
+        res_ch = execute_tool("ln_code_intelligence", {"action": "call_hierarchy", "source_file": "ottstpstandard", "function_name": "zoom.to$", "mock": True})
+        self.assertFalse(res_ch.get("isError", False))
+
+        # 3. ln_version_diff (list_revisions)
+        res_rev = execute_tool("ln_version_diff", {"action": "list_revisions", "comp_type": "table", "comp_name": "txibd001", "mock": True})
+        self.assertFalse(res_rev.get("isError", False))
+
+        # 4. ln_adhoc_compile
+        res_cmp = execute_tool("ln_adhoc_compile", {"package_code": "tx", "source_code": "function extern test() {}", "mock": True})
+        self.assertFalse(res_cmp.get("isError", False))
 
     def test_mcp_setup_config_generation(self):
         cfg = generate_mcp_config(client="generic")

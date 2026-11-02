@@ -33,8 +33,16 @@ from ln_server_client import (
 )
 from ln_project_activity_manager import (
     list_applications, list_software_projects, get_software_project_details,
-    list_remote_activities, create_remote_activity, clean_remote_activity,
-    bootstrap_local_activity
+    list_remote_activities, create_remote_activity, open_remote_activity,
+    clean_remote_activity, bootstrap_local_activity
+)
+from ln_code_intelligence import (
+    compile_source_adhoc, search_server_pattern, get_call_hierarchy,
+    open_declaration, get_related_script_components
+)
+from ln_revision_diff import (
+    list_component_revisions, get_component_revision, diff_component,
+    generate_report_on_server, move_activity_components, clean_activity_components
 )
 from ln_component_explorer import (
     browse_components, inspect_component, get_component, clone_component, sync_reference
@@ -390,6 +398,107 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
                 "activity": {"type": "string", "description": "Activity directory"},
                 "project": {"type": "string", "description": "Software Project name"}
             }
+        }
+    },
+    {
+        "name": "ln_project_activity",
+        "description": "Consolidated tool for Software Projects and Activities (project_info, list_activities, new_activity, open_activity, clean_activity, move_components, clean_components).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["project_info", "list_activities", "new_activity", "open_activity", "clean_activity", "move_components", "clean_components"],
+                    "description": "Sub-action to perform"
+                },
+                "project": {"type": "string", "description": "Software Project name (e.g. EXTce01107)"},
+                "task": {"type": "string", "description": "Activity task ID (e.g. task_01)"},
+                "description": {"type": "string", "description": "Activity description"},
+                "assigned_to": {"type": "string", "description": "Assignee username"},
+                "no_open": {"type": "boolean", "description": "Skip local bootstrap after creating activity"},
+                "sync_modified": {"type": "boolean", "description": "Query and download modified components when opening activity (default true)"},
+                "components": {"type": "array", "items": {"type": "object"}, "description": "Component list for move/clean: [{'type':'table','name':'txibd001'}]"},
+                "source_activity": {"type": "string", "description": "Source activity directory for move_components"},
+                "target_activity": {"type": "string", "description": "Target activity directory for move_components"},
+                "activity": {"type": "string", "description": "Target activity folder or name"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["action"]
+        }
+    },
+    {
+        "name": "ln_code_intelligence",
+        "description": "Consolidated tool for FglStudio code intelligence and server report generation (search_server, call_hierarchy, open_declaration, generate_report_server).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["search_server", "call_hierarchy", "open_declaration", "generate_report_server"],
+                    "description": "Sub-action to perform"
+                },
+                "pattern": {"type": "string", "description": "Search pattern or regex"},
+                "package_code": {"type": "string", "description": "Package code (e.g. tx, td)"},
+                "source_file": {"type": "string", "description": "Source file name"},
+                "function_name": {"type": "string", "description": "Function name"},
+                "call_mode": {"type": "string", "enum": ["callers", "callees"], "description": "Call hierarchy mode: callers (where-used) or callees"},
+                "comp_code": {"type": "string", "description": "Component code"},
+                "comp_type": {"type": "string", "description": "Component type"},
+                "context": {"type": "string", "description": "Optional context for declaration lookup"},
+                "report_name": {"type": "string", "description": "Report component code"},
+                "table_name": {"type": "string", "description": "Primary table code for report"},
+                "version_id": {"type": "string", "description": "Version ID (default 1)"},
+                "report_size": {"type": "string", "enum": ["80", "132"], "description": "Paper width (80 or 132)"},
+                "report_type": {"type": "string", "enum": ["1", "2", "3"], "description": "Report type (1, 2, or 3)"},
+                "used_index": {"type": "string", "description": "Used table index"},
+                "input_fields": {"type": "array", "items": {"type": "string"}, "description": "List of report input field names"},
+                "activity": {"type": "string", "description": "Target activity folder"},
+                "project": {"type": "string", "description": "Software Project name"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["action"]
+        }
+    },
+    {
+        "name": "ln_version_diff",
+        "description": "Consolidated tool for server revision history and structural diff (list_revisions, get_revision, diff_component).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["list_revisions", "get_revision", "diff_component"],
+                    "description": "Sub-action to perform"
+                },
+                "comp_type": {"type": "string", "description": "Component type (table, session, library, report, etc.)"},
+                "comp_name": {"type": "string", "description": "Component name (e.g. txibd001)"},
+                "version_id": {"type": "string", "description": "Version ID (default 1)"},
+                "rev_number": {"type": "integer", "description": "Revision number for get_revision or diff_component"},
+                "activity": {"type": "string", "description": "Activity directory for diff_component"},
+                "project": {"type": "string", "description": "Software Project name"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["action", "comp_type", "comp_name"]
+        }
+    },
+    {
+        "name": "ln_adhoc_compile",
+        "description": "Ad-Hoc Server Compile via FglStudio.compileSource in SHOW mode (compiles 4GL code snippet directly on server bic6.2 without modifying workspace files or SCM state).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "package_code": {"type": "string", "description": "Package code (e.g. tx, tc, td)"},
+                "source_code": {"type": "string", "description": "4GL source code snippet to compile"},
+                "flags": {"type": "string", "description": "Optional bic6.2 compiler flags"},
+                "activity": {"type": "string", "description": "Target activity folder"},
+                "project": {"type": "string", "description": "Software Project name"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["package_code", "source_code"]
         }
     }
 ]
@@ -829,6 +938,175 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
                 "content": [{"type": "text", "text": "End activity completed."}],
                 "isError": False
             }
+
+        elif name == "ln_project_activity":
+            action = arguments["action"]
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            if action == "project_info":
+                details = get_software_project_details(client, arguments["project"])
+                return {"content": [{"type": "text", "text": json.dumps(details, indent=2)}], "isError": False}
+            elif action == "list_activities":
+                acts = list_remote_activities(client, project_name=arguments["project"])
+                return {"content": [{"type": "text", "text": json.dumps({"activities": acts}, indent=2)}], "isError": False}
+            elif action == "new_activity":
+                res = create_remote_activity(
+                    client=client,
+                    project_name=arguments["project"],
+                    task_name=arguments["task"],
+                    description=arguments.get("description", ""),
+                    assigned_to=arguments.get("assigned_to"),
+                    open_activity=not arguments.get("no_open", False),
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("created") or res.get("status") == "success")}
+            elif action == "open_activity":
+                res = open_remote_activity(
+                    client=client,
+                    project_name=arguments["project"],
+                    task_name=arguments["task"],
+                    sync_modified=arguments.get("sync_modified", True),
+                    workspace_dir=arguments.get("workspace"),
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("opened") or res.get("status") == "success")}
+            elif action == "clean_activity":
+                res = clean_remote_activity(client=client, project_name=arguments["project"], task_name=arguments["task"])
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not (res.get("cleaned") or res.get("status") == "success")}
+            elif action == "move_components":
+                src_dir = Path(arguments["source_activity"]).resolve()
+                tgt_dir = Path(arguments["target_activity"]).resolve() if arguments.get("target_activity") else None
+                comps = arguments.get("components", [])
+                if isinstance(comps, str):
+                    comps = [{"type": item.split(":")[0], "name": item.split(":")[1]} for item in comps.split(",") if ":" in item]
+                res = move_activity_components(
+                    client=client,
+                    components=comps,
+                    source_activity_dir=src_dir,
+                    target_task_name=arguments.get("task", ""),
+                    target_task_uuid=arguments.get("task_uuid", arguments.get("task", "")),
+                    target_base_vrc=arguments.get("base_vrc", "1"),
+                    target_context=arguments.get("context", "ProjectServer"),
+                    target_activity_dir=tgt_dir,
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+            elif action == "clean_components":
+                act_dir = Path(arguments["activity"]).resolve()
+                comps = arguments.get("components", [])
+                if isinstance(comps, str):
+                    comps = [{"type": item.split(":")[0], "name": item.split(":")[1]} for item in comps.split(",") if ":" in item]
+                res = clean_activity_components(client=client, components=comps, activity_dir=act_dir)
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+            else:
+                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+
+        elif name == "ln_code_intelligence":
+            action = arguments["action"]
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            act_dir = Path(arguments["activity"]).resolve() if arguments.get("activity") else None
+            if action == "search_server":
+                res = search_server_pattern(
+                    client=client,
+                    pattern=arguments["pattern"],
+                    package_code=arguments.get("package_code", ""),
+                    project_name=arguments.get("project", ""),
+                    activity_dir=act_dir,
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+            elif action == "call_hierarchy":
+                res = get_call_hierarchy(
+                    client=client,
+                    source_file_name=arguments["source_file"],
+                    function_name=arguments["function_name"],
+                    call_mode=arguments.get("call_mode", "callers"),
+                    project_name=arguments.get("project", ""),
+                    activity_dir=act_dir,
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+            elif action == "open_declaration":
+                res = open_declaration(
+                    client=client,
+                    comp_code=arguments["comp_code"],
+                    comp_type=arguments["comp_type"],
+                    function_name=arguments["function_name"],
+                    context=arguments.get("context", ""),
+                    project_name=arguments.get("project", ""),
+                    activity_dir=act_dir,
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("found", False)}
+            elif action == "generate_report_server":
+                res = generate_report_on_server(
+                    client=client,
+                    report_name=arguments["report_name"],
+                    table_name=arguments["table_name"],
+                    version_id=arguments.get("version_id", "1"),
+                    report_size=arguments.get("report_size", "80"),
+                    report_type=arguments.get("report_type", "1"),
+                    used_index=arguments.get("used_index", "1"),
+                    input_fields=arguments.get("input_fields"),
+                    activity_dir=act_dir,
+                    project_name=arguments.get("project", ""),
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
+            else:
+                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+
+        elif name == "ln_version_diff":
+            action = arguments["action"]
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            act_dir = Path(arguments["activity"]).resolve() if arguments.get("activity") else None
+            if action == "list_revisions":
+                res = list_component_revisions(
+                    client=client,
+                    comp_type=arguments["comp_type"],
+                    comp_name=arguments["comp_name"],
+                    version_id=arguments.get("version_id", "1"),
+                    project_name=arguments.get("project", ""),
+                    activity_dir=act_dir,
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+            elif action == "get_revision":
+                rev_num = int(arguments.get("rev_number", 1))
+                res_xml = get_component_revision(
+                    client=client,
+                    comp_type=arguments["comp_type"],
+                    comp_name=arguments["comp_name"],
+                    version_id=arguments.get("version_id", "1"),
+                    rev_number=rev_num,
+                    project_name=arguments.get("project", ""),
+                    activity_dir=act_dir,
+                )
+                return {"content": [{"type": "text", "text": res_xml}], "isError": False}
+            elif action == "diff_component":
+                if not act_dir:
+                    return {"content": [{"type": "text", "text": "activity is required for diff_component"}], "isError": True}
+                rev_num = int(arguments["rev_number"]) if arguments.get("rev_number") is not None else None
+                res = diff_component(
+                    client=client,
+                    comp_type=arguments["comp_type"],
+                    comp_name=arguments["comp_name"],
+                    activity_dir=act_dir,
+                    target_version_id=arguments.get("version_id"),
+                    target_rev_number=rev_num,
+                    project_name=arguments.get("project", ""),
+                )
+                return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": False}
+            else:
+                return {"content": [{"type": "text", "text": f"Unknown action: '{action}'"}], "isError": True}
+
+        elif name == "ln_adhoc_compile":
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            act_dir = Path(arguments["activity"]).resolve() if arguments.get("activity") else None
+            res = compile_source_adhoc(
+                client=client,
+                package_code=arguments["package_code"],
+                source_code=arguments["source_code"],
+                flags=arguments.get("flags", ""),
+                project_name=arguments.get("project", ""),
+                activity_dir=act_dir,
+            )
+            return {"content": [{"type": "text", "text": json.dumps(res, indent=2)}], "isError": not res.get("success", False)}
 
         else:
             return {

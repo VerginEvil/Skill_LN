@@ -54,8 +54,11 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | List configured cloud environments | `python <skill_dir>/tools/ln_component_builder.py environments [--workspace-root <path>]` |
 | Auto SSO Login & Token Acquisition | `python <skill_dir>/tools/ln_component_builder.py login [--workspace <ws>] [--ionapi <path>] [--register-protocol]` |
 | Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>] [--manual-auth]` |
+| Persistent JCA Daemon Management | `python <skill_dir>/tools/ln_component_builder.py daemon [--status\|--stop\|--restart\|--token <t>]` |
 | Browse remote projects & apps | `python <skill_dir>/tools/ln_component_builder.py project [--app <code>] [--project <p>]` |
-| Browse/create remote activities | `python <skill_dir>/tools/ln_component_builder.py activity --project <p> [--create <act>] [--desc <d>]` |
+| Inspect Software Project metadata | `python <skill_dir>/tools/ln_component_builder.py project-info --project <p>` |
+| Create new Activity on LN Server | `python <skill_dir>/tools/ln_component_builder.py new-activity --project <p> --task <t> [--desc <d>] [--user <u>]` |
+| Open & bootstrap Activity locally | `python <skill_dir>/tools/ln_component_builder.py open-activity --project <p> --task <t> [--no-sync-modified]` |
 | Clean remote activity lock | `python <skill_dir>/tools/ln_component_builder.py clean-activity --project <p> --task <act>` |
 | Browse components across 12 types | `python <skill_dir>/tools/ln_component_builder.py explorer --type <t> [--filter <pattern>]` |
 | Sync Read-Only references & DD cache | `python <skill_dir>/tools/ln_component_builder.py sync-reference --type <table\|domain\|session\|extension> --name <pattern>` |
@@ -64,6 +67,16 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Check-out component from server | `python <skill_dir>/tools/ln_component_builder.py checkout-component --type <t> --name <n> --activity <a>` |
 | Revert check-out (uncheckout) | `python <skill_dir>/tools/ln_component_builder.py uncheckout-component --type <t> --name <n> --activity <a>` |
 | Check-in component to server | `python <skill_dir>/tools/ln_component_builder.py checkin-component --type <t> --name <n> --activity <a> [--comment <c>]` |
+| Ad-Hoc Server Compile (FglStudio) | `python <skill_dir>/tools/ln_component_builder.py compile-source --package <pkg> [--source-file <f>\|--code <code>] [--flags <f>]` |
+| Global Server Search (FglStudio) | `python <skill_dir>/tools/ln_component_builder.py search-server --pattern <regex> [--package <pkg>]` |
+| Call Hierarchy / Where-Used | `python <skill_dir>/tools/ln_component_builder.py call-hierarchy --source-file <f> --function <fn> [--mode callers\|callees]` |
+| Open Declaration (jump to def) | `python <skill_dir>/tools/ln_component_builder.py open-declaration --comp <c> --type <t> --function <fn>` |
+| Discover Referenced Script Components | `python <skill_dir>/tools/ln_component_builder.py related-components --package <pkg> [--source-file <f>\|--code <code>]` |
+| Query Server Revision History | `python <skill_dir>/tools/ln_component_builder.py revisions --type <t> --name <n> [--version <v>]` |
+| Script & Structural XML Diff | `python <skill_dir>/tools/ln_component_builder.py diff-component --type <t> --name <n> --activity <a> [--revision <r>]` |
+| Server Report Wizard (DR_Report) | `python <skill_dir>/tools/ln_component_builder.py generate-report-server --code <r> --table <tbl> [--paper-width 80\|132] [--report-type 1\|2\|3]` |
+| Move Components between activities | `python <skill_dir>/tools/ln_component_builder.py move-components --source-activity <a> --target-task <ta> --components <t:n,...>` |
+| Clean Activity Components | `python <skill_dir>/tools/ln_component_builder.py clean-components --activity <a> --components <t:n,...>` |
 | Deploy-Test split pipeline | `python <skill_dir>/tools/ln_component_builder.py deploy-test --type <t> --name <n> --activity <a> [--mode compile-only\|schema-crdd] [--dry-run]` |
 | Pre-commit verification (prepare) | `python <skill_dir>/tools/ln_component_builder.py prepare-end-activity --activity <a> [--project <p>]` |
 | End activity (hard-blocked gate) | `python <skill_dir>/tools/ln_component_builder.py end-activity --task <act> --project <p>` |
@@ -152,8 +165,17 @@ Running `validate --fix` performs non-destructive automatic repairs:
 
 ## Native Stdio Model Context Protocol (MCP) Server (`ln_studio_mcp.py`)
 
-The skill exposes a zero-dependency Stdio MCP server (`ln_studio_mcp.py`) implementing JSON-RPC 2.0. It exposes 17 structured tools for AI coding assistants (Claude Desktop, Cursor, Antigravity):
+The skill exposes a zero-dependency Stdio MCP server (`ln_studio_mcp.py`) implementing JSON-RPC 2.0. It exposes 21 structured tools for AI coding assistants (Claude Desktop, Cursor, Antigravity) — providing both a streamlined 4-tool consolidated suite for low-context token efficiency and the 17 legacy tools for complete backward compatibility:
 
+### Consolidated High-Efficiency MCP Suite:
+| Consolidated MCP Tool | Actions / Purpose | Guardrail / Policy |
+|---|---|---|
+| `ln_project_activity` | `project_info`, `list_activities`, `new_activity`, `open_activity`, `clean_activity`, `move_components`, `clean_components` | Remote Project & Activity lifecycle management with Single-XML TDE Layout bootstrapping |
+| `ln_code_intelligence` | `search_server`, `call_hierarchy`, `open_declaration`, `generate_report_server` | Remote code intelligence via `FglStudio` and server report generation via `DR_Report.Generate` |
+| `ln_version_diff` | `list_revisions`, `get_revision`, `diff_component` | Remote revision history & unified 4GL script + structural XML element diff |
+| `ln_adhoc_compile` | `package_code`, `source_code`, `flags`, `activity` | Instant ad-hoc server compilation via `FglStudio.compileSource` without committing |
+
+### Detailed 17-Tool Suite (Backward Compatible):
 | MCP Tool | Capability | Guardrail / Policy |
 |---|---|---|
 | `ln_list_environments` | Lists customer workspaces, cloud configs, active dev/runtime endpoints | Read-only |
@@ -186,6 +208,41 @@ python <skill_dir>/tools/ln_component_builder.py mcp-setup --client cursor --app
 # Preview generic JSON configuration
 python <skill_dir>/tools/ln_component_builder.py mcp-setup --client generic --dry-run
 ```
+
+---
+
+## Persistent JCA Daemon Architecture (`LNStudioJcaBridge`)
+
+To eliminate the 5–10 second JVM warm-up overhead on repetitive JCA WebClient invocations, the toolchain features a high-performance persistent daemon:
+- **`LNStudioJcaBridge.java`**: A headless Java 11 microservice bridging Python to Infor LN Studio JCA JARs via TCP sockets on `127.0.0.1`.
+- **FIFO RPC Queue**: Serializes requests and ensures strictly thread-safe execution across all 5 `BdeManager` dispatch modes (`BDE`, `SHOW`, `RAW`, `BROWSELIST`, `CHECKOUTLIST`).
+- **Dynamic Token Hot-Swapping**: When OAuth2 access tokens refresh or rotate, Python transmits `TOKEN:<new_token>` over the socket, hot-swapping credentials without daemon restarts.
+- **30-Minute Idle Timeout**: Automatically terminates if no commands are received for 30 minutes, freeing JVM resources.
+- **CLI Daemon Management**:
+  ```bash
+  python tools/ln_component_builder.py daemon --status
+  python tools/ln_component_builder.py daemon --stop
+  python tools/ln_component_builder.py daemon --restart
+  ```
+
+---
+
+## Native Single-XML TDE Layout & Script Merge Architecture
+
+In authentic Eclipse Infor LN Studio workspaces, components are stored using **Single-XML TDE Layout**:
+- Every component is fully self-contained in a single XML file (`.tbl`, `.ses`, `.lib`, `.dmn`, `.lbl`, `.mnu`, `.rpt`, `.msg`, `.qst`, `.fnc`, `.add`).
+- 4GL source logic (DAL scripts, UI scripts, library source) is stored directly inside `<expression>` elements within the XML. No companion `.4gl` files are tracked in SCM.
+- **Pre-Put Script Merge Lifecycle**: When developers or AI agents edit standalone 4GL scripts (or DAL hooks in `scripts/`), `pre_put_merge` automatically merges the source into the target Single-XML file before dispatching `Put` or `CheckIn` to the Infor LN server.
+- **Non-Empty Source Guardrail**: If a script-bearing component (`.tbl`, `.ses`, `.lib`, `.fnc`, `.rpt`) has an empty script or expression, `Put` and `CheckIn` strictly abort to prevent destructive script erasure.
+
+---
+
+## Byte-Accurate Binary `properties.index` (`PropertyBucket`)
+
+Infor LN Studio activities store workspace metadata (assigned user, task description, cloud environment, and `labelUUID`) in Eclipse binary property bucket indices:
+- **`properties_index.py`**: A pure-Python byte-accurate parser and writer for Eclipse `PropertyBucket` files (`BIN \x00\x01\x00\x00\x00\x00\x00\x01`), reading and writing `qnames` and values with byte-exact precision.
+- **Automatic Metadata Bootstrapping**: During `open-activity` and `new-activity`, the toolchain generates and updates `.metadata/.plugins/org.eclipse.core.resources/ProjectProperties.xml` and `properties.index` so that the activity is immediately recognized by both the CLI and Eclipse workbench.
+- **Non-Blocking Lock Detector**: Inspects `.metadata/.lock` using non-destructive file locking (`msvcrt.locking` on Windows, `fcntl` on POSIX) to determine if Eclipse is actively running, warning users safely without blocking execution.
 
 ---
 
@@ -229,13 +286,18 @@ The toolchain emits an explicit user-facing notification banner in stdout and st
 
 ```
 tools/                          Self-contained automation toolchain:
-  ln_component_builder.py         Master CLI orchestrator (37 subcommands)
-  ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (17 tools)
+  ln_component_builder.py         Master CLI orchestrator (50+ subcommands)
+  ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (21 tools: 17 legacy + 4 consolidated)
   ln_env_manager.py               .ionapi parser, token refresh & Eclipse prefs synchronizer
-  ln_server_client.py             JCA WebClient transport & BDE call executor
+  ln_server_client.py             JCA WebClient transport, BDE executor & daemon manager
+  LNStudioJcaBridge.java          Headless Java 11 persistent JCA daemon bridging Python to Infor LN Studio
+  AdminSyncHelper.java            Java helper for byte-accurate .admin SCM serialization
+  properties_index.py             Pure-Python byte-accurate Eclipse PropertyBucket reader/writer & lock detector
   ln_project_activity_manager.py  Software Project & Activity explorer + local bootstrapper
   ln_component_explorer.py        12-type component explorer, inspector, and cloner
   ln_scm_engine.py                Pre-commit SCM engine (Check-Out, Uncheckout, Put, Check-In)
+  ln_code_intelligence.py         FglStudio code intelligence (adhoc compile, search, call hierarchy, open declaration)
+  ln_revision_diff.py             Server revision history, structural XML/script diff, server report wizard
   ln_build_pipeline.py            Remote compile, CRDD, CreateTables, VSC & deploy-test
   ln_schema_parser.py             Declarative authoring schema validator (multi-table & domains)
   generate_ln_table.py            Table, Label & Domain XML generator (Ecore facets & conventions)
@@ -258,7 +320,7 @@ tools/                          Self-contained automation toolchain:
   ln_error_reader.py              Binary .markers problem diagnostics reader
   ln_studio_bridge.py             Windows action bridge (F5 refresh / Ctrl+B build)
   ln_workspace_manager.py         Pinned Studio & workspace environment resolver
-  tests/                          Comprehensive unit test suite (154+ tests across 15 test suites)
+  tests/                          Comprehensive unit test suite (239 tests across 18 test suites)
 templates/
   table_extension_template.4gl    Starter template for Table Extensions (#context_on hooks)
   session_extension_template.4gl  Starter template for Session Extensions (command hooks)

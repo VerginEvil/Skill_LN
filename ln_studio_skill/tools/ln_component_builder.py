@@ -1606,6 +1606,91 @@ def cmd_clean_components(args):
         print(f"{status_str} Cleaned {res['cleaned_components']} component(s) from activity '{act_dir.name}'")
 
 
+def cmd_daemon(args):
+    """Handles 'daemon' subcommand (JCA Persistent Daemon management)."""
+    client, _ = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    if getattr(args, "stop", False):
+        stopped = client.stop_daemon()
+        print(f"[DAEMON] Daemon stopped: {stopped}")
+    elif getattr(args, "restart", False):
+        restarted = client.restart_daemon()
+        print(f"[DAEMON] Daemon restarted: {restarted}")
+    elif getattr(args, "token", None):
+        updated = client.update_daemon_token(args.token)
+        print(f"[DAEMON] Token updated: {updated}")
+    else:
+        st = client.daemon_status()
+        if getattr(args, "json", False):
+            print(json.dumps(st, indent=2))
+        else:
+            print("=== Infor LN Studio Persistent JCA Daemon Status ===")
+            print(f"Status:  {st.get('status', 'unknown')}")
+            print(f"Running: {st.get('running', False)}")
+            if st.get("port"):
+                print(f"Port:    {st.get('port')}")
+            if st.get("pid"):
+                print(f"PID:     {st.get('pid')}")
+            if st.get("uptime_sec"):
+                print(f"Uptime:  {st.get('uptime_sec'):.1f}s")
+            if st.get("idle_sec"):
+                print(f"Idle:    {st.get('idle_sec'):.1f}s")
+
+
+def cmd_project_info(args):
+    """Handles 'project-info' subcommand."""
+    from ln_project_activity_manager import get_software_project_details
+    client, _ = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    details = get_software_project_details(client, args.project)
+    if getattr(args, "json", False):
+        print(json.dumps(details, indent=2))
+    else:
+        print(f"=== Software Project: {args.project} ===")
+        for k, v in details.items():
+            print(f"  {k}: {v}")
+
+
+def cmd_new_activity(args):
+    """Handles 'new-activity' subcommand."""
+    from ln_project_activity_manager import create_remote_activity
+    client, _ = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    res = create_remote_activity(
+        client=client,
+        project_name=args.project,
+        task_name=args.task,
+        description=getattr(args, "desc", "") or "",
+        assigned_to=getattr(args, "user", None),
+        open_activity=not getattr(args, "no_open", False),
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res.get("created") or res.get("status") == "success" else "[FAILED]"
+        print(f"{status_str} Created Activity '{args.task}' in project '{args.project}' (UUID: {res.get('activity_uuid')})")
+
+
+def cmd_open_activity(args):
+    """Handles 'open-activity' subcommand."""
+    from ln_project_activity_manager import open_remote_activity
+    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    ws_dir = args.workspace or env_info.get("workspace_path")
+    res = open_remote_activity(
+        client=client,
+        project_name=args.project,
+        task_name=args.task,
+        sync_modified=not getattr(args, "no_sync_modified", False),
+        workspace_dir=ws_dir,
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        status_str = "[SUCCESS]" if res.get("opened") or res.get("status") == "success" else "[FAILED]"
+        print(f"{status_str} Opened Activity '{args.task}' in project '{args.project}'")
+        if res.get("folder"):
+            print(f"  Local Folder: {res['folder']}")
+        if res.get("synced_components"):
+            print(f"  Synced Components: {len(res['synced_components'])}")
+
+
 def cmd_pipeline(args):
     """
     Executes full autonomous pipeline:
@@ -2139,7 +2224,7 @@ def main():
     # compile-source (Ad-Hoc Server Compile)
     sp_cmpsrc = subparsers.add_parser("compile-source", help="Ad-Hoc Server Compile via FglStudio.compileSource (SHOW mode)")
     sp_cmpsrc.add_argument("--package", required=True, help="Package code (e.g. tx, tc, td)")
-    sp_cmpsrc.add_argument("--source-file", help="Path to 4GL source file to compile")
+    sp_cmpsrc.add_argument("--source-file", "--file", dest="source_file", help="Path to 4GL source file to compile")
     sp_cmpsrc.add_argument("--code", help="Inline 4GL source code snippet")
     sp_cmpsrc.add_argument("--flags", default="", help="bic6.2 compiler flags")
     sp_cmpsrc.add_argument("--activity", help="Target activity folder")
@@ -2160,7 +2245,7 @@ def main():
 
     # call-hierarchy (Function Call Hierarchy & Where-Used)
     sp_callh = subparsers.add_parser("call-hierarchy", help="Function Call Hierarchy / Where-Used via fglstudio (BDE mode)")
-    sp_callh.add_argument("--source-file", required=True, help="Source file name (e.g. ottstpstandard)")
+    sp_callh.add_argument("--source-file", "--source", dest="source_file", required=True, help="Source file name (e.g. ottstpstandard)")
     sp_callh.add_argument("--function", required=True, help="Function name (e.g. zoom.to$ or my.func)")
     sp_callh.add_argument("--mode", choices=["callers", "callees"], default="callers", help="Call hierarchy mode: callers (where-used) or callees")
     sp_callh.add_argument("--activity", help="Target activity folder")
@@ -2171,7 +2256,7 @@ def main():
 
     # open-declaration
     sp_opndcl = subparsers.add_parser("open-declaration", help="Locate function declaration via FglStudio.OpenDeclarationFunction (BDE mode)")
-    sp_opndcl.add_argument("--comp", required=True, help="Originating component code")
+    sp_opndcl.add_argument("--comp", "--component", dest="comp", required=True, help="Originating component code")
     sp_opndcl.add_argument("--type", required=True, help="Originating component type")
     sp_opndcl.add_argument("--function", required=True, help="Function name to locate")
     sp_opndcl.add_argument("--context", default="", help="Optional context string")
@@ -2184,7 +2269,7 @@ def main():
     # related-components
     sp_relcomp = subparsers.add_parser("related-components", help="Discover referenced includes, libraries, and tables via FglStudio.GetScriptComponents (BDE mode)")
     sp_relcomp.add_argument("--package", required=True, help="Package code (e.g. tx, td)")
-    sp_relcomp.add_argument("--source-file", help="Path to 4GL source file")
+    sp_relcomp.add_argument("--source-file", "--file", dest="source_file", help="Path to 4GL source file")
     sp_relcomp.add_argument("--code", help="Inline 4GL source code snippet")
     sp_relcomp.add_argument("--activity", help="Target activity folder")
     sp_relcomp.add_argument("--project", help="Software Project name")
@@ -2196,7 +2281,7 @@ def main():
     sp_revs = subparsers.add_parser("revisions", help="Query server revision history via FglStudio.GetRevisions (BDE mode)")
     sp_revs.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
     sp_revs.add_argument("--name", required=True, help="Component name (e.g. txcmg011)")
-    sp_revs.add_argument("--version", default="1", help="Version ID (e.g. 1, 2, B61U_a)")
+    sp_revs.add_argument("--version", "--vrc", dest="version", default="1", help="Version ID (e.g. 1, 2, B61U_a)")
     sp_revs.add_argument("--activity", help="Target activity folder")
     sp_revs.add_argument("--project", help="Software Project name")
     sp_revs.add_argument("--workspace", help="Target workspace folder name")
@@ -2207,8 +2292,8 @@ def main():
     sp_diffcomp = subparsers.add_parser("diff-component", help="Diff local workarea component against server revision or base copy")
     sp_diffcomp.add_argument("--type", required=True, help="Component type (table, session, library, report, etc.)")
     sp_diffcomp.add_argument("--name", required=True, help="Component name (e.g. txcmg011)")
-    sp_diffcomp.add_argument("--revision", type=int, help="Target historical revision number to compare against (default: base/current)")
-    sp_diffcomp.add_argument("--version", help="Target version ID")
+    sp_diffcomp.add_argument("--revision", "--rev", dest="revision", type=int, help="Target historical revision number to compare against (default: base/current)")
+    sp_diffcomp.add_argument("--version", "--vrc", dest="version", help="Target version ID")
     sp_diffcomp.add_argument("--activity", help="Target activity folder")
     sp_diffcomp.add_argument("--project", help="Software Project name")
     sp_diffcomp.add_argument("--workspace", help="Target workspace folder name")
@@ -2217,11 +2302,11 @@ def main():
 
     # generate-report-server (Server Report Wizard)
     sp_genrpt = subparsers.add_parser("generate-report-server", help="Server Report Wizard via DR_Report.Generate (BDE mode)")
-    sp_genrpt.add_argument("--code", required=True, help="Report code (e.g. txcmg04010100)")
+    sp_genrpt.add_argument("--code", "--name", dest="code", required=True, help="Report code (e.g. txcmg04010100)")
     sp_genrpt.add_argument("--table", required=True, help="Primary table code (e.g. txcmg001)")
     sp_genrpt.add_argument("--version", default="1", help="Version ID")
     sp_genrpt.add_argument("--desc", default="", help="Description")
-    sp_genrpt.add_argument("--paper-width", choices=["80", "132"], default="80", help="Paper width (80 or 132)")
+    sp_genrpt.add_argument("--paper-width", "--size", dest="paper_width", choices=["80", "132"], default="80", help="Paper width (80 or 132)")
     sp_genrpt.add_argument("--report-type", choices=["1", "2", "3"], default="1", help="Report layout type (1, 2, or 3)")
     sp_genrpt.add_argument("--index", default="1", help="Used index number (default 1)")
     sp_genrpt.add_argument("--fields", help="Comma-separated input field names")
@@ -2236,11 +2321,10 @@ def main():
     sp_movcomp = subparsers.add_parser("move-components", help="Move components between activities on server via FglStudio.MoveComponent")
     sp_movcomp.add_argument("--components", required=True, help="Comma-separated component list (e.g. 'table:txcmg001,session:txcmg0101m000')")
     sp_movcomp.add_argument("--source-activity", required=True, help="Source activity folder or name")
-    sp_movcomp.add_argument("--target-task", required=True, help="Target activity task name")
+    sp_movcomp.add_argument("--target-task", "--target-activity", dest="target_task", required=True, help="Target activity task name or folder")
     sp_movcomp.add_argument("--target-uuid", help="Target activity label UUID")
     sp_movcomp.add_argument("--target-vrc", default="1", help="Target base VRC")
     sp_movcomp.add_argument("--target-context", default="ProjectServer", help="Target task context")
-    sp_movcomp.add_argument("--target-activity", help="Optional target activity folder on local disk")
     sp_movcomp.add_argument("--type", default="table", help="Default component type if not prefixed")
     sp_movcomp.add_argument("--workspace", help="Target workspace folder name")
     sp_movcomp.add_argument("--json", action="store_true", help="Output results in JSON format")
@@ -2255,6 +2339,43 @@ def main():
     sp_clncomps.add_argument("--json", action="store_true", help="Output results in JSON format")
     sp_clncomps.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
+    # daemon
+    sp_daemon = subparsers.add_parser("daemon", help="Manage persistent background JCA daemon (LNStudioJcaBridge)")
+    sp_daemon.add_argument("--status", action="store_true", help="Check daemon status and metrics")
+    sp_daemon.add_argument("--stop", action="store_true", help="Stop daemon gracefully")
+    sp_daemon.add_argument("--restart", action="store_true", help="Restart daemon")
+    sp_daemon.add_argument("--token", help="Hot-swap OAuth2 access token on running daemon")
+    sp_daemon.add_argument("--workspace", help="Target workspace name")
+    sp_daemon.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_daemon.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # project-info
+    sp_projinfo = subparsers.add_parser("project-info", help="Inspect Software Project metadata (VRC, description, application)")
+    sp_projinfo.add_argument("--project", required=True, help="Software Project name (e.g. EXTce01107)")
+    sp_projinfo.add_argument("--workspace", help="Target workspace folder name")
+    sp_projinfo.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_projinfo.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # new-activity
+    sp_newact = subparsers.add_parser("new-activity", help="Create a new Activity under a Software Project on LN Server")
+    sp_newact.add_argument("--project", required=True, help="Software Project name (e.g. EXTce01107)")
+    sp_newact.add_argument("--task", required=True, help="New activity/task ID (e.g. task_01)")
+    sp_newact.add_argument("--desc", default="", help="Activity description")
+    sp_newact.add_argument("--user", help="Assignee username (defaults to current user)")
+    sp_newact.add_argument("--no-open", action="store_true", help="Do not open and bootstrap activity locally after creation")
+    sp_newact.add_argument("--workspace", help="Target workspace folder name")
+    sp_newact.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_newact.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # open-activity
+    sp_openact = subparsers.add_parser("open-activity", help="Open and bootstrap an Activity locally, downloading modified components")
+    sp_openact.add_argument("--project", required=True, help="Software Project name (e.g. EXTce01107)")
+    sp_openact.add_argument("--task", required=True, help="Activity/task ID (e.g. task_01)")
+    sp_openact.add_argument("--no-sync-modified", action="store_true", help="Skip querying and downloading modified components")
+    sp_openact.add_argument("--workspace", help="Target workspace folder name")
+    sp_openact.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_openact.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
     args = parser.parse_args()
 
     commands = {
@@ -2263,8 +2384,12 @@ def main():
         "login": cmd_login,
         "connect": cmd_connect,
         "project": cmd_project,
+        "project-info": cmd_project_info,
         "activity": cmd_activity,
+        "new-activity": cmd_new_activity,
+        "open-activity": cmd_open_activity,
         "clean-activity": cmd_clean_activity,
+        "daemon": cmd_daemon,
         "explorer": cmd_explorer,
         "get-component": cmd_get_component,
         "sync-reference": cmd_sync_reference,
