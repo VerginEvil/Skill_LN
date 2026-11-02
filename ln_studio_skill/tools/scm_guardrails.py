@@ -92,9 +92,25 @@ def find_activity_root(path: Path) -> Optional[Path]:
 def is_project_scm_enabled(activity_path: Path) -> Tuple[bool, str]:
     """
     Determines whether Infor LN SCM is enabled for this activity's project.
-    Checks properties.index in workspace metadata or local .settings for ApplicationUseSCM.
-    Returns (True, "SCM enabled") or (False, "ApplicationUseSCM=no").
+    Reads ApplicationUsesSCM (and legacy ApplicationUseSCM) from the binary
+    PropertyBucket (properties.index).
+    Returns (True, "SCM enabled") or (False, "ApplicationUsesSCM=no").
     """
+    try:
+        from properties_index import find_project_properties_index, PropertyBucket
+        props_file = find_project_properties_index(activity_path)
+        if props_file and props_file.exists():
+            bucket = PropertyBucket.load(props_file)
+            val = bucket.get_property("ApplicationUsesSCM") or bucket.get_property("ApplicationUseSCM")
+            if val is not None:
+                val_clean = str(val).strip().lower()
+                if val_clean in ("no", "false", "0"):
+                    return False, f"ApplicationUsesSCM={val} in {props_file.name}"
+                elif val_clean in ("yes", "true", "1"):
+                    return True, f"ApplicationUsesSCM={val} in {props_file.name}"
+    except Exception:
+        pass
+
     act = activity_path.resolve()
     ws = act.parent
     props_candidates = [
@@ -106,13 +122,14 @@ def is_project_scm_enabled(activity_path: Path) -> Tuple[bool, str]:
         if props_file.exists():
             try:
                 raw = props_file.read_bytes()
-                idx = raw.find(b"ApplicationUseSCM")
-                if idx != -1:
-                    snippet = raw[idx:idx+50].lower()
-                    if b"no" in snippet:
-                        return False, f"ApplicationUseSCM=no in {props_file.name}"
-                    elif b"yes" in snippet:
-                        return True, f"ApplicationUseSCM=yes in {props_file.name}"
+                for key in (b"ApplicationUsesSCM", b"ApplicationUseSCM"):
+                    idx = raw.find(key)
+                    if idx != -1:
+                        snippet = raw[idx:idx+50].lower()
+                        if b"no" in snippet:
+                            return False, f"ApplicationUsesSCM=no in {props_file.name}"
+                        elif b"yes" in snippet:
+                            return True, f"ApplicationUsesSCM=yes in {props_file.name}"
             except Exception:
                 pass
     return True, "default (SCM enabled)"
