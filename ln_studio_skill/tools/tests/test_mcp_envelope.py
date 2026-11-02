@@ -41,6 +41,7 @@ class TestMcpDispatchAndEnvelope(unittest.TestCase):
         self.assertEqual(data.get("action"), "ln_create_activity")
         self.assertIn("result", data)
         self.assertIn("message", data)
+        self.assertEqual(set(data.keys()), {"status", "action", "result", "message"})
 
     @patch("ln_studio_mcp.clean_remote_activity")
     def test_ln_clean_activity_dispatch(self, mock_clean):

@@ -11,7 +11,6 @@ default:
 lint_and_syntax:
   stage: lint
   script:
-    - python -m compileall ln_studio_skill/tools/
     - python scripts/run_checks.py --syntax-only
     - python scripts/run_checks.py --layout-only
 

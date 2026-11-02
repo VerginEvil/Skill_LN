@@ -51,14 +51,16 @@ def check_layout() -> bool:
     errors: List[str] = []
     # Search for any activity directories containing .project or .admin
     scanned = 0
-    for cand in REPO_ROOT.rglob(".project"):
-        act_dir = cand.parent
-        # Skip .git and hidden root directories
-        if ".git" in act_dir.parts or ".scratch" in act_dir.parts:
-            continue
-        scanned += 1
-        errs = validate_activity_layout(act_dir)
-        errors.extend(errs)
+    seen_dirs = set()
+    for marker in (".project", ".admin"):
+        for cand in REPO_ROOT.rglob(marker):
+            act_dir = cand.parent.resolve()
+            if ".git" in act_dir.parts or ".scratch" in act_dir.parts or act_dir in seen_dirs:
+                continue
+            seen_dirs.add(act_dir)
+            scanned += 1
+            errs = validate_activity_layout(act_dir)
+            errors.extend(errs)
 
     if errors:
         for err in errors:

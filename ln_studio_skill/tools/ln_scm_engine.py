@@ -1279,6 +1279,14 @@ def checkout_activity(
     Iterates in architectural dependency order.
     Halts immediately on first failure without blind rollback.
     """
+    from admin_sync import validate_activity_layout
+    layout_errs = validate_activity_layout(activity_dir)
+    if layout_errs:
+        raise ValueError(
+            f"Single-XML TDE layout violation in activity '{activity_dir}': "
+            + "; ".join(layout_errs)
+        )
+
     task_id = activity_dir.name.split(" ")[0].strip("[]")
     dev_cp = dev_connection or f"{project_name}_dev"
 
@@ -1372,6 +1380,14 @@ def checkin_activity(
     Iterates standard components in architectural dependency order.
     Halts immediately on first failure without blind rollback.
     """
+    from admin_sync import validate_activity_layout
+    layout_errs = validate_activity_layout(activity_dir)
+    if layout_errs:
+        raise ValueError(
+            f"Single-XML TDE layout violation in activity '{activity_dir}': "
+            + "; ".join(layout_errs)
+        )
+
     task_id = activity_dir.name.split(" ")[0].strip("[]")
     dev_cp = dev_connection or f"{project_name}_dev"
 

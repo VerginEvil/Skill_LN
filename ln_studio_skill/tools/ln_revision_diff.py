@@ -388,7 +388,7 @@ def generate_report_on_server(
     output_path = None
     if activity_dir:
         pkg = report_name[:2].lower() if len(report_name) >= 2 else "tx"
-        mod = report_name[2:5].lower() if len(report_name) >= 5 else "gen"
+        mod = report_name[2:5].lower() if len(report_name) >= 6 else "gen"
         rpt_dir = activity_dir / pkg / "report" / mod
         rpt_dir.mkdir(parents=True, exist_ok=True)
         rpt_file = rpt_dir / f"{report_name}.rpt"

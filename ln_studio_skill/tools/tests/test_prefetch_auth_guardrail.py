@@ -158,8 +158,8 @@ class TestPrefetchAuthGuardrail(unittest.TestCase):
         res = execute_tool("ln_login", {"check_only": True, "workspace": "SCS_TST"})
         self.assertFalse(res.get("isError", False))
         data = json.loads(res["content"][0]["text"])
-        self.assertIn("status", data)
-        self.assertIn("workspace", data)
+        self.assertEqual(data.get("status"), "success")
+        self.assertIn("workspace", data.get("result", {}))
 
 
 if __name__ == "__main__":

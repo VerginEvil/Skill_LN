@@ -110,7 +110,7 @@ class TestStdioMcpServer(unittest.TestCase):
         self.assertFalse(res.get("isError", False))
         text = res["content"][0]["text"]
         data = json.loads(text)
-        self.assertTrue(len(data.get("projects", [])) > 0)
+        self.assertTrue(len(data.get("result", {}).get("projects", [])) > 0)
 
     def test_call_create_component_and_scm_guardrails(self):
         # Create message component via MCP
@@ -135,8 +135,8 @@ class TestStdioMcpServer(unittest.TestCase):
         })
         self.assertFalse(chk_res.get("isError", False))
         chk_data = json.loads(chk_res["content"][0]["text"])
-        self.assertTrue(chk_data.get("checked_out"))
-        self.assertIn("receipt", chk_data)
+        self.assertTrue(chk_data["result"].get("checked_out"))
+        self.assertIn("receipt", chk_data["result"])
 
         # Check-in standard component (mock)
         chkin_res = execute_tool("ln_checkin_component", {
@@ -149,8 +149,8 @@ class TestStdioMcpServer(unittest.TestCase):
         })
         self.assertFalse(chkin_res.get("isError", False))
         chkin_data = json.loads(chkin_res["content"][0]["text"])
-        self.assertTrue(chkin_data.get("checkin"))
-        self.assertIn("receipt", chkin_data)
+        self.assertTrue(chkin_data["result"].get("checkin"))
+        self.assertIn("receipt", chkin_data["result"])
 
         # Check-out tx extension component must be hard-blocked (ADR 0006)
         tx_chk_res = execute_tool("ln_checkout_component", {
@@ -181,10 +181,10 @@ class TestStdioMcpServer(unittest.TestCase):
 
     def test_call_batch_checkout_and_checkin_activity_mcp(self):
         from admin_sync import add_component
-        tbl = self.act_dir / "tables" / "txcmg010.tbl"
+        tbl = self.act_dir / "tx" / "table" / "cmg" / "txcmg010.tbl"
         tbl.parent.mkdir(parents=True, exist_ok=True)
         tbl.write_text("<DR_Table name='txcmg010'/>", encoding="utf-8")
-        add_component(self.act_dir, "tables/txcmg010.tbl")
+        add_component(self.act_dir, "tx/table/cmg/txcmg010.tbl")
 
         chk_res = execute_tool("ln_checkout_activity", {
             "activity": str(self.act_dir),
@@ -193,7 +193,7 @@ class TestStdioMcpServer(unittest.TestCase):
         })
         self.assertFalse(chk_res.get("isError", False))
         data = json.loads(chk_res["content"][0]["text"])
-        self.assertIn("checked_out_count", data)
+        self.assertIn("checked_out_count", data["result"])
 
         chkin_res = execute_tool("ln_checkin_activity", {
             "activity": str(self.act_dir),
@@ -203,7 +203,7 @@ class TestStdioMcpServer(unittest.TestCase):
         })
         self.assertFalse(chkin_res.get("isError", False))
         data_in = json.loads(chkin_res["content"][0]["text"])
-        self.assertIn("checked_in_count", data_in)
+        self.assertIn("checked_in_count", data_in["result"])
 
     def test_consolidated_mcp_tools(self):
         # 1. ln_project_activity (project_info & list_activities)

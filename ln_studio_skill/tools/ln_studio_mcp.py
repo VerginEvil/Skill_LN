@@ -556,13 +556,15 @@ def _make_envelope(
         "result": result,
         "message": message or ("Success" if status == "success" else "Error"),
     }
-    # For backward-compatibility with callers asserting direct keys (e.g. data.get("projects")),
-    # expose dictionary keys on the outer envelope if they don't collide with envelope metadata.
-    if isinstance(result, dict):
-        for k, v in result.items():
-            if k not in env:
-                env[k] = v
     return env
+
+
+def _format_mcp_response(env: Dict[str, Any], is_error: bool = False) -> Dict[str, Any]:
+    """Helper to format canonical MCP JSON response."""
+    return {
+        "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
+        "isError": is_error,
+    }
 
 
 def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
@@ -1216,29 +1218,17 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
 
     except PreCommitBoundaryError as pe:
         env = _make_envelope(name, None, f"PreCommitBoundaryError: {str(pe)}", status="error")
-        return {
-            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
-            "isError": True
-        }
+        return _format_mcp_response(env, is_error=True)
     except ServerSCMExecutionError as se:
         env = _make_envelope(name, None, f"ServerSCMExecutionError: {str(se)}", status="error")
-        return {
-            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
-            "isError": True
-        }
+        return _format_mcp_response(env, is_error=True)
     except ReadOnlyComponentError as re:
         env = _make_envelope(name, None, f"ReadOnlyComponentError: {str(re)}", status="error")
-        return {
-            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
-            "isError": True
-        }
+        return _format_mcp_response(env, is_error=True)
     except Exception as e:
         logger.exception(f"Error executing tool {name}")
         env = _make_envelope(name, None, f"{type(e).__name__}: {str(e)}", status="error")
-        return {
-            "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
-            "isError": True
-        }
+        return _format_mcp_response(env, is_error=True)
 
 
 def handle_jsonrpc_request(request: Dict[str, Any], server_state: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:

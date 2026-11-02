@@ -98,5 +98,38 @@ class TestLayoutGuardrailAndAdminExtensions(unittest.TestCase):
         self.assertIn("Single-XML TDE layout violation", str(ctx.exception))
 
 
+    def test_checkout_and_checkin_activity_raise_on_invalid_layout(self):
+        """Asserts SCM engine batch checkout and checkin reject invalid layouts."""
+        from ln_scm_engine import checkout_activity, checkin_activity
+        bad_file = self.act_dir / "sessions" / "txcmg0110m000.ses"
+        bad_file.parent.mkdir(parents=True, exist_ok=True)
+        bad_file.write_text("<session/>", encoding="utf-8")
+
+        mock_client = MagicMock()
+        with self.assertRaises(ValueError) as ctx:
+            checkout_activity(mock_client, self.act_dir, "EXTce01107")
+        self.assertIn("Single-XML TDE layout violation", str(ctx.exception))
+
+        with self.assertRaises(ValueError) as ctx2:
+            checkin_activity(mock_client, self.act_dir, "EXTce01107")
+        self.assertIn("Single-XML TDE layout violation", str(ctx2.exception))
+
+    def test_generate_report_short_name_fallback_to_gen(self):
+        """Asserts report names with length under 6 fallback to mod 'gen'."""
+        mock_client = MagicMock()
+        mock_client.do_bde_call.return_value = '<DR_Report name="txcmg"/>'
+        res = generate_report_on_server(
+            client=mock_client,
+            report_name="txcmg",
+            table_name="ttadv300",
+            version_id="1",
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+        )
+        self.assertTrue(res["success"])
+        expected_rpt = self.act_dir / "tx" / "report" / "gen" / "txcmg.rpt"
+        self.assertTrue(expected_rpt.exists())
+
+
 if __name__ == "__main__":
     unittest.main()

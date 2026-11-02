@@ -581,10 +581,10 @@ class TestScmCliIntegration(unittest.TestCase):
         from admin_sync import init_admin_file
         init_admin_file(act_dir / ".admin")
 
-        tbl = act_dir / "tables" / "txcmg010.tbl"
+        tbl = act_dir / "tx" / "table" / "cmg" / "txcmg010.tbl"
         tbl.parent.mkdir(parents=True, exist_ok=True)
         tbl.write_text("<DR_Table name='txcmg010'/>", encoding="utf-8")
-        add_component(act_dir, "tables/txcmg010.tbl")
+        add_component(act_dir, "tx/table/cmg/txcmg010.tbl")
 
         # Test batch checkout
         args_chk = argparse.Namespace(
