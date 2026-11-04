@@ -82,6 +82,254 @@ def _resolve_get_method(client: LNStudioServerClient, bde_name: str) -> str:
     return "CmGet"
 
 
+def resolve_extension_component_name(comp_name: str, comp_type: str = "") -> Dict[str, Any]:
+    """
+    Deterministically resolves standard table/session codes to Extension Modeler library names
+    and vice-versa (ADR 0006, 0014).
+    - Table code: cisli220 (8 chars) -> txestcisli220 (module 'est', type 'table')
+    - Session code: cisli2620m000 (13 chars) -> txesssli2620m0 (module 'ess', type 'session')
+    - txest*: keeps library name, target_code = name[5:] (e.g. cisli220)
+    - txess*: keeps library name, target_code = name (e.g. cisli2620m000 if inferrable)
+    """
+    clean = comp_name.strip().lower()
+    ctype = comp_type.strip().lower()
+
+    if clean.startswith("txest"):
+        return {
+            "library_name": clean,
+            "ext_type": "est",
+            "target_code": clean[5:],
+            "component_type": "table",
+            "is_extension": True,
+        }
+    if clean.startswith("txess"):
+        mod_code = clean[5:]
+        return {
+            "library_name": clean,
+            "ext_type": "ess",
+            "target_code": mod_code,
+            "component_type": "session",
+            "is_extension": True,
+        }
+    if clean.startswith(("txesb", "txesm", "txesr")):
+        return {
+            "library_name": clean,
+            "ext_type": clean[2:5],
+            "target_code": clean,
+            "component_type": "extension",
+            "is_extension": True,
+        }
+
+    # Table pattern: len == 8 and ends with 3 digits (e.g. cisli220, whinh431)
+    is_table_code = (len(clean) == 8 and clean[5:].isdigit()) or ctype == "table"
+    # Session pattern: e.g. cisli2620m000 (12-14 chars with m/s)
+    is_session_code = (len(clean) >= 12 and any(ch in clean for ch in ("m", "s"))) or ctype == "session"
+
+    if (ctype == "extension" or not ctype) and is_table_code and not is_session_code:
+        return {
+            "library_name": f"txest{clean}",
+            "ext_type": "est",
+            "target_code": clean,
+            "component_type": "table",
+            "is_extension": True,
+        }
+    elif (ctype == "extension" or not ctype) and is_session_code:
+        session_body = clean[2:]
+        mod = session_body[:3]
+        code_part = session_body[3:]
+        m_pos = code_part.find("m") if "m" in code_part else code_part.find("s")
+        if m_pos != -1:
+            truncated_session_code = code_part[:m_pos + 2]
+            lib_name = f"txess{mod}{truncated_session_code}"
+        else:
+            lib_name = f"txess{session_body}"
+        return {
+            "library_name": lib_name,
+            "ext_type": "ess",
+            "target_code": clean,
+            "component_type": "session",
+            "is_extension": True,
+        }
+    elif ctype == "extension":
+        return {
+            "library_name": clean,
+            "ext_type": "ess",
+            "target_code": clean,
+            "component_type": "extension",
+            "is_extension": True,
+        }
+
+    return {
+        "library_name": clean,
+        "ext_type": "",
+        "target_code": clean,
+        "component_type": ctype,
+        "is_extension": False,
+    }
+
+
+def _has_legacy_mock_only(client: LNStudioServerClient, bde_name: str) -> bool:
+    """Checks whether the client has only legacy CmGet/Get mock responses registered without StudioComponent."""
+    transport = getattr(client, "transport", None)
+    if transport is not None and hasattr(transport, "responses"):
+        keys = list(transport.responses.keys())
+        if hasattr(transport, "handlers"):
+            keys.extend(list(transport.handlers.keys()))
+        has_studiocomponent = any(
+            isinstance(k, tuple) and len(k) >= 2 and k[-2] == "StudioComponent"
+            for k in keys
+        )
+        has_legacy = any(
+            isinstance(k, tuple) and len(k) >= 2 and k[-2] == bde_name and k[-1] in ("CmGet", "Get")
+            for k in keys
+        )
+        if has_legacy and not has_studiocomponent:
+            return True
+    return False
+
+
+def _fetch_via_legacy_cmget_get(
+    client: LNStudioServerClient,
+    bde_name: str,
+    comp_type: str,
+    comp_name: str,
+    connection_point: str = "ProjectServer",
+    context_xml: Optional[str] = None,
+) -> str:
+    """Dispatches legacy CmGet or Get request."""
+    pkg, mod, _ = _split_component_name(comp_name)
+    method = _resolve_get_method(client, bde_name)
+    if method == "CmGet":
+        req_xml = (
+            f"<{bde_name}>\n"
+            f"  <name>{comp_name}</name>\n"
+            f"  <type>{comp_type.lower()}</type>\n"
+            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
+            f"  <optionalContent>yes</optionalContent>\n"
+            f"</{bde_name}>"
+        )
+        try:
+            return client.do_bde_call(
+                bde_name, "CmGet", req_xml, connection_point=connection_point, context_xml=context_xml, mode="BDE"
+            )
+        except Exception:
+            legacy_req = (
+                f"<{bde_name}>\n"
+                f"  <GetRequest>\n"
+                f"    <name>{comp_name}</name>\n"
+                f"    <package>{pkg}</package>\n"
+                f"    <module>{mod}</module>\n"
+                f"  </GetRequest>\n"
+                f"</{bde_name}>"
+            )
+            return client.do_bde_call(
+                bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml
+            )
+    else:
+        legacy_req = (
+            f"<{bde_name}>\n"
+            f"  <GetRequest>\n"
+            f"    <name>{comp_name}</name>\n"
+            f"    <package>{pkg}</package>\n"
+            f"    <module>{mod}</module>\n"
+            f"  </GetRequest>\n"
+            f"</{bde_name}>"
+        )
+        return client.do_bde_call(
+            bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml
+        )
+
+
+def _fetch_component_xml(
+    client: LNStudioServerClient,
+    comp_type: str,
+    comp_name: str,
+    connection_point: str = "ProjectServer",
+    context_xml: Optional[str] = None,
+    base_vrc: Optional[str] = None,
+) -> str:
+    """
+    Fetches component source XML using authentic StudioComponent.GetActivitySource /
+    StudioComponent.GetProjectSource protocol (ADR 0006, 0008, 0014).
+    Falls back gracefully to CmGet/Get for offline MockJcaTransport tests or legacy endpoints.
+    """
+    ctype_lower = comp_type.lower()
+    info = BDE_TYPE_MAP.get(ctype_lower)
+    if not info:
+        raise ValueError(f"Unsupported component type '{comp_type}'")
+
+    bde_name = info["bde"]
+    eff_vrc = base_vrc or "B61O_a_ext"
+
+    # Backward compatibility with MockJcaTransport where only CmGet/Get is registered
+    if _has_legacy_mock_only(client, bde_name):
+        return _fetch_via_legacy_cmget_get(
+            client=client,
+            bde_name=bde_name,
+            comp_type=comp_type,
+            comp_name=comp_name,
+            connection_point=connection_point,
+            context_xml=context_xml,
+        )
+
+    method = "GetActivitySource" if context_xml else "GetProjectSource"
+
+    # Extension Modeler components map to <type>library</type> in StudioComponent BDE payload
+    if ctype_lower == "extension" or comp_name.lower().startswith(("txess", "txest", "txesb", "txesm", "txesr")):
+        eff_type = "library"
+    else:
+        eff_type = ctype_lower
+
+    req_xml = (
+        f"<StudioComponent>\n"
+        f"  <type>{eff_type}</type>\n"
+        f"  <name>{comp_name}</name>\n"
+        f"  <versionID>{eff_vrc}</versionID>\n"
+        f"</StudioComponent>"
+    )
+
+    try:
+        return client.do_bde_call(
+            "StudioComponent",
+            method,
+            req_xml,
+            connection_point=connection_point,
+            context_xml=context_xml,
+            mode="BDE",
+        )
+    except Exception:
+        # Fallback to CmGet / Get on bde_name if live server or mock lacks StudioComponent
+        return _fetch_via_legacy_cmget_get(
+            client=client,
+            bde_name=bde_name,
+            comp_type=comp_type,
+            comp_name=comp_name,
+            connection_point=connection_point,
+            context_xml=context_xml,
+        )
+
+
+def _resolve_activity_context_and_effective_cp(
+    activity_dir: Optional[Path],
+    connection_point: str = "ProjectServer",
+    activity_uuid: Optional[str] = None,
+) -> Tuple[Optional[str], str]:
+    """Resolves ActivityID XML context and effective development connection point."""
+    context_xml = None
+    dev_cp = connection_point
+    if activity_dir:
+        from properties_index import find_project_properties_index
+        idx_p = find_project_properties_index(activity_dir)
+        if idx_p and idx_p.exists():
+            from ln_scm_engine import resolve_activity_context_xml
+            context_xml, dev_cp = resolve_activity_context_xml(activity_dir)
+    if not context_xml and activity_uuid:
+        context_xml = f"<ActivityID>{activity_uuid}</ActivityID>"
+
+    eff_cp = dev_cp if connection_point in ("ProjectServer", "", None) else connection_point
+    return context_xml, eff_cp
+
+
 def parse_dd_xml_to_entry(xml_content: str, hint_name: str = "") -> Optional[Dict[str, Any]]:
     """
     Parses a `.tbl` (`<DR_Table>`) or `.dmn` (`<DR_Domain>`) XML document (both real Ecore
@@ -402,53 +650,33 @@ def inspect_component(
     comp_name: str,
     connection_point: str = "ProjectServer",
     dd_cache_path: Optional[Path] = None,
+    context_xml: Optional[str] = None,
+    base_vrc: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Fetches component definition via authentic CmGet (with fallback to Get) and extracts
-    structured schema and 4GL code in-memory for AI coding agents without modifying the local Activity directory.
+    Fetches component definition via authentic StudioComponent.GetActivitySource / GetProjectSource
+    (with fallback to CmGet/Get) and extracts structured schema and 4GL code in-memory for AI coding agents
+    without modifying the local Activity directory.
     Supports both real Ecore (<Column>, <Enumeration>, <expression>) and mock (<Field>) XMLs.
     """
     info = BDE_TYPE_MAP.get(comp_type.lower())
     if not info:
         raise ValueError(f"Unsupported component type '{comp_type}'. Supported: {list(BDE_TYPE_MAP.keys())}")
 
-    bde_name = info["bde"]
-    pkg, mod, _ = _split_component_name(comp_name)
+    ext_info = resolve_extension_component_name(comp_name, comp_type)
+    eff_name = ext_info["library_name"] if ext_info["is_extension"] else comp_name
+    eff_type = "library" if ext_info["is_extension"] else comp_type
 
-    method = _resolve_get_method(client, bde_name)
-    if method == "CmGet":
-        req_xml = (
-            f"<{bde_name}>\n"
-            f"  <name>{comp_name}</name>\n"
-            f"  <type>{comp_type.lower()}</type>\n"
-            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
-            f"  <optionalContent>yes</optionalContent>\n"
-            f"</{bde_name}>"
-        )
-        try:
-            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
-        except Exception:
-            legacy_req = (
-                f"<{bde_name}>\n"
-                f"  <GetRequest>\n"
-                f"    <name>{comp_name}</name>\n"
-                f"    <package>{pkg}</package>\n"
-                f"    <module>{mod}</module>\n"
-                f"  </GetRequest>\n"
-                f"</{bde_name}>"
-            )
-            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
-    else:
-        legacy_req = (
-            f"<{bde_name}>\n"
-            f"  <GetRequest>\n"
-            f"    <name>{comp_name}</name>\n"
-            f"    <package>{pkg}</package>\n"
-            f"    <module>{mod}</module>\n"
-            f"  </GetRequest>\n"
-            f"</{bde_name}>"
-        )
-        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+    pkg, mod, _ = _split_component_name(eff_name)
+
+    resp_xml = _fetch_component_xml(
+        client=client,
+        comp_type=eff_type,
+        comp_name=eff_name,
+        connection_point=connection_point,
+        context_xml=context_xml,
+        base_vrc=base_vrc,
+    )
 
     root = ET.fromstring(resp_xml)
 
@@ -518,72 +746,62 @@ def get_component(
     connection_point: str = "ProjectServer",
     dd_cache_path: Optional[Path] = None,
     activity_uuid: Optional[str] = None,
+    base_vrc: Optional[str] = None,
+    export_script: Optional[Union[Path, str]] = None,
 ) -> Path:
     """
-    Fetches component XML from server via authentic CmGet (with fallback to Get), writes it
-    to activity directory in Native Single-XML TDE Layout, enforces OS Read-Only flag, registers
-    it in .admin SCM cache via after_get, and updates `.ln_dd_cache.json` automatically for `.tbl` and `.dmn`.
+    Fetches component XML from server via authentic StudioComponent.GetActivitySource / GetProjectSource
+    (with fallback to CmGet/Get), writes it to activity directory in Native Single-XML TDE Layout, enforces
+    OS Read-Only flag, registers it in .admin SCM cache via after_get, updates `.ln_dd_cache.json` automatically
+    for `.tbl` and `.dmn`, and optionally exports embedded 4GL script via export_script.
     """
     ctype_lower = comp_type.lower()
     info = BDE_TYPE_MAP.get(ctype_lower)
     if not info:
         raise ValueError(f"Unsupported component type '{comp_type}'")
 
-    if ctype_lower == "extension" or info.get("readonly_only"):
+    ext_info = resolve_extension_component_name(comp_name, comp_type)
+    is_ext = ext_info["is_extension"]
+    eff_name = ext_info["library_name"] if is_ext else comp_name
+    eff_type = "library" if is_ext else ctype_lower
+    eff_info = BDE_TYPE_MAP.get(eff_type, info)
+    ext = eff_info["ext"]
+
+    if is_ext or ctype_lower == "extension" or eff_info.get("readonly_only"):
         read_only = True
 
-    bde_name = info["bde"]
-    ext = info["ext"]
-    pkg, mod, _ = _split_component_name(comp_name)
-
-    context_xml = f"<ActivityID>{activity_uuid}</ActivityID>" if activity_uuid else None
-    if not context_xml:
-        from properties_index import find_project_properties_index, PropertyBucket
+    # Resolve context_xml, eff_cp, and base_vrc
+    context_xml, eff_cp = _resolve_activity_context_and_effective_cp(
+        activity_dir=activity_dir,
+        connection_point=connection_point,
+        activity_uuid=activity_uuid,
+    )
+    if not base_vrc and activity_dir:
+        from properties_index import find_project_properties_index
         idx_p = find_project_properties_index(activity_dir)
         if idx_p and idx_p.exists():
-            bucket = PropertyBucket.load(idx_p)
-            lbl = bucket.get_property("Label")
-            if lbl:
-                context_xml = f"<ActivityID>{lbl}</ActivityID>"
+            from ln_scm_engine import resolve_activity_scm_metadata
+            meta = resolve_activity_scm_metadata(activity_dir)
+            base_vrc = meta.get("baseVRC") or "B61O_a_ext"
 
-    method = _resolve_get_method(client, bde_name)
-    if method == "CmGet":
-        req_xml = (
-            f"<{bde_name}>\n"
-            f"  <name>{comp_name}</name>\n"
-            f"  <type>{ctype_lower}</type>\n"
-            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
-            f"  <optionalContent>yes</optionalContent>\n"
-            f"</{bde_name}>"
-        )
-        try:
-            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, context_xml=context_xml, mode="BDE")
-        except Exception:
-            legacy_req = (
-                f"<{bde_name}>\n"
-                f"  <GetRequest>\n"
-                f"    <name>{comp_name}</name>\n"
-                f"    <package>{pkg}</package>\n"
-                f"    <module>{mod}</module>\n"
-                f"  </GetRequest>\n"
-                f"</{bde_name}>"
-            )
-            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml)
-    else:
-        legacy_req = (
-            f"<{bde_name}>\n"
-            f"  <GetRequest>\n"
-            f"    <name>{comp_name}</name>\n"
-            f"    <package>{pkg}</package>\n"
-            f"    <module>{mod}</module>\n"
-            f"  </GetRequest>\n"
-            f"</{bde_name}>"
-        )
-        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point, context_xml=context_xml)
+    resp_xml = _fetch_component_xml(
+        client=client,
+        comp_type=eff_type,
+        comp_name=eff_name,
+        connection_point=eff_cp,
+        context_xml=context_xml,
+        base_vrc=base_vrc,
+    )
+
+    pkg, mod, _ = _split_component_name(eff_name)
 
     # Use Native Single-XML TDE Layout
     from admin_sync import get_tde_component_rel_path, admin_after_get, normalize_admin_path
-    rel_path = get_tde_component_rel_path(pkg, ctype_lower, mod, comp_name, ext)
+    if is_ext:
+        rel_path = f"tx/library/{ext_info['ext_type']}/{eff_name}.lib"
+    else:
+        rel_path = get_tde_component_rel_path(pkg, eff_type, mod, eff_name, ext)
+
     target_file = activity_dir / rel_path
     target_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -603,9 +821,32 @@ def get_component(
 
     if ctype_lower in ("table", "domain"):
         eff_dd_path = dd_cache_path or (activity_dir.parent / ".ln_dd_cache.json")
-        update_dd_cache_from_xml(resp_xml, eff_dd_path, hint_name=comp_name)
+        update_dd_cache_from_xml(resp_xml, eff_dd_path, hint_name=eff_name)
 
-    if ctype_lower != "extension" and not is_extension_component(target_file):
+    # Export script if requested
+    if export_script:
+        export_p = Path(export_script)
+        if export_p.is_dir() or (not export_p.suffix and not export_p.exists()):
+            export_p.mkdir(parents=True, exist_ok=True)
+            t_code = ext_info["target_code"] or eff_name
+            script_file = export_p / f"{t_code}.cln"
+        else:
+            export_p.parent.mkdir(parents=True, exist_ok=True)
+            script_file = export_p
+
+        try:
+            root_el = ET.fromstring(resp_xml)
+            for el in root_el.iter():
+                if "}" in el.tag:
+                    el.tag = el.tag.split("}", 1)[1]
+            expr = root_el.find(".//expression")
+            script_text = (expr.text or "") if expr is not None else ""
+            normalized = script_text.replace("\r\n", "\n").rstrip() + "\n"
+            script_file.write_text(normalized, encoding="utf-8")
+        except Exception as e:
+            print(f"[WARN] Failed to export script: {e}", file=sys.stderr)
+
+    if not is_ext and ctype_lower != "extension" and not is_extension_component(target_file):
         norm_rel = normalize_admin_path(target_file.relative_to(activity_dir).as_posix())
         try:
             admin_after_get(activity_dir, norm_rel)
@@ -667,52 +908,29 @@ def sync_reference(
     dd_indexed: List[str] = []
 
     for comp_name in target_names:
-        pkg, mod, _ = _split_component_name(comp_name)
-        method = _resolve_get_method(client, bde_name)
-        if method == "CmGet":
-            req_xml = (
-                f"<{bde_name}>\n"
-                f"  <name>{comp_name}</name>\n"
-                f"  <type>{ctype_lower}</type>\n"
-                f"  <includeCustomerFields>yes</includeCustomerFields>\n"
-                f"  <optionalContent>yes</optionalContent>\n"
-                f"</{bde_name}>"
+        ext_info = resolve_extension_component_name(comp_name, comp_type)
+        is_ext = ext_info["is_extension"]
+        eff_name = ext_info["library_name"] if is_ext else comp_name
+        eff_type = "library" if is_ext else ctype_lower
+        eff_info = BDE_TYPE_MAP.get(eff_type, info)
+        cur_ext = eff_info["ext"]
+
+        try:
+            resp_xml = _fetch_component_xml(
+                client=client,
+                comp_type=eff_type,
+                comp_name=eff_name,
+                connection_point=connection_point,
+                context_xml=None,
+                base_vrc="B61O_a_ext",
             )
-            try:
-                resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
-            except Exception:
-                legacy_req = (
-                    f"<{bde_name}>\n"
-                    f"  <GetRequest>\n"
-                    f"    <name>{comp_name}</name>\n"
-                    f"    <package>{pkg}</package>\n"
-                    f"    <module>{mod}</module>\n"
-                    f"  </GetRequest>\n"
-                    f"</{bde_name}>"
-                )
-                try:
-                    resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
-                except Exception:
-                    continue
-        else:
-            legacy_req = (
-                f"<{bde_name}>\n"
-                f"  <GetRequest>\n"
-                f"    <name>{comp_name}</name>\n"
-                f"    <package>{pkg}</package>\n"
-                f"    <module>{mod}</module>\n"
-                f"  </GetRequest>\n"
-                f"</{bde_name}>"
-            )
-            try:
-                resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
-            except Exception:
-                continue
+        except Exception:
+            continue
 
         if not resp_xml or not resp_xml.strip():
             continue
 
-        out_file = ref_dir / f"{comp_name}{ext}"
+        out_file = ref_dir / f"{eff_name}{cur_ext}"
         if out_file.exists():
             try:
                 os.chmod(out_file, stat.S_IWRITE | stat.S_IREAD)
@@ -729,7 +947,7 @@ def sync_reference(
 
         # Auto-index .tbl and .dmn into .ln_dd_cache.json
         if ctype_lower in ("table", "domain") or "<DR_Table" in resp_xml or "<DR_Domain" in resp_xml:
-            indexed = update_dd_cache_from_xml(resp_xml, eff_dd_cache, hint_name=comp_name)
+            indexed = update_dd_cache_from_xml(resp_xml, eff_dd_cache, hint_name=eff_name)
             if indexed:
                 dd_indexed.append(indexed["name"])
 
@@ -783,41 +1001,20 @@ def clone_component(
     src_pkg, src_mod, _ = _split_component_name(source_name)
     tgt_pkg, tgt_mod, _ = _split_component_name(target_name)
 
-    # 1. Fetch source XML
-    method = _resolve_get_method(client, bde_name)
-    if method == "CmGet":
-        req_xml = (
-            f"<{bde_name}>\n"
-            f"  <name>{source_name}</name>\n"
-            f"  <type>{ctype_lower}</type>\n"
-            f"  <includeCustomerFields>yes</includeCustomerFields>\n"
-            f"  <optionalContent>yes</optionalContent>\n"
-            f"</{bde_name}>"
-        )
-        try:
-            resp_xml = client.do_bde_call(bde_name, "CmGet", req_xml, connection_point=connection_point, mode="BDE")
-        except Exception:
-            legacy_req = (
-                f"<{bde_name}>\n"
-                f"  <GetRequest>\n"
-                f"    <name>{source_name}</name>\n"
-                f"    <package>{src_pkg}</package>\n"
-                f"    <module>{src_mod}</module>\n"
-                f"  </GetRequest>\n"
-                f"</{bde_name}>"
-            )
-            resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
-    else:
-        legacy_req = (
-            f"<{bde_name}>\n"
-            f"  <GetRequest>\n"
-            f"    <name>{source_name}</name>\n"
-            f"    <package>{src_pkg}</package>\n"
-            f"    <module>{src_mod}</module>\n"
-            f"  </GetRequest>\n"
-            f"</{bde_name}>"
-        )
-        resp_xml = client.do_bde_call(bde_name, "Get", legacy_req, connection_point=connection_point)
+    # 1. Resolve activity context and fetch source XML
+    context_xml, eff_cp = _resolve_activity_context_and_effective_cp(
+        activity_dir=activity_dir,
+        connection_point=connection_point,
+        activity_uuid=activity_uuid,
+    )
+
+    resp_xml = _fetch_component_xml(
+        client=client,
+        comp_type=comp_type,
+        comp_name=source_name,
+        connection_point=eff_cp,
+        context_xml=context_xml,
+    )
 
     # 2. Rewrite names, package, module, and labels
     renamed_xml = resp_xml
@@ -852,27 +1049,14 @@ def clone_component(
 
     # 5. Register on server sending RAW <DR_*> root XML document directly
     if register_on_server:
-        context_xml = f"<ActivityID>{activity_uuid}</ActivityID>" if activity_uuid else None
-        if not context_xml:
-            from properties_index import find_project_properties_index, PropertyBucket
-            idx_p = find_project_properties_index(activity_dir)
-            if idx_p and idx_p.exists():
-                bucket = PropertyBucket.load(idx_p)
-                lbl = bucket.get_property("Label")
-                if lbl:
-                    context_xml = f"<ActivityID>{lbl}</ActivityID>"
-
-        dev_cp = connection_point if connection_point != "ProjectServer" else "EXTce01107_dev"
         client.do_bde_call(
             bde_name,
             "DR_Create",
             renamed_xml,
-            connection_point=dev_cp,
+            connection_point=eff_cp,
             context_xml=context_xml,
             mode="BDE",
         )
-
-    return target_file
 
     return target_file
 

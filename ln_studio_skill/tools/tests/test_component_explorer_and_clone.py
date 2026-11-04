@@ -313,6 +313,209 @@ class TestComponentExplorerAndClone(unittest.TestCase):
         self.assertTrue(comp_entry["isCheckedOut"])
         self.assertTrue(comp_entry["isDirty"])
 
+    def test_resolve_activity_scm_metadata_dev_repo_and_task_description(self):
+        """Asserts DevelopmentTimeRepositoryAddress and TaskDescription are extracted and populate context XML."""
+        from properties_index import PropertyBucket
+        from ln_scm_engine import resolve_activity_scm_metadata, resolve_activity_context_xml
+
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{uuid-ext-101}")
+        bucket.set_property("ApplicationRelease", "B61O_a_ext")
+        bucket.set_property("TaskName", "task_ext101")
+        bucket.set_property("TaskDescription", "Custom Extension Work")
+        bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTce01107_dev")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        meta = resolve_activity_scm_metadata(self.act_dir)
+        self.assertEqual(meta.get("developmentTimeRepositoryAddress"), "EXTce01107_dev")
+        self.assertEqual(meta["taskContext"], "EXTce01107_dev")
+        self.assertEqual(meta.get("taskDescription"), "Custom Extension Work")
+
+        context_xml, dev_cp = resolve_activity_context_xml(self.act_dir)
+        self.assertEqual(dev_cp, "EXTce01107_dev")
+        self.assertIn("<activityName>task_ext101</activityName>", context_xml)
+        self.assertIn("<activityDescription>Custom Extension Work</activityDescription>", context_xml)
+        self.assertIn("<activityUUID>{uuid-ext-101}</activityUUID>", context_xml)
+        self.assertIn("<baseVRC>B61O_a_ext</baseVRC>", context_xml)
+        self.assertIn("<activityContext>EXTce01107_dev</activityContext>", context_xml)
+
+    def test_get_component_uses_studiocomponent_get_activity_source(self):
+        """Asserts get_component dispatches StudioComponent.GetActivitySource with full ActivityID context."""
+        from properties_index import PropertyBucket
+
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{uuid-act-777}")
+        bucket.set_property("ApplicationRelease", "B61O_a_cust")
+        bucket.set_property("TaskName", "task_777")
+        bucket.set_property("TaskDescription", "Fetch items")
+        bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTce01107_dev")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        self.transport.register_response(
+            "StudioComponent",
+            "GetActivitySource",
+            """<DR_Table name="tcibd001" package="tc" module="ibd">
+                <description>General Item Data</description>
+            </DR_Table>""",
+        )
+
+        saved = get_component(
+            client=self.client,
+            comp_type="table",
+            comp_name="tcibd001",
+            activity_dir=self.act_dir,
+        )
+        self.assertTrue(saved.exists())
+        self.assertEqual(saved.name, "tcibd001.tbl")
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["bde"], "StudioComponent")
+        self.assertEqual(last_call["method"], "GetActivitySource")
+        self.assertEqual(last_call["connection_point"], "EXTce01107_dev")
+        self.assertIn("<type>table</type>", last_call["request"])
+        self.assertIn("<name>tcibd001</name>", last_call["request"])
+        self.assertIn("<versionID>B61O_a_cust</versionID>", last_call["request"])
+        self.assertIn("<activityDescription>Fetch items</activityDescription>", last_call["context_xml"])
+        self.assertIn("<activityContext>EXTce01107_dev</activityContext>", last_call["context_xml"])
+
+    def test_get_component_extension_maps_to_library_type(self):
+        """Asserts Extension Modeler components map to <type>library</type> in StudioComponent payload."""
+        from properties_index import PropertyBucket
+
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{uuid-ext-888}")
+        bucket.set_property("ApplicationRelease", "B61O_a_ext")
+        bucket.set_property("TaskName", "task_888")
+        bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTce01107_dev")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        self.transport.register_response(
+            "StudioComponent",
+            "GetActivitySource",
+            """<DR_Library name="txesssli2620m0" package="tx" module="ess">
+                <expression>function test()</expression>
+            </DR_Library>""",
+        )
+
+        saved = get_component(
+            client=self.client,
+            comp_type="extension",
+            comp_name="txesssli2620m0",
+            activity_dir=self.act_dir,
+        )
+        self.assertTrue(saved.exists())
+        self.assertTrue(is_file_readonly(saved))
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["bde"], "StudioComponent")
+        self.assertEqual(last_call["method"], "GetActivitySource")
+        self.assertIn("<type>library</type>", last_call["request"])
+        self.assertIn("<name>txesssli2620m0</name>", last_call["request"])
+
+    def test_inspect_component_uses_studiocomponent_get_project_source(self):
+        """Asserts inspect_component dispatches StudioComponent.GetProjectSource when registered."""
+        self.transport.register_response(
+            "StudioComponent",
+            "GetProjectSource",
+            """<DR_Table name="tcibd001" package="tc" module="ibd">
+                <description>General Item Data</description>
+            </DR_Table>""",
+        )
+        summary = inspect_component(self.client, "table", "tcibd001")
+        self.assertEqual(summary["name"], "tcibd001")
+
+        last_call = self.transport.call_history[-1]
+        self.assertEqual(last_call["bde"], "StudioComponent")
+        self.assertEqual(last_call["method"], "GetProjectSource")
+        self.assertIn("<type>table</type>", last_call["request"])
+        self.assertIn("<name>tcibd001</name>", last_call["request"])
+
+    def test_resolve_extension_component_name_bidirectional(self):
+        """Asserts resolve_extension_component_name maps table/session codes to extension libraries and back."""
+        from ln_component_explorer import resolve_extension_component_name
+
+        # Session code mapping
+        res_ses = resolve_extension_component_name("cisli2620m000")
+        self.assertEqual(res_ses["library_name"], "txesssli2620m0")
+        self.assertEqual(res_ses["ext_type"], "ess")
+        self.assertEqual(res_ses["component_type"], "session")
+        self.assertTrue(res_ses["is_extension"])
+
+        res_ses2 = resolve_extension_component_name("whinh4525m000")
+        self.assertEqual(res_ses2["library_name"], "txessinh4525m0")
+        self.assertEqual(res_ses2["ext_type"], "ess")
+
+        # Table code mapping
+        res_tbl = resolve_extension_component_name("cisli220")
+        self.assertEqual(res_tbl["library_name"], "txestcisli220")
+        self.assertEqual(res_tbl["ext_type"], "est")
+        self.assertEqual(res_tbl["component_type"], "table")
+        self.assertTrue(res_tbl["is_extension"])
+
+        res_tbl2 = resolve_extension_component_name("whinh431")
+        self.assertEqual(res_tbl2["library_name"], "txestwhinh431")
+
+        # Direct extension library names
+        res_dir_ses = resolve_extension_component_name("txesssli2620m0")
+        self.assertEqual(res_dir_ses["library_name"], "txesssli2620m0")
+        self.assertEqual(res_dir_ses["ext_type"], "ess")
+
+        res_dir_tbl = resolve_extension_component_name("txestcisli220")
+        self.assertEqual(res_dir_tbl["library_name"], "txestcisli220")
+        self.assertEqual(res_dir_tbl["ext_type"], "est")
+        self.assertEqual(res_dir_tbl["target_code"], "cisli220")
+
+    def test_get_component_export_script(self):
+        """Asserts get_component with export_script extracts expression and normalizes lines."""
+        from properties_index import PropertyBucket
+
+        bucket = PropertyBucket()
+        bucket.set_property("Label", "{uuid-exp-111}")
+        bucket.set_property("ApplicationRelease", "B61O_a_ext")
+        bucket.set_property("TaskName", "task_exp111")
+        bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTce01107_dev")
+
+        settings_dir = self.act_dir / ".settings"
+        settings_dir.mkdir(parents=True, exist_ok=True)
+        bucket.save(settings_dir / "properties.index")
+
+        sample_script = "function extern test()\n{\n\treturn(0)\n}\n"
+        self.transport.register_response(
+            "StudioComponent",
+            "GetActivitySource",
+            f"""<DR_Library name="txesssli2620m0" package="tx" module="ess">
+                <expression>{sample_script}</expression>
+            </DR_Library>""",
+        )
+
+        export_dir = self.workspace_path / "exported_scripts"
+
+        # Pass target session code directly and export to directory
+        saved_file = get_component(
+            client=self.client,
+            comp_type="extension",
+            comp_name="cisli2620m000",
+            activity_dir=self.act_dir,
+            export_script=export_dir,
+        )
+        self.assertTrue(saved_file.exists())
+        self.assertEqual(saved_file.name, "txesssli2620m0.lib")
+        self.assertTrue(is_file_readonly(saved_file))
+
+        # Check exported script file
+        cln_file = export_dir / "cisli2620m000.cln"
+        self.assertTrue(cln_file.exists())
+        self.assertEqual(cln_file.read_text(encoding="utf-8"), sample_script)
+
 
 if __name__ == "__main__":
     unittest.main()

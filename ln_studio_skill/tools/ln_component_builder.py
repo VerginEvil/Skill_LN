@@ -257,6 +257,24 @@ def cmd_login(args):
         ionapi_file=args.ionapi,
     )
 
+    if getattr(args, "status", False) or getattr(args, "check_only", False):
+        from ln_env_manager import OAuth2TokenManager
+        token_mgr = OAuth2TokenManager()
+        st = token_mgr.check_token_status(env_name)
+        if st["status"] == "needs_refresh":
+            try:
+                token_mgr.ensure_authenticated_token(env_name, config, auto_login=False)
+                st = token_mgr.check_token_status(env_name)
+            except Exception:
+                pass
+
+        if getattr(args, "json", False):
+            print(json.dumps(st, indent=2))
+        else:
+            exp_sec = f"{int(st['expires_in'])}s" if st.get("expires_in") is not None else "N/A"
+            print(f"[AUTH STATUS] Environment: '{env_name}' | Status: {st['status'].upper()} | Expires In: {exp_sec} | Refresh Token: {'Yes' if st.get('has_refresh_token') else 'No'}")
+        return
+
     execute_login(
         env_name=env_name,
         config=config,
@@ -516,7 +534,26 @@ def cmd_get_component(args):
         notify=not getattr(args, "json", False),
     )
     if getattr(args, "inspect", False):
-        summary = inspect_component(client=client, comp_type=args.type, comp_name=args.name)
+        context_xml = None
+        conn_point = "ProjectServer"
+        try:
+            act_info = resolve_activity(activity_name=getattr(args, "activity", None), workspace_name=args.workspace)
+            if act_info and "path" in act_info:
+                act_dir = Path(act_info["path"])
+                from ln_scm_engine import resolve_activity_context_xml
+                context_xml, dev_cp = resolve_activity_context_xml(act_dir)
+                if dev_cp:
+                    conn_point = dev_cp
+        except Exception:
+            pass
+
+        summary = inspect_component(
+            client=client,
+            comp_type=args.type,
+            comp_name=args.name,
+            connection_point=conn_point,
+            context_xml=context_xml,
+        )
         if getattr(args, "json", False):
             print(json.dumps(summary, indent=2))
         else:
@@ -534,15 +571,19 @@ def cmd_get_component(args):
         act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
         act_dir = Path(act_info["path"])
         is_ro = not getattr(args, "writable", False)
+        export_script = getattr(args, "export_script", None)
         saved_file = get_component(
             client=client,
             comp_type=args.type,
             comp_name=args.name,
             activity_dir=act_dir,
             read_only=is_ro,
+            export_script=export_script,
         )
         ro_str = " (Read-Only)" if is_ro else ""
         print(f"[SUCCESS] Downloaded {args.type} '{args.name}'{ro_str} -> {saved_file}")
+        if export_script:
+            print(f"[SUCCESS] Exported 4GL script -> {export_script}")
 
 
 def cmd_sync_reference(args):
@@ -1807,10 +1848,33 @@ def cmd_new_extension(args):
 
 def cmd_import_extension(args):
     """Handles 'import-extension' subcommand."""
-    print(f"[INFO] Importing extension from '{args.source}'...")
+    source = args.source
+    if getattr(args, "from_server", False):
+        try:
+            client, env_info = get_server_client(
+                workspace_name=getattr(args, "workspace", None),
+                mock=getattr(args, "mock", False),
+                target_object=source,
+                target_type="extension",
+                notify=True,
+            )
+            act_info = resolve_activity(activity_name=getattr(args, "activity", None), workspace_name=getattr(args, "workspace", None))
+            act_dir = Path(act_info["path"])
+            saved_lib = get_component(
+                client=client,
+                comp_type="extension",
+                comp_name=source,
+                activity_dir=act_dir,
+            )
+            source = str(saved_lib)
+        except Exception as e:
+            print(f"[ERROR] Remote fetch of extension '{source}' failed: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    print(f"[INFO] Importing extension from '{source}'...")
     try:
         out_p = import_extension(
-            source=args.source,
+            source=source,
             output_path=args.output,
             ext_type=args.type if hasattr(args, "type") else None
         )
@@ -1981,9 +2045,13 @@ def main():
 
     # import-extension
     sp_impext = subparsers.add_parser("import-extension", help="Import an extension from Studio activity 'Get' cache into local project")
-    sp_impext.add_argument("--source", required=True, help="Path to .lib or .4gl extension in Studio workspace")
+    sp_impext.add_argument("--source", required=True, help="Path to .lib or .4gl extension in Studio workspace (or component name with --from-server)")
     sp_impext.add_argument("--output", help="Output path in local project")
     sp_impext.add_argument("--type", choices=["table", "session"], help="Override extension type")
+    sp_impext.add_argument("--from-server", action="store_true", help="Fetch extension from server before importing")
+    sp_impext.add_argument("--workspace", help="Target customer workspace or CloudEnvironment name")
+    sp_impext.add_argument("--activity", help="Target activity name (defaults to active activity)")
+    sp_impext.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
     # extension-hooks
     sp_exthooks = subparsers.add_parser("extension-hooks", help="Inspect and extract hooks from local extension 4GL file")
@@ -2002,6 +2070,9 @@ def main():
     sp_login.add_argument("--workspace", help="Target customer workspace or CloudEnvironment name (e.g. SCS_TST)")
     sp_login.add_argument("--ionapi", help="Path to .ionapi credentials file (auto-discovered from workspace if omitted)")
     sp_login.add_argument("--env-name", help="Custom CloudEnvironment name")
+    sp_login.add_argument("--status", action="store_true", help="Check OAuth2 token status and perform silent refresh if needed without launching browser")
+    sp_login.add_argument("--check-only", action="store_true", dest="status", help="Alias for --status")
+    sp_login.add_argument("--json", action="store_true", help="Output token status in JSON format")
     sp_login.add_argument("--register-protocol", action="store_true", help="Register Windows 'oob://' custom URI scheme handler in HKCU")
     sp_login.add_argument("--unregister-protocol", action="store_true", help="Unregister Windows 'oob://' custom URI scheme handler")
     sp_login.add_argument("--no-ping", action="store_true", help="Skip live JCA ping verification after acquiring token")
@@ -2057,6 +2128,7 @@ def main():
     sp_get.add_argument("--inspect", action="store_true", help="Inspect in-memory without creating local files")
     sp_get.add_argument("--activity", help="Target activity name (defaults to active activity)")
     sp_get.add_argument("--workspace", help="Target workspace folder name")
+    sp_get.add_argument("--export-script", help="Export embedded 4GL script (.cln/.4gl) to specified file or directory")
     sp_get.add_argument("--writable", action="store_true", help="Clear OS Read-Only attribute on downloaded file")
     sp_get.add_argument("--json", action="store_true", help="Output inspection results in JSON format")
     sp_get.add_argument("--mock", action="store_true", help="Run with mock transport for testing")

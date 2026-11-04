@@ -52,7 +52,7 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 |---|---|
 | Inspect workspaces and activities | `python <skill_dir>/tools/ln_component_builder.py workspace --list` / `--activities` |
 | List configured cloud environments | `python <skill_dir>/tools/ln_component_builder.py environments [--workspace-root <path>]` |
-| Auto SSO Login & Token Acquisition | `python <skill_dir>/tools/ln_component_builder.py login [--workspace <ws>] [--ionapi <path>] [--register-protocol]` |
+| Auto SSO Login & Token Status | `python <skill_dir>/tools/ln_component_builder.py login [--workspace <ws>] [--ionapi <path>] [--status|--check-only] [--json] [--register-protocol]` |
 | Connect / import .ionapi credentials | `python <skill_dir>/tools/ln_component_builder.py connect --ionapi <path> [--workspace <ws>] [--manual-auth]` |
 | Persistent JCA Daemon Management | `python <skill_dir>/tools/ln_component_builder.py daemon [--status\|--stop\|--restart\|--token <t>]` |
 | Browse remote projects & apps | `python <skill_dir>/tools/ln_component_builder.py project [--app <code>] [--project <p>]` |
@@ -62,7 +62,7 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | Clean remote activity lock | `python <skill_dir>/tools/ln_component_builder.py clean-activity --project <p> --task <act>` |
 | Browse components across 12 types | `python <skill_dir>/tools/ln_component_builder.py explorer --type <t> [--filter <pattern>]` |
 | Sync Read-Only references & DD cache | `python <skill_dir>/tools/ln_component_builder.py sync-reference --type <table\|domain\|session\|extension> --name <pattern>` |
-| Get component (inspect or Read-Only) | `python <skill_dir>/tools/ln_component_builder.py get-component --type <t> --name <n> [--inspect] [--reference-only] [--activity <a>]` |
+| Get component (inspect, Read-Only, or script export) | `python <skill_dir>/tools/ln_component_builder.py get-component --type <t> --name <n> [--inspect] [--export-script <path_or_dir>] [--activity <a>]` |
 | Clone component into custom (incl. report) | `python <skill_dir>/tools/ln_component_builder.py clone-component --source-type <t> --source-name <sn> --target-name <tn> --activity <a>` |
 | Check-out component from server | `python <skill_dir>/tools/ln_component_builder.py checkout-component --type <t> --name <n> --activity <a>` |
 | Revert check-out (uncheckout) | `python <skill_dir>/tools/ln_component_builder.py uncheckout-component --type <t> --name <n> --activity <a>` |
@@ -280,6 +280,29 @@ The toolchain emits an explicit user-facing notification banner in stdout and st
 - If missing or un-refreshable, automatically initiates the multi-channel SSO login flow (`execute_login`), alerting the user to authorize via browser, and capturing the authorization code via the registered Windows `oob://` protocol handler or clipboard detection.
 - Connects and verifies JCA server/activity reachability before retrieving components.
 
+### 3. Fast Token Status & Script Export Examples
+
+**Check OAuth2 Token Status & Trigger Silent Refresh:**
+```bash
+# Non-interactive check & silent refresh (no browser opened)
+python tools/ln_component_builder.py login --workspace SCS_TST --status
+
+# JSON status output
+python tools/ln_component_builder.py login --workspace SCS_TST --status --json
+```
+
+**Fetch Extension Component & Export 4GL Script in Single Command:**
+```bash
+# By session code (auto-maps to txesssli2620m0.lib and exports ./scripts/cisli2620m000.cln)
+python tools/ln_component_builder.py get-component --type extension --name cisli2620m000 --export-script ./scripts
+
+# By table code (auto-maps to txestcisli220.lib and exports ./scripts/cisli220.cln)
+python tools/ln_component_builder.py get-component --type extension --name cisli220 --export-script ./scripts
+
+# By direct library name with custom script destination
+python tools/ln_component_builder.py get-component --type extension --name txesssli2620m0 --export-script ./my_script.4gl
+```
+
 ---
 
 ## Toolchain & Reference Layout
@@ -290,8 +313,8 @@ tools/                          Self-contained automation toolchain:
   ln_studio_mcp.py                Native JSON-RPC 2.0 Stdio MCP Server (21 tools: 17 legacy + 4 consolidated)
   ln_env_manager.py               .ionapi parser, token refresh & Eclipse prefs synchronizer
   ln_server_client.py             JCA WebClient transport, BDE executor & daemon manager
-  LNStudioJcaBridge.java          Headless Java 11 persistent JCA daemon bridging Python to Infor LN Studio
-  AdminSyncHelper.java            Java helper for byte-accurate .admin SCM serialization
+  lib/LNStudioJcaBridge.java      Headless Java 11 persistent JCA daemon bridging Python to Infor LN Studio
+  lib/AdminSyncHelper.java        Java helper for byte-accurate .admin SCM serialization
   properties_index.py             Pure-Python byte-accurate Eclipse PropertyBucket reader/writer & lock detector
   ln_project_activity_manager.py  Software Project & Activity explorer + local bootstrapper
   ln_component_explorer.py        12-type component explorer, inspector, and cloner

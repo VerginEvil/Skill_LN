@@ -374,6 +374,41 @@ class TestFourLayerValidatorAndFix(unittest.TestCase):
             self.assertTrue((lbl_dir / "txtxcmg999.btno.lbl").exists())
             self.assertTrue(len(report_fix.repaired_items) > 0)
 
+    def test_validator_layer1_ignores_extension_components_in_admin(self):
+        """Asserts Layer 1 SCM validation never flags false-positive missing file errors for extension components in .admin."""
+        with tempfile.TemporaryDirectory() as td:
+            act_path = Path(td) / "dev_test [EXTtest]"
+            act_path.mkdir(parents=True, exist_ok=True)
+            from admin_sync import init_admin_file, admin_after_create
+            admin_p = act_path / ".admin"
+            init_admin_file(admin_p)
+
+            # Register standard table and 2 extension components in .admin
+            admin_after_create(act_path, "tx/library/ess/txesssli2620m0.lib")
+            admin_after_create(act_path, "tx/library/est/txestcisli220.lib")
+
+            # Case 1: Extension files not present on disk
+            validator = ActivityValidator(act_path, strict=True)
+            report = validator.run()
+            l1_errors = [d for d in report.errors if "[Layer 1]" in d.message]
+            self.assertEqual(len(l1_errors), 0, f"Expected 0 Layer 1 errors, got: {[d.message for d in l1_errors]}")
+
+            # Case 2: Extension files present on disk (Read-Only)
+            ess_file = act_path / "tx" / "library" / "ess" / "txesssli2620m0.lib"
+            ess_file.parent.mkdir(parents=True, exist_ok=True)
+            ess_file.write_text("<DR_Library name='txesssli2620m0'/>", encoding="utf-8")
+            os.chmod(ess_file, stat.S_IREAD)
+
+            est_file = act_path / "tx" / "library" / "est" / "txestcisli220.lib"
+            est_file.parent.mkdir(parents=True, exist_ok=True)
+            est_file.write_text("<DR_Library name='txestcisli220'/>", encoding="utf-8")
+            os.chmod(est_file, stat.S_IREAD)
+
+            validator2 = ActivityValidator(act_path, strict=True)
+            report2 = validator2.run()
+            l1_errors2 = [d for d in report2.errors if "[Layer 1]" in d.message]
+            self.assertEqual(len(l1_errors2), 0, f"Expected 0 Layer 1 errors when files present on disk, got: {[d.message for d in l1_errors2]}")
+
 
 if __name__ == "__main__":
     unittest.main()

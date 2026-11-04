@@ -288,6 +288,10 @@ class ActivityValidator:
 
         # Check missing disk files that are registered in .admin
         for rel_path in registered_map:
+            # Extension Modeler components (tx*, ess, est, etc.) are Read-Only "Get" mode in Studio.
+            # Do not flag missing-file errors for them.
+            if is_extension_component(rel_path) or is_extension_component(self.activity_path / rel_path):
+                continue
             if rel_path not in disk_files:
                 self.report.add(
                     str(admin_file), 1, 1, "ERROR",

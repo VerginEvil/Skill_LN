@@ -78,6 +78,37 @@ class TestAuthHelperAndLogin(unittest.TestCase):
         clip = get_windows_clipboard_text()
         self.assertTrue(clip is None or isinstance(clip, str))
 
+    def test_cmd_login_status_flag(self):
+        """Asserts login --status checks token validity and prints structured summary without launching browser."""
+        import io
+        import argparse
+        from ln_component_builder import cmd_login
+
+        args = argparse.Namespace(
+            workspace="SCS_TST",
+            env_name=None,
+            ionapi=None,
+            status=True,
+            check_only=False,
+            json=True,
+            register_protocol=False,
+            unregister_protocol=False,
+        )
+
+        with patch("ln_env_manager.OAuth2TokenManager.check_token_status") as mock_chk:
+            mock_chk.return_value = {
+                "status": "valid",
+                "expires_in": 1200.0,
+                "has_refresh_token": True,
+                "access_token": "dummy_tok",
+                "refresh_token": "dummy_ref",
+            }
+            with patch("sys.stdout", new_callable=io.StringIO) as mock_out:
+                cmd_login(args)
+                out = mock_out.getvalue()
+                self.assertIn('"status": "valid"', out)
+                self.assertIn('"expires_in": 1200.0', out)
+
 
 if __name__ == "__main__":
     unittest.main()

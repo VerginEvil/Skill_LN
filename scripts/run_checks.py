@@ -96,6 +96,64 @@ def run_unit_tests() -> bool:
         return False
 
 
+def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
+    """Detects file drift between the repository skill and the global installed skill."""
+    dest = target_dir or (Path.home() / ".gemini" / "config" / "skills" / "ln_studio_skill")
+    src = REPO_ROOT / "ln_studio_skill"
+    if not dest.exists() or not src.exists():
+        return []
+
+    drifted: List[str] = []
+    items_to_check = ["SKILL.md", "tools", "templates", "references", "scripts"]
+    for item in items_to_check:
+        s_base = src / item
+        if not s_base.exists():
+            continue
+        if s_base.is_file():
+            d_file = dest / item
+            if not d_file.exists() or s_base.read_bytes() != d_file.read_bytes():
+                drifted.append(item)
+        elif s_base.is_dir():
+            for sp in s_base.rglob("*"):
+                if not sp.is_file() or "__pycache__" in sp.parts or sp.name.endswith(".pyc") or ".git" in sp.parts:
+                    continue
+                rel = sp.relative_to(src).as_posix()
+                dp = dest / rel
+                if not dp.exists() or sp.read_bytes() != dp.read_bytes():
+                    drifted.append(rel)
+    return drifted
+
+
+def sync_global_skill(target_dir: Optional[Path] = None) -> bool:
+    """Synchronizes verified skill files from ln_studio_skill/ to ~/.gemini/config/skills/ln_studio_skill."""
+    import shutil
+    dest = target_dir or (Path.home() / ".gemini" / "config" / "skills" / "ln_studio_skill")
+    src = REPO_ROOT / "ln_studio_skill"
+    if not src.exists():
+        print(f"[FAIL] Source skill directory not found: {src}")
+        return False
+
+    dest.mkdir(parents=True, exist_ok=True)
+    items_to_sync = ["SKILL.md", "tools", "templates", "references", "scripts"]
+    for item in items_to_sync:
+        s_item = src / item
+        d_item = dest / item
+        if not s_item.exists():
+            continue
+        if s_item.is_file():
+            shutil.copy2(s_item, d_item)
+        elif s_item.is_dir():
+            shutil.copytree(
+                s_item,
+                d_item,
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".git*")
+            )
+
+    print(f"\n[SUCCESS] Synchronized verified skill to: {dest}")
+    return True
+
+
 def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
     """Installs .git/hooks/pre-commit pointing to scripts/run_checks.py."""
     gdir = git_dir or (REPO_ROOT / ".git")
@@ -128,6 +186,7 @@ def main() -> int:
     parser.add_argument("--syntax-only", action="store_true", help="Run only syntax compilation")
     parser.add_argument("--layout-only", action="store_true", help="Run only layout validation")
     parser.add_argument("--skip-tests", action="store_true", help="Skip running unit tests")
+    parser.add_argument("--sync-skill", action="store_true", help="Synchronize verified repository skill files to ~/.gemini/config/skills/ln_studio_skill")
     args = parser.parse_args()
 
     if args.install_hook:
@@ -148,6 +207,13 @@ def main() -> int:
         tests_ok = run_unit_tests()
 
     if syntax_ok and layout_ok and tests_ok:
+        if args.sync_skill:
+            sync_global_skill()
+        else:
+            drifted = check_skill_drift()
+            if drifted:
+                print(f"\n[NOTE] Detected {len(drifted)} drifted skill file(s) relative to global skill installation.")
+                print("       Pass --sync-skill to synchronize repository skill changes to global directory.")
         print("\n=======================================================")
         print(" [ALL CHECKS PASSED] Repository is ready for delivery! ")
         print("=======================================================")

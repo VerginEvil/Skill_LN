@@ -138,17 +138,20 @@ def end_activity_gate(project_name: str, task_id: str) -> None:
 
 def resolve_activity_scm_metadata(activity_dir: Path) -> Dict[str, str]:
     """
-    Reads Label (labelUUID), ApplicationRelease (baseVRC), TaskName, TaskDocumentation,
-    TaskContext, and DevelopmentEnvironment from binary properties.index (or legacy text format).
+    Reads Label (labelUUID), ApplicationRelease (baseVRC), TaskName, TaskDescription, TaskDocumentation,
+    TaskContext, DevelopmentTimeRepositoryAddress, and DevelopmentEnvironment from binary properties.index
+    (or legacy text format).
     Falls back to activity_dir folder name parsing if properties.index is missing.
     """
     meta = {
         "labelUUID": "",
         "baseVRC": "",
         "taskName": "",
+        "taskDescription": "",
         "taskDocumentation": "",
         "taskContext": "",
         "developmentEnvironment": "",
+        "developmentTimeRepositoryAddress": "",
     }
     from properties_index import find_project_properties_index, PropertyBucket
     idx_p = find_project_properties_index(activity_dir)
@@ -158,8 +161,11 @@ def resolve_activity_scm_metadata(activity_dir: Path) -> Dict[str, str]:
             meta["labelUUID"] = bucket.get_property("Label") or ""
             meta["baseVRC"] = bucket.get_property("ApplicationRelease") or ""
             meta["taskName"] = bucket.get_property("TaskName") or ""
+            meta["taskDescription"] = bucket.get_property("TaskDescription") or ""
             meta["taskDocumentation"] = bucket.get_property("TaskDocumentation") or ""
-            meta["taskContext"] = bucket.get_property("TaskContext") or ""
+            dev_addr = bucket.get_property("DevelopmentTimeRepositoryAddress") or ""
+            meta["developmentTimeRepositoryAddress"] = dev_addr
+            meta["taskContext"] = dev_addr or bucket.get_property("TaskContext") or ""
             meta["developmentEnvironment"] = bucket.get_property("DevelopmentEnvironment") or ""
         except Exception:
             try:
@@ -172,8 +178,13 @@ def resolve_activity_scm_metadata(activity_dir: Path) -> Dict[str, str]:
                         if k == "Label": meta["labelUUID"] = v
                         elif k in ("ApplicationRelease", "baseVRC"): meta["baseVRC"] = v
                         elif k == "TaskName": meta["taskName"] = v
+                        elif k == "TaskDescription": meta["taskDescription"] = v
                         elif k == "TaskDocumentation": meta["taskDocumentation"] = v
-                        elif k == "TaskContext": meta["taskContext"] = v
+                        elif k == "DevelopmentTimeRepositoryAddress":
+                            meta["developmentTimeRepositoryAddress"] = v
+                            if not meta["taskContext"]: meta["taskContext"] = v
+                        elif k == "TaskContext":
+                            if not meta["taskContext"]: meta["taskContext"] = v
                         elif k == "DevelopmentEnvironment": meta["developmentEnvironment"] = v
             except Exception:
                 pass
@@ -187,6 +198,8 @@ def resolve_activity_scm_metadata(activity_dir: Path) -> Dict[str, str]:
         if "[" in folder_name and "]" in folder_name:
             proj = folder_name.split("[")[1].split("]")[0].strip()
             meta["taskContext"] = f"{proj}_dev"
+    if not meta["developmentTimeRepositoryAddress"]:
+        meta["developmentTimeRepositoryAddress"] = meta["taskContext"]
     if not meta["baseVRC"]:
         meta["baseVRC"] = "B61O_a_ext"
 
@@ -240,13 +253,14 @@ def resolve_activity_context_xml(
         meta = resolve_activity_scm_metadata(activity_dir)
         task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
         label_uuid = meta["labelUUID"] or task_id
-        dev_cp = meta["taskContext"] or dev_cp
+        dev_cp = meta.get("developmentTimeRepositoryAddress") or meta.get("taskContext") or dev_cp
         context_xml = build_activity_context_xml(
             activity_name=task_id,
             base_vrc=meta["baseVRC"],
             connection_point=dev_cp,
             activity_guid=label_uuid,
-            documentation=meta["taskDocumentation"] or None,
+            description=meta.get("taskDescription", ""),
+            documentation=meta.get("taskDocumentation") or None,
         )
     return context_xml, dev_cp
 

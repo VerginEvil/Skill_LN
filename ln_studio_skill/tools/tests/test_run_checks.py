@@ -47,5 +47,22 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
                     sys.path.remove(str(REPO_ROOT / "scripts"))
 
 
+    def test_sync_global_skill(self):
+        """Asserts sync_global_skill synchronizes skill files to target directory."""
+        with tempfile.TemporaryDirectory() as td:
+            target_skill_dir = Path(td) / "ln_studio_skill"
+            sys.path.insert(0, str(REPO_ROOT / "scripts"))
+            try:
+                from run_checks import sync_global_skill
+                res = sync_global_skill(target_dir=target_skill_dir)
+                self.assertTrue(res)
+                self.assertTrue(target_skill_dir.exists())
+                self.assertTrue((target_skill_dir / "SKILL.md").exists())
+                self.assertTrue((target_skill_dir / "tools" / "ln_component_builder.py").exists())
+            finally:
+                if str(REPO_ROOT / "scripts") in sys.path:
+                    sys.path.remove(str(REPO_ROOT / "scripts"))
+
+
 if __name__ == "__main__":
     unittest.main()
