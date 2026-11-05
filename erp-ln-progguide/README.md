@@ -1,9 +1,13 @@
-# Baan 4GL Programmer's Guide, Dev Tools & Standalone Audit Engine
+[⬅️ Back to Skill_LN Main Repository](../README.md)
+
+---
+
+# Baan 4GL Programmer's Guide, Dev Tools & Standalone Audit Engine (`erp-ln-progguide`)
 
 [![Infor ERP LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8%20%7C%20Baan%204GL-0052CC?style=for-the-badge&logo=infor&logoColor=white)](https://www.infor.com)
 [![Knowledge Base](https://img.shields.io/badge/Documentation-5%2C700%2B%20Pages%20Markdown-4CAF50?style=for-the-badge&logo=markdown&logoColor=white)](#knowledge-base-contents)
-[![Bshell Functions](https://img.shields.io/badge/Bshell%20Functions-2%2C266%20Authoritative-FF9800?style=for-the-badge)](#grep-friendly-function-index)
-[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](#standalone-4gl--dal-audit-engine)
+[![Bshell Functions](https://img.shields.io/badge/Bshell%20Functions-2%2C266%20Authoritative-FF9800?style=for-the-badge)](#grep-friendly-single-line-function-index)
+[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](#standalone-4gl--dal-audit-engine-audit_4glpy)
 [![Cloud Multi-Tenant](https://img.shields.io/badge/Cloud%20Trust-Governance%20Verified-00BCD4?style=for-the-badge)](#cloud-extensibility-governance)
 [![Unit Tests](https://img.shields.io/badge/Tests-8%2F8%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
 
@@ -15,22 +19,15 @@
 
 - [Overview & Key Metrics](#overview--key-metrics)
 - [Workflow Architecture](#workflow-architecture)
-- [Knowledge Base Contents](#knowledge-base-contents)
-  - [1. Authoritative Bshell Functions Catalog](#1-authoritative-bshell-functions-catalog)
-  - [2. Grep-Friendly Function Index](#2-grep-friendly-function-index)
-  - [3. Standalone 4GL & DAL Audit Engine](#3-standalone-4gl--dal-audit-engine)
-  - [4. Six Architectural Best Practices Cookbooks](#4-six-architectural-best-practices-cookbooks)
-  - [5. Development Tools (13 Complete Chapters)](#5-development-tools-13-complete-chapters)
-  - [6. Public Interfaces & Process Extensions](#6-public-interfaces--process-extensions)
-  - [7. Application Function Server (AFS `stpapi.*`)](#7-application-function-server-afs-stpapi)
-  - [8. Official Studio Script Templates](#8-official-studio-script-templates)
 - [Standalone 4GL & DAL Audit Engine (`audit_4gl.py`)](#standalone-4gl--dal-audit-engine-audit_4glpy)
-  - [Rule Enforcement Matrix](#rule-enforcement-matrix)
+  - [Industry-Standard Linter Rule Matrix (14 Rules)](#industry-standard-linter-rule-matrix)
+  - [CI/CD Exit Code Behavior](#cicd-exit-code-behavior)
+  - [Before & After 4GL Code Showcase](#before--after-4gl-code-showcase)
   - [CLI Syntax & Examples](#cli-syntax--examples)
-  - [Sample Terminal Output](#sample-terminal-output)
+- [Problem-Driven Architectural Cookbooks Selection Guide](#problem-driven-architectural-cookbooks-selection-guide)
+- [Why Single-Line Index? (AI Context Token Optimization)](#why-single-line-index-ai-context-token-optimization)
+- [Knowledge Base Contents](#knowledge-base-contents)
 - [Coding Standards & Architectural Guardrails](#coding-standards--architectural-guardrails)
-  - [Cardinal Rule: Separation of Concerns (SoC)](#cardinal-rule-separation-of-concerns-soc)
-  - [Mandatory Prohibited Anti-Patterns](#mandatory-prohibited-anti-patterns)
 - [Fast Search CLI Tool (`search.py`)](#fast-search-cli-tool-searchpy)
 - [Automated Test Suite](#automated-test-suite)
 - [Directory Layout](#directory-layout)
@@ -50,7 +47,7 @@ The `erp-ln-progguide` skill converts official Infor documentation, Studio Build
 | **Development Tools Chapters** | **13** | Software components, Data Dictionaries, `crdd` table reconfiguration, SCM, PMC |
 | **Architectural Cookbooks** | **6** | Prescriptive guides covering DAL2, SoC, transactions, domains, MMT, caveats |
 | **Official Script Templates** | **9** | Studio templates (`DalTwo.dal`, `UIDatabase.cln`, `UserExitDLL.ue`, etc.) |
-| **Audit Engine Rules** | **11** | Zero-dependency static analyzer checking syntax, DAL contracts, cloud trust |
+| **Audit Engine Rules** | **14** | Zero-dependency static analyzer checking syntax, DAL contracts, cloud trust |
 
 ---
 
@@ -108,99 +105,92 @@ flowchart TD
 
 ---
 
-## Knowledge Base Contents
+## Standalone 4GL & DAL Audit Engine (`audit_4gl.py`)
 
-### 1. Authoritative Bshell Functions Catalog
-Located in [`index/functions_db.json`](index/functions_db.json), this machine-readable database indexes all 2,266 bshell functions from Infor LN Studio 10.8 Build 0640 (April 2026 tree). Each entry includes:
-- Return type and exact parameter signatures
-- Cloud Multi-Tenant Trust classification (`Trusted` vs `Untrusted`)
-- Required include header (e.g. `<bic_json>`, `<bic_cmf>`, `<bic_tt>`)
-- Deprecation indicators and replacement suggestions
-- Relative link to full Markdown documentation page
+A high-performance, **zero-dependency** Python static analyzer located at [`scripts/audit_4gl.py`](scripts/audit_4gl.py). Runs in milliseconds on any environment with Python 3.8+ installed (no Eclipse GUI or Java required).
 
-### 2. Grep-Friendly Function Index
-Located in [`references/FUNCTION_INDEX.md`](references/FUNCTION_INDEX.md), designed specifically for high-speed AI agent lookups in a single `grep` call:
-```markdown
-- **Json.getString** | [Cloud: Trusted] [Scope: all] [Inc: <bic_json>] | `string Json.getString( ... )` -> `references/guide/progguide/functions_json/jsongetstring.md`
-- **cmf.create** | [Cloud: Untrusted] [Scope: all] [Inc: <bic_cmf>] | `long cmf.create( )` -> `references/guide/progguide/functions_cmf/cmfcreate.md`
-- **dal.set.error.message** | [Cloud: Trusted] [Scope: all] [Inc: <bic_dal>] | `void dal.set.error.message( string msg [, ...] )` -> `references/guide/...`
-```
+### Industry-Standard Linter Rule Matrix
 
-### 3. Standalone 4GL & DAL Audit Engine
-Located in [`scripts/audit_4gl.py`](scripts/audit_4gl.py), a standalone, zero-dependency Python script that validates Baan 4GL scripts before they are committed, uploaded, or compiled. See [detailed section below](#standalone-4gl--dal-audit-engine-audit_4glpy).
+Modeled after modern static analyzers (Ruff, ESLint, Semgrep), `audit_4gl.py` categorizes rules with clear severities, cloud impacts, and remediation actions:
 
-### 4. Six Architectural Best Practices Cookbooks
-Located in [`references/best_practices/`](references/best_practices/):
+| Rule ID | Category | Severity & Exit Code | Cloud Multi-Tenant Impact | Description & Recommended Action |
+|---|---|---|---|---|
+| `SYN001` | Syntax / AST | `ERROR` [Exit 1] | **Critical** (Compile Failure) | AST recursive-descent block balance check (`select/endselect`, `if/endif`, `for/endfor`, `case/endcase`, `{}`). |
+| `SYN002` | Syntax | `WARNING` [Exit 0] | Minor | Misspelled 4GL section headers. Compares against official dictionary and suggests nearest valid header. |
+| `TBL001` | Semantic | `ERROR` [Exit 1] | **High** (Runtime Fault) | Referenced table (`<pkg><mod><num>.<field>`) missing `table t<table>` declaration in `declaration:` section. |
+| `TBL002` | Schema | `ERROR` [Exit 1] | **High** (Schema Mismatch) | Referenced `<table>.<field>` does not exist in `.ln_dd_cache.json`. (Supports `--auto-fetch-dd` server fallback). |
+| `DMN001` | Schema | `ERROR` [Exit 1] | **High** (Schema Mismatch) | Declared `domain <domain_name>` does not exist in `.ln_dd_cache.json`. |
+| `DAL001` | Contract | `ERROR` [Exit 1] | **Prohibited** (Server Crash) | Interactive dialog calls (`message()`, `ask.enum()`, `box()`) inside DAL2 or Table Extensions. Use `dal.set.error.message()`. |
+| `DAL002` | Contract | `ERROR` [Exit 1] | **Critical** (Hook Failure) | Invalid parameter signature in DAL field hooks (e.g. missing `long i.mode` on `.update`, `long has_changed` on `.check`). |
+| `DAL003` | Contract | `ERROR` [Exit 1] | **Critical** (Hook Failure) | Invalid hook return type (e.g. `void` when hook must return `long` or returning expression in `void`). |
+| `DAL004` | Architecture | `ERROR` [Exit 1] | **Prohibited** (SoC Breach) | Direct database mutation statements (`db.insert`, `db.update`, `db.delete`) in UI scripts. Business logic must reside in DAL2. |
+| `CLD001` | Governance | `ERROR` [Exit 1] | **Prohibited** (Cloud Blocked) | Calling untrusted bshell functions (`run.prog()`, `hostname$()`, `shell()`) in Cloud Multi-Tenant mode (`--cloud`). |
+| `CLD002` | Governance | `WARNING` [Exit 0] | Deprecation | Using deprecated bshell functions. Recommends modern replacement functions. |
+| `INC001` | Semantic | `ERROR` [Exit 1] | **Critical** (Compile Failure) | Calling runtime functions without their required `#include` header (e.g. `Json.*` without `<bic_json>`). |
+| `CAV001` | Caveat | `WARNING` [Exit 0] | **High Risk** (Rounding Bug) | Direct float equality comparisons (`== 0.0` or `!= 100.0`). Recommends `double.cmp(a, b, epsilon) == 0`. |
+| `CAV003` | Caveat | `ERROR` [Exit 1] | **Critical** (Deadlock Hazard) | Intra-file Call Graph detection of direct or transitive nested transaction boundaries (`db.retry.point()`, `commit.transaction()`). |
 
-| Cookbook | Focus Area | Key Topics Covered |
-|---|---|---|
-| [`01_extension_hooks_cookbook.md`](references/best_practices/01_extension_hooks_cookbook.md) | **Extension Hooks & Cloud Governance** | Table/Session hook lifecycles, CDF recipes, `DALHOOKERROR`, cloud governor limits (5,000ms execution, 5MB output) |
-| [`02_dal_architecture_and_business_logic.md`](references/best_practices/02_dal_architecture_and_business_logic.md) | **DAL Architecture & Business Logic** | Separation of Concerns (SoC), DAL1 vs DAL2, property hooks (`.update`, `.check`), business methods |
-| [`03_sql_query_optimization_and_transactions.md`](references/best_practices/03_sql_query_optimization_and_transactions.md) | **SQL Optimization & Transactions** | Index alignment, array fetching (`as prepared set`), `db.retry.point()`, locking hierarchies, eliminating N+1 |
-| [`04_data_model_and_domain_design.md`](references/best_practices/04_data_model_and_domain_design.md) | **Data Models & Domain Design** | Domain definition, referential integrity rules, safe 2-step `crdd` reconfiguration (runtime vs application) |
-| [`05_session_and_mmt_patterns.md`](references/best_practices/05_session_and_mmt_patterns.md) | **Session & MMT Architecture** | Session types 1-4, MMT Controller with Satellites, form commands, label localization |
-| [`06_4gl_coding_standards_and_caveats.md`](references/best_practices/06_4gl_coding_standards_and_caveats.md) | **Coding Standards & Runtime Caveats** | Domain vs primitive typing, table buffer collision prevention, float equality (`double.cmp`), 1-based arrays |
-
-### 5. Development Tools (13 Complete Chapters)
-Located in [`references/DEV_TOOLS_INDEX.md`](references/DEV_TOOLS_INDEX.md), covering the full *Infor LN Development Tools (2016)* manual:
-- **Ch 01**: Introduction to Development Tools
-- **Ch 02**: Overview of Software Components (Packages, Modules, Tables, Sessions, Scripts, Reports)
-- **Ch 03**: Data Dictionaries (Application Data Dictionary vs Runtime Data Dictionary)
-- **Ch 04**: Software Component Administration
-- **Ch 05**: Software Development Procedures (Data modeling, Forms, MMT Sessions)
-- **Ch 06**: Data Modeling & Table Reconfiguration (`crdd`)
-- **Ch 07**: Version & Release Management (VRC hierarchies, SCM)
-- **Ch 08**: LN Software Maintenance & PMC (Solutions, Patches, Feature Packs)
-- **Ch 09-13**: Menus, Labels, Messages, Questions, and Reporting Systems
-
-### 6. Public Interfaces & Process Extensions
-Located in [`references/PUBLIC_INTERFACES_INDEX.md`](references/PUBLIC_INTERFACES_INDEX.md):
-- 1,833 public interface references across LN Cloud up to build `25082026`
-- Core DLL libraries: `tdext`, `whext`, `tiext`, `tcext`, `tfext`
-- Standard business processes: `Address.Create`, `Item.GetData`, `SalesOrder.Create`, `Inventory.Adjust`
-
-### 7. Application Function Server (AFS `stpapi.*`)
-Located in [`references/AFS_INDEX.md`](references/AFS_INDEX.md):
-- Full coverage of AFS session automation primitives
-- `stpapi.put.field()`, `stpapi.get.field()`, `stpapi.insert()`, `stpapi.update()`, `stpapi.delete()`, `stpapi.find()`, `stpapi.end.session()`
-- Handling sub-sessions, zoom sessions, and error messages via `stpapi.get.mess.code()`
-
-### 8. Official Studio Script Templates
-Located in [`templates/`](templates/), extracted directly from LN Studio Build 0640 `ScriptTemplates/`:
-- `DalTwo.dal`: Modern DAL2 business logic template with standard property and object hooks
-- `UIDatabase.cln`: Session script for standard Type 1-3 database maintenance sessions
-- `UserExitDLL.ue`: User exit DLL for intercepting standard transactions
-- `Dal.dal`: Legacy DAL 1 template
-- `Bol.cln`: Business Object Layer script
-- `Function.cln`: Include function library
-- `Integration.cln`: Integration adapter script
-- `Report.cln`: Report script with layout events
-- `ThreeGL.cln`: 3GL standalone program
+### CI/CD Exit Code Behavior
+- **Exit Code 0 (Success)**: Clean audit or only warnings emitted (under default non-strict mode).
+- **Exit Code 1 (Failure)**: One or more `ERROR` rules triggered, or `--strict` flag enabled with active warnings. **Blocks pull requests and CI pipelines**.
 
 ---
 
-## Standalone 4GL & DAL Audit Engine (`audit_4gl.py`)
+### Before & After 4GL Code Showcase
 
-A high-performance, **zero-dependency** Python static analyzer located at [`scripts/audit_4gl.py`](scripts/audit_4gl.py). Runs in milliseconds on any environment with Python 3.8+ installed.
+#### 1. Separation of Concerns Violation (`DAL004`)
+*Bad: Direct database mutation inside UI session script.*
+```diff
+ choice.modify.set:
+ on.choice:
+-    | VIOLATION: DAL004 - Direct db.update in UI Script
+-    select txcmg011.*
+-    from   txcmg011 for update
+-    where  txcmg011.btno = :txcmg011.btno
+-    selectdo
+-        txcmg011.stat = txcmg.stat.processed
+-        db.update(ttxcmg011, db.retry)
+-        commit.transaction()
+-    endselect
 
-### Rule Enforcement Matrix
++    | COMPLIANT: Trigger DAL business method from UI Script
++    dal.start.business.method("txcmg011", "process.billing.batch", l.ret)
+```
 
-| Rule Code | Severity | Description | Target Modes |
-|---|---|---|---|
-| **`SYN001`** | **ERROR** | AST-based unbalanced block statements (`select/selectdo/selectempty/selecteos/endselect`, subqueries, `#define` macros, `if/endif`, `for/endfor`, `while/endwhile`, `case/endcase`, `{}`) | All |
-| **`SYN002`** | **WARNING** | Misspelled 4GL section headers with closest official Studio dictionary suggestion | All |
-| **`TBL001`** | **ERROR** | Referenced table (`<pkg><mod><num>.<field>`) missing `table t<table>` declaration in `declaration:` (excluding `--main-table`) | All |
-| **`TBL002`** | **ERROR** | Referenced `<table>.<field>` does not exist in `.ln_dd_cache.json` (supports `--auto-fetch-dd`) | All (with DD cache) |
-| **`DMN001`** | **ERROR** | Declared `domain <domain_name>` does not exist in `.ln_dd_cache.json` (supports `--auto-fetch-dd`) | All (with DD cache) |
-| **`DAL001`** | **ERROR** | Interactive dialog calls (`message()`, `ask.enum()`, `box()`) inside DAL2 or Table Extensions | `dal2`, `uedll` |
-| **`DAL002`** | **ERROR** | Missing or incorrect parameter signature in DAL field hooks (e.g. `long i.mode` on `.update`, `long has_changed` on `.check`) | `dal2` |
-| **`DAL003`** | **ERROR** | Invalid hook return type (e.g. `void` when hook must return `long`) | `dal2` |
-| **`DAL004`** | **ERROR** | Direct database mutation statements (`db.insert`, `db.update`, `db.delete`) inside UI scripts (SoC Violation) | `general` (UI) |
-| **`CLD001`** | **ERROR** | Use of untrusted bshell functions (`run.prog()`, `hostname$()`, `shell()`) in Cloud Multi-Tenant mode | `--cloud` |
-| **`CLD002`** | **WARNING** | Use of deprecated bshell functions with replacement guidance | `--cloud` |
-| **`INC001`** | **ERROR** | Calling functions without their mandatory `#include` header (e.g. `Json.*` without `<bic_json>`) | All |
-| **`CAV001`** | **WARNING** | Direct floating-point equality comparisons (`== 0.0` / `!= 100.0`); recommends `double.cmp()` | All |
-| **`CAV003`** | **ERROR** | Intra-file Call Graph detection of direct or transitive nested transaction boundaries (`commit.transaction()`, `db.retry.point()`, `abort.transaction()`) inside active transactions, DAL hooks, or UEDLL subroutines | All |
+#### 2. Floating-Point Equality Hazard (`CAV001`)
+*Bad: Direct equality on IEEE 754 floating-point amounts.*
+```diff
+ function extern long txcmg011.tamt.is.valid()
+ {
+-    | VIOLATION: CAV001 - Direct float equality comparison
+-    if txcmg011.tamt == 0.0 then
+-        dal.set.error.message("@txcmg:zero_amount_not_allowed")
+-        return(DALHOOKERROR)
+-    endif
+
++    | COMPLIANT: Epsilon-based comparison via double.cmp()
++    if double.cmp(txcmg011.tamt, 0.0, 0.0001) == 0 then
++        dal.set.error.message("@txcmg:zero_amount_not_allowed")
++        return(DALHOOKERROR)
++    endif
+     return(0)
+ }
+```
+
+#### 3. Extension Modeler `#include` Scope Boundary (`EXT001`)
+*Bad: Placing `#include` outside `#context_on "declarations"` in extension source.*
+```diff
+-| VIOLATION: EXT001 - Direct include outside context block is ignored by LN UI generator
+-#include <bic_json>
+
+ #context_on "declarations"
++    | COMPLIANT: Header includes must reside inside declarations context
++    #include <bic_json>
+     table ttxcmg011
+ #context_off
+```
+
+---
 
 ### CLI Syntax & Examples
 
@@ -215,30 +205,63 @@ python erp-ln-progguide/scripts/audit_4gl.py path/to/txcmg0110m100.cln --cloud -
 python erp-ln-progguide/scripts/audit_4gl.py src/ --format json --output audit_report.json
 ```
 
-### Sample Terminal Output
+---
 
-```text
-================================================================================
-4GL & DAL STATIC AUDIT REPORT
-Target: txcmg011.dal | Mode: dal2 | Cloud Governance: Enabled
-================================================================================
+## Problem-Driven Architectural Cookbooks Selection Guide
 
-[FAIL] txcmg011.dal:42 [DAL001]
-  Interactive dialog 'message("Batch is already processed")' is strictly prohibited in DAL2.
-  Fix: Use dal.set.error.message("@txcmg:batch_closed") and return(DALHOOKERROR).
+Instead of browsing arbitrary files, select the appropriate architectural cookbook based on your current engineering task:
 
-[WARN] txcmg011.dal:88 [CAV001]
-  Direct float comparison 'txcmg011.tamt == 0.0' detected.
-  Fix: Use 'double.cmp(txcmg011.tamt, 0.0, 0.0001) == 0' to avoid precision rounding failures.
+| If You Are Developing... | Your Specific Challenge | Recommended Cookbook | Key Architectural Concepts Covered |
+|---|---|---|---|
+| **Last-Mile Customizations** | Writing Table (`est`) or Session (`ess`) extensions in Infor Cloud | [`01_extension_hooks_cookbook.md`](references/best_practices/01_extension_hooks_cookbook.md) | Hook lifecycles, CDF recipes, `DALHOOKERROR`, cloud governor limits (5,000ms, 5MB output) |
+| **Core Entity Business Logic** | Building new tables, validation hooks, or default values | [`02_dal_architecture_and_business_logic.md`](references/best_practices/02_dal_architecture_and_business_logic.md) | Separation of Concerns (SoC), DAL2 property hooks (`.update`, `.check`), business methods |
+| **High-Volume SQL Batch Jobs** | Eliminating slow queries, table scans, or lock deadlocks | [`03_sql_query_optimization_and_transactions.md`](references/best_practices/03_sql_query_optimization_and_transactions.md) | Index leading fields, array fetching (`as prepared set`), `db.retry.point()`, locking hierarchy |
+| **Data Models & Database Tables** | Defining domains, foreign keys, or running table `crdd` | [`04_data_model_and_domain_design.md`](references/best_practices/04_data_model_and_domain_design.md) | Domain typing, referential integrity, safe 2-step `crdd` reconfiguration (runtime vs app) |
+| **Multi-Table User Interfaces** | Designing parent/child forms with synced grid lines | [`05_session_and_mmt_patterns.md`](references/best_practices/05_session_and_mmt_patterns.md) | Session types 1-4, MMT Controller with Satellites, Form Commands, localized labels |
+| **Subshell & 4GL Logic** | Avoiding precision bugs, buffer collisions, or array bounds | [`06_4gl_coding_standards_and_caveats.md`](references/best_practices/06_4gl_coding_standards_and_caveats.md) | Domain vs primitive typing, buffer collision prevention, float equality (`double.cmp`), 1-based arrays |
 
-[FAIL] txcmg011.dal:105 [CLD001]
-  Call to untrusted bshell function 'run.prog()' is prohibited in Cloud Multi-Tenant environments.
-  Fix: Replace with trusted Cloud API or ION BOD exchange.
+---
 
---------------------------------------------------------------------------------
-Audit completed: 2 errors, 1 warning in 1 file (0.014s).
-Status: REJECTED (Fix errors before committing)
+## Why Single-Line Index? (AI Context Token Optimization)
+
+In [`references/FUNCTION_INDEX.md`](references/FUNCTION_INDEX.md), all **2,266 bshell functions** are deliberately constrained to a **single physical line** per function:
+
+```markdown
+- **Json.getString** | [Cloud: Trusted] [Scope: all] [Inc: <bic_json>] | `string Json.getString( ... )` -> `references/guide/progguide/functions_json/jsongetstring.md`
 ```
+
+### Architectural Rationale for AI Coding Agents:
+1. **Zero Context Bloat**: Multi-line function documentation consumes thousands of tokens when loaded into LLM prompts. A single physical line allows an AI agent to use `grep` or `ripgrep` to fetch the exact signature, include header, and cloud trust status in **under 50 tokens**.
+2. **Sub-Second Lookup**: Agents do not need to parse large JSON files or perform deep AST queries. A simple regex (`grep -i "^- \*\*Json\."`) returns all matching signatures instantly.
+3. **Deterministic Cloud Governance**: The `[Cloud: Trusted]` or `[Cloud: Untrusted]` flag is parsed at a glance by agents before generating code for Infor Cloud Multi-Tenant environments.
+
+---
+
+## Knowledge Base Contents
+
+### 1. Authoritative Bshell Functions Database (`functions_db.json`)
+Located in [`index/functions_db.json`](index/functions_db.json), indexing all 2,266 bshell functions from Infor LN Studio 10.8 Build 0640.
+
+### 2. Development Tools (13 Complete Chapters)
+Located in [`references/DEV_TOOLS_INDEX.md`](references/DEV_TOOLS_INDEX.md), covering the full *Infor LN Development Tools (2016)* manual:
+- Data Dictionaries (Application vs Runtime Data Dictionary)
+- Table Reconfiguration Procedures (`crdd`)
+- Software Component Administration & PMC Packaging
+
+### 3. Public Interfaces & Process Extensions (1,833 Interfaces)
+Located in [`references/PUBLIC_INTERFACES_INDEX.md`](references/PUBLIC_INTERFACES_INDEX.md):
+- Core DLL libraries: `tdext`, `whext`, `tiext`, `tcext`, `tfext`
+- Standard business processes: `Address.Create`, `Item.GetData`, `SalesOrder.Create`, `Inventory.Adjust`
+
+### 4. Application Function Server (AFS `stpapi.*`)
+Located in [`references/AFS_INDEX.md`](references/AFS_INDEX.md):
+- `stpapi.put.field()`, `stpapi.get.field()`, `stpapi.insert()`, `stpapi.update()`, `stpapi.delete()`, `stpapi.find()`, `stpapi.end.session()`
+
+### 5. Official Studio Script Templates
+Located in [`templates/`](templates/):
+- `DalTwo.dal`: Modern DAL2 business logic template
+- `UIDatabase.cln`: Type 1-3 session script template
+- `UserExitDLL.ue`: User exit DLL for intercepting standard transactions
 
 ---
 
@@ -247,23 +270,19 @@ Status: REJECTED (Fix errors before committing)
 ### Cardinal Rule: Separation of Concerns (SoC)
 - **UI Scripts (`type 1-4`, `main.table.io`, `choice.*`)**: Responsible **only** for form presentation, visual field states, dynamic zooms, and window titles. **Never execute database mutations or business rule validations in UI scripts.**
 - **DAL 2 & Table Extensions**: Responsible for **all** validations, defaults, mandatory checks, referential integrity, and database operations.
-- *Reference*: [DAL Architecture & Business Logic Guide](references/best_practices/02_dal_architecture_and_business_logic.md).
 
 ### Mandatory Prohibited Anti-Patterns
-When developing Infor LN code, AI agents and developers must strictly prevent:
 1. ❌ **No Primitive Database Types**: Never use `long`, `string`, `double` for database columns. Always use Data Dictionary domains (e.g. `domain tcorno orno`).
 2. ❌ **No Direct Float Equality**: Never compare float amounts using `==` or `!=`. Always use `double.cmp(a, b, epsilon) == 0`.
 3. ❌ **No Nested Transactions in Hooks**: Never call `commit.transaction()` inside DAL hooks or reusable helper DLLs.
 4. ❌ **No Interactive Dialogs in Headless Code**: Never call `message()`, `ask.enum()`, `box()` in DAL or Extension Modeler code.
-5. ❌ **No Table Record Buffer Overwriting**: Never use `select table.*` in loops sharing active UI form buffers. Use aliases or bind to local host variables (`table.field:l.var`).
+5. ❌ **No Table Record Buffer Overwriting**: Never use `select table.*` in loops sharing active UI form buffers.
 6. ❌ **No 0-Based Array Access**: 4GL arrays are strictly 1-based (`1..N`).
 7. ❌ **No Unstructured Branching**: `goto` is strictly prohibited.
 
 ---
 
 ## Fast Search CLI Tool (`search.py`)
-
-A built-in search tool to quickly query across the entire 5,700+ page documentation collection:
 
 ```bash
 # Search by topic keywords
@@ -280,34 +299,16 @@ python erp-ln-progguide/scripts/search.py --list-groups
 
 ## Automated Test Suite
 
-Run the unit test suite for the Standalone Audit Engine:
+Run unit tests for the Standalone Audit Engine:
 
 ```bash
 python -m unittest discover -s erp-ln-progguide/tests
 ```
 
-```text
-........
-----------------------------------------------------------------------
-Ran 8 tests in 0.264s
-
-OK
-```
-
-Validate documentation integrity & index consistency:
+Validate documentation integrity & links:
 
 ```bash
 python ln_studio_skill/tools/validate_skill.py --skill-dir erp-ln-progguide
-```
-
-```text
-INDEX.tsv: OK (0 missing)
-references/FUNCTION_INDEX.md: OK (0 broken)
-references/PUBLIC_INTERFACES_INDEX.md: OK (0 broken)
-references/EXTENSIONS_INDEX.md: OK (0 broken)
-references/DEV_TOOLS_INDEX.md: OK (0 broken)
-page links: OK (5010 pages, 0 broken)
-validate_skill: PASS (0 problem(s))
 ```
 
 ---
@@ -316,8 +317,8 @@ validate_skill: PASS (0 problem(s))
 
 ```text
 erp-ln-progguide/
-├── SKILL.md                          # Agent skill definition & workflow guidelines
-├── README.md                         # Detailed skill documentation & user guide
+├── SKILL.md                          # AI agent skill definition & instructions
+├── README.md                         # Static Linter & Knowledge Base documentation
 ├── index/
 │   ├── functions_db.json             # 2,266 bshell functions machine-readable database
 │   └── INDEX.tsv                     # Full-text path-to-title mapping index
@@ -342,13 +343,3 @@ erp-ln-progguide/
 └── tests/
     └── test_audit_4gl.py             # Unit tests for audit engine rules
 ```
-
----
-
-## Credits & Maintainer
-
-**Created and Maintained by:**
-- **Natthaphon Srikasem** — Lead Developer & Senior ERP Technical Consultant
-- **Reinvention Co., Ltd.** — Company
-
-Dedicated to advancing autonomous, high-velocity, and safe enterprise development on Infor ERP LN and Infor LN Studio.
