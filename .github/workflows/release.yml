@@ -1,0 +1,92 @@
+name: Release Automation & Skill Packaging
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
+
+jobs:
+  build-and-release:
+    name: Package Skills & Publish Release
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify Quality Gate
+        run: |
+          python scripts/run_checks.py
+
+      - name: Determine Version Tag
+        id: version_tag
+        shell: pwsh
+        run: |
+          $ver = "${{ github.ref_name }}"
+          if (-not $ver -or $ver -notlike "v*") {
+            $ver = "${{ github.event.inputs.tag_name }}"
+          }
+          if (-not $ver) {
+            $ver = "v1.0.0"
+          }
+          Write-Output "RELEASE_TAG=$ver" >> $env:GITHUB_ENV
+          Write-Host "Resolved Release Tag: $ver"
+
+      - name: Package Release Assets
+        shell: pwsh
+        run: |
+          python scripts/package_release.py --version $env:RELEASE_TAG --output-dir dist
+
+      - name: Extract Release Notes from CHANGELOG.md
+        id: changelog_reader
+        shell: pwsh
+        run: |
+          $ver = $env:RELEASE_TAG.TrimStart("v")
+          $changelogPath = "CHANGELOG.md"
+          $notes = ""
+          if (Test-Path $changelogPath) {
+            $lines = Get-Content $changelogPath
+            $capturing = $false
+            foreach ($line in $lines) {
+              if ($line -match "^##\s+\[$ver\]|^##\s+\[v$ver\]") {
+                $capturing = $true
+                continue
+              } elseif ($capturing -and $line -match "^##\s+\[") {
+                break
+              }
+              if ($capturing) {
+                $notes += "$line`n"
+              }
+            }
+          }
+          if (-not $notes.Trim()) {
+            $notes = "Automated release packaging for Skill_LN $env:RELEASE_TAG."
+          }
+          $notes | Out-File -FilePath release_notes.md -Encoding utf8
+          Write-Host "Release Notes prepared."
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: Skill_LN ${{ env.RELEASE_TAG }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            dist/*.zip

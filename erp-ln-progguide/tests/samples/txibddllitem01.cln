@@ -1,0 +1,309 @@
+|******************************************************************************
+|* txibddllitem01  B61O_a_ext
+|* Dll Gen Item Code
+|* nsrikase
+|* 2569-10-16 [04:58]
+|DV2600392 - 19/10/2026
+|SCS-CR029 Generate item code
+|******************************************************************************
+|* Script Type: Library
+|******************************************************************************
+
+#include <bic_dam>
+#include <bic_dialog>
+
+|* Table Declarations
+table   ttcmcs023   | Item Groups
+table   ttcmcs006   | Unit Sets
+table   ttcmcs012   | Units by Unit Set
+table   ttcibd001   | Items
+
+|* Dialog Form Variables
+extern  domain  tccitg      dlg.citg
+extern  domain  tcmcs.str2  dlg.prefix
+long    g.dlg
+
+|*-----------------------------------------------------------------------------
+|* Format Clean 8-Character Item Code
+|*-----------------------------------------------------------------------------
+function extern string txibddllitem01.format.clean.code(
+        domain  tcmcs.str2  i.prefix,
+        domain  tfgld.docn  i.seq)
+{
+    return(sprintf$("%s%06d", strip$(i.prefix), i.seq))
+}
+
+|*-----------------------------------------------------------------------------
+|* Format Segmented 47-Character Item String (9 Leading Spaces)
+|*-----------------------------------------------------------------------------
+function extern string txibddllitem01.format.segmented.item(
+        domain  tcmcs.str2  i.prefix,
+        domain  tfgld.docn  i.seq)
+{
+    return(sprintf$("         %s%06d", strip$(i.prefix), i.seq))
+}
+
+|*-----------------------------------------------------------------------------
+|* Resolve Default Unit Set and Inventory Unit
+|*-----------------------------------------------------------------------------
+function extern long txibddllitem01.get.default.units(
+        ref domain  tcuset  o.uset,
+        ref domain  tccuni  o.cuni)
+{
+    o.uset = ""
+    o.cuni = ""
+
+    |* Query first Unit Set ordered by primary index
+    select  tcmcs006.uset
+    from    tcmcs006
+    order by tcmcs006._index1
+    as set with 1 rows
+    selectdo
+        o.uset = tcmcs006.uset
+    endselect
+
+    |* Query first Inventory Unit within resolved Unit Set
+    if not isspace(o.uset) then
+        select  tcmcs012.uset, tcmcs012.cuni
+        from    tcmcs012
+        where   tcmcs012.uset = :o.uset
+        order by tcmcs012._index1
+        as set with 1 rows
+        selectdo
+            o.cuni = tcmcs012.cuni
+        endselect
+    endif
+
+    return(not isspace(o.uset) and not isspace(o.cuni))
+}
+
+|*-----------------------------------------------------------------------------
+|* Dialog Field Check Hook for Item Group (dlg.citg)
+|*-----------------------------------------------------------------------------
+function extern long txibddllitem01.check.citg()
+{
+    if isspace(dlg.citg) then
+        dlg.prefix = ""
+        if g.dlg > 0 then
+            dialog.refresh.field(g.dlg, "dlg.prefix")
+        endif
+        return(false)
+    endif
+
+    select  tcmcs023.citg, tcmcs023.cdf_pitm
+    from    tcmcs023
+    where   tcmcs023._index1 = {:dlg.citg}
+    as set with 1 rows
+    selectdo
+        if isspace(tcmcs023.cdf_pitm) then
+            dlg.prefix = ""
+            if g.dlg > 0 then
+                dialog.refresh.field(g.dlg, "dlg.prefix")
+            endif
+            message("Item Group %s does not have a Prefix defined.", strip$(dlg.citg))
+            return(false)
+        endif
+
+        dlg.prefix = tcmcs023.cdf_pitm
+        if g.dlg > 0 then
+            dialog.refresh.field(g.dlg, "dlg.prefix")
+        endif
+        return(true)
+    selectempty
+        dlg.prefix = ""
+        if g.dlg > 0 then
+            dialog.refresh.field(g.dlg, "dlg.prefix")
+        endif
+        message("Item Group %s does not exist.", strip$(dlg.citg))
+        return(false)
+    endselect
+
+    return(false)
+}
+
+|*-----------------------------------------------------------------------------
+|* Atomic Transaction Engine: Sequence Increment and DAL2 Persistence
+|*-----------------------------------------------------------------------------
+function extern long txibddllitem01.execute.atomic.generation(
+        domain  tccitg      i.citg,
+        ref domain tcitem   o.item)
+{
+    domain  tcmcs.str2  prefix
+    domain  tfgld.docn  curr_docn
+    domain  tfgld.docn  next_seq
+    domain  tcitm.dscr  gen_dsca
+    domain  tcitem      gen_item
+    domain  tcuset      dflt_uset
+    domain  tccuni      dflt_cuni
+    long                db_ret
+    long                ret_dal
+    boolean             item_found
+
+    o.item = ""
+
+    if isspace(i.citg) then
+        message("Item Group cannot be blank.")
+        return(false)
+    endif
+
+    |* 1. Begin atomic transaction with lock on Item Group
+    db.retry.point()
+
+    select  tcmcs023.citg, tcmcs023.cdf_pitm, tcmcs023.cdf_docn
+    from    tcmcs023 for update
+    where   tcmcs023._index1 = {:i.citg}
+    as set with 1 rows
+    selectdo
+        prefix = tcmcs023.cdf_pitm
+        curr_docn = tcmcs023.cdf_docn
+    selectempty
+        abort.transaction()
+        message("Item Group %s does not exist.", strip$(i.citg))
+        return(false)
+    endselect
+
+    |* 2. Validate prefix presence
+    if isspace(prefix) then
+        abort.transaction()
+        message("Item Group %s does not have a Prefix defined.", strip$(i.citg))
+        return(false)
+    endif
+
+    |* 3. Validate sequence counter limit (max 999999)
+    if curr_docn >= 999999 then
+        abort.transaction()
+        message("Sequential counter for Item Group %s has reached the limit (999999).", strip$(i.citg))
+        return(false)
+    endif
+
+    |* 4. Derive initial sequence counter and construct item code
+    next_seq = curr_docn + 1
+    gen_dsca = txibddllitem01.format.clean.code(prefix, next_seq)
+    gen_item = txibddllitem01.format.segmented.item(prefix, next_seq)
+
+    |* 5. Validate against tcibd001; if duplicate exists, increment last used and regenerate to prevent Error 100 (EDUPL)
+    item_found = true
+    while item_found
+        select  tcibd001.item
+        from    tcibd001
+        where   tcibd001._index1 = {:gen_item}
+        as set with 1 rows
+        selectdo
+            item_found = true
+            if next_seq >= 999999 then
+                abort.transaction()
+                message("Sequential counter for Item Group %s has reached the limit (999999).", strip$(i.citg))
+                return(false)
+            endif
+            next_seq = next_seq + 1
+            gen_dsca = txibddllitem01.format.clean.code(prefix, next_seq)
+            gen_item = txibddllitem01.format.segmented.item(prefix, next_seq)
+        selectempty
+            item_found = false
+        endselect
+    endwhile
+
+    |* 6. Update sequence counter on Item Group
+    tcmcs023.cdf_docn = next_seq
+    db_ret = db.update(ttcmcs023, db.retry)
+    if db_ret <> 0 then
+        abort.transaction()
+        message("Failed to update sequence number on Item Group (db error %d).", db_ret)
+        return(false)
+    endif
+
+    |* 7. Query default Unit Set and Inventory Unit
+    txibddllitem01.get.default.units(dflt_uset, dflt_cuni)
+
+    |* 8. Insert Item record via DAL2 business object logic
+    ret_dal = dal.new.object("tcibd001")
+    if ret_dal <> 0 then
+        abort.transaction()
+        show.dal.messages()
+        return(false)
+    endif
+
+    dal.set.field("tcibd001.item", gen_item)
+    dal.set.field("tcibd001.dsca", gen_dsca)
+    dal.set.field("tcibd001.citg", i.citg)
+
+    if not isspace(dflt_uset) then
+        dal.set.field("tcibd001.uset", dflt_uset)
+    endif
+
+    if not isspace(dflt_cuni) then
+        dal.set.field("tcibd001.cuni", dflt_cuni)
+    endif
+
+    if tcibd001.kitm = empty then
+        dal.set.field("tcibd001.kitm", tckitm.purchase)
+    endif
+
+    ret_dal = dal.save.object("tcibd001")
+    if ret_dal <> 0 then
+        abort.transaction()
+        show.dal.messages()
+        return(false)
+    endif
+
+    |* 9. Commit entire atomic transaction
+    commit.transaction()
+    o.item = gen_item
+    return(true)
+}
+
+|*-----------------------------------------------------------------------------
+|* Public Dialog Entry Point: Generates Item Code interactively
+|*-----------------------------------------------------------------------------
+function extern long txibddllitem01.generate.item.code(
+        ref domain  tcitem  o.item)
+{
+    long    ret
+
+    o.item = ""
+    dlg.citg = ""
+    dlg.prefix = ""
+
+    g.dlg = dialog.new("Generate item Code",
+        DLG_BUTTONS, DSBUTTONOKCANCEL,
+        DLG_OK_TEXT, "Generate")
+
+    dialog.add.field(g.dlg, "dlg.citg", "Item Group",
+        DLG_DOMAIN, "tccitg",
+        DLG_ZOOM_PROG, "tcmcs0123m000",
+        DLG_ZOOM_RETURN, "tcmcs023.citg",
+        DLG_FIELD_CHECK, "txibddllitem01.check.citg",
+        DLG_MANDATORY, true)
+
+    dialog.add.field(g.dlg, "dlg.prefix", "Prefix Item Code",
+        DLG_DOMAIN, "tcmcs.str2",
+        DLG_FIELD_STATE, READONLY)
+
+    if not dialog.show(g.dlg) then
+        return(false)
+    endif
+
+    ret = txibddllitem01.execute.atomic.generation(dlg.citg, o.item)
+    return(ret)
+}
+
+|* Alias for backward compatibility
+function extern long txibddllitem01.generate.item(
+        ref domain  tcitem  o.item)
+{
+    return(txibddllitem01.generate.item.code(o.item))
+}
+
+|* Self-test function for diagnostic verification
+function extern void txibddllitem01_test()
+{
+    domain  tcmcs.str2  test_pfx
+    domain  tfgld.docn  test_seq
+    string              res_code(8)
+    string              res_seg(47)
+
+    test_pfx = "10"
+    test_seq = 1
+    res_code = txibddllitem01.format.clean.code(test_pfx, test_seq)
+    res_seg  = txibddllitem01.format.segmented.item(test_pfx, test_seq)
+}

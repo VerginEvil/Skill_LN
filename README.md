@@ -6,6 +6,9 @@
 [![Headless JCA](https://img.shields.io/badge/Headless%20Engine-JCA%201.6%20Bridge%20(JDK%2011)-795548?style=for-the-badge&logo=openjdk&logoColor=white)](ln_studio_skill#headless-jca-architecture)
 [![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](erp-ln-progguide#standalone-4gl--dal-audit-engine-audit_4glpy)
 [![Tests](https://img.shields.io/badge/Tests-166%2F166%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
+[![CI](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml/badge.svg)](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml)
+[![Releases](https://img.shields.io/github/v/release/VerginEvil/Skill_LN?style=for-the-badge&logo=github)](https://github.com/VerginEvil/Skill_LN/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Natthaphon%20Srikasem-blueviolet?style=for-the-badge)](#credits--maintainer)
 
 > **A unified, production-grade intelligence, headless JCA modeling, pre-commit SCM automation, and static verification ecosystem for Infor ERP LN and Infor LN Studio 10.8 Build 0640 (April 2026 tree, Eclipse RCP).**
@@ -342,6 +345,18 @@ python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --
 
 ---
 
+## GitHub Releases (Pre-Packaged Skill Bundles)
+
+Pre-packaged, standalone zip bundles for every release are available on [GitHub Releases](https://github.com/VerginEvil/Skill_LN/releases):
+
+| Asset Archive | Contents | Intended Audience |
+|---|---|---|
+| **`erp-ln-progguide-v*.zip`** | Knowledge base, 2,266 function database, standalone `audit_4gl.py` | All developers, AI agents, code reviewers |
+| **`ln_studio_skill-v*.zip`** | Headless JCA bridge, 16 MCP tools, 37 CLI subcommands | AI coding assistants (Antigravity, Cursor, Claude Code) |
+| **`skill-ln-vscode-v*.zip`** | VS Code TextMate grammar, snippets, language configuration | VS Code users authoring 4GL & DAL code |
+
+---
+
 ## Installation & Agent Configuration
 
 Copy or link the skill folders to your agent's configuration directory:
@@ -394,8 +409,9 @@ validate_skill (ln_studio_skill): PASS (17 pages, 0 broken)
 ```text
 Skill_LN/
 ├── README.md                         # Main repository documentation (this file)
-├── GLOSSARY.md                       # Infor LN terminology, domains, and concepts
-├── Tickets.md                        # Task tickets & batch dependency graphs
+├── CHANGELOG.md                      # Release notes & version history (Keep a Changelog)
+├── LICENSE                           # Open source MIT license
+├── AGENTS.md                         # AI agent behavioral & testing guardrails
 │
 ├── ln_studio_skill/                  # PILLAR 1: Infor LN Studio Automation & MCP Skill
 │   ├── README.md                     # Dedicated toolset & MCP documentation
@@ -410,7 +426,7 @@ Skill_LN/
 │   ├── references/                   # 5,700+ MD pages, 6 cookbooks, 13 dev tools ch
 │   ├── templates/                    # 9 official Studio script templates
 │   ├── scripts/                      # audit_4gl.py (static auditor) & search.py
-│   └── tests/                        # 8 unit tests for audit engine rules
+│   └── tests/                        # Unit tests & samples for audit engine
 │
 ├── export/vscode/                    # PILLAR 3: VS Code Extension Production Assets
 │   ├── README.md                     # VS Code package wiring guide
@@ -419,12 +435,21 @@ Skill_LN/
 │   ├── language-configuration.json   # Bracket, comment, and folding rules
 │   └── completions.json              # 2,491 hover and completion proposals
 │
-└── docs/                             # Architecture Decision Records (ADRs) & Specs
-    ├── SPEC_HEADLESS_JCA_CONNECTIVITY_SCM_AND_MCP.md
-    └── adr/
-        ├── 0005-progguide-studio-dictionaries-and-audit-engine.md
-        ├── 0006-ln-studio-extension-readonly-and-lnui-workflow.md
-        └── 0007-headless-jca-connectivity-scm-and-mcp-server.md
+├── scripts/                          # CI/CD and developer automation scripts
+│   ├── run_checks.py                 # Unified checks gateway (syntax, layout, unittests)
+│   ├── package_release.py            # Automated packaging for GitHub Release ZIP assets
+│   └── developer/                    # Knowledge extraction & syntax generation utilities
+│
+├── docs/                             # Architecture Decision Records (ADRs) & Knowledge
+│   ├── glossary/GLOSSARY.md          # Infor LN terminology, domains, and concepts
+│   ├── adr/                          # Architecture Decision Records (ADR 0001 - 0015)
+│   ├── agents/                       # AI Agent domain & issue tracking guidelines
+│   ├── plans/                        # Historical work rosters, tickets, and specs
+│   └── MAINTENANCE_GUIDE.md          # Long-term maintenance and release runbook
+│
+└── .github/workflows/                # GitHub Actions Workflows
+    ├── ci.yml                        # Automated PR & main quality gate
+    └── release.yml                   # Semantic release packaging on git tag push
 ```
 
 ---

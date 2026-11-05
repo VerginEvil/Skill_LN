@@ -1,25 +1,88 @@
-.scratch/
+# ==============================================================================
+# Skill_LN Git Ignore Specification
+# Comprehensive ignore rules for Infor ERP LN Developer Skills & Studio Toolchain
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Infor LN Studio Credentials, Tokens & Local Environment Cache
+# ------------------------------------------------------------------------------
+*.ionapi
+.ln_studio_tokens.json
+.ln_studio_config.json
+.ln_dd_cache.json
+.reference/
+.cache/
+tokens/
+
+# ------------------------------------------------------------------------------
+# 2. Large Proprietary Documentation & Manuals (Offline Reference Only)
+# ------------------------------------------------------------------------------
 knowledge_docs/
 implementation/
-docs/*
-!docs/adr/
-!docs/adr/**
-!docs/agents/
-!docs/agents/**
+.scratch/
+output/
+
+# ------------------------------------------------------------------------------
+# 3. Python Runtime, Virtual Environments & Build Artifacts
+# ------------------------------------------------------------------------------
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ------------------------------------------------------------------------------
+# 4. Java & Infor LN JCA / Eclipse Binaries
+# (Authentic JCA jars must be provided by user via BYOJ / Eclipse installation)
+# ------------------------------------------------------------------------------
 *.class
 ln_studio_skill/tools/lib/tools/
 ln_studio_skill/tools/lib/*.jar
 **/JCAAdapter4ERPln*.jar
 **/lnstudio_commoncore.jar
+
+# ------------------------------------------------------------------------------
+# 5. Export / Scratch LN Component Dumps
+# (Real source lives in skills and git-tracked templates)
+# ------------------------------------------------------------------------------
 export/*.cln
 export/*.dal
-output/
-.ln_studio_config.json
-.ln_dd_cache.json
-.reference/
-.ln_studio_tokens.json
-.cache/
-*.ionapi
+
+# ------------------------------------------------------------------------------
+# 6. IDE, OS & Editor Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sublime-project
+*.sublime-workspace

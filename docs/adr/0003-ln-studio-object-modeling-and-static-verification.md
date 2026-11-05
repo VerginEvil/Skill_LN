@@ -3,7 +3,7 @@
 - **Status**: Accepted
 - **Date**: 2026-10-22
 - **Spec**: [`docs/SPEC_LN_STUDIO_OBJECT_AND_VALIDATION.md`](../SPEC_LN_STUDIO_OBJECT_AND_VALIDATION.md)
-- **Work Roster**: [`Tickets.md`](../../Tickets.md) (Tickets 01 through 06)
+- **Work Roster**: [`Tickets.md`](../plans/Tickets.md) (Tickets 01 through 06)
 - **Prior ADRs**:
   - [`docs/adr/0001-plan-skill-update-and-coding-best-practices.md`](0001-plan-skill-update-and-coding-best-practices.md)
   - [`docs/adr/0002-ln-studio-skill-self-contained-toolchain.md`](0002-ln-studio-skill-self-contained-toolchain.md)

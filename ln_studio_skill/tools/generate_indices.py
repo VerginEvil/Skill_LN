@@ -110,7 +110,14 @@ def generate_function_index(skill: Path) -> tuple[str, int]:
         try:
             import json
             import sys
-            tools_dir = Path(__file__).resolve().parent.parent.parent / "tools"
+            # Look in scripts/developer (modern repo layout) or legacy tools directory
+            repo_root = Path(__file__).resolve().parent.parent.parent
+            scripts_dev_dir = repo_root / "scripts" / "developer"
+            legacy_tools_dir = repo_root / "tools"
+            for d in (scripts_dev_dir, legacy_tools_dir):
+                if d.exists() and str(d) not in sys.path:
+                    sys.path.insert(0, str(d))
+            tools_dir = scripts_dev_dir
             if str(tools_dir) not in sys.path:
                 sys.path.insert(0, str(tools_dir))
             from extract_studio_knowledge import generate_enriched_function_index

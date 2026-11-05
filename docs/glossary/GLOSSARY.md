@@ -101,3 +101,9 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Single-XML TDE Layout Validator**: Automated mechanical check in `admin_sync.py` enforcing canonical `{pkg}/{type}/{mod}/{name}.{ext}` placement and hard-blocking legacy plural directories (`reports/`, `tables/`, `sessions/`) prior to `.admin` synchronization and SCM operations.
 - **Unified Checks Gateway (`scripts/run_checks.py`)**: Centralized local and CI script executing AST syntax validation (`compileall`), mechanical layout auditing, and full unit test discovery in a single deterministic pass.
 
+
+### Repository Reorganization, Packaging & Release Toolchain (ADR 0015)
+- **Monorepo Dual-Skill Layout**: Clean top-level repository architecture keeping `erp-ln-progguide/` and `ln_studio_skill/` as first-class root directories, coexisting with centralized `docs/` and `scripts/`.
+- **Skill Asset Bundle**: Hermetic, standalone ZIP archives (`erp-ln-progguide-v<ver>.zip`, `ln_studio_skill-v<ver>.zip`, `skill-ln-vscode-v<ver>.zip`) packaged automatically by `scripts/package_release.py` excluding VCS metadata, caches, and BYOJ binary jars.
+- **GitHub Actions Quality Gate (`ci.yml`)**: Continuous integration workflow running `scripts/run_checks.py` on every commit and pull request to `main`.
+- **Automated GitHub Release Pipeline (`release.yml`)**: Semantic-versioned distribution workflow triggered on Git tag push (`v*`), attaching release bundles and populating release notes directly from `CHANGELOG.md`.

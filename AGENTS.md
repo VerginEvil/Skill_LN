@@ -23,4 +23,4 @@ Issues and specs live as local markdown files under `.scratch/<feature>/`. See `
 
 ### Domain docs
 
-Single-context layout (`GLOSSARY.md` at root, architecture decision records under `docs/adr/`). See `docs/agents/domain.md`.
+Single-context layout (`docs/glossary/GLOSSARY.md`, architecture decision records under `docs/adr/`, plans under `docs/plans/`). See `docs/agents/domain.md`.

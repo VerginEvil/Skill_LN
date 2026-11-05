@@ -5,7 +5,7 @@
 - **Target Skill**: `erp-ln-progguide` (with synchronized static rule alignment in `ln_studio_skill`)
 - **Specification**: [`docs/SPEC_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md`](../SPEC_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md)
 - **Implementation Plan**: [`docs/PLAN_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md`](../PLAN_PROGGUIDE_STUDIO_EXTRACTION_AND_AUDIT.md)
-- **Work Roster**: [`Tickets.md`](../../Tickets.md) (Tickets 01 through 06)
+- **Work Roster**: [`Tickets.md`](../plans/Tickets.md) (Tickets 01 through 06)
 - **Prior ADRs**:
   - [`docs/adr/0001-plan-skill-update-and-coding-best-practices.md`](0001-plan-skill-update-and-coding-best-practices.md)
   - [`docs/adr/0002-ln-studio-skill-self-contained-toolchain.md`](0002-ln-studio-skill-self-contained-toolchain.md)
