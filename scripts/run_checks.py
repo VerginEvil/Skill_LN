@@ -23,20 +23,27 @@ from typing import Optional, List
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = REPO_ROOT / "ln_studio_skill" / "tools"
 TESTS_DIR = TOOLS_DIR / "tests"
+PROGGUIDE_DIR = REPO_ROOT / "erp-ln-progguide"
+PROGGUIDE_SCRIPTS_DIR = PROGGUIDE_DIR / "scripts"
+PROGGUIDE_TESTS_DIR = PROGGUIDE_DIR / "tests"
 
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
+if str(PROGGUIDE_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(PROGGUIDE_SCRIPTS_DIR))
 
 
 def check_syntax() -> bool:
-    """Compiles all Python sources under ln_studio_skill/tools to verify syntax."""
+    """Compiles all Python sources under ln_studio_skill/tools and erp-ln-progguide/scripts to verify syntax."""
     print("=== [1/3] Checking Python Syntax Compilation ===")
-    ok = compileall.compile_dir(str(TOOLS_DIR), quiet=1, force=False)
-    if ok:
-        print("[PASS] Python syntax clean.")
+    ok1 = compileall.compile_dir(str(TOOLS_DIR), quiet=1, force=False)
+    ok2 = compileall.compile_dir(str(PROGGUIDE_SCRIPTS_DIR), quiet=1, force=False)
+    if ok1 and ok2:
+        print("[PASS] Python syntax clean across ln_studio_skill and erp-ln-progguide.")
+        return True
     else:
-        print("[FAIL] Python syntax errors detected in ln_studio_skill/tools.")
-    return bool(ok)
+        print("[FAIL] Python syntax errors detected.")
+        return False
 
 
 def check_layout() -> bool:
@@ -73,9 +80,31 @@ def check_layout() -> bool:
 
 
 def run_unit_tests() -> bool:
-    """Runs the full unittest suite across ln_studio_skill/tools/tests."""
+    """Runs the full unittest suite across erp-ln-progguide and ln_studio_skill."""
     print("\n=== [3/3] Running Unit Test Suite ===")
-    cmd = [
+
+    # Suite 1: erp-ln-progguide/tests
+    print("--- [3a/3] Running erp-ln-progguide Test Suite ---")
+    cmd_prog = [
+        sys.executable,
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        str(PROGGUIDE_TESTS_DIR),
+        "-p",
+        "test_*.py",
+    ]
+    env_prog = os.environ.copy()
+    env_prog["PYTHONPATH"] = str(PROGGUIDE_SCRIPTS_DIR)
+    proc_prog = subprocess.run(cmd_prog, env=env_prog)
+    if proc_prog.returncode != 0:
+        print(f"[FAIL] erp-ln-progguide test suite failed with exit code {proc_prog.returncode}.")
+        return False
+
+    # Suite 2: ln_studio_skill/tools/tests
+    print("\n--- [3b/3] Running ln_studio_skill Test Suite ---")
+    cmd_studio = [
         sys.executable,
         "-m",
         "unittest",
@@ -85,15 +114,15 @@ def run_unit_tests() -> bool:
         "-p",
         "test_*.py",
     ]
-    env = os.environ.copy()
-    env["PYTHONPATH"] = str(TOOLS_DIR)
-    proc = subprocess.run(cmd, env=env)
-    if proc.returncode == 0:
-        print("[PASS] Full test suite passed cleanly.")
-        return True
-    else:
-        print(f"[FAIL] Unit test suite failed with exit code {proc.returncode}.")
+    env_studio = os.environ.copy()
+    env_studio["PYTHONPATH"] = str(TOOLS_DIR)
+    proc_studio = subprocess.run(cmd_studio, env=env_studio)
+    if proc_studio.returncode != 0:
+        print(f"[FAIL] ln_studio_skill test suite failed with exit code {proc_studio.returncode}.")
         return False
+
+    print("[PASS] Full test suite across all skills passed cleanly.")
+    return True
 
 
 def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:

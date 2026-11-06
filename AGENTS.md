@@ -5,7 +5,7 @@
 Always use Python's built-in `unittest` runner (do NOT invoke `pytest` as it is not installed in the Windows Python environment):
 
 ```powershell
-# Run the full test suite across all tools
+# Run the full test suite across all tools (erp-ln-progguide: erp-ln-progguide/tests, ln_studio_skill: ln_studio_skill/tools/tests)
 python -m unittest discover -s ln_studio_skill/tools/tests -p "test_*.py"
 
 # Run a single test file

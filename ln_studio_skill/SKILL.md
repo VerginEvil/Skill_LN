@@ -20,6 +20,10 @@ This skill operates under a strict division of responsibilities with [`erp-ln-pr
 | **Studio Toolchain & Object Modeling** | `ln_studio_skill` (This Skill) | Pinned Studio 10.8 path resolution, explicit workspace/activity targeting, 12-extension `.admin` SCM cache synchronization, OS Read-Only guardrails, high-fidelity XML generation (`.tbl`, `.ses`, `.lib`, `.dmn`, `.lbl`, `.mnu`), 4-layer activity validation (`validate` & `--fix`), and offline 4GL syntax/completion inspection (`check-script`). |
 | **4GL Coding Recipes & DAL 2 Patterns** | `erp-ln-progguide` | Business logic cookbooks, DAL 2 hook patterns, Extension point design, SQL optimization recipes, and Cloud tenant governor limits. |
 
+> [!NOTE]
+> **Runtime Error Prevention & Defensive Datatypes (ADR 0017)**:
+> When authoring schemas or generating tables (`generate_ln_table.py`), line/sequence number fields (`line`, `lino`, `seqn`) in staging, work, or open-item selection tables where `0` is a valid entry (such as invoice header records) must have `isMandatory: false` to avoid Fatal Error 205 in bshell. For 4GL runtime datatype rules (Julian Day vs UTC timestamp, enum comparison safety, SSO username length), refer to [`erp-ln-progguide` Pillar 7](../erp-ln-progguide/references/best_practices/06_4gl_coding_standards_and_caveats.md#8-pillar-7-runtime-error-prevention-datatype-boundaries--defensive-guards-adr-0017).
+
 ---
 
 ## SCM & Workspace Operational Rules

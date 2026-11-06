@@ -22,7 +22,7 @@ Never read folders blindly. Use this order:
    ```bash
    python <skill_dir>/scripts/audit_4gl.py <target_path> [--mode dal2|uedll|general] [--cloud] [--format text|json] [--strict]
    ```
-   Audits block balance (SYN001), section headers (SYN002), DAL contracts (DAL001-DAL005), Extension boundaries & include placement (EXT001-EXT002), Cloud trust (CLD001-CLD002), missing `#include` (INC001), and caveats (CAV001-CAV003).
+   Audits block balance (SYN001), section headers (SYN002), DAL contracts (DAL001-DAL005), Extension boundaries & include placement (EXT001-EXT002), Cloud trust (CLD001-CLD002), missing `#include` (INC001), caveats (CAV001-CAV003), Date domain safety & Error 205 prevention (DMN002), Mandatory numeric zero-constraints (TBL003), Enum domain type safety (DMN003), Cloud SSO username slicing (STR001), and ephemeral debug cleanups (DBG001).
 4. **Free-text question** ("how to open a file", "utc conversion", "query hint", "before.save.object hook", "crdd reconfiguration", "MMT satellite") -> run:
    ```
    python <skill_dir>/scripts/search.py <terms> [--dir guide|sql|extensions|public_interfaces|afs|dev_tools|best_practices|all] [--group substr] [--regex PATTERN] [--max 25]
@@ -48,6 +48,7 @@ When analyzing, designing, or generating Infor ERP LN code, AI agents and develo
    - Maintain the safe `table.super()` signature pattern with `get.long.arg(1)` for optional `mode` handling.
    - **Extension Modeler Boundary (ADR 0006)**: Extension Modeler components (`ttext1500m000`) cannot be checked out via LN Studio SCM. Author extensions locally (`extensions/<type>/<comp>_ext.4gl`) with `#context_on` blocks, audit with `audit_4gl.py`, and deliver hook-by-hook into LN UI.
    - **Extension Modeler Compiler Rules (ADR 0013)**: All `#include` directives must be inside `#context_on "declarations"` (`EXT001`). Form Command before/after hooks must have `void` return type and never contain `return(value)` (`DAL002`, `DAL003`). Enforce strict scope separation between Table DAL hooks and Form Command hooks (`EXT002`). Session Extensions (`general` archetype) may initiate transactions (`db.retry.point()`) when coordinating DAL 2 updates.
+   - **Runtime Error Prevention & Datatype Boundaries (ADR 0017)**: Julian Day (Date 4) fields must never be assigned UTC epoch seconds (`date.to.utc()` triggers Error 205); use `date.num()` directly (`DMN002`). Line/sequence columns must not be mandatory if `line = 0` is valid (`TBL003`). Enforce symbolic enum domain matching without cross-domain comparison or non-zero integer literals (`DMN003`). Slice SSO usernames to 16 chars with `strip$(shiftl$(logname$))(1; 16)` (`STR001`). Remove raw debug `message(...)` calls before release (`DBG001`).
    - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
 
 3. **Embedded Baan SQL & Index Alignment**:
@@ -72,7 +73,6 @@ When analyzing, designing, or generating Infor ERP LN code, AI agents and develo
    - Respect Cloud multi-tenant governor limits: max execution elapsed time = `5,000 ms`, max file output = `5 MB`.
    - Never call untrusted bshell functions (`run.prog()`, `hostname$()`) or manipulate files outside sandboxed tenant storage.
    - Run `scripts/audit_4gl.py --cloud` to automatically flag untrusted or deprecated APIs.
-   - *Reference*: [Extension Hooks & Cloud Governance Cookbook](references/best_practices/01_extension_hooks_cookbook.md).
 
 ### Mandatory Negative Constraints & Defensive Rules (Strictly Prohibited Anti-Patterns)
 
