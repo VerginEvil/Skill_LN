@@ -39,6 +39,28 @@ endselect
   > **Buffer Overwrite Risk**: In UI sessions, executing `select table.*` in helper functions silently overwrites the active form record buffer! Always bind queried columns directly to local host variables (`table.field:l.var`) or use Table Aliases. See [Pillar 4: Table Record Buffer Protection](06_4gl_coding_standards_and_caveats.md#5-pillar-4-embedded-sql--table-record-buffer-protection).
 - **Column Projections**: Avoid `SELECT *` in performance-critical loops. Select only the columns required to reduce network bandwidth and memory overhead.
 
+### 1.3 Prohibition of Array Subscripts in Host Variables (SQLState 42I03 / Error 302)
+- **Scalar Host Variables Only**: In Embedded Baan SQL, host variables must be scalar identifiers (e.g. `:l_orno`, `:comp.num`).
+- **Array Subscripts Forbidden (Rule SQL008)**: Writing `:arr(i)` or `:arr(1, i)` inside a `WHERE` or `SELECT` clause causes the Baan SQL precompiler to separate `:arr` and interpret `(i)` as an SQL column or table qualifier in the query tree, failing with:
+  `SQLState 42I03: Unknown column 'i' (error 302)`
+- **Mandatory Pattern - Scalar Staging**:
+  Always extract array elements into local scalar variables before executing the query:
+  ```baan
+  |* Staging step:
+  l_ttyp = mark_ttyp(1, i)
+  l_ninv = mark_ninv(i)
+
+  |* Query step with scalar host variables:
+  select tfacr500.*
+  from   tfacr500 for update
+  where  tfacr500.ttyp = :l_ttyp
+  and    tfacr500.ninv = :l_ninv
+  selectdo
+      ...
+  endselect
+  ```
+  See [Rule SQL008 in 4GL Coding Standards](06_4gl_coding_standards_and_caveats.md#57-no-array-subscripts-in-sql-host-variables-rule-sql008).
+
 ---
 
 ## 2. Index Alignment & Query Optimization Rules

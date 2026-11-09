@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] - 2026-11-09
+
+### Added
+- **4GL String Array & Embedded SQL Host Variable Guardrails (ADR 0019)**:
+  - Static audit rule SQL008 (Severity: ERROR) in rp-ln-progguide/scripts/audit_4gl.py: Prohibits array subscripts and parentheses in SQL host variables (:var(...)), preventing SQLState 42I03: Unknown column 'i' (error 302) from the Baan SQL precompiler.
+  - Static audit rule ARR002 (Severity: WARNING) in rp-ln-progguide/scripts/audit_4gl.py: Detects 1D domain string array declarations (domain <str_dmn> var(count)) where bshell treats (count) as overriding string length rather than allocating an array of strings.
+  - 5 new unit tests in rp-ln-progguide/tests/test_audit_4gl.py covering SQL008 and ARR002 verification (33 total unit tests in rp-ln-progguide, 300 in ln_studio_skill).
+
+### Fixed
+- **Baan 4GL Dimensioned Array Documentation**:
+  - Corrected Section 6.2 in 
+eferences/best_practices/06_4gl_coding_standards_and_caveats.md to remove the misleading domain tcorno recent_orders(10) example and clarify 1D numeric/date/enum arrays (domain <dmn> arr(count) -> rr(i)) vs mandatory 2D string arrays (string arr(len, count) -> rr(1, idx)).
+  - Added Section 5.7 to 
+eferences/best_practices/06_4gl_coding_standards_and_caveats.md and Section 1.3 to 
+eferences/best_practices/03_sql_query_optimization_and_transactions.md establishing the mandatory **Scalar Local Staging Pattern** before embedded SQL execution.
+  - Synchronized rp-ln-progguide/SKILL.md Core Guardrails 3 and 5 while maintaining compliance with the strict <= 80 line budget.
+
 ## [1.0.1] - 2026-11-09
 
 ### Added

@@ -30,9 +30,10 @@
    - [5.4 Point Lookup Optimization (`as set with 1 rows`)](#54-point-lookup-optimization-as-set-with-1-rows)
    - [5.5 Explicit Field Predicates vs. Legacy Index Identifiers](#55-explicit-field-predicates-vs-legacy-index-identifiers)
    - [5.6 DAL Delegation over Raw Database Mutations](#56-dal-delegation-over-raw-database-mutations)
+   - [5.7 No Array Subscripts in SQL Host Variables (Rule SQL008)](#57-no-array-subscripts-in-sql-host-variables-rule-sql008)
 6. [Pillar 5: Domain Arrays and Dimension Mechanics](#6-pillar-5-domain-arrays-and-dimension-mechanics)
    - [6.1 1-Based Indexing and Zero-Index Prohibition](#61-1-based-indexing-and-zero-index-prohibition)
-   - [6.2 Declaring Dimensioned Domain Arrays](#62-declaring-dimensioned-domain-arrays)
+   - [6.2 Declaring Dimensioned Domain Arrays: Numeric vs. String Domains (Rule ARR002)](#62-declaring-dimensioned-domain-arrays-numeric-vs-string-domains-rule-arr002)
    - [6.3 Passing Arrays Across Function Signatures (`fixed` and `()`)](#63-passing-arrays-across-function-signatures-fixed-and-)
 7. [Pillar 6: Critical Syntax Caveats & Anti-Patterns](#7-pillar-6-critical-syntax-caveats--anti-patterns)
    - [7.1 Precision-Safe Floating-Point Comparisons (`double.cmp`)](#71-precision-safe-floating-point-comparisons-doublecmp)
@@ -605,6 +606,61 @@ function long approve_order(const domain tcorno i.orno)
 
 ---
 
+### 5.7 No Array Subscripts in SQL Host Variables (Rule SQL008)
+
+In Embedded Baan SQL, 4GL host variables are referenced with a colon (`:variable`). The Baan SQL precompiler only supports **scalar host variables**.
+
+#### The Subscript Hazard (`SQLState 42I03: Unknown column 'i' (error 302)`):
+When referencing an indexed array directly inside a SQL query, such as:
+```baan
+where tfacr500.ttyp = :mark_ttyp(i)
+```
+or for string arrays:
+```baan
+where tfacr500.ttyp = :mark_ttyp(1, i)
+```
+The Baan SQL precompiler strips `:mark_ttyp` as the host variable identifier and treats `(i)` as an SQL column or table qualifier in the query abstract syntax tree. Because the queried table does not contain a column named `i`, the query fails with:
+`SQLState 42I03: Unknown column 'i' (error 302)`.
+
+#### Mandatory Compliant Pattern: Scalar Local Staging
+Before executing any embedded SQL statement, extract the array elements into local scalar host variables, and bind only those scalar variables in the query:
+
+```baan
+|* ========================================================================
+|* ANTI-PATTERN: Array subscripts in SQL host variables (triggers error 302)
+|* ========================================================================
+select tfacr500.*
+from   tfacr500 for update
+where  tfacr500.fcom = :comp.num
+and    tfacr500.ttyp = :mark_ttyp(1, i)  |* FORBIDDEN: Error 302!
+and    tfacr500.ninv = :mark_ninv(i)     |* FORBIDDEN: Error 302!
+selectdo
+    ...
+endselect
+
+|* ========================================================================
+|* COMPLIANT PATTERN: Scalar Local Staging (Rule SQL008)
+|* ========================================================================
+domain tfgld.ttyp l_ttyp
+domain tfgld.docn l_ninv
+
+|* 1. Stage array elements into local scalar variables
+l_ttyp = mark_ttyp(1, i)
+l_ninv = mark_ninv(i)
+
+|* 2. Bind scalar variables as host parameters in Embedded SQL
+select tfacr500.*
+from   tfacr500 for update
+where  tfacr500.fcom = :comp.num
+and    tfacr500.ttyp = :l_ttyp
+and    tfacr500.ninv = :l_ninv
+selectdo
+    ...
+endselect
+```
+
+---
+
 ## 6. Pillar 5: Domain Arrays and Dimension Mechanics
 
 Arrays in Baan 4GL operate within fixed bshell runtime memory blocks. Violating array boundary rules causes silent memory corruption or unrecoverable bshell process terminations.
@@ -630,16 +686,66 @@ domain tcitem item_list(5)
 
 ---
 
-### 6.2 Declaring Dimensioned Domain Arrays
+### 6.2 Declaring Dimensioned Domain Arrays: Numeric vs. String Domains (Rule ARR002)
 
-When declaring arrays, always combine centralized Data Dictionary domains with explicit dimension sizes:
+When declaring arrays in Baan 4GL, developers must understand the critical architectural distinction between **Numeric / Enum / Date domains** and **String domains**.
+
+#### 1. Numeric, Long, Date, and Enum Domains (Single Dimension `arr(count)`)
+For numeric, date, long, double, and enum domains, declaring `domain <domain_name> arr(count)` allocates an array of `count` scalar elements (1-based indices `1..count`), accessed via `arr(i)`:
 
 ```baan
-|* Single-dimensional domain array
-domain tcorno   recent_orders(10)       |* Holds 10 Sales Order numbers (1..10)
+#define MAX_ELEMENTS 500
 
-|* Multi-dimensional domain array
-domain tcamnt   period_totals(12, 5)    |* 12 months, 5 cost categories (1..12, 1..5)
+|* Single-dimensional domain arrays for numeric/date/enum types
+domain tcamnt     period_totals(MAX_ELEMENTS) |* 500 currency amounts (1..500), accessed as period_totals(i)
+domain tcpono     line_numbers(MAX_ELEMENTS)  |* 500 line positions (1..500), accessed as line_numbers(i)
+domain tcdate     batch_dates(MAX_ELEMENTS)   |* 500 dates (1..500), accessed as batch_dates(i)
+domain tfacr.trec mark_trec(MAX_ELEMENTS)     |* 500 transaction types (1..500), accessed as mark_trec(i)
+domain tfgld.docn mark_ninv(MAX_ELEMENTS)     |* 500 document numbers (1..500), accessed as mark_ninv(i)
+
+|* Multi-dimensional domain array for numeric matrices
+domain tcamnt     period_matrix(12, 5)        |* 12 months x 5 cost centers, accessed as period_matrix(m, c)
+```
+
+#### 2. String Domains (Mandatory 2D Syntax: `string arr(len, count)`)
+> [!CAUTION]
+> **The 1D String Domain Catastrophe (Rule ARR002)**:
+> In Baan 4GL (`bic` compiler), **strings are character arrays**.
+> If you write:
+> ```baan
+> |* WRONG: This declares a single string of length 500, NOT 500 strings!
+> domain tccom.bpid mark_itbp(500)
+> ```
+> The bshell compiler treats `(500)` as the character length of a single string variable (overriding the domain's default length), **NOT** an array of 500 strings.
+> Subsequently accessing `mark_itbp(i)` or `mark_itbp(1, i)` fails at compilation with:
+> `Illegal number of array subscripts for 'mark_itbp'`.
+
+To declare an array of strings in Baan 4GL, you must use **2-dimensional string syntax**:
+- **Dimension 1**: String buffer length / character width (e.g., 9 for Business Partner IDs, 3 for Transaction Types).
+- **Dimension 2**: Number of elements in the array.
+
+```baan
+#define MAX_MARKED_LINES 500
+
+|* Correct 2D String Array Declarations: string arr(string_length, array_size)
+string mark_itbp(9, MAX_MARKED_LINES)   |* 500 Business Partner IDs (9 chars each)
+string mark_ttyp(3, MAX_MARKED_LINES)   |* 500 Transaction Types (3 chars each)
+string cust_list(9, MAX_MARKED_LINES)   |* 500 Customer IDs (9 chars each)
+```
+
+#### Accessing 2D String Arrays:
+String arrays require **2 subscripts**: `arr(start_char_pos, element_index)`. Subscript 1 is the 1-based character position within the string (usually `1`), and subscript 2 is the 1-based element index:
+
+```baan
+|* Storing into string array element 'marked_count' starting at character 1
+mark_itbp(1, marked_count) = txcmg010.itbp
+mark_ttyp(1, marked_count) = txcmg010.ttyp
+cust_list(1, c)            = txcmg010.itbp
+
+|* Reading / comparing from string array element 'i'
+if cust_list(1, i) = txcmg010.itbp then
+    ...
+endif
 ```
 
 For Data Dictionary domains that themselves have predefined array dimensions (configured in `ttadv4500m000`), declaring `domain <array_domain> var_name` automatically allocates all elements defined by the domain.

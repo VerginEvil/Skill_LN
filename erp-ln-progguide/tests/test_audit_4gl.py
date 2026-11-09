@@ -805,5 +805,98 @@ function void do_something()
         self.assertEqual(dbg001_diags[0].severity, "WARNING")
 
 
+    def test_sql008_array_subscript_in_host_variable(self):
+        """Asserts SQL008 flags array subscripts in SQL host variables (:ident(...)) as ERROR."""
+        script = """
+table ttfacr500
+
+function void query_invoices(long i)
+{
+    select tfacr500.*
+    from   tfacr500 for update
+    where  tfacr500.ttyp = :mark_ttyp(1, i)
+    and    tfacr500.ninv = :mark_ninv(i)
+    selectdo
+        commit.transaction()
+    endselect
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0510m000.cln")
+        sql008_diags = [d for d in diags if d.code == "SQL008"]
+        self.assertEqual(len(sql008_diags), 2)
+        self.assertTrue(all(d.severity == "ERROR" for d in sql008_diags))
+        self.assertIn("mark_ttyp", sql008_diags[0].message)
+        self.assertIn("mark_ninv", sql008_diags[1].message)
+        self.assertTrue(all("Baan SQL precompiler does not support subscripts" in d.message for d in sql008_diags))
+
+    def test_sql008_scalar_host_variables_pass(self):
+        """Asserts SQL008 passes cleanly when host variables are staged scalar identifiers."""
+        script = """
+table ttfacr500
+
+function void query_invoices()
+{
+    domain tfgld.ttyp l_ttyp
+    domain tfgld.docn l_ninv
+
+    select tfacr500.*
+    from   tfacr500 for update
+    where  tfacr500.fcom = :comp.num
+    and    tfacr500.ttyp = :l_ttyp
+    and    tfacr500.ninv = :l_ninv
+    selectdo
+        commit.transaction()
+    endselect
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0510m000.cln")
+        sql008_diags = [d for d in diags if d.code == "SQL008"]
+        self.assertEqual(len(sql008_diags), 0)
+
+    def test_arr002_1d_domain_string_array_warning(self):
+        """Asserts ARR002 flags 1D domain string array declarations as WARNING."""
+        script = """
+domain tccom.bpid mark_itbp(500)
+domain tcorno orders(10)
+domain tfgld.ttyp mark_ttyp(MAX_MARKED_LINES)
+"""
+        diags = self.auditor.audit_content(script, "txcmg0510m000.cln")
+        arr002_diags = [d for d in diags if d.code == "ARR002"]
+        self.assertEqual(len(arr002_diags), 3)
+        self.assertTrue(all(d.severity == "WARNING" for d in arr002_diags))
+        self.assertIn("mark_itbp", arr002_diags[0].message)
+        self.assertIn("orders", arr002_diags[1].message)
+        self.assertIn("mark_ttyp", arr002_diags[2].message)
+        self.assertTrue(all("Use 2D syntax 'string arr(len, count)'" in d.message for d in arr002_diags))
+
+    def test_arr002_numeric_and_2d_string_arrays_pass(self):
+        """Asserts ARR002 passes for numeric/date/enum arrays and 2D string arrays."""
+        script = """
+domain tcamnt period_totals(50)
+domain tfgld.docn mark_ninv(500)
+domain tfacr.trec mark_trec(500)
+domain tcdate batch_dates(20)
+string mark_itbp(9, 500)
+domain tccom.bpid single_bp
+"""
+        diags = self.auditor.audit_content(script, "txcmg0510m000.cln")
+        arr002_diags = [d for d in diags if d.code == "ARR002"]
+        self.assertEqual(len(arr002_diags), 0)
+
+    def test_arr002_with_dd_cache(self):
+        """Asserts ARR002 respects Data Dictionary cache data types."""
+        cache = DataDictionaryCache()
+        cache.update_domain("cus.str", datatype="string", length=30)
+        cache.update_domain("cus.num", datatype="long")
+        script = """
+domain cus.str custom_arr(100)
+domain cus.num num_arr(100)
+"""
+        diags = self.auditor.audit_content(script, "custom.cln", dd_cache=cache)
+        arr002_diags = [d for d in diags if d.code == "ARR002"]
+        self.assertEqual(len(arr002_diags), 1)
+        self.assertIn("custom_arr", arr002_diags[0].message)
+
+
 if __name__ == "__main__":
     unittest.main()

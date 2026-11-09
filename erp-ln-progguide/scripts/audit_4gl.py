@@ -14,6 +14,8 @@ Upgraded Rules (ADR 0008):
           comments (`|`), subqueries, and multi-line SQL (`select`/`selectdo`/`selectempty`/`selecteos`/`endselect`).
 - CAV003: Intra-file Function Call Graph detecting direct and transitive nested transactions
           (calling a helper function containing `db.retry.point()` / `commit.transaction()` inside an active transaction).
+- SQL008: Prohibits array subscripts or parentheses in SQL host variables (:ident(...)), preventing SQLState 42I03 Error 302.
+- ARR002: Detects 1D domain string array declarations (domain <str_dmn> var(count)), enforcing 2D syntax 'string arr(len, count)'.
 
 Zero external dependencies. Runs on pure Python 3.8+.
 """
@@ -1199,6 +1201,80 @@ class Auditor4GL:
         default_path = (Path(file_path).resolve().parent if file_path and file_path != "<stdin>" else Path.cwd()) / ".ln_dd_cache.json"
         return DataDictionaryCache(cache_path=default_path)
 
+    @staticmethod
+
+    def _is_string_domain(domain_name: str, active_dd_cache: Optional[DataDictionaryCache] = None) -> bool:
+
+        dmn_lower = domain_name.lower().strip()
+
+        if active_dd_cache and active_dd_cache.has_domain(dmn_lower):
+
+            meta = active_dd_cache.get_domain(dmn_lower)
+
+            if meta:
+
+                dt = str(meta.get("datatype") or "").lower()
+
+                if dt in ("string", "multibyte string", "1", "2") or "str" in dt:
+
+                    return True
+
+                if dt in ("long", "double", "float", "date", "utc", "enum", "boolean", "3", "4", "5", "6", "7", "8", "9"):
+
+                    return False
+
+
+
+        # Non-string domain leaf / suffix indicators (numeric, date, enum)
+
+        non_string_suffixes = (
+
+            "amnt", "qana", "wght", "amt", "docn", "lino", "pono", "sqnb",
+
+            "year", "peri", "date", "dat", "time", "yesno", "bool", "trec", "stdd"
+
+        )
+
+        leaf = dmn_lower.split(".")[-1]
+
+        if leaf in non_string_suffixes or any(dmn_lower.endswith("." + s) or dmn_lower.endswith("_" + s) for s in non_string_suffixes):
+
+            return False
+
+
+
+        # Known string domain indicators
+
+        string_indicators = (
+
+            "bpid", "ttyp", "orno", "item", "sotp", "cprj", "nama", "desc",
+
+            "dsca", "text", "mess", "user", "code", "clan", "cntr"
+
+        )
+
+        if leaf in string_indicators or any(dmn_lower.endswith("." + s) for s in string_indicators):
+
+            return True
+
+
+
+        if dmn_lower.startswith("tccom.") or dmn_lower in ("tcorno", "tcitem", "tcsotp", "tcclot", "tccitg", "tcsern"):
+
+            return True
+
+
+
+        if "str" in dmn_lower:
+
+            return True
+
+
+
+        return False
+
+
+
     def _try_auto_fetch_dd(self, dd_cache: DataDictionaryCache, comp_type: str, comp_name: str, file_path: str) -> bool:
         """
         Attempt to fetch a missing `.tbl` or `.dmn` read-only from the server (or custom callback)
@@ -1503,6 +1579,52 @@ class Auditor4GL:
                             raw_line,
                         )
                     )
+
+            # 2a-2. Rule ARR002: Detect 1D domain string array declarations
+
+            for m_dmn_decl in re.finditer(r"\bdomain\s+([a-zA-Z][a-zA-Z0-9_.]*)\s+([^;\n]+)", code_line, re.IGNORECASE):
+
+                d_name = m_dmn_decl.group(1)
+
+                d_lower = d_name.lower()
+
+                if self._is_string_domain(d_lower, active_dd_cache):
+
+                    vars_chunk = m_dmn_decl.group(2)
+
+                    for m_v in re.finditer(r"\b([a-zA-Z_][a-zA-Z0-9_.]*)\s*\(([^)]+)\)", vars_chunk):
+
+                        v_name = m_v.group(1)
+
+                        dim_expr = m_v.group(2).strip()
+
+                        if "," not in dim_expr:
+
+                            col_pos = m_dmn_decl.start(2) + m_v.start(1) + 1
+
+                            diagnostics.append(
+
+                                Diagnostic(
+
+                                    file_path,
+
+                                    line_no,
+
+                                    col_pos,
+
+                                    "WARNING",
+
+                                    "ARR002",
+
+                                    f"Domain string array '{v_name}' declared with 1D syntax; bshell treats this as string length. Use 2D syntax 'string arr(len, count)' and access with 'arr(1, idx)'.",
+
+                                    raw_line,
+
+                                )
+
+                            )
+
+
 
             # 2b. Table field references: `<table>.<field>` (matching `([a-z]{5}\d{3})\.([a-z0-9_]+)`)
             for m_ref in re.finditer(r"(?<![a-zA-Z0-9_.])([a-z]{5}\d{3})\.([a-z0-9_]+)", code_line, re.IGNORECASE):
@@ -2114,6 +2236,23 @@ class Auditor4GL:
                                                         raw_line,
                                                     )
                                                 )
+
+            # ----------------------------------------------------
+            # 7d. Rule SQL008: Array Subscript in SQL Host Variable (SQLState 42I03 / Error 302)
+            # ----------------------------------------------------
+            for m_host in re.finditer(r":([a-zA-Z_][a-zA-Z0-9_.]*)\s*[(\[]", code_line):
+                host_var = m_host.group(1)
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        line_no,
+                        m_host.start() + 1,
+                        "ERROR",
+                        "SQL008",
+                        f"Array subscript or parentheses detected in SQL host variable ':{host_var}(...)'. Baan SQL precompiler does not support subscripts in host variables; stage array elements into scalar variables before the query.",
+                        raw_line,
+                    )
+                )
 
             # ----------------------------------------------------
             # 7. Float Equality Anti-Pattern (CAV001)
