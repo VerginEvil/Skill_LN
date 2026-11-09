@@ -1262,7 +1262,7 @@ def handle_jsonrpc_request(request: Dict[str, Any], server_state: Optional[Dict[
                 },
                 "serverInfo": {
                     "name": "infor-ln-studio-mcp",
-                    "version": "1.0.0"
+                    "version": "1.0.1"
                 }
             }
         }

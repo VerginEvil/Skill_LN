@@ -7,20 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.0] - 2026-11-09
+## [1.0.1] - 2026-11-09
 
 ### Added
-- **Automated Skill Markdown Lint Gate (`scripts/run_checks.py`)**: Mechanical gate checking YAML frontmatter validity (`name`, `description`), enforcing a strict `<= 80`-line ceiling, and verifying 100% relative path link integrity across both skills (ADR 0017).
-- **Dual-Skill Synchronization & Drift Detection**: Upgraded `--sync-skill` and drift checking to synchronize and monitor both `ln_studio_skill` and `erp-ln-progguide` to `~/.gemini/config/skills/`.
-- **Branching Reference Files (`ln_studio_skill/references/`)**:
-  - `CLI_REFERENCE.md`: Complete 50+ CLI subcommand catalog grouped by development lifecycle with common recipes.
-  - `MCP_TOOLS_REFERENCE.md`: 4 consolidated high-efficiency MCP tools + 17 detailed tools with client setup instructions.
-  - `AUTHORING_SCHEMA_GUIDE.md`: Multi-component YAML authoring specification and Single-XML TDE layout rules.
+- **Lean Skill Architecture & Automated Markdown Lint Gate (ADR 0018)**:
+  - Mechanical gate in `scripts/run_checks.py` checking YAML frontmatter validity (`name`, `description`), enforcing a strict `<= 80`-line ceiling, and verifying 100% relative path link integrity across all skills.
+  - Dual-skill synchronization and drift detection (`--sync-skill`) for both `ln_studio_skill` and `erp-ln-progguide` to `~/.gemini/config/skills/`.
+  - Dedicated Branching Reference Files in `ln_studio_skill/references/`: `CLI_REFERENCE.md` (50+ subcommands), `MCP_TOOLS_REFERENCE.md` (4 consolidated + 17 detailed tools), and `AUTHORING_SCHEMA_GUIDE.md` (multi-component YAML specs).
+- **Runtime Error Prevention & 4GL Audit Guardrails (ADR 0017)**:
+  - Five new static audit rules in `erp-ln-progguide/scripts/audit_4gl.py`:
+    - `DMN002`: Combined date/time field storage caveat (`utc.num()` vs legacy Julian date + time integers).
+    - `TBL003`: Leading index alignment and `as set with 1 rows` query performance optimization.
+    - `DMN003`: Enum domain zero-value and empty initialization safeguard (`.empty`).
+    - `STR001`: Trailing space stripping in string comparisons (`strip$()` / `trim$()`).
+    - `DBG001`: Residual debug statements detection (`suspend()`, `message()`, `inputstr()`).
+  - Auto-injection of sequence fields (`tset`) for primary keys lacking trailing sequence numbers in `ln_studio_skill/tools/generate_ln_table.py`.
+  - Comprehensive unit test suite in `erp-ln-progguide/tests/test_audit_4gl.py` (28 tests).
 
 ### Changed
-- **Lean Procedural Architecture for `erp-ln-progguide/SKILL.md`**: Refactored from 170 lines to 48 lines with natural Context Pointer, negative boundary (`Do NOT use for...`), 4-step workflow (`Search-Before-Read` -> `Branching Reference Pointers` -> `Core 4GL & Cloud Guardrails` -> `Audit-Before-Deliver`), and direct cookbook routing.
-- **Lean Procedural Architecture for `ln_studio_skill/SKILL.md`**: Refactored from 430 lines to 51 lines with natural Context Pointer, negative boundary, non-negotiable guardrails (`Pre-Fetch-Auth-Gate`, `Read-Only-SCM-Guardrail`, `Pre-Commit-Boundary`, `Guide-and-Paste`), and 4 core procedural workflows.
-- **Sediment Removal**: Purged TCP socket internals, binary property bucket headers, registry/clipboard implementation details, and internal Python module lists from active `SKILL.md` contexts.
+- **Lean Procedural Architecture for `erp-ln-progguide/SKILL.md`**: Refactored from 170 lines down to 48 lines with natural Context Pointer, explicit negative boundary (`Do NOT use for...`), 4-step workflow (`Search-Before-Read` -> `Branching Reference Pointers` -> `Core 4GL & Cloud Guardrails` -> `Audit-Before-Deliver`), and direct cookbook routing.
+- **Lean Procedural Architecture for `ln_studio_skill/SKILL.md`**: Refactored from 430 lines down to 51 lines with natural Context Pointer, negative boundary, non-negotiable guardrails (`Pre-Fetch-Auth-Gate`, `Read-Only-SCM-Guardrail`, `Pre-Commit-Boundary`, `Guide-and-Paste`), and 4 core procedural workflows.
+- **Implementation Sediment Removal**: Purged TCP socket internals, binary property bucket headers, clipboard/registry implementation details, and internal Python module lists from active `SKILL.md` contexts.
+- **Unified Test Discovery**: Extended `scripts/run_checks.py` to automatically discover and run all tests across both `erp-ln-progguide/tests` and `ln_studio_skill/tools/tests` (300 total tests passing).
 
 ---
 
