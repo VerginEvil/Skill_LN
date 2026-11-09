@@ -3,13 +3,14 @@
 scripts/run_checks.py
 Unified checks gateway, skill markdown lint gate, and pre-commit guardrail for Skill_LN.
 ADR 0014: Quality Hardening, CI Guardrails, and Layout Enforcement.
-ADR 0017: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate.
+ADR 0017: Runtime Error Prevention, Audit Guardrails, and Skill Hardening.
+ADR 0018: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate.
 
 Usage:
     python scripts/run_checks.py                  # Run all checks (syntax, layout, skill-lint, tests)
     python scripts/run_checks.py --syntax-only    # Run only syntax compilation check
     python scripts/run_checks.py --layout-only    # Run only layout validation
-    python scripts/run_checks.py --skill-lint-only# Run only skill markdown lint gate (ADR 0017)
+    python scripts/run_checks.py --skill-lint-only# Run only skill markdown lint gate (ADR 0018)
     python scripts/run_checks.py --install-hook   # Install .git/hooks/pre-commit
     python scripts/run_checks.py --sync-skill     # Synchronize verified skills to global config
 """
@@ -27,9 +28,14 @@ from typing import Optional, List, Tuple
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = REPO_ROOT / "ln_studio_skill" / "tools"
 TESTS_DIR = TOOLS_DIR / "tests"
+PROGGUIDE_DIR = REPO_ROOT / "erp-ln-progguide"
+PROGGUIDE_SCRIPTS_DIR = PROGGUIDE_DIR / "scripts"
+PROGGUIDE_TESTS_DIR = PROGGUIDE_DIR / "tests"
 
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
+if str(PROGGUIDE_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(PROGGUIDE_SCRIPTS_DIR))
 
 SKILL_CONFIGS = {
     "ln_studio_skill": ["SKILL.md", "tools", "templates", "references", "scripts"],
@@ -38,14 +44,18 @@ SKILL_CONFIGS = {
 
 
 def check_syntax() -> bool:
-    """Compiles all Python sources under ln_studio_skill/tools to verify syntax."""
+    """Compiles all Python sources under ln_studio_skill/tools and erp-ln-progguide/scripts."""
     print("=== [1/4] Checking Python Syntax Compilation ===")
-    ok = compileall.compile_dir(str(TOOLS_DIR), quiet=1, force=False)
-    if ok:
-        print("[PASS] Python syntax clean.")
+    ok1 = compileall.compile_dir(str(TOOLS_DIR), quiet=1, force=False)
+    ok2 = True
+    if PROGGUIDE_SCRIPTS_DIR.exists():
+        ok2 = compileall.compile_dir(str(PROGGUIDE_SCRIPTS_DIR), quiet=1, force=False)
+    if ok1 and ok2:
+        print("[PASS] Python syntax clean across all tools and scripts.")
+        return True
     else:
-        print("[FAIL] Python syntax errors detected in ln_studio_skill/tools.")
-    return bool(ok)
+        print("[FAIL] Python syntax errors detected.")
+        return False
 
 
 def check_layout() -> bool:
@@ -85,10 +95,7 @@ def _resolve_and_validate_path(
     raw_path: str,
     path_prefixes: Optional[Tuple[str, ...]] = None,
 ) -> Optional[str]:
-    """Validates that a relative path string points to an existing file/directory on disk.
-
-    Returns the cleaned path string if the target is broken/missing, or None if valid/ignored.
-    """
+    """Validates that a relative path string points to an existing file/directory on disk."""
     clean = raw_path.partition("#")[0].strip()
     if not clean or any(c in clean for c in "<>|*?"):
         return None
@@ -101,9 +108,9 @@ def _resolve_and_validate_path(
 
 
 def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) -> bool:
-    """Verifies YAML frontmatter, line limit (<= max_lines), and relative links in SKILL.md (ADR 0017)."""
+    """Verifies YAML frontmatter, line limit (<= max_lines), and relative links in SKILL.md (ADR 0018)."""
     root = repo_root or REPO_ROOT
-    print(f"\n=== [3/4] Checking Skill Markdown Lint Gate (ADR 0017, <= {max_lines} lines) ===")
+    print(f"\n=== [3/4] Checking Skill Markdown Lint Gate (ADR 0018, <= {max_lines} lines) ===")
 
     skill_names = ["ln_studio_skill", "erp-ln-progguide"]
     errors: List[str] = []
@@ -152,7 +159,6 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
             errors.append(f"{sname}/SKILL.md: {line_count} lines exceeds maximum budget of {max_lines} lines.")
 
         # 3. Relative path / link resolution
-        # Check Markdown links
         for m in link_re.finditer(content):
             raw = m.group(2).strip()
             if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
@@ -161,7 +167,6 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
             if broken:
                 errors.append(f"{sname}/SKILL.md: broken markdown link -> {broken}")
 
-        # Check inline code pointers (stripping triple-backtick fences first)
         content_no_fences = re.sub(r"```[\s\S]*?```", "", content)
         for m in inline_code_re.finditer(content_no_fences):
             code_text = m.group(1).strip()
@@ -182,9 +187,32 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
 
 
 def run_unit_tests() -> bool:
-    """Runs the full unittest suite across ln_studio_skill/tools/tests."""
+    """Runs the full unittest suite across erp-ln-progguide and ln_studio_skill."""
     print("\n=== [4/4] Running Unit Test Suite ===")
-    cmd = [
+
+    # Suite 1: erp-ln-progguide/tests (if exists)
+    if PROGGUIDE_TESTS_DIR.exists():
+        print("--- [4a/4] Running erp-ln-progguide Test Suite ---")
+        cmd_prog = [
+            sys.executable,
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            str(PROGGUIDE_TESTS_DIR),
+            "-p",
+            "test_*.py",
+        ]
+        env_prog = os.environ.copy()
+        env_prog["PYTHONPATH"] = str(PROGGUIDE_SCRIPTS_DIR)
+        proc_prog = subprocess.run(cmd_prog, env=env_prog)
+        if proc_prog.returncode != 0:
+            print(f"[FAIL] erp-ln-progguide test suite failed with exit code {proc_prog.returncode}.")
+            return False
+
+    # Suite 2: ln_studio_skill/tools/tests
+    print("\n--- [4b/4] Running ln_studio_skill Test Suite ---")
+    cmd_studio = [
         sys.executable,
         "-m",
         "unittest",
@@ -194,15 +222,15 @@ def run_unit_tests() -> bool:
         "-p",
         "test_*.py",
     ]
-    env = os.environ.copy()
-    env["PYTHONPATH"] = str(TOOLS_DIR)
-    proc = subprocess.run(cmd, env=env)
-    if proc.returncode == 0:
-        print("[PASS] Full test suite passed cleanly.")
-        return True
-    else:
-        print(f"[FAIL] Unit test suite failed with exit code {proc.returncode}.")
+    env_studio = os.environ.copy()
+    env_studio["PYTHONPATH"] = str(TOOLS_DIR)
+    proc_studio = subprocess.run(cmd_studio, env=env_studio)
+    if proc_studio.returncode != 0:
+        print(f"[FAIL] ln_studio_skill test suite failed with exit code {proc_studio.returncode}.")
         return False
+
+    print("[PASS] Full test suite across all skills passed cleanly.")
+    return True
 
 
 def _get_target_pairs(target_dir: Optional[Path]) -> List[Tuple[str, Path, Path, bool]]:
@@ -279,13 +307,12 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
 
     script_content = (
         "#!/bin/sh\n"
-        "# Skill_LN pre-commit guardrail (ADR 0014 & ADR 0017)\n"
+        "# Skill_LN pre-commit guardrail (ADR 0014, ADR 0017 & ADR 0018)\n"
         "python scripts/run_checks.py\n"
         "exit $?\n"
     )
     hook_file.write_text(script_content, encoding="utf-8")
 
-    # Make executable on Unix-like platforms
     try:
         current_mode = os.stat(hook_file).st_mode
         os.chmod(hook_file, current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -297,11 +324,11 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Skill_LN Unified Checks Gateway (ADR 0014 & ADR 0017)")
+    parser = argparse.ArgumentParser(description="Skill_LN Unified Checks Gateway (ADR 0014, ADR 0017 & ADR 0018)")
     parser.add_argument("--install-hook", action="store_true", help="Install .git/hooks/pre-commit")
     parser.add_argument("--syntax-only", action="store_true", help="Run only syntax compilation")
     parser.add_argument("--layout-only", action="store_true", help="Run only layout validation")
-    parser.add_argument("--skill-lint-only", action="store_true", help="Run only skill markdown lint gate (ADR 0017)")
+    parser.add_argument("--skill-lint-only", action="store_true", help="Run only skill markdown lint gate (ADR 0018)")
     parser.add_argument("--skip-tests", action="store_true", help="Skip running unit tests")
     parser.add_argument("--sync-skill", action="store_true", help="Synchronize verified repository skill files to global skills directory")
     args = parser.parse_args()

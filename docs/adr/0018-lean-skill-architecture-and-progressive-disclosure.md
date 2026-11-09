@@ -1,4 +1,4 @@
-# ADR 0017: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate
+# ADR 0018: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate
 
 - **Status**: Accepted
 - **Date**: 2026-11-09

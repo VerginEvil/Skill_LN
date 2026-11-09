@@ -1,7 +1,7 @@
 # Implementation Plan: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate
 
 - **Specification**: [`docs/plans/SPEC_LEAN_SKILL_ARCHITECTURE.md`](SPEC_LEAN_SKILL_ARCHITECTURE.md) (`.scratch/lean-skill-architecture/spec.md`)
-- **Architecture Decision Record**: [`docs/adr/0017-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0017-lean-skill-architecture-and-progressive-disclosure.md)
+- **Architecture Decision Record**: [`docs/adr/0018-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0018-lean-skill-architecture-and-progressive-disclosure.md)
 - **Active Tickets**: [`docs/plans/Tickets.md`](Tickets.md) (`.scratch/lean-skill-architecture/issues/01..04-*.md`)
 - **Target Deliverables**:
   1. `scripts/run_checks.py` & `ln_studio_skill/tools/tests/test_run_checks.py` (Skill Markdown Lint Gate + Dual-Skill Sync)
@@ -29,7 +29,7 @@
   - [x] **Q1 (Skill Topology)**: Retain the 2 core skills (`erp-ln-progguide` and `ln_studio_skill`) per ADR 0015 and use Branching Reference Files rather than splitting into additional top-level skills.
   - [x] **Q2 (Invocation Strategy)**: Keep both skills Model-Invoked with natural-language `description` triggers and explicit `Do NOT use for...` negative boundaries.
   - [x] **Q3 (Line Budget & Sediment Removal)**: Cap `SKILL.md` at `<= 80` lines, purge internal implementation sediment (JVM TCP sockets, binary headers, `oob://` internals, internal module lists), and move large tables/YAML specs to `references/`.
-  - [x] **Q4 (Leading Words)**: Standardize on `Search-Before-Read`, `Audit-Before-Deliver`, `Guide-and-Paste`, `Pre-Fetch-Auth-Gate`, `Read-Only-SCM-Guardrail`, and `Pre-Commit-Boundary` across skills, `GLOSSARY.md`, and ADR 0017.
+  - [x] **Q4 (Leading Words)**: Standardize on `Search-Before-Read`, `Audit-Before-Deliver`, `Guide-and-Paste`, `Pre-Fetch-Auth-Gate`, `Read-Only-SCM-Guardrail`, and `Pre-Commit-Boundary` across skills, `GLOSSARY.md`, and ADR 0018.
 - **Round 2 (Consensus Reached)**:
   - [x] **Q5 (`erp-ln-progguide/SKILL.md` Structure)**: Organize into 4 procedural steps (`Search-Before-Read` -> `Branching Reference Pointers` -> `Core 4GL & Cloud Guardrails` -> `Audit-Before-Deliver`) routing to existing `references/` files.
   - [x] **Q6 (`ln_studio_skill` Branching Reference Files)**: Create `CLI_REFERENCE.md`, `MCP_TOOLS_REFERENCE.md`, and `AUTHORING_SCHEMA_GUIDE.md` in `ln_studio_skill/references/`, reducing `ln_studio_skill/SKILL.md` to 4 core workflows + guardrails + pointers.

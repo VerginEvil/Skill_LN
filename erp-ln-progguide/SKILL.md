@@ -37,7 +37,7 @@ Every generated or reviewed script must comply with these 6 non-negotiable rules
 2. **Error Conventions & No Dialogs**: Signal failures via `dal.set.error.message("@<code>")` and `return(DALHOOKERROR)`. Never call interactive dialogs (`message()`, `ask.enum()`) in DAL or Table Extensions ([01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
 3. **Embedded SQL Leading Index**: Match `WHERE` predicates to leading index columns; never call functions on indexed columns; provide `selectempty` fallback blocks ([03_sql](references/best_practices/03_sql_query_optimization_and_transactions.md)).
 4. **Transaction Bounds**: Bound mutations strictly inside `db.retry.point()` and `commit.transaction()`; never commit transactions inside DAL hooks, Table Extensions, or helper DLLs ([03_sql](references/best_practices/03_sql_query_optimization_and_transactions.md)).
-5. **Defensive Declarations**: Always use Data Dictionary domains (`domain <name> <var>`), never raw primitives; compare floats with `double.cmp()`; remember 4GL arrays are 1-based ([06_std](references/best_practices/06_4gl_coding_standards_and_caveats.md)).
+5. **Defensive Declarations & Datatypes**: Always use Data Dictionary domains (`domain <name> <var>`), never raw primitives; compare floats with `double.cmp()`; remember 4GL arrays are 1-based; respect Julian date vs UTC epoch seconds (`DMN002`); avoid mandatory zero constraints on lines (`TBL003`) ([06_std](references/best_practices/06_4gl_coding_standards_and_caveats.md)).
 6. **Cloud Governance & Extension Rules**: Comply with execution time limits (`5,000 ms`); verify Cloud Trust badges; place `#include` inside `#context_on "declarations"` (`EXT001`); keep command hooks `void` ([01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
 
 ### 4. `Audit-Before-Deliver` (Static Verification Gate)
@@ -45,4 +45,4 @@ Before returning or presenting any 4GL, DAL 2, or Extension script, run the offl
 ```bash
 python scripts/audit_4gl.py <target_script> [--mode dal2|uedll|general] [--cloud]
 ```
-Resolve all syntax errors (SYN), DAL violations (DAL), Extension boundary bugs (EXT), and Cloud governance warnings (CLD) until 0 errors remain.
+Resolve all syntax errors (SYN), DAL violations (DAL), Extension boundary bugs (EXT), datatype mismatches (DMN/TBL/STR), and Cloud governance warnings (CLD) until 0 errors remain.

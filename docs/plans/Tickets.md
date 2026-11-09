@@ -2,12 +2,12 @@
 
 - **Active Specification**: [`docs/plans/SPEC_LEAN_SKILL_ARCHITECTURE.md`](SPEC_LEAN_SKILL_ARCHITECTURE.md) (`.scratch/lean-skill-architecture/spec.md`)
 - **Active Implementation Plan**: [`docs/plans/PLAN_LEAN_SKILL_ARCHITECTURE.md`](PLAN_LEAN_SKILL_ARCHITECTURE.md)
-- **Architecture Decision Record**: [`docs/adr/0017-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0017-lean-skill-architecture-and-progressive-disclosure.md)
+- **Architecture Decision Record**: [`docs/adr/0018-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0018-lean-skill-architecture-and-progressive-disclosure.md)
 - **Target Skills**: `erp-ln-progguide`, `ln_studio_skill`
 
 ---
 
-## Active Batch Dependency Graph (`Batch: Lean Skill Architecture & Progressive Disclosure — ADR 0017`)
+## Active Batch Dependency Graph (`Batch: Lean Skill Architecture & Progressive Disclosure — ADR 0018`)
 
 ```mermaid
 flowchart TD

@@ -41,7 +41,13 @@
    - [7.4 Mandatory `selectempty` State Handling](#74-mandatory-selectempty-state-handling)
    - [7.5 Elimination of Unstructured `goto` Statements](#75-elimination-of-unstructured-goto-statements)
    - [7.6 Scoped Row-Locking Windows and Rollbacks](#76-scoped-row-locking-windows-and-rollbacks)
-8. [Summary: Quick Reference Checklist](#8-summary-quick-reference-checklist)
+8. [Pillar 7: Runtime Error Prevention, Datatype Boundaries & Defensive Guards (ADR 0017)](#8-pillar-7-runtime-error-prevention-datatype-boundaries--defensive-guards-adr-0017)
+   - [8.1 Julian Day (`Date 4`) vs. Unix Epoch UTC Timestamps (`DMN002`)](#81-julian-day-date-4-vs-unix-epoch-utc-timestamps-dmn002)
+   - [8.2 Mandatory Numeric Fields and the Zero Constraint (`TBL003`)](#82-mandatory-numeric-fields-and-the-zero-constraint-tbl003)
+   - [8.3 Enum Domain Safety & Value Space Collisions (`DMN003`)](#83-enum-domain-safety--value-space-collisions-dmn003)
+   - [8.4 Cloud Single Sign-On (SSO) Username Slicing (`STR001`)](#84-cloud-single-sign-on-sso-username-slicing-str001)
+   - [8.5 Ephemeral Debug Message Cleanup (`DBG001`)](#85-ephemeral-debug-message-cleanup-dbg001)
+9. [Summary: Quick Reference Checklist](#9-summary-quick-reference-checklist)
 
 ---
 
@@ -950,7 +956,61 @@ function long execute_order_approval_orchestrator(const domain tcorno i.orno)
 
 ---
 
-## 8. Summary: Quick Reference Checklist
+## 8. Pillar 7: Runtime Error Prevention, Datatype Boundaries & Defensive Guards (ADR 0017)
+
+Following production retrospectives on Infor LN Cloud Multi-Tenant, developers and agents must adhere to strict datatype boundaries to prevent fatal bshell crashes and silent data corruption:
+
+### 8.1 Julian Day (`Date 4`) vs. Unix Epoch UTC Timestamps (`DMN002`)
+In Infor LN, table columns and domains of type Date (e.g. `tfgld.date`, `tcdate`, Ecore native datatype `9`) store a **Julian Day Number** (the count of days elapsed since 01/01/0001, e.g. ~739,925 for Nov 2026).
+- **The Fatal Crash (Error 205)**: Built-in `date.to.utc()` and `utc.num()` produce a Unix Epoch timestamp in **seconds** (~1,793,800,000+). Attempting to insert 1.79 billion into a 4-byte Julian Date column causes the database driver to throw `Fatal Error 205: Value is out of range` (`ENOTINRANGE` / SQL `22008`).
+- **Defensive Standard**:
+  - Always assign Julian Dates directly from source table date fields or using `date.num()`:
+    ```baan
+    txcmg010.docd = tfacr500.docd
+    txcmg010.dued = tfacr500.dued
+    ```
+  - Use defensive zero-guards for uninitialized date fields:
+    ```baan
+    if tfacr500.docd <= 0 then
+        txcmg010.docd = date.num()
+    else
+        txcmg010.docd = tfacr500.docd
+    endif
+    ```
+  - Reserve `utc.num()` and `date.to.utc()` strictly for UTC timestamp domains (such as `tcmcs.long` or fields named `*clld`, `*time`, `*utc`).
+
+### 8.2 Mandatory Numeric Fields and the Zero Constraint (`TBL003`)
+In Infor LN Data Dictionary / bshell runtime semantics, **any numeric field marked Mandatory: Yes strictly rejects value 0** (treating `0` as an empty, unentered state).
+- **The Fatal Crash (Error 205)**: In Accounts Receivable (`tfacr500`) and standard open items, document header records naturally have line number `line = 0`. If a temporary or staging table (e.g. `txcmg010`) defines `line` as `Mandatory: Yes`, executing `db.insert()` with `line = 0` immediately aborts with `Fatal Error 205 (Value is out of range)`.
+- **Defensive Standard**:
+  - In table design, line and sequence number fields (`line`, `lino`, `seqn`) must be defined as `Mandatory: No` (`isMandatory: false`) whenever line `0` is possible (such as invoice header items).
+  - Normal entity tables where line numbers start from 10, 20 can remain `Mandatory: Yes`.
+
+### 8.3 Enum Domain Safety & Value Space Collisions (`DMN003`)
+The bshell compiler maps enumeration symbols directly into integer literals without compile-time domain type enforcement.
+- **The Silent Inversion**: Comparing an enum column against a constant from another domain (e.g. `tfacr500.cdf_stdd <> tfcmg.stdd.selected`) when `cdf_stdd` uses domain `txbsta` causes catastrophic logical errors if `txbsta.not.applic = 1` and `tfcmg.stdd.selected = 1`. All valid unbilled records are discarded, and already-billed records are erroneously selected.
+- **Defensive Standard**:
+  - Always compare enum columns against symbols of their own declared domain (`txbsta.docn.selected`).
+  - Never compare enum columns against hardcoded non-zero integer literals (`cdf_stdd == 1` is strictly forbidden).
+  - Comparing against `0` is allowed only as an uninitialized check, with an advisory note to verify if the domain defines an explicit default symbol (e.g. `txbsta.not.applic`).
+
+### 8.4 Cloud Single Sign-On (SSO) Username Slicing (`STR001`)
+In Infor LN Cloud environments, Single Sign-On (`logname$`) returns email addresses, AD UPNs, or UUIDs that routinely exceed 16 characters.
+- **The Vulnerability**: Direct assignment `<table>.user = logname$` targeting domain `tfgld.user` (16 characters) triggers string truncation or buffer overflow errors.
+- **Defensive Standard**:
+  - Always slice usernames to 16 characters:
+    ```baan
+    curr_user = strip$(shiftl$(logname$))(1; 16)
+    txcmg010.user = curr_user
+    ```
+
+### 8.5 Ephemeral Debug Message Cleanup (`DBG001`)
+Interactive modal popups like `message("...")` halt headless automated background processing and batch execution.
+- **Defensive Standard**:
+  - In DAL scripts and batch sessions (`type 4`), raw `message()` is strictly forbidden (`ERROR`).
+  - In interactive UI scripts, temporary debugging `message()` calls must be cleaned up prior to production check-in (`WARNING`).
+
+## 9. Summary: Quick Reference Checklist
 
 | Pillar | DO (Mandatory Standard) | DON'T (Strictly Forbidden) |
 |---|---|---|
@@ -960,5 +1020,6 @@ function long execute_order_approval_orchestrator(const domain tcorno i.orno)
 | **4. Buffer Protection** | Bind query columns into local variables (`table.field:l.var`). Use table aliases for secondary queries. Use `as set with 1 rows`. Mutate via DAL 2. | Never execute `select table.*` in helper functions (overwrites UI form record buffer). Never use raw `db.update` in UI session scripts. |
 | **5. Array Dimensions** | Use 1-based indexing (`1..N`). Use empty `()` or `fixed` in function parameters. Pass array symbol without brackets. | Never access index `0` (causes stack corruption or crash). Never iterate with `for i = 0 to N-1`. |
 | **6. Runtime Caveats** | Compare floats with `double.cmp(v1, v2, epsilon) = 0`. Manage transactions at outer orchestrator. Handle `selectempty`. Eliminate `goto`. Keep locks minimal. | Never use `==` or `!=` on floating-point values. Never call `commit.transaction()` inside DAL hooks or DLL helpers. Never use `goto`. |
+| **7. Defensive Datatypes** | Use Julian Day (`date.num()`) for dates. Keep line columns non-mandatory when 0 is valid. Use matching domain enum symbols (`txbsta.not.applic`). Slice SSO `logname$` to 16 chars. | Never assign `date.to.utc()` or `utc.num()` to Date fields (triggers Error 205). Never set `mandatory: yes` on line fields holding 0. Never cross-compare enum domains or use raw integer literals on enums. |
 
 

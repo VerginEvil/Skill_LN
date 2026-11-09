@@ -578,5 +578,232 @@ function extern long before.save.object(long mode)
         self.assertTrue(any("Table DAL hook" in d.message for d in ext002_ses))
 
 
+    def test_dmn002_utc_assigned_to_date_field(self):
+        """Asserts DMN002 flags assigning date.to.utc() or utc.num() to Date fields."""
+        script = """
+table ttxcmg010
+
+function void set_dates()
+{
+    txcmg010.docd = date.to.utc(2026, 11, 6, 0, 0, 0)
+    txcmg010.dued = utc.num()
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln")
+        dmn002_diags = [d for d in diags if d.code == "DMN002"]
+        self.assertEqual(len(dmn002_diags), 2)
+        self.assertTrue(all(d.severity == "ERROR" for d in dmn002_diags))
+        self.assertTrue(any("date.to.utc" in d.message for d in dmn002_diags))
+        self.assertTrue(any("utc.num" in d.message for d in dmn002_diags))
+
+    def test_dmn002_valid_date_assignment(self):
+        """Asserts DMN002 does NOT trigger for date.num() or Julian day table copies."""
+        script = """
+table ttxcmg010
+table ttfacr500
+
+function void set_dates()
+{
+    txcmg010.docd = tfacr500.docd
+    txcmg010.dued = date.num()
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln")
+        dmn002_diags = [d for d in diags if d.code == "DMN002"]
+        self.assertEqual(len(dmn002_diags), 0)
+
+
+    def test_tbl003_mandatory_numeric_assigned_zero(self):
+        """Asserts TBL003 flags assigning 0 or tfacr500.line to a mandatory numeric field before insert."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "txcmg010",
+            {
+                "line": {"name": "line", "datatype": "long", "isMandatory": True},
+            }
+        )
+        script = """
+table ttxcmg010
+table ttfacr500
+
+function void process_records()
+{
+    txcmg010.line = 0
+    db.insert(ttxcmg010, db.retry)
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        tbl003_diags = [d for d in diags if d.code == "TBL003"]
+        self.assertEqual(len(tbl003_diags), 1)
+        self.assertEqual(tbl003_diags[0].severity, "ERROR")
+        self.assertIn("Error 205", tbl003_diags[0].message)
+
+    def test_tbl003_non_mandatory_line_allowed_zero(self):
+        """Asserts TBL003 does NOT trigger when column is isMandatory: False."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "txcmg010",
+            {
+                "line": {"name": "line", "datatype": "long", "isMandatory": False},
+            }
+        )
+        script = """
+table ttxcmg010
+
+function void process_records()
+{
+    txcmg010.line = 0
+    db.insert(ttxcmg010, db.retry)
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        tbl003_diags = [d for d in diags if d.code == "TBL003"]
+        self.assertEqual(len(tbl003_diags), 0)
+
+
+    def test_dmn003_cross_domain_enum_comparison(self):
+        """Asserts DMN003 flags cross-domain enum comparisons (e.g. txbsta col vs tfcmg.stdd constant)."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "tfacr500",
+            {
+                "cdf_stdd": {"name": "cdf_stdd", "domain": "txbsta", "datatype": "enum"},
+            }
+        )
+        script = """
+table ttfacr500
+
+function void check_status()
+{
+    if tfacr500.cdf_stdd <> tfcmg.stdd.selected then
+        return
+    endif
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        dmn003_diags = [d for d in diags if d.code == "DMN003"]
+        self.assertEqual(len(dmn003_diags), 1)
+        self.assertEqual(dmn003_diags[0].severity, "ERROR")
+        self.assertIn("Cross-domain", dmn003_diags[0].message)
+
+    def test_dmn003_integer_literal_on_enum(self):
+        """Asserts DMN003 flags integer literals >= 1 compared against enum columns."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "tfacr500",
+            {
+                "cdf_stdd": {"name": "cdf_stdd", "domain": "txbsta", "datatype": "enum"},
+            }
+        )
+        script = """
+table ttfacr500
+
+function void check_status()
+{
+    if tfacr500.cdf_stdd == 1 then
+        return
+    endif
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        dmn003_diags = [d for d in diags if d.code == "DMN003"]
+        self.assertEqual(len(dmn003_diags), 1)
+        self.assertEqual(dmn003_diags[0].severity, "ERROR")
+        self.assertIn("Integer literal", dmn003_diags[0].message)
+
+    def test_dmn003_zero_comparison_allowed_advisory(self):
+        """Asserts DMN003 treats == 0 as WARNING (Advisory) not blocking ERROR."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "tfacr500",
+            {
+                "cdf_stdd": {"name": "cdf_stdd", "domain": "txbsta", "datatype": "enum"},
+            }
+        )
+        script = """
+table ttfacr500
+
+function void check_status()
+{
+    if tfacr500.cdf_stdd == 0 then
+        return
+    endif
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        dmn003_diags = [d for d in diags if d.code == "DMN003"]
+        self.assertEqual(len(dmn003_diags), 1)
+        self.assertEqual(dmn003_diags[0].severity, "WARNING")
+
+    def test_dmn003_matching_domain_enum(self):
+        """Asserts DMN003 passes cleanly when enum symbol matches column domain."""
+        cache = DataDictionaryCache()
+        cache.update_table(
+            "tfacr500",
+            {
+                "cdf_stdd": {"name": "cdf_stdd", "domain": "txbsta", "datatype": "enum"},
+            }
+        )
+        script = """
+table ttfacr500
+
+function void check_status()
+{
+    if tfacr500.cdf_stdd <> txbsta.docn.selected then
+        return
+    endif
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", dd_cache=cache)
+        dmn003_diags = [d for d in diags if d.code == "DMN003"]
+        self.assertEqual(len(dmn003_diags), 0)
+
+
+    def test_str001_unsliced_logname_to_user_field(self):
+        """Asserts STR001 flags unsliced logname$ assigned to 16-char user fields in cloud mode."""
+        script = """
+table ttxcmg010
+
+function void set_user()
+{
+    txcmg010.user = logname$
+}
+"""
+        diags = self.cloud_auditor.audit_content(script, "txcmg0110m100.cln")
+        str001_diags = [d for d in diags if d.code == "STR001"]
+        self.assertEqual(len(str001_diags), 1)
+        self.assertEqual(str001_diags[0].severity, "ERROR")
+        self.assertIn("logname$", str001_diags[0].message)
+
+    def test_str001_properly_sliced_logname(self):
+        """Asserts STR001 passes when logname$ is properly sliced."""
+        script = """
+table ttxcmg010
+
+function void set_user()
+{
+    txcmg010.user = strip$(shiftl$(logname$))(1; 16)
+}
+"""
+        diags = self.cloud_auditor.audit_content(script, "txcmg0110m100.cln")
+        str001_diags = [d for d in diags if d.code == "STR001"]
+        self.assertEqual(len(str001_diags), 0)
+
+    def test_dbg001_raw_message_in_ui_session(self):
+        """Asserts DBG001 flags raw message() in UI session as a WARNING."""
+        script = """
+table ttxcmg010
+
+function void do_something()
+{
+    message("befre insert %1s - ...", txcmg010.user)
+}
+"""
+        diags = self.auditor.audit_content(script, "txcmg0110m100.cln", mode="ui")
+        dbg001_diags = [d for d in diags if d.code == "DBG001"]
+        self.assertEqual(len(dbg001_diags), 1)
+        self.assertEqual(dbg001_diags[0].severity, "WARNING")
+
+
 if __name__ == "__main__":
     unittest.main()

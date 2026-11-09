@@ -203,6 +203,17 @@ class DataDictionaryCache:
     def has_domain(self, domain_name: str) -> bool:
         return domain_name.lower() in self.domains
 
+    def get_field(self, table_name: str, field_name: str):
+        t_key = table_name.lower()
+        f_key = field_name.lower()
+        if t_key not in self.tables:
+            return None
+        return self.tables[t_key].get("fields", {}).get(f_key)
+
+    def get_domain(self, domain_name: str):
+        d_key = domain_name.lower().strip()
+        return self.domains.get(d_key)
+
     def update_table(
         self,
         table_name: str,
@@ -1344,6 +1355,10 @@ class Auditor4GL:
         declarations_includes: Set[str] = set()
         dal_call_lines: List[Tuple[int, str]] = []
 
+        # Precompiled regex patterns for inner audit loop
+        re_assign = re.compile(r"^\s*([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)\s*=(?!=)\s*(.+)$")
+        re_cmp = re.compile(r"\b([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)\s*(==|<>|!=|<=|>=|<|>|\bin\b)\s*([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)\b")
+
         for line_no, raw_line in enumerate(lines, start=1):
             code_line = cleaned_lines[line_no - 1] if line_no - 1 < len(cleaned_lines) else ""
             code_line_stripped = code_line.strip()
@@ -1826,8 +1841,23 @@ class Auditor4GL:
                                 )
 
             # ----------------------------------------------------
-            # 4. Prohibited Interactive UI & Transaction Controls in DAL / Table Extensions (DAL001, DAL005)
+            # 4. Prohibited Interactive UI & Transaction Controls in DAL / Table Extensions (DAL001, DAL005, DBG001)
             # ----------------------------------------------------
+            if mode != "dal2":
+                msg_matches = re.finditer(r"(?<![.\w])message\s*\(", code_line, re.IGNORECASE)
+                for mm in msg_matches:
+                    is_batch = mode == "batch" or "type 4" in content_lower or self.cloud_mode
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            mm.start() + 1,
+                            "ERROR" if is_batch else "WARNING",
+                            "DBG001",
+                            f"Interactive 'message()' popup in non-dialog script will halt headless/batch execution; remove ephemeral debug messages before release.",
+                            raw_line,
+                        )
+                    )
             if mode == "dal2":
                 ui_matches = re.finditer(r"(?<![.\w])(message|ask\.enum|box|input\.string)\s*\(", code_line, re.IGNORECASE)
                 for uim in ui_matches:
@@ -1910,6 +1940,180 @@ class Auditor4GL:
                             raw_line,
                         )
                     )
+
+            # ----------------------------------------------------
+            # 7b. Date Domain Safety (DMN002) & Mandatory Zero Constraint (TBL003)
+            # ----------------------------------------------------
+            m_assign = re_assign.match(code_line)
+            if m_assign:
+                target_var = m_assign.group(1).lower()
+                rhs_expr = m_assign.group(2).strip()
+
+                is_target_date = False
+                target_parts = target_var.split(".")
+                tbl_name = ""
+                fld_name = ""
+                if len(target_parts) == 1:
+                    fld_name = target_parts[0]
+                elif len(target_parts) == 2:
+                    tbl_name, fld_name = target_parts[0], target_parts[1]
+                elif len(target_parts) >= 3 and target_parts[1] == "cdf":
+                    tbl_name = target_parts[0]
+                    fld_name = target_parts[1] + "_" + target_parts[2]
+
+                fld_info = None
+                if tbl_name and fld_name and active_dd_cache and active_dd_cache.has_table(tbl_name):
+                    fld_info = active_dd_cache.get_field(tbl_name, fld_name)
+                    if fld_info:
+                        domain_name = (fld_info.get("domain") or "").lower()
+                        dt_str = str(fld_info.get("datatype") or "").lower()
+                        if "date" in domain_name or dt_str in ("date", "9"):
+                            is_target_date = True
+
+                if not is_target_date:
+                    var_leaf = target_parts[-1]
+                    if var_leaf in ("docd", "dued", "date", "datt", "odat", "idat", "pdat", "rdat", "fdat", "tdat", "sdat", "edat", "bdat", "ldat", "vdat") or var_leaf.endswith(("_docd", "_dued", "_date")):
+                        if not any(token in target_var for token in ("utc", "clld", "time")):
+                            is_target_date = True
+
+                # DMN002 Check
+                if is_target_date:
+                    m_utc_call = re.search(r"\b(date\.to\.utc|utc\.num)\s*\(", rhs_expr, re.IGNORECASE)
+                    if m_utc_call:
+                        called_utc_fn = m_utc_call.group(1).lower()
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                m_assign.start(1) + 1,
+                                "ERROR",
+                                "DMN002",
+                                f"Assigning UTC timestamp (seconds) from '{called_utc_fn}()' to Date field '{target_var}' will trigger Fatal Error 205 (Value is out of range) at runtime. Date fields use Julian Day integers (~740k); use 'date.num()' or Julian date assignments directly.",
+                                raw_line,
+                            )
+                        )
+
+                # TBL003 Check: Mandatory numeric field assigned 0 (or tfacr500.line)
+                if fld_info:
+                    is_mandatory = fld_info.get("isMandatory") or fld_info.get("mandatory") or False
+                    if is_mandatory:
+                        is_assigning_zero = (
+                            rhs_expr == "0"
+                            or re.match(r"^0\s*;", rhs_expr)
+                            or rhs_expr.lower() in ("tfacr500.line", "tfacr200.line")
+                        )
+                        if is_assigning_zero:
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    m_assign.start(1) + 1,
+                                    "ERROR",
+                                    "TBL003",
+                                    f"Assigning '{rhs_expr}' to mandatory numeric column '{target_var}' will trigger Fatal Error 205 (Value is out of range) at runtime upon db.insert(). In Infor LN, mandatory numeric fields forbid 0. If zero is valid (e.g. invoice header line), define column as Mandatory: No.",
+                                    raw_line,
+                                )
+                            )
+
+                # STR001 Check: Un-sliced logname$ assigned to 16-char user field
+                if "logname$" in rhs_expr.lower():
+                    is_user_field = (
+                        target_var.endswith(".user")
+                        or fld_name == "user"
+                        or (fld_info and (fld_info.get("domain") or "").lower() == "tfgld.user")
+                    )
+                    has_slice = (
+                        re.search(r"\(1\s*;\s*16\)", rhs_expr)
+                        or re.search(r"\[1\s*:\s*16\]", rhs_expr)
+                    )
+                    if is_user_field and not has_slice:
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                m_assign.start(1) + 1,
+                                "ERROR" if self.cloud_mode else "WARNING",
+                                "STR001",
+                                f"Un-sliced 'logname$' assigned to 16-character user field '{target_var}'. In Infor LN Cloud Single Sign-On (SSO), usernames often exceed 16 characters; use 'strip$(shiftl$(logname$))(1; 16)' to prevent string truncation errors.",
+                                raw_line,
+                            )
+                        )
+
+            # ----------------------------------------------------
+            # 7c. Enum Domain Safety & Literal Checks (DMN003)
+            # ----------------------------------------------------
+            if active_dd_cache:
+                for m_cmp in re_cmp.finditer(code_line):
+                    op_left = m_cmp.group(1).lower()
+                    op_right = m_cmp.group(3).lower()
+
+                    pairs = [(op_left, op_right), (op_right, op_left)]
+                    for col_candidate, val_candidate in pairs:
+                        parts = col_candidate.split(".")
+                        tbl_n = ""
+                        fld_n = ""
+                        if len(parts) == 2:
+                            tbl_n, fld_n = parts[0], parts[1]
+                        elif len(parts) >= 3 and parts[1] == "cdf":
+                            tbl_n, fld_n = parts[0], parts[1] + "_" + parts[2]
+
+                        if tbl_n and fld_n and active_dd_cache.has_table(tbl_n):
+                            fld_m = active_dd_cache.get_field(tbl_n, fld_n)
+                            if fld_m:
+                                d_name = (fld_m.get("domain") or "").lower()
+                                dt_type = str(fld_m.get("datatype") or "").lower()
+                                is_enum_col = dt_type in ("enum", "7")
+                                if not is_enum_col and d_name and active_dd_cache.has_domain(d_name):
+                                    dm_meta = active_dd_cache.get_domain(d_name)
+                                    is_enum_col = str(dm_meta.get("datatype") or "").lower() in ("enum", "7")
+
+                                if is_enum_col and d_name:
+                                    # Case 1: Compared against 0 (Advisory Warning)
+                                    if val_candidate == "0":
+                                        diagnostics.append(
+                                            Diagnostic(
+                                                file_path,
+                                                line_no,
+                                                m_cmp.start() + 1,
+                                                "WARNING",
+                                                "DMN003",
+                                                f"Comparison of enum column '{col_candidate}' (domain '{d_name}') against 0. Verify if 0 is the intended empty state; custom domains often define explicit non-zero default symbols (e.g. '{d_name}.not.applic').",
+                                                raw_line,
+                                            )
+                                        )
+                                    # Case 2: Compared against integer literal >= 1 (Error)
+                                    elif val_candidate.isdigit() and int(val_candidate) >= 1:
+                                        diagnostics.append(
+                                            Diagnostic(
+                                                file_path,
+                                                line_no,
+                                                m_cmp.start() + 1,
+                                                "ERROR",
+                                                "DMN003",
+                                                f"Integer literal '{val_candidate}' compared against enum column '{col_candidate}' (domain '{d_name}'). Use symbolic enum constant (e.g. '{d_name}.<symbol>') instead of raw integer literals to prevent logical inversions.",
+                                                raw_line,
+                                            )
+                                        )
+                                    # Case 3: Compared against another dotted constant (cross-domain enum)
+                                    elif "." in val_candidate and not val_candidate.startswith("t" + tbl_n):
+                                        # Check if constant starts with a different domain
+                                        # e.g. tfcmg.stdd.selected vs txbsta
+                                        c_parts = val_candidate.split(".")
+                                        if len(c_parts) >= 2:
+                                            # Try matching prefixes
+                                            if not val_candidate.startswith(d_name + "."):
+                                                const_domain = ".".join(c_parts[:-1])
+                                                diagnostics.append(
+                                                    Diagnostic(
+                                                        file_path,
+                                                        line_no,
+                                                        m_cmp.start() + 1,
+                                                        "ERROR",
+                                                        "DMN003",
+                                                        f"Cross-domain enum comparison: column '{col_candidate}' has domain '{d_name}' but is compared against constant '{val_candidate}' from domain '{const_domain}'. Cross-domain comparisons compile to conflicting integer values causing silent logical inversions.",
+                                                        raw_line,
+                                                    )
+                                                )
 
             # ----------------------------------------------------
             # 7. Float Equality Anti-Pattern (CAV001)

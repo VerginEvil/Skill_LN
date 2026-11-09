@@ -3,7 +3,7 @@
 - **Document ID**: `SPEC-2026-0017`
 - **Triage Label**: `ready-for-agent`
 - **Related Plan**: [`docs/plans/PLAN_LEAN_SKILL_ARCHITECTURE.md`](PLAN_LEAN_SKILL_ARCHITECTURE.md)
-- **Related ADR**: [`docs/adr/0017-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0017-lean-skill-architecture-and-progressive-disclosure.md)
+- **Related ADR**: [`docs/adr/0018-lean-skill-architecture-and-progressive-disclosure.md`](../adr/0018-lean-skill-architecture-and-progressive-disclosure.md)
 - **Target Skills**: `erp-ln-progguide`, `ln_studio_skill`
 
 ---
@@ -45,7 +45,7 @@ Refactor both skills in the **Monorepo Dual-Skill Layout** into a **Lean Procedu
 12. As an Infor LN developer customizing standard tables or sessions via Extension Modeler (`ttext1500m000`), I want `ln_studio_skill` to enforce the `Guide-and-Paste` workflow, so that extensions are authored locally with `#context_on` blocks, statically verified, and delivered hook-by-hook for LN UI without ever attempting LN Studio SCM check-out.
 13. As a repository maintainer running the Unified Checks Gateway, I want an automated Skill Markdown Lint Gate that fails if either `SKILL.md` exceeds 80 lines, lacks valid frontmatter, or contains a broken relative reference path, so that documentation bloat and broken links can never regress in CI or pre-commit hooks.
 14. As a developer testing skills locally in my IDE, I want the Unified Checks Gateway's drift check and `--sync-skill` flag to cover both `ln_studio_skill` and `erp-ln-progguide`, so that both skills stay synchronized with my global agent configuration in one command.
-15. As a contributor reading the project's domain documentation, I want all Leading Words and Progressive Disclosure concepts recorded in the Domain Glossary and ADR 0017, so that future skills and tickets share a consistent architectural vocabulary.
+15. As a contributor reading the project's domain documentation, I want all Leading Words and Progressive Disclosure concepts recorded in the Domain Glossary and ADR 0018, so that future skills and tickets share a consistent architectural vocabulary.
 
 ---
 
