@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-11-09
+
+### Added
+- **Automated Skill Markdown Lint Gate (`scripts/run_checks.py`)**: Mechanical gate checking YAML frontmatter validity (`name`, `description`), enforcing a strict `<= 80`-line ceiling, and verifying 100% relative path link integrity across both skills (ADR 0017).
+- **Dual-Skill Synchronization & Drift Detection**: Upgraded `--sync-skill` and drift checking to synchronize and monitor both `ln_studio_skill` and `erp-ln-progguide` to `~/.gemini/config/skills/`.
+- **Branching Reference Files (`ln_studio_skill/references/`)**:
+  - `CLI_REFERENCE.md`: Complete 50+ CLI subcommand catalog grouped by development lifecycle with common recipes.
+  - `MCP_TOOLS_REFERENCE.md`: 4 consolidated high-efficiency MCP tools + 17 detailed tools with client setup instructions.
+  - `AUTHORING_SCHEMA_GUIDE.md`: Multi-component YAML authoring specification and Single-XML TDE layout rules.
+
+### Changed
+- **Lean Procedural Architecture for `erp-ln-progguide/SKILL.md`**: Refactored from 170 lines to 48 lines with natural Context Pointer, negative boundary (`Do NOT use for...`), 4-step workflow (`Search-Before-Read` -> `Branching Reference Pointers` -> `Core 4GL & Cloud Guardrails` -> `Audit-Before-Deliver`), and direct cookbook routing.
+- **Lean Procedural Architecture for `ln_studio_skill/SKILL.md`**: Refactored from 430 lines to 51 lines with natural Context Pointer, negative boundary, non-negotiable guardrails (`Pre-Fetch-Auth-Gate`, `Read-Only-SCM-Guardrail`, `Pre-Commit-Boundary`, `Guide-and-Paste`), and 4 core procedural workflows.
+- **Sediment Removal**: Purged TCP socket internals, binary property bucket headers, registry/clipboard implementation details, and internal Python module lists from active `SKILL.md` contexts.
+
+---
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

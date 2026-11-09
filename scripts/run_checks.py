@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
 """
 scripts/run_checks.py
-Unified checks gateway and pre-commit guardrail for Skill_LN.
+Unified checks gateway, skill markdown lint gate, and pre-commit guardrail for Skill_LN.
 ADR 0014: Quality Hardening, CI Guardrails, and Layout Enforcement.
+ADR 0017: Lean Skill Architecture, Progressive Disclosure & Automated Skill Lint Gate.
 
 Usage:
-    python scripts/run_checks.py                 # Run all checks (syntax, layout, tests)
-    python scripts/run_checks.py --syntax-only   # Run only syntax compilation check
-    python scripts/run_checks.py --layout-only   # Run only layout validation
-    python scripts/run_checks.py --install-hook  # Install .git/hooks/pre-commit
+    python scripts/run_checks.py                  # Run all checks (syntax, layout, skill-lint, tests)
+    python scripts/run_checks.py --syntax-only    # Run only syntax compilation check
+    python scripts/run_checks.py --layout-only    # Run only layout validation
+    python scripts/run_checks.py --skill-lint-only# Run only skill markdown lint gate (ADR 0017)
+    python scripts/run_checks.py --install-hook   # Install .git/hooks/pre-commit
+    python scripts/run_checks.py --sync-skill     # Synchronize verified skills to global config
 """
 
 import os
 import sys
 import stat
+import re
 import argparse
 import compileall
 import subprocess
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = REPO_ROOT / "ln_studio_skill" / "tools"
@@ -27,10 +31,15 @@ TESTS_DIR = TOOLS_DIR / "tests"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
+SKILL_CONFIGS = {
+    "ln_studio_skill": ["SKILL.md", "tools", "templates", "references", "scripts"],
+    "erp-ln-progguide": ["SKILL.md", "references", "index", "templates", "scripts", "tests"],
+}
+
 
 def check_syntax() -> bool:
     """Compiles all Python sources under ln_studio_skill/tools to verify syntax."""
-    print("=== [1/3] Checking Python Syntax Compilation ===")
+    print("=== [1/4] Checking Python Syntax Compilation ===")
     ok = compileall.compile_dir(str(TOOLS_DIR), quiet=1, force=False)
     if ok:
         print("[PASS] Python syntax clean.")
@@ -41,7 +50,7 @@ def check_syntax() -> bool:
 
 def check_layout() -> bool:
     """Verifies that all activities on disk comply with Single-XML TDE layout (ADR 0012 & ADR 0014)."""
-    print("\n=== [2/3] Checking Single-XML TDE Layout Compliance ===")
+    print("\n=== [2/4] Checking Single-XML TDE Layout Compliance ===")
     try:
         from admin_sync import validate_activity_layout
     except ImportError as e:
@@ -49,7 +58,6 @@ def check_layout() -> bool:
         return False
 
     errors: List[str] = []
-    # Search for any activity directories containing .project or .admin
     scanned = 0
     seen_dirs = set()
     for marker in (".project", ".admin"):
@@ -72,9 +80,110 @@ def check_layout() -> bool:
     return True
 
 
+def _resolve_and_validate_path(
+    skill_file: Path,
+    raw_path: str,
+    path_prefixes: Optional[Tuple[str, ...]] = None,
+) -> Optional[str]:
+    """Validates that a relative path string points to an existing file/directory on disk.
+
+    Returns the cleaned path string if the target is broken/missing, or None if valid/ignored.
+    """
+    clean = raw_path.partition("#")[0].strip()
+    if not clean or any(c in clean for c in "<>|*?"):
+        return None
+    if path_prefixes and not any(clean.startswith(prefix) for prefix in path_prefixes):
+        return None
+    target_path = (skill_file.parent / clean).resolve()
+    if not target_path.exists():
+        return clean
+    return None
+
+
+def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) -> bool:
+    """Verifies YAML frontmatter, line limit (<= max_lines), and relative links in SKILL.md (ADR 0017)."""
+    root = repo_root or REPO_ROOT
+    print(f"\n=== [3/4] Checking Skill Markdown Lint Gate (ADR 0017, <= {max_lines} lines) ===")
+
+    skill_names = ["ln_studio_skill", "erp-ln-progguide"]
+    errors: List[str] = []
+    link_re = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
+    inline_code_re = re.compile(r"(?<!`)`([^`\n]+)`(?!`)")
+    path_prefixes = ("references/", "scripts/", "tools/", "templates/", "index/", "../")
+
+    for sname in skill_names:
+        skill_dir = root / sname
+        skill_file = skill_dir / "SKILL.md"
+        if not skill_file.exists():
+            errors.append(f"{sname}/SKILL.md does not exist.")
+            continue
+
+        try:
+            content = skill_file.read_text(encoding="utf-8")
+        except OSError as e:
+            errors.append(f"{sname}/SKILL.md could not be read: {e}")
+            continue
+
+        lines = content.splitlines()
+        line_count = len(lines)
+
+        # 1. Frontmatter check
+        if not lines or lines[0].strip() != "---":
+            errors.append(f"{sname}/SKILL.md missing opening YAML frontmatter '---'.")
+        else:
+            closing_idx = -1
+            for idx in range(1, len(lines)):
+                if lines[idx].strip() == "---":
+                    closing_idx = idx
+                    break
+            if closing_idx == -1:
+                errors.append(f"{sname}/SKILL.md missing closing YAML frontmatter '---'.")
+            else:
+                fm_text = "\n".join(lines[1:closing_idx])
+                has_name = bool(re.search(r"^name:\s*\S+", fm_text, re.MULTILINE))
+                has_desc = bool(re.search(r"^description:\s*\S+", fm_text, re.MULTILINE))
+                if not has_name:
+                    errors.append(f"{sname}/SKILL.md frontmatter missing non-empty 'name'.")
+                if not has_desc:
+                    errors.append(f"{sname}/SKILL.md frontmatter missing non-empty 'description'.")
+
+        # 2. Line budget check
+        if line_count > max_lines:
+            errors.append(f"{sname}/SKILL.md: {line_count} lines exceeds maximum budget of {max_lines} lines.")
+
+        # 3. Relative path / link resolution
+        # Check Markdown links
+        for m in link_re.finditer(content):
+            raw = m.group(2).strip()
+            if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+                continue
+            broken = _resolve_and_validate_path(skill_file, raw)
+            if broken:
+                errors.append(f"{sname}/SKILL.md: broken markdown link -> {broken}")
+
+        # Check inline code pointers (stripping triple-backtick fences first)
+        content_no_fences = re.sub(r"```[\s\S]*?```", "", content)
+        for m in inline_code_re.finditer(content_no_fences):
+            code_text = m.group(1).strip()
+            for token in code_text.split():
+                t = token.strip("()[]'\",;:")
+                broken = _resolve_and_validate_path(skill_file, t, path_prefixes=path_prefixes)
+                if broken:
+                    errors.append(f"{sname}/SKILL.md: broken inline path pointer -> {broken}")
+
+    if errors:
+        for err in errors:
+            print(f"  [ERROR] {err}")
+        print(f"[FAIL] Skill markdown lint failed with {len(errors)} violation(s).")
+        return False
+
+    print(f"[PASS] Skill markdown lint clean (ln_studio_skill, erp-ln-progguide <= {max_lines} lines).")
+    return True
+
+
 def run_unit_tests() -> bool:
     """Runs the full unittest suite across ln_studio_skill/tools/tests."""
-    print("\n=== [3/3] Running Unit Test Suite ===")
+    print("\n=== [4/4] Running Unit Test Suite ===")
     cmd = [
         sys.executable,
         "-m",
@@ -96,61 +205,68 @@ def run_unit_tests() -> bool:
         return False
 
 
-def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
-    """Detects file drift between the repository skill and the global installed skill."""
-    dest = target_dir or (Path.home() / ".gemini" / "config" / "skills" / "ln_studio_skill")
-    src = REPO_ROOT / "ln_studio_skill"
-    if not dest.exists() or not src.exists():
-        return []
+def _get_target_pairs(target_dir: Optional[Path]) -> List[Tuple[str, Path, Path, bool]]:
+    """Resolves (skill_name, src_dir, dest_dir, include_prefix) pairs for drift & sync."""
+    dest_base = target_dir or (Path.home() / ".gemini" / "config" / "skills")
+    if target_dir and target_dir.name in SKILL_CONFIGS:
+        return [(target_dir.name, REPO_ROOT / target_dir.name, target_dir, False)]
+    return [
+        (sname, REPO_ROOT / sname, dest_base / sname, True)
+        for sname in SKILL_CONFIGS
+    ]
 
+
+def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
+    """Detects file drift between the repository skills and the global installed skills."""
     drifted: List[str] = []
-    items_to_check = ["SKILL.md", "tools", "templates", "references", "scripts"]
-    for item in items_to_check:
-        s_base = src / item
-        if not s_base.exists():
+    for sname, src, dest, include_prefix in _get_target_pairs(target_dir):
+        if not dest.exists() or not src.exists():
             continue
-        if s_base.is_file():
-            d_file = dest / item
-            if not d_file.exists() or s_base.read_bytes() != d_file.read_bytes():
-                drifted.append(item)
-        elif s_base.is_dir():
-            for sp in s_base.rglob("*"):
-                if not sp.is_file() or "__pycache__" in sp.parts or sp.name.endswith(".pyc") or ".git" in sp.parts:
-                    continue
-                rel = sp.relative_to(src).as_posix()
-                dp = dest / rel
-                if not dp.exists() or sp.read_bytes() != dp.read_bytes():
-                    drifted.append(rel)
+        items_to_check = SKILL_CONFIGS.get(sname, ["SKILL.md", "references"])
+        for item in items_to_check:
+            s_base = src / item
+            if not s_base.exists():
+                continue
+            if s_base.is_file():
+                d_file = dest / item
+                if not d_file.exists() or s_base.read_bytes() != d_file.read_bytes():
+                    drifted.append(f"{sname}/{item}" if include_prefix else item)
+            elif s_base.is_dir():
+                for src_file in s_base.rglob("*"):
+                    if not src_file.is_file() or "__pycache__" in src_file.parts or src_file.name.endswith(".pyc") or ".git" in src_file.parts:
+                        continue
+                    rel = src_file.relative_to(src).as_posix()
+                    dest_file = dest / rel
+                    if not dest_file.exists() or src_file.read_bytes() != dest_file.read_bytes():
+                        drifted.append(f"{sname}/{rel}" if include_prefix else rel)
     return drifted
 
 
 def sync_global_skill(target_dir: Optional[Path] = None) -> bool:
-    """Synchronizes verified skill files from ln_studio_skill/ to ~/.gemini/config/skills/ln_studio_skill."""
+    """Synchronizes verified repository skill files to global skills directory."""
     import shutil
-    dest = target_dir or (Path.home() / ".gemini" / "config" / "skills" / "ln_studio_skill")
-    src = REPO_ROOT / "ln_studio_skill"
-    if not src.exists():
-        print(f"[FAIL] Source skill directory not found: {src}")
-        return False
+    for sname, src, dest, _ in _get_target_pairs(target_dir):
+        if not src.exists():
+            print(f"[FAIL] Source skill directory not found: {src}")
+            return False
+        dest.mkdir(parents=True, exist_ok=True)
+        items_to_sync = SKILL_CONFIGS.get(sname, ["SKILL.md"])
+        for item in items_to_sync:
+            s_item = src / item
+            d_item = dest / item
+            if not s_item.exists():
+                continue
+            if s_item.is_file():
+                shutil.copy2(s_item, d_item)
+            elif s_item.is_dir():
+                shutil.copytree(
+                    s_item,
+                    d_item,
+                    dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".git*")
+                )
+        print(f"[SUCCESS] Synchronized {sname} to: {dest}")
 
-    dest.mkdir(parents=True, exist_ok=True)
-    items_to_sync = ["SKILL.md", "tools", "templates", "references", "scripts"]
-    for item in items_to_sync:
-        s_item = src / item
-        d_item = dest / item
-        if not s_item.exists():
-            continue
-        if s_item.is_file():
-            shutil.copy2(s_item, d_item)
-        elif s_item.is_dir():
-            shutil.copytree(
-                s_item,
-                d_item,
-                dirs_exist_ok=True,
-                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".git*")
-            )
-
-    print(f"\n[SUCCESS] Synchronized verified skill to: {dest}")
     return True
 
 
@@ -163,7 +279,7 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
 
     script_content = (
         "#!/bin/sh\n"
-        "# Skill_LN pre-commit guardrail (ADR 0014)\n"
+        "# Skill_LN pre-commit guardrail (ADR 0014 & ADR 0017)\n"
         "python scripts/run_checks.py\n"
         "exit $?\n"
     )
@@ -181,12 +297,13 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Skill_LN Unified Checks Gateway (ADR 0014)")
+    parser = argparse.ArgumentParser(description="Skill_LN Unified Checks Gateway (ADR 0014 & ADR 0017)")
     parser.add_argument("--install-hook", action="store_true", help="Install .git/hooks/pre-commit")
     parser.add_argument("--syntax-only", action="store_true", help="Run only syntax compilation")
     parser.add_argument("--layout-only", action="store_true", help="Run only layout validation")
+    parser.add_argument("--skill-lint-only", action="store_true", help="Run only skill markdown lint gate (ADR 0017)")
     parser.add_argument("--skip-tests", action="store_true", help="Skip running unit tests")
-    parser.add_argument("--sync-skill", action="store_true", help="Synchronize verified repository skill files to ~/.gemini/config/skills/ln_studio_skill")
+    parser.add_argument("--sync-skill", action="store_true", help="Synchronize verified repository skill files to global skills directory")
     args = parser.parse_args()
 
     if args.install_hook:
@@ -199,14 +316,18 @@ def main() -> int:
     if args.layout_only:
         return 0 if check_layout() else 1
 
+    if args.skill_lint_only:
+        return 0 if check_skill_markdown() else 1
+
     # Full checks sequence
     syntax_ok = check_syntax()
     layout_ok = check_layout()
+    markdown_ok = check_skill_markdown()
     tests_ok = True
     if not args.skip_tests:
         tests_ok = run_unit_tests()
 
-    if syntax_ok and layout_ok and tests_ok:
+    if syntax_ok and layout_ok and markdown_ok and tests_ok:
         if args.sync_skill:
             sync_global_skill()
         else:
