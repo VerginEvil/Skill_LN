@@ -266,6 +266,10 @@ def generate_table_xml(
         c_pos = col["position"]
         c_null = "true" if col.get("nullable") else "false"
         c_mand = "true" if col.get("mandatory") else "false"
+        if col.get("mandatory") and c_name.lower() in ("line", "lino", "seqn"):
+            t_name = str(table_spec.get("code") or table_spec.get("name") or "").lower()
+            if any(k in t_name for k in ("open", "item", "inv", "bill", "batch", "select", "stage", "tmp", "temp", "cmg")):
+                print(f"[ADVISORY] Table '{t_name}': Column '{c_name}' is set to Mandatory: Yes. If this table stores Accounts Receivable or invoice open items (where header line is 0), bshell db.insert will fail with Fatal Error 205. Consider Mandatory: No if line 0 is valid.")
         c_act = "true" if col.get("active", True) else "false"
         c_dt_code = col["native_datatype"]
         c_domain = col["domain"]

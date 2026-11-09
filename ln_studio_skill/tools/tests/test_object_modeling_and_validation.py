@@ -410,5 +410,48 @@ class TestFourLayerValidatorAndFix(unittest.TestCase):
             self.assertEqual(len(l1_errors2), 0, f"Expected 0 Layer 1 errors when files present on disk, got: {[d.message for d in l1_errors2]}")
 
 
+    def test_table_generation_line_mandatory_advisory(self):
+        """Asserts table generator preserves isMandatory: true on line fields while emitting an advisory."""
+        from generate_ln_table import generate_table_xml
+        import io
+        import sys
+
+        spec = {
+            "code": "txcmg010",
+            "name": "txcmg010",
+            "version_id": "B61O_a_ext",
+            "package": "tx",
+            "module": "cmg",
+            "table_code": "010",
+            "description": "Select Invoices for Billing Batch",
+            "fields": [
+                {
+                    "name": "line",
+                    "description": "Line Number",
+                    "label_code": "txtxcmg010.line",
+                    "position": 1,
+                    "mandatory": True,
+                    "native_datatype": 3,
+                    "domain": "tfgld.lino",
+                }
+            ],
+            "indices": [],
+        }
+
+        captured_out = io.StringIO()
+        old_stdout = sys.stdout
+        try:
+            sys.stdout = captured_out
+            xml = generate_table_xml(spec, "tx")
+        finally:
+            sys.stdout = old_stdout
+
+        self.assertIn("<isMandatory>true</isMandatory>", xml)
+        self.assertIn("txtxcmg010.line", xml)
+        output = captured_out.getvalue()
+        self.assertIn("[ADVISORY]", output)
+        self.assertIn("Error 205", output)
+
+
 if __name__ == "__main__":
     unittest.main()
