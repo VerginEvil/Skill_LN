@@ -75,6 +75,20 @@ DEFAULT_DAL_FIELD_HOOK_SUFFIXES = {
     ".is.mandatory", ".is.valid", ".update", ".make.valid", ".check", ".set.defaults"
 }
 
+DEFAULT_STD_EXTENSION_INCLUDES = {
+    "bic_dal2", "bic_tableext", "bic_sessionext", "bic_text",
+    "bic_interface", "bic_dam", "bic_view"
+}
+
+DEFAULT_STD_FRAMEWORK_FUNCTIONS = {
+    "get.extension.point.version",
+    "ext.is.cdfs.of.ref.tables.selected",
+    "ext.get.form.fields",
+    "ext.get.session.indices",
+    "ext.get.command.extensions",
+    "ext.get.report.extensions",
+}
+
 
 class Diagnostic:
     def __init__(self, file_path: str, line: int, col: int, severity: str, message_or_code: str, message: Optional[str] = None, raw_line: str = ""):
@@ -213,6 +227,9 @@ class ScriptChecker:
                 self.dal_field_hook_suffixes.add(str(s))
                 self.dal_field_hooks_info[str(s).lower()] = {"suffix": str(s)}
 
+        self.std_extension_includes = DEFAULT_STD_EXTENSION_INCLUDES
+        self.std_framework_functions = DEFAULT_STD_FRAMEWORK_FUNCTIONS
+
         # Build combined all known section list for typo suggestion
         self.all_known_sections = sorted(
             list(self.program_sections) +
@@ -298,6 +315,7 @@ class ScriptChecker:
 
         is_extension = (
             "#context_on" in content_lower
+            or "#context_off" in content_lower
             or path_lower.endswith(".cln")
             or "_ext.4gl" in path_lower
             or "/est/" in file_path.replace("\\", "/").lower()
@@ -315,6 +333,9 @@ class ScriptChecker:
         )
 
         current_context: Optional[str] = None
+        in_additional_declarations: bool = False
+        has_additional_declarations: bool = False
+        found_get_extension_point_version: bool = False
         declarations_includes: Set[str] = set()
         dal_call_lines: List[Tuple[int, str]] = []
         current_func_name: Optional[str] = None
@@ -336,6 +357,10 @@ class ScriptChecker:
                 continue
 
             # Strip comments & strings for syntax inspection
+            if re.search(r"\|\s*Additional generated declarations", raw_line, re.IGNORECASE):
+                in_additional_declarations = True
+                has_additional_declarations = True
+
             code_line, in_multiline_doc = strip_4gl_comments_and_strings(raw_line, in_multiline_doc)
             code_line_stripped = code_line.strip()
 
@@ -346,6 +371,7 @@ class ScriptChecker:
             # Must not be inside case statements (e.g. `case DAL_NEW:`) or default:
             section_match = re.match(r"^([a-zA-Z0-9_.]+)\s*:$", code_line_stripped)
             if section_match:
+                in_additional_declarations = False
                 header_name = section_match.group(1).lower() + ":"
                 raw_token = section_match.group(1)
 
@@ -370,13 +396,15 @@ class ScriptChecker:
             # #context_on / #context_off check
             m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', raw_line, re.IGNORECASE)
             if m_ctx:
+                in_additional_declarations = False
                 ctx_name = m_ctx.group(1) or "unknown"
                 current_context = ctx_name.lower().strip()
                 if context_stack:
                     parent_name, parent_line = context_stack[-1]
                     diagnostics.append(Diagnostic(
-                        file_path, line_no, 1, "ERROR",
-                        f"Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_name}' (line {parent_line})."
+                        file_path, line_no, 1, "ERROR", "EXT003",
+                        f"EXT003: Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_name}' (line {parent_line}).",
+                        raw_line
                     ))
                 context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
 
@@ -412,8 +440,9 @@ class ScriptChecker:
                 current_context = None
                 if not context_stack:
                     diagnostics.append(Diagnostic(
-                        file_path, line_no, 1, "ERROR",
-                        "Unmatched '#context_off' without corresponding '#context_on'."
+                        file_path, line_no, 1, "ERROR", "EXT003",
+                        "EXT003: Unmatched '#context_off' without corresponding '#context_on'.",
+                        raw_line
                     ))
                 else:
                     context_stack.pop()
@@ -425,6 +454,8 @@ class ScriptChecker:
                     inc_raw = m_inc.group(1)
                     inc_clean = inc_raw.strip("<>\".h").lower()
                     if current_context == "declarations":
+                        declarations_includes.add(inc_clean)
+                    elif in_additional_declarations and (inc_clean in self.std_extension_includes or inc_clean.startswith("bic_")):
                         declarations_includes.add(inc_clean)
                     else:
                         diagnostics.append(Diagnostic(
@@ -544,12 +575,41 @@ class ScriptChecker:
             # ----------------------------------------------------
             # 3. DAL & Extension Function Hook Signatures
             # ----------------------------------------------------
+            # EXT003: Non-context statements & declarations check
+            if is_extension and current_context is None and current_func_name is None:
+                if code_line_stripped and not code_line_stripped.startswith("#"):
+                    is_tbl_decl = bool(re.match(r"^\s*table\s+[a-zA-Z0-9_]+", code_line_stripped, re.IGNORECASE))
+                    is_func_start = bool(re.match(r"^\s*(?:function\s+)?(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?[a-zA-Z0-9_.]+\s*\(", code_line_stripped, re.IGNORECASE))
+                    if in_additional_declarations and is_tbl_decl:
+                        pass
+                    elif is_func_start:
+                        pass
+                    else:
+                        is_var_decl = bool(re.match(
+                            r"^(?:extern\s+|global\s+)?(?:domain\s+[a-zA-Z0-9_.]+|long|string|double|boolean)\s+",
+                            code_line_stripped,
+                            re.IGNORECASE
+                        ))
+                        if is_var_decl:
+                            diagnostics.append(Diagnostic(
+                                file_path, line_no, 1, "ERROR", "EXT003",
+                                "EXT003: Custom declaration placed outside '#context' block; custom declarations must reside inside '#context_on \"declarations\"'.",
+                                raw_line
+                            ))
+                        elif not is_tbl_decl:
+                            diagnostics.append(Diagnostic(
+                                file_path, line_no, 1, "ERROR", "EXT003",
+                                "EXT003: Executable statement placed outside '#context' block; custom logic must reside inside '#context_on' blocks.",
+                                raw_line
+                            ))
+
             func_match = re.match(r"^\s*(?:function\s+)?(?:extern\s+)?(?:([a-zA-Z0-9_.]+)\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)", code_line, re.IGNORECASE)
             if func_match:
                 f_cand = func_match.group(2).lower()
                 if f_cand in ("return", "if", "while", "for", "on", "case", "select", "endselect", "endif", "endwhile", "endfor", "endcase", "break", "continue") or f_cand.startswith(("db.", "dal.", "commit.", "abort.", "message", "ask.", "box", "show.")):
                     func_match = None
             if func_match:
+                in_additional_declarations = False
                 ret_type = (func_match.group(1) or "").lower()
                 func_name = func_match.group(2).lower()
                 params = func_match.group(3).strip()
@@ -560,6 +620,54 @@ class ScriptChecker:
                     or (not ret_type and (func_name.endswith(".before.command") or func_name.endswith(".after.command")))
                 )
                 current_func_hook_suffix = None
+
+                # EXT003: Anti-tamper & standard framework function boundary
+                if is_extension:
+                    is_std_framework_func = (
+                        func_name in self.std_framework_functions
+                        or func_name.startswith("ext.get.")
+                        or func_name.startswith("ext.is.")
+                        or func_name == "get.extension.point.version"
+                    )
+
+                    if current_context is not None:
+                        # Inside context block: standard framework function must not be wrapped
+                        if is_std_framework_func:
+                            diagnostics.append(Diagnostic(
+                                file_path, line_no, 1, "ERROR", "EXT003",
+                                f"EXT003: Standard framework function '{func_name}' must remain outside '#context' blocks in the immutable standard code section.",
+                                raw_line
+                            ))
+                    else:
+                        # Outside context: only standard framework functions are permitted
+                        if not is_std_framework_func:
+                            diagnostics.append(Diagnostic(
+                                file_path, line_no, 1, "ERROR", "EXT003",
+                                f"EXT003: Custom function '{func_name}' declared outside '#context' block; custom functions must reside inside '#context_on' blocks.",
+                                raw_line
+                            ))
+                        else:
+                            if func_name == "get.extension.point.version":
+                                found_get_extension_point_version = True
+                                if ret_type != "long":
+                                    diagnostics.append(Diagnostic(
+                                        file_path, line_no, 1, "ERROR", "EXT003",
+                                        f"EXT003: Standard framework function 'get.extension.point.version' has invalid return type '{ret_type or 'void'}'; expected 'long'.",
+                                        raw_line
+                                    ))
+                            elif func_name == "ext.is.cdfs.of.ref.tables.selected":
+                                if ret_type not in ("boolean", "long"):
+                                    diagnostics.append(Diagnostic(
+                                        file_path, line_no, 1, "ERROR", "EXT003",
+                                        f"EXT003: Standard framework function '{func_name}' has invalid return type '{ret_type or 'void'}'; expected 'boolean'.",
+                                        raw_line
+                                    ))
+                            elif (func_name.startswith("ext.get.") or func_name in ("ext.get.form.fields", "ext.get.session.indices", "ext.get.command.extensions", "ext.get.report.extensions")) and ret_type not in ("void", ""):
+                                diagnostics.append(Diagnostic(
+                                    file_path, line_no, 1, "ERROR", "EXT003",
+                                    f"EXT003: Standard framework function '{func_name}' has invalid return type '{ret_type}'; expected 'void'.",
+                                    raw_line
+                                ))
 
                 # Check EXT002 on function declaration
                 is_cmd_hook = (
@@ -693,6 +801,13 @@ class ScriptChecker:
                             f"DAL003: Void function / hook '{current_func_name}' cannot return value '{ret_val}'; compiler blocks with 'Return value for void function not allowed'. Use bare 'return' or 'return()' without an expression.",
                             raw_line
                         ))
+                    if current_func_name == "get.extension.point.version":
+                        if not ret_val.isdigit():
+                            diagnostics.append(Diagnostic(
+                                file_path, line_no, 1, "ERROR", "EXT003",
+                                "EXT003: Standard framework function 'get.extension.point.version' modified; must return a valid integer version number (e.g. return(3)).",
+                                raw_line
+                            ))
 
             # ----------------------------------------------------
             # 4. Prohibited Interactive Dialogs & Transaction Controls in DAL / Table Extensions
@@ -745,6 +860,13 @@ class ScriptChecker:
                     first_raw
                 ))
 
+        # EXT003: Missing or removed standard framework function
+        if is_extension and has_additional_declarations and not found_get_extension_point_version:
+            diagnostics.append(Diagnostic(
+                file_path, len(lines), 1, "ERROR", "EXT003",
+                "EXT003: Standard framework function 'get.extension.point.version' is missing or was removed; standard framework functions outside '#context' must not be deleted."
+            ))
+
         # Check for unclosed blocks at EOF
         while block_stack:
             blk_type, blk_line = block_stack.pop()
@@ -756,8 +878,8 @@ class ScriptChecker:
         while context_stack:
             ctx_type, ctx_line = context_stack.pop()
             diagnostics.append(Diagnostic(
-                file_path, ctx_line, 1, "ERROR",
-                f"Unclosed '{ctx_type}' directive (opened at line {ctx_line})."
+                file_path, ctx_line, 1, "ERROR", "EXT003",
+                f"EXT003: Unclosed '{ctx_type}' directive (opened at line {ctx_line})."
             ))
 
         while brace_stack:

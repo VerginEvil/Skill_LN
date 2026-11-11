@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.3] - 2026-11-11
+
+### Added
+- **Extension Modeler Non-Context Standard Code Boundary & Anti-Tamper Guardrails (ADR 0020)**:
+  - Strict Non-Context Immutability: Mandates all code outside `#context_on "<hook>"` ... `#context_off` as strictly Read-Only / Immutable in `.antigravity/rules/infor_ln.md` Section 5.5.
+  - Automatic Extension Detection: Automatically recognizes any 4GL script containing `#context_on` or `#context_off` as an Extension Modeler script.
+  - Refined Rule `EXT001`: Recognizes standard generated `#include` headers (`<bic_dal2>`, `<bic_tableext>`, `<bic_sessionext>`, `<bic_text>`, `<bic_interface>`, `<bic_dam>`) under `| Additional generated declarations` as valid boilerplate, avoiding false-positive diagnostics, while custom includes outside `#context_on "declarations"` remain strictly prohibited.
+  - New Anti-Tamper Rule `EXT003` (Severity: ERROR) in both `erp-ln-progguide/scripts/audit_4gl.py` and `ln_studio_skill/tools/check_4gl_script.py`: Enforces standard framework function immutability (`get.extension.point.version`, `ext.get.*`), detects improper wrapping of framework functions inside context, detects custom functions or declarations outside context, and enforces balanced `#context_on`/`#context_off` pairs.
+  - 8 new unit tests across `ln_studio_skill/tools/tests/test_extension_workflow.py` and `erp-ln-progguide/tests/test_audit_4gl.py` verifying `EXT001` refinement and `EXT003` anti-tamper enforcement (37 tests in `erp-ln-progguide`, 304 in `ln_studio_skill`).
+
+### Changed
+- Updated `docs/glossary/GLOSSARY.md` with definitions for `EXT001` refinement and `EXT003`.
+- Updated `erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md` with Section 8 documenting the non-context code boundary, anti-tamper rules, and dual-mode delivery workflow.
+- Updated `ln_studio_skill/SKILL.md` and `erp-ln-progguide/SKILL.md` references while respecting the `<= 80` line budget.
+
 ## [1.0.2] - 2026-11-09
 
 ### Added

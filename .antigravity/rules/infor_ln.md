@@ -137,14 +137,15 @@ The AI Assistant and CLI tools MUST explicitly notify the user beforehand:
 
 ---
 
-## 5. Extension Modeler (`ttext1500m000`) Compiler Rules & Static Guardrails (ADR 0013)
+## 5. Extension Modeler (`ttext1500m000`) Compiler Rules & Static Guardrails (ADR 0013, ADR 0020)
 
 Infor ERP LN Cloud Extension Modeler (`ttext1500m000`) generates 4GL code from discrete hook blocks wrapped in `#context_on "<hook>"` ... `#context_off`. To eliminate Baan C compiler errors (`bic6.2`), developers and AI assistants MUST enforce the following guardrails:
 
 ### 5.1 Declarations Context & Header Placement (`EXT001`)
-- The Extension Modeler code generator **only** routes code enclosed in `#context_on "declarations"` ... `#context_off` into the declarations segment of the compiled script.
-- Any `#include` header (such as `<bic_dam>`, `<bic_dal2>`, `<bic_sessionext>`, `<bic_tableext>`, `<bic_text>`) placed outside `#context_on "declarations"` is ignored by the code generator, resulting in compiler failures (`Unresolved reference to function 'dal.*'`).
-- Whenever `dal.*` operations (`dal.change.object`, `dal.set.field`, `dal.save.object`, etc.) are invoked in extension scripts, `#include <bic_dam>` (or `<bic_dal2>`) MUST be present inside `#context_on "declarations"`.
+- The Extension Modeler code generator **only** routes custom code enclosed in `#context_on "declarations"` ... `#context_off` into the declarations segment of the compiled script.
+- Standard generated `#include` headers (such as `<bic_dam>`, `<bic_dal2>`, `<bic_tableext>`, `<bic_text>`, `<bic_interface>`) generated under `| Additional generated declarations` are recognized as standard framework boilerplate and must remain untouched in place.
+- Any **custom** `#include` header (such as custom DLLs `otxslidll...`) placed outside `#context_on "declarations"` is ignored by the code generator and triggers `EXT001 [ERROR]`.
+- Whenever `dal.*` operations (`dal.change.object`, `dal.set.field`, `dal.save.object`, etc.) are invoked in extension scripts, `#include <bic_dam>` (or `<bic_dal2>`) MUST be present either in standard generated declarations or inside `#context_on "declarations"`.
 
 ### 5.2 Form Command Hook Prototypes & Void Return Constraints (`DAL002`, `DAL003`)
 - **Form Command Hooks**:
@@ -164,5 +165,17 @@ Infor ERP LN Cloud Extension Modeler (`ttext1500m000`) generates 4GL code from d
 ### 5.4 Session Extension Archetype & Transaction Boundaries
 - Session Extensions (`whinh4131m000.cln`, `ess`) are classified under the `general` archetype (UI program scripts).
 - When a Session Extension coordinates business operations across secondary tables via DAL 2 (`dal.change.object()`), it is fully permitted to initiate and manage its own transaction boundaries (`db.retry.point()`, `commit.transaction()`, `abort.transaction()`). The auditor MUST NOT flag `DAL005` on Session Extensions.
+
+### 5.5 Non-Context Standard Code Read-Only Boundary & Anti-Tamper (`EXT003` - ADR 0020)
+- **Automatic Extension Detection**: Any 4GL script containing `#context_on` or `#context_off` directives is automatically recognized as an Extension Modeler script.
+- **Strict Non-Context Read-Only Boundary**: All code outside `#context_on` ... `#context_off` blocks is strictly **Read-Only / Immutable**. AI assistants MUST NEVER modify, delete, reformat, or insert code outside context blocks. This includes:
+  - Header comments and SCM metadata comments.
+  - The `| Additional generated declarations` section and standard `table` declarations.
+  - Standard generated framework functions: `get.extension.point.version()`, `ext.is.cdfs.of.ref.tables.selected()`, `ext.get.form.fields()`, `ext.get.session.indices()`, `ext.get.command.extensions()`, and `ext.get.report.extensions()`.
+- **Strict No-Relocation Policy**: AI assistants MUST NEVER move existing code across `#context` boundaries. Do not move declarations from `| Additional generated declarations` into `#context_on "declarations"`. New custom declarations must be added inside `#context_on "declarations"`, leaving standard declarations untouched.
+- **Dual-Mode Delivery**: When presenting changes:
+  1. Maintain the full-fidelity cohesive `.4gl` file in the project with all standard boilerplate preserved.
+  2. Output clean, individual hook code blocks in chat (stripped of `#context` tags) for 1-click pasting into LN UI (`ttext1500m000`).
+
 
 

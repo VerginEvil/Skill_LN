@@ -577,6 +577,152 @@ function extern long before.save.object(long mode)
         self.assertGreaterEqual(len(ext002_ses), 1)
         self.assertTrue(any("Table DAL hook" in d.message for d in ext002_ses))
 
+    def test_ext001_standard_generated_declarations_includes_permitted(self):
+        """Asserts EXT001 permits standard includes under | Additional generated declarations."""
+        script_std = """
+|*******************************************************************************
+|* Extension Script for Table tdsls400
+|*******************************************************************************
+
+| Hook declarations
+#context_on "declarations"
+#context_off
+
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <bic_tableext>
+
+| Hook before.save.object
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    dal.change.object("tdsls400")
+    return(0)
+}
+#context_off
+
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.auditor.audit_content(script_std, "txesttdsls400_ext.4gl")
+        ext001_errors = [d for d in diags if d.code == "EXT001"]
+        self.assertEqual(len(ext001_errors), 0, f"Expected 0 EXT001 errors, got: {ext001_errors}")
+
+    def test_ext001_custom_include_outside_declarations_fails(self):
+        """Asserts EXT001 flags custom includes outside #context_on declarations."""
+        script_custom_inc = """
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <otxslidll001>
+
+#context_on "declarations"
+#context_off
+
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.auditor.audit_content(script_custom_inc, "txesttdsls400_ext.4gl")
+        ext001_errors = [d for d in diags if d.code == "EXT001" and "otxslidll001" in d.message]
+        self.assertGreaterEqual(len(ext001_errors), 1)
+
+    def test_ext003_standard_framework_function_outside_context_protection(self):
+        """Asserts EXT003 enforces anti-tamper protection for standard framework functions."""
+        # 3a. Custom function outside context triggers EXT003
+        script_custom_fn = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+function extern void my_unwrapped_helper()
+{
+}
+"""
+        diags_custom = self.auditor.audit_content(script_custom_fn, "whinh4131m000.cln")
+        ext003_custom = [d for d in diags_custom if d.code == "EXT003" and "my_unwrapped_helper" in d.message]
+        self.assertGreaterEqual(len(ext003_custom), 1)
+
+        # 3b. Standard framework function improperly wrapped inside context triggers EXT003
+        script_wrapped = """
+#context_on "functions"
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+#context_off
+"""
+        diags_wrapped = self.auditor.audit_content(script_wrapped, "txesttdsls400_ext.4gl")
+        ext003_wrapped = [d for d in diags_wrapped if d.code == "EXT003" and "get.extension.point.version" in d.message]
+        self.assertGreaterEqual(len(ext003_wrapped), 1)
+
+        # 3c. Standard framework function with modified return type triggers EXT003
+        script_bad_sig = """
+#context_on "declarations"
+table ttdsls400
+#context_off
+
+function extern void get.extension.point.version()
+{
+}
+"""
+        diags_bad_sig = self.auditor.audit_content(script_bad_sig, "txesttdsls400_ext.4gl")
+        ext003_sig = [d for d in diags_bad_sig if d.code == "EXT003" and "get.extension.point.version" in d.message]
+        self.assertGreaterEqual(len(ext003_sig), 1)
+
+        # 3d. Removed/missing get.extension.point.version when | Additional generated declarations present triggers EXT003
+        script_missing = """
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <bic_tableext>
+
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    return(0)
+}
+#context_off
+"""
+        diags_missing = self.auditor.audit_content(script_missing, "txesttdsls400_ext.4gl")
+        ext003_missing = [d for d in diags_missing if d.code == "EXT003" and "missing or was removed" in d.message]
+        self.assertGreaterEqual(len(ext003_missing), 1)
+
+    def test_ext003_context_balance_and_declaration_boundaries(self):
+        """Asserts EXT003 checks unclosed context blocks, unmatched context_off, and custom declarations."""
+        # Unclosed context
+        script_unclosed = """
+#context_on "declarations"
+table ttdsls400
+"""
+        diags_unclosed = self.auditor.audit_content(script_unclosed, "txesttdsls400_ext.4gl")
+        ext003_unclosed = [d for d in diags_unclosed if d.code == "EXT003" and "Unclosed" in d.message]
+        self.assertGreaterEqual(len(ext003_unclosed), 1)
+
+        # Unmatched context_off
+        script_unmatched = """
+#context_off
+"""
+        diags_unmatched = self.auditor.audit_content(script_unmatched, "txesttdsls400_ext.4gl")
+        ext003_unmatched = [d for d in diags_unmatched if d.code == "EXT003" and "Unmatched '#context_off'" in d.message]
+        self.assertGreaterEqual(len(ext003_unmatched), 1)
+
+        # Custom declaration outside context
+        script_custom_decl = """
+long my_custom_var
+
+#context_on "declarations"
+table ttdsls400
+#context_off
+"""
+        diags_decl = self.auditor.audit_content(script_custom_decl, "txesttdsls400_ext.4gl")
+        ext003_decl = [d for d in diags_decl if d.code == "EXT003" and "Custom declaration" in d.message]
+        self.assertGreaterEqual(len(ext003_decl), 1)
+
 
     def test_dmn002_utc_assigned_to_date_field(self):
         """Asserts DMN002 flags assigning date.to.utc() or utc.num() to Date fields."""

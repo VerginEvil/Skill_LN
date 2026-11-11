@@ -430,6 +430,151 @@ function extern long before.save.object(long mode)
         ext002_ses = [d for d in diags_ses if d.severity == "ERROR" and "EXT002" in d.message and "Table DAL hook" in d.message]
         self.assertTrue(len(ext002_ses) > 0, "Expected EXT002 error for Table DAL hook in Session Extension")
 
+    def test_ext001_standard_generated_declarations_includes_permitted(self):
+        # Standard includes under | Additional generated declarations are permitted
+        script_std = """
+|*******************************************************************************
+|* Extension Script for Table tdsls400
+|*******************************************************************************
+
+| Hook declarations
+#context_on "declarations"
+| Custom declarations
+#context_off
+
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <bic_tableext>
+
+| Hook before.save.object
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    dal.change.object("tdsls400")
+    return(0)
+}
+#context_off
+
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.checker.check_script(script_std, file_path="extensions/table/tdsls400_ext.4gl")
+        ext001_errors = [d for d in diags if d.severity == "ERROR" and "EXT001" in d.message]
+        self.assertEqual(len(ext001_errors), 0, f"Expected 0 EXT001 errors for standard generated declarations, got: {ext001_errors}")
+
+    def test_ext001_custom_include_outside_declarations_fails(self):
+        # Custom include under | Additional generated declarations must fail EXT001
+        script_custom_inc = """
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <otxslidll001>
+
+#context_on "declarations"
+#context_off
+
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.checker.check_script(script_custom_inc, file_path="extensions/table/tdsls400_ext.4gl")
+        ext001_errors = [d for d in diags if d.severity == "ERROR" and "EXT001" in d.message and "otxslidll001" in d.message]
+        self.assertTrue(len(ext001_errors) > 0, "Expected EXT001 error for custom include outside declarations")
+
+    def test_ext003_standard_framework_function_outside_context_protection(self):
+        # 3a. Custom function outside context must trigger EXT003
+        script_custom_fn = """
+#context_on "declarations"
+#include <bic_sessionext>
+#context_off
+
+function extern void my_unwrapped_helper()
+{
+}
+"""
+        diags_custom = self.checker.check_script(script_custom_fn, file_path="extensions/session/whinh4131m000_ext.4gl")
+        ext003_custom = [d for d in diags_custom if d.severity == "ERROR" and "EXT003" in d.message and "my_unwrapped_helper" in d.message]
+        self.assertTrue(len(ext003_custom) > 0, "Expected EXT003 error for custom function outside context")
+
+        # 3b. Standard framework function improperly wrapped inside context must trigger EXT003
+        script_wrapped_std = """
+#context_on "functions"
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+#context_off
+"""
+        diags_wrapped = self.checker.check_script(script_wrapped_std, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_wrapped = [d for d in diags_wrapped if d.severity == "ERROR" and "EXT003" in d.message and "get.extension.point.version" in d.message]
+        self.assertTrue(len(ext003_wrapped) > 0, "Expected EXT003 error for standard framework function wrapped inside context")
+
+        # 3c. Standard framework function with modified return type must trigger EXT003
+        script_bad_sig = """
+#context_on "declarations"
+table ttdsls400
+#context_off
+
+function extern void get.extension.point.version()
+{
+}
+"""
+        diags_bad_sig = self.checker.check_script(script_bad_sig, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_sig = [d for d in diags_bad_sig if d.severity == "ERROR" and "EXT003" in d.message and "get.extension.point.version" in d.message]
+        self.assertTrue(len(ext003_sig) > 0, "Expected EXT003 error for modified return type on get.extension.point.version")
+
+        # 3d. Removed/missing get.extension.point.version when | Additional generated declarations present triggers EXT003
+        script_missing_std = """
+| Additional generated declarations
+table   ttdsls400
+#include <bic_dal2>
+#include <bic_tableext>
+
+#context_on "before.save.object"
+function extern long before.save.object(long mode)
+{
+    return(0)
+}
+#context_off
+"""
+        diags_missing = self.checker.check_script(script_missing_std, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_missing = [d for d in diags_missing if d.severity == "ERROR" and "EXT003" in d.message and "missing or was removed" in d.message]
+        self.assertTrue(len(ext003_missing) > 0, "Expected EXT003 error for removed get.extension.point.version")
+
+    def test_ext003_context_balance_and_declaration_boundaries(self):
+        # Unclosed context block triggers EXT003
+        script_unclosed = """
+#context_on "declarations"
+table ttdsls400
+"""
+        diags_unclosed = self.checker.check_script(script_unclosed, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_unclosed = [d for d in diags_unclosed if d.severity == "ERROR" and "EXT003" in d.message and "Unclosed" in d.message]
+        self.assertTrue(len(ext003_unclosed) > 0, "Expected EXT003 error for unclosed context directive")
+
+        # Unmatched context_off triggers EXT003
+        script_unmatched = """
+#context_off
+"""
+        diags_unmatched = self.checker.check_script(script_unmatched, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_unmatched = [d for d in diags_unmatched if d.severity == "ERROR" and "EXT003" in d.message and "Unmatched '#context_off'" in d.message]
+        self.assertTrue(len(ext003_unmatched) > 0, "Expected EXT003 error for unmatched #context_off")
+
+        # Custom variable declaration outside context triggers EXT003
+        script_custom_decl = """
+long my_custom_var
+
+#context_on "declarations"
+table ttdsls400
+#context_off
+"""
+        diags_decl = self.checker.check_script(script_custom_decl, file_path="extensions/table/tdsls400_ext.4gl")
+        ext003_decl = [d for d in diags_decl if d.severity == "ERROR" and "EXT003" in d.message and "Custom declaration" in d.message]
+        self.assertTrue(len(ext003_decl) > 0, "Expected EXT003 error for custom declaration outside context")
+
 
 class TestActivityValidatorExtensionRealignment(unittest.TestCase):
     """Ticket 11: Activity Validator treats tx* extensions as [GET_ONLY_EXTENSION]."""

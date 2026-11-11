@@ -38,7 +38,7 @@ Every generated or reviewed script must comply with these 6 non-negotiable rules
 3. **Embedded SQL Leading Index & Scalar Staging**: Match WHERE predicates to leading index columns; stage array elements into scalar host variables (SQL008); provide selectempty fallback blocks ([03_sql](references/best_practices/03_sql_query_optimization_and_transactions.md)).
 4. **Transaction Bounds**: Bound mutations strictly inside `db.retry.point()` and `commit.transaction()`; never commit transactions inside DAL hooks, Table Extensions, or helper DLLs ([03_sql](references/best_practices/03_sql_query_optimization_and_transactions.md)).
 5. **Defensive Declarations & Datatypes**: Use Data Dictionary domains; string arrays require 2D syntax string arr(len, count) (ARR002); 4GL arrays are 1-based; respect Julian date vs UTC epoch seconds (DMN002); avoid mandatory zero constraints on lines (TBL003) ([06_std](references/best_practices/06_4gl_coding_standards_and_caveats.md)).
-6. **Cloud Governance & Extension Rules**: Comply with execution time limits (`5,000 ms`); verify Cloud Trust badges; place `#include` inside `#context_on "declarations"` (`EXT001`); keep command hooks `void` ([01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
+6. **Cloud Governance & Extension Rules**: Comply with execution time limits (`5,000 ms`); verify Cloud Trust badges; preserve standard non-context boilerplate (`EXT003`); place custom `#include` inside `#context_on "declarations"` (`EXT001`); keep command hooks `void` ([01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
 
 ### 4. `Audit-Before-Deliver` (Static Verification Gate)
 Before returning or presenting any 4GL, DAL 2, or Extension script, run the offline auditor:

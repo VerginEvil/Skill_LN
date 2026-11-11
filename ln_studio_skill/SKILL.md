@@ -34,7 +34,7 @@ Automation engine for Infor LN Studio (Eclipse RCP, Activity-Based SCM) and decl
 4. **`Guide-and-Paste`: Extension Modeler Delivery**:
    - Scaffold local script: `python tools/ln_component_builder.py new-extension --type <table|session> --target <comp>`
    - Verify offline: `python tools/ln_component_builder.py check-script <ext_file> --strict`
-   - Deliver hook blocks: Output clean code blocks for user to paste into `ttext1500m000` (warn never to check out in Studio).
+   - Deliver hook blocks: Output clean code blocks for user to paste into `ttext1500m000` while preserving non-context boilerplate (`EXT003`).
 
 ## Branching Reference Pointers
 

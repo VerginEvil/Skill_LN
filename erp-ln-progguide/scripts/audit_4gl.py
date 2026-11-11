@@ -52,6 +52,25 @@ BSHELL_PSEUDO_FIELDS = {
     "_index12",
 }
 
+STD_EXTENSION_INCLUDES = {
+    "bic_dal2",
+    "bic_tableext",
+    "bic_sessionext",
+    "bic_text",
+    "bic_interface",
+    "bic_dam",
+    "bic_view",
+}
+
+STD_FRAMEWORK_FUNCTIONS = {
+    "get.extension.point.version",
+    "ext.is.cdfs.of.ref.tables.selected",
+    "ext.get.form.fields",
+    "ext.get.session.indices",
+    "ext.get.command.extensions",
+    "ext.get.report.extensions",
+}
+
 
 class Diagnostic:
     def __init__(
@@ -1404,6 +1423,7 @@ class Auditor4GL:
         content_lower = content.lower()
         is_extension = (
             "#context_on" in content_lower
+            or "#context_off" in content_lower
             or path_lower.endswith(".cln")
             or "_ext.4gl" in path_lower
             or "/est/" in path_lower.replace("\\", "/")
@@ -1428,6 +1448,10 @@ class Auditor4GL:
             or "est" in path_lower
         )
         current_context: Optional[str] = None
+        context_stack: List[Tuple[str, int]] = []
+        in_additional_declarations: bool = False
+        has_additional_declarations: bool = False
+        found_get_extension_point_version: bool = False
         declarations_includes: Set[str] = set()
         dal_call_lines: List[Tuple[int, str]] = []
 
@@ -1436,6 +1460,10 @@ class Auditor4GL:
         re_cmp = re.compile(r"\b([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)\s*(==|<>|!=|<=|>=|<|>|\bin\b)\s*([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)\b")
 
         for line_no, raw_line in enumerate(lines, start=1):
+            if re.search(r"\|\s*Additional generated declarations", raw_line, re.IGNORECASE):
+                in_additional_declarations = True
+                has_additional_declarations = True
+
             code_line = cleaned_lines[line_no - 1] if line_no - 1 < len(cleaned_lines) else ""
             code_line_stripped = code_line.strip()
             if not code_line_stripped:
@@ -1444,8 +1472,24 @@ class Auditor4GL:
             # Directives (#context_on / #context_off)
             m_ctx = re.match(r'^\s*#context_on\s*(?:["\']([^"\']+)["\'])?', raw_line, re.IGNORECASE)
             if m_ctx:
+                in_additional_declarations = False
                 ctx_name = (m_ctx.group(1) or "").strip()
                 current_context = ctx_name.lower()
+                if context_stack:
+                    parent_name, parent_line = context_stack[-1]
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT003",
+                            f"EXT003: Nested '#context_on' is not allowed: block '{ctx_name}' opened inside '{parent_name}' (line {parent_line}).",
+                            raw_line,
+                        )
+                    )
+                context_stack.append((f"#context_on \"{ctx_name}\"", line_no))
+
                 ctx_lower = ctx_name.lower()
                 is_cmd_hook = (
                     ctx_lower.startswith("function.")
@@ -1487,6 +1531,20 @@ class Auditor4GL:
 
             if re.match(r"^\s*#context_off\b", raw_line, re.IGNORECASE):
                 current_context = None
+                if not context_stack:
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            line_no,
+                            1,
+                            "ERROR",
+                            "EXT003",
+                            "EXT003: Unmatched '#context_off' without corresponding '#context_on'.",
+                            raw_line,
+                        )
+                    )
+                else:
+                    context_stack.pop()
 
             # EXT001: Check #include placement in Extension Scripts
             if is_extension:
@@ -1495,6 +1553,8 @@ class Auditor4GL:
                     inc_raw = m_inc.group(1)
                     inc_clean = inc_raw.strip("<>\".h").lower()
                     if current_context == "declarations":
+                        declarations_includes.add(inc_clean)
+                    elif in_additional_declarations and (inc_clean in STD_EXTENSION_INCLUDES or inc_clean.startswith("bic_")):
                         declarations_includes.add(inc_clean)
                     else:
                         diagnostics.append(
@@ -1688,6 +1748,46 @@ class Auditor4GL:
             # ----------------------------------------------------
             # 3. Function & DAL Hook Signatures (DAL002, DAL003)
             # ----------------------------------------------------
+            # EXT003: Non-context statements & declarations check
+            if is_extension and current_context is None and current_func_name is None:
+                if code_line_stripped and not code_line_stripped.startswith("#"):
+                    is_tbl_decl = bool(re.match(r"^\s*table\s+[a-zA-Z0-9_]+", code_line_stripped, re.IGNORECASE))
+                    is_func_start = bool(re.match(r"^\s*(?:function\s+)?(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?[a-zA-Z0-9_.]+\s*\(", code_line_stripped, re.IGNORECASE))
+                    if in_additional_declarations and is_tbl_decl:
+                        pass
+                    elif is_func_start:
+                        pass
+                    else:
+                        is_var_decl = bool(re.match(
+                            r"^(?:extern\s+|global\s+)?(?:domain\s+[a-zA-Z0-9_.]+|long|string|double|boolean)\s+",
+                            code_line_stripped,
+                            re.IGNORECASE,
+                        ))
+                        if is_var_decl:
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    1,
+                                    "ERROR",
+                                    "EXT003",
+                                    "EXT003: Custom declaration placed outside '#context' block; custom declarations must reside inside '#context_on \"declarations\"'.",
+                                    raw_line,
+                                )
+                            )
+                        elif not is_tbl_decl:
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    1,
+                                    "ERROR",
+                                    "EXT003",
+                                    "EXT003: Executable statement placed outside '#context' block; custom logic must reside inside '#context_on' blocks.",
+                                    raw_line,
+                                )
+                            )
+
             func_decl_match = re.match(
                 r"^\s*(?:function\s+)?(?:extern\s+)?(?:([a-zA-Z0-9_.]+)\s+)?([a-zA-Z0-9_.]+)\s*\((.*?)\)",
                 code_line,
@@ -1699,6 +1799,7 @@ class Auditor4GL:
                     func_decl_match = None
 
             if func_decl_match:
+                in_additional_declarations = False
                 ret_type = (func_decl_match.group(1) or "").lower()
                 func_name = func_decl_match.group(2).lower()
                 params = func_decl_match.group(3).strip()
@@ -1709,6 +1810,84 @@ class Auditor4GL:
                     or (not ret_type and (func_name.endswith(".before.command") or func_name.endswith(".after.command")))
                 )
                 current_func_hook_suffix = None
+
+                # EXT003: Anti-tamper & standard framework function boundary
+                if is_extension:
+                    is_std_framework_func = (
+                        func_name in STD_FRAMEWORK_FUNCTIONS
+                        or func_name.startswith("ext.get.")
+                        or func_name.startswith("ext.is.")
+                        or func_name == "get.extension.point.version"
+                    )
+
+                    if current_context is not None:
+                        # Inside context block: standard framework function must not be wrapped
+                        if is_std_framework_func:
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    1,
+                                    "ERROR",
+                                    "EXT003",
+                                    f"EXT003: Standard framework function '{func_name}' must remain outside '#context' blocks in the immutable standard code section.",
+                                    raw_line,
+                                )
+                            )
+                    else:
+                        # Outside context: only standard framework functions are permitted
+                        if not is_std_framework_func:
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    1,
+                                    "ERROR",
+                                    "EXT003",
+                                    f"EXT003: Custom function '{func_name}' declared outside '#context' block; custom functions must reside inside '#context_on' blocks.",
+                                    raw_line,
+                                )
+                            )
+                        else:
+                            if func_name == "get.extension.point.version":
+                                found_get_extension_point_version = True
+                                if ret_type != "long":
+                                    diagnostics.append(
+                                        Diagnostic(
+                                            file_path,
+                                            line_no,
+                                            1,
+                                            "ERROR",
+                                            "EXT003",
+                                            f"EXT003: Standard framework function 'get.extension.point.version' has invalid return type '{ret_type or 'void'}'; expected 'long'.",
+                                            raw_line,
+                                        )
+                                    )
+                            elif func_name == "ext.is.cdfs.of.ref.tables.selected":
+                                if ret_type not in ("boolean", "long"):
+                                    diagnostics.append(
+                                        Diagnostic(
+                                            file_path,
+                                            line_no,
+                                            1,
+                                            "ERROR",
+                                            "EXT003",
+                                            f"EXT003: Standard framework function '{func_name}' has invalid return type '{ret_type or 'void'}'; expected 'boolean'.",
+                                            raw_line,
+                                        )
+                                    )
+                            elif (func_name.startswith("ext.get.") or func_name in ("ext.get.form.fields", "ext.get.session.indices", "ext.get.command.extensions", "ext.get.report.extensions")) and ret_type not in ("void", ""):
+                                diagnostics.append(
+                                    Diagnostic(
+                                        file_path,
+                                        line_no,
+                                        1,
+                                        "ERROR",
+                                        "EXT003",
+                                        f"EXT003: Standard framework function '{func_name}' has invalid return type '{ret_type}'; expected 'void'.",
+                                        raw_line,
+                                    )
+                                )
 
                 # Check EXT002 on function declaration
                 is_cmd_hook = (
@@ -1930,6 +2109,19 @@ class Auditor4GL:
                                 raw_line,
                             )
                         )
+                    if current_func_name == "get.extension.point.version":
+                        if not ret_val.isdigit():
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    1,
+                                    "ERROR",
+                                    "EXT003",
+                                    "EXT003: Standard framework function 'get.extension.point.version' modified; must return a valid integer version number (e.g. return(3)).",
+                                    raw_line,
+                                )
+                            )
                     elif current_func_hook_suffix:
                         hook_info = self.dal_field_hooks.get(current_func_hook_suffix, {})
                         expected_ret = hook_info.get("returnValue", "")
@@ -2379,6 +2571,34 @@ class Auditor4GL:
                             raw_l,
                         )
                     )
+
+        # EXT003: Missing or removed standard framework function
+        if is_extension and has_additional_declarations and not found_get_extension_point_version:
+            diagnostics.append(
+                Diagnostic(
+                    file_path,
+                    len(lines),
+                    1,
+                    "ERROR",
+                    "EXT003",
+                    "EXT003: Standard framework function 'get.extension.point.version' is missing or was removed; standard framework functions outside '#context' must not be deleted.",
+                )
+            )
+
+        # EXT003: Unclosed context blocks
+        while context_stack:
+            ctx_type, ctx_line = context_stack.pop()
+            diagnostics.append(
+                Diagnostic(
+                    file_path,
+                    ctx_line,
+                    1,
+                    "ERROR",
+                    "EXT003",
+                    f"EXT003: Unclosed '{ctx_type}' directive (opened at line {ctx_line}).",
+                    lines[ctx_line - 1] if 0 <= ctx_line - 1 < len(lines) else "",
+                )
+            )
 
         # Filter by severity
         filtered: List[Diagnostic] = []
