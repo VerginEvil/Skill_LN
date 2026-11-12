@@ -1,0 +1,23 @@
+[package]
+name = "skill-ln"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ln-eclipse-compat = { path = "../../crates/ln-eclipse-compat" }
+ln-auth = { path = "../../crates/ln-auth" }
+ln-jca = { path = "../../crates/ln-jca" }
+ln-daemon = { path = "../../crates/ln-daemon" }
+ln-kb = { path = "../../crates/ln-kb" }
+ln-linter = { path = "../../crates/ln-linter" }
+ln-model = { path = "../../crates/ln-model" }
+ln-scm = { path = "../../crates/ln-scm" }
+ln-verify = { path = "../../crates/ln-verify" }
+
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+tokio = { workspace = true }
+dirs = { workspace = true }

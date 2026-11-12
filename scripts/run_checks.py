@@ -229,6 +229,24 @@ def run_unit_tests() -> bool:
         print(f"[FAIL] ln_studio_skill test suite failed with exit code {proc_studio.returncode}.")
         return False
 
+    # Suite 3: Native Rust Workspace Tests (ADR 0021 & Ticket 15)
+    rust_dir = REPO_ROOT / "rust"
+    if rust_dir.exists():
+        print("\n--- [4c/4] Running Native Rust Workspace Test Suite (cargo test --workspace) ---")
+        cargo_bin = Path(os.environ.get("USERPROFILE", "")) / ".cargo" / "bin" / "cargo.exe"
+        cargo_cmd = str(cargo_bin) if cargo_bin.exists() else "cargo"
+        env_rust = os.environ.copy()
+        if cargo_bin.parent.exists():
+            env_rust["PATH"] = str(cargo_bin.parent) + os.pathsep + env_rust.get("PATH", "")
+        proc_rust = subprocess.run(
+            [cargo_cmd, "test", "--workspace"],
+            cwd=str(rust_dir),
+            env=env_rust,
+        )
+        if proc_rust.returncode != 0:
+            print(f"[FAIL] Native Rust workspace test suite failed with exit code {proc_rust.returncode}.")
+            return False
+
     print("[PASS] Full test suite across all skills passed cleanly.")
     return True
 

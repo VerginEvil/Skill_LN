@@ -1,0 +1,20 @@
+[package]
+name = "ln-model"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+thiserror = { workspace = true }
+quick-xml = { workspace = true }
+regex = { workspace = true }
+dirs = { workspace = true }
+ln-eclipse-compat = { path = "../ln-eclipse-compat" }
+ln-linter = { path = "../ln-linter" }
+
+[dev-dependencies]
+tempfile = { workspace = true }

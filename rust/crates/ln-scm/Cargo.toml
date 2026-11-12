@@ -1,0 +1,24 @@
+[package]
+name = "ln-scm"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+quick-xml = { workspace = true }
+regex = { workspace = true }
+sha2 = { workspace = true }
+tokio = { workspace = true }
+ln-eclipse-compat = { path = "../ln-eclipse-compat" }
+ln-auth = { path = "../ln-auth" }
+ln-jca = { path = "../ln-jca" }
+ln-model = { path = "../ln-model" }
+ln-linter = { path = "../ln-linter" }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio = { workspace = true }

@@ -1,0 +1,988 @@
+{
+  "build_id": "10_8_0_build0640-x86_64",
+  "jars": {
+    "com.infor.ln.studio.common.core": {
+      "path": "D:\\LN Studio\\April-2026\\InforLNStudio_10_8_0_build0640-x86_64\\plugins\\com.infor.ln.studio.common.core_10.8.0.0640.jar",
+      "sha256": "e1ec6b12a46f162a44b00cbbfa2905c33cc57a2d438a9dd24f67102677b651d1"
+    },
+    "lnstudio_commoncore.jar": {
+      "sha256": "a394f5d42adb54a691e2ff59227d87cc723e9d53c48a705edc0f1dd962971242",
+      "class_count": 131
+    },
+    "com.infor.ln.studio.apps.core": {
+      "path": "D:\\LN Studio\\April-2026\\InforLNStudio_10_8_0_build0640-x86_64\\plugins\\com.infor.ln.studio.apps.core_10.8.0.0640.jar",
+      "sha256": "c8a61090617b4651b0e4b0eeb6c0189c8878d622edbaf036053b4ffeb58c77c3"
+    },
+    "fourglstudio_core.jar": {
+      "sha256": "c86a03a1223880fea2915d4f45c65dfff4997049e042e3388d2e5c444a03a412",
+      "class_count": 62
+    }
+  },
+  "classes": {
+    "com.infor.ln.studio.common.core.model.tde.AnyTypeTDENode": {
+      "sha256": "94f880306720c8e48db0a5f8d1d39c5ce2e47a7a90c4d9396466dc0c17b46b0c",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.applicationSpecific": {
+      "sha256": "df43d92173a050c497c0f875dfd1b9a82ea1415c5ce2e776ac9e4b8e6aad9fba",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Attachment": {
+      "sha256": "41eccc1997c2f69d0b8239cd1eb588f97c8090a766f1f038bac3f66b94af6fe4",
+      "serial_version_uid": null,
+      "field_count": 11
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.BFlow": {
+      "sha256": "89beaf2f243f963f7ea50fb8c380526e43c3358cb5206351ef8094adeed00338",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ChartGroup": {
+      "sha256": "ac470bef4c5f0c52cef2666ca569e6e14532f669016494633959b18956792e46",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ChartRelation": {
+      "sha256": "ba5db19152a38c13c4ff5086168070cced6d94565efa7951fc4d970aac5e3d89",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Column": {
+      "sha256": "e5e58827c8919f1834784bc562f8a8a6c3972f9f1cdd4de6644ab2ef47d14c3f",
+      "serial_version_uid": null,
+      "field_count": 15
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ColumnRelationship": {
+      "sha256": "be339dce3e86932afe7e981bb451e9436ef374724d4ed2a1d4e09ad422c82f1c",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.CompareAnnotationUtils": {
+      "sha256": "d1ed2ab6e2c85176e62332a0552d469ae562e66cb221945412ce4dfc96f319f4",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ComponentAlert": {
+      "sha256": "c5c4ab0c863cb0c4cbeeac4fd04b1ff8c2855ca6c0fda0b09697c88c886d4ffd",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerGraphRelationship": {
+      "sha256": "6b3caff0dd7ba9353167cd63052b6648e1286b4b0dde133f038387ef3b2087d6",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerReportRelationship": {
+      "sha256": "ac70726f2a58ce8edae6ef4449c41640719ae72518cb0e663862dfb0d7765f3c",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerSatelliteRelationship": {
+      "sha256": "70633cab7c3f95a9d715f847f0ed7698bbe38e946f137a40a061a9ab846daada",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerSynchronizedChildRelationship": {
+      "sha256": "b2e54e45f0829d1d9b582ed8261c35509ff116497312141f34ab0b1e83e5b9ec",
+      "serial_version_uid": null,
+      "field_count": 7
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerTableRelationship": {
+      "sha256": "25d5ee7b7ec91f600f212e77478572baebf5bb55669b99a9cf939d8a781537a6",
+      "serial_version_uid": null,
+      "field_count": 12
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ControllerTree": {
+      "sha256": "741e649eb5eb751b28dfd0e03825ff757056fea33cd9292a9ca89ea6e2803357",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.datatype": {
+      "sha256": "636ffa20558ce51c795d8bb464f42355b6f3b4edc02047f92a04af7487addf3b",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.descriptionReference": {
+      "sha256": "68985cf4f65e249ae443c941d84a173e14adb282ca8bc5d83d298d1fb392e95a",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DisplayName": {
+      "sha256": "085a017c6bfcb82caa56696be1c677d231622354550689d4022cef7c4e9c7331",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DocumentOutputManagementComponent": {
+      "sha256": "bb12513da143002363cbf506f65bda79e58dd488a9a802c81acbe5161b5d93b1",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_AdditionalFile": {
+      "sha256": "18b693529a789a2e19c6acb042fdf0a14927b50291167d0eadcde876021fecc1",
+      "serial_version_uid": null,
+      "field_count": 9
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_BusinessObject": {
+      "sha256": "dfe053ef412c908cb6dfdc769a630ff5c32b89abf47d0ba9baae4baeb04194d0",
+      "serial_version_uid": null,
+      "field_count": 9
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Controller": {
+      "sha256": "7e622b527a6c11fd0cf5f819f5dc4f0d6758cef0a9acc52ba7bea586f8f82ded",
+      "serial_version_uid": null,
+      "field_count": 27
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Domain": {
+      "sha256": "d68747b547f2714b801deb027b2d3e64fbf835fe48d8665f1f72467c82e0ab3d",
+      "serial_version_uid": null,
+      "field_count": 14
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Label": {
+      "sha256": "8eb4c67c9b4fea8351cc1d73029bcd5dcd7721f74f0b83bd57eb187fa93c18a1",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Menu": {
+      "sha256": "caf79b53f8755baa89f32d714fb8b138f15dc1498ced1f61ae3a0cc69582ea42",
+      "serial_version_uid": null,
+      "field_count": 4
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Message": {
+      "sha256": "26726e6e2be7e74635c0dd6ccbdb39e3f94c9ab055dd8a283ce9677a3b301a64",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Module": {
+      "sha256": "5dd0197147d9e20e09f4e30e085a3cbbd93e39123ca0b4fa8553168b26a2c0d8",
+      "serial_version_uid": null,
+      "field_count": 12
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Question": {
+      "sha256": "d90040cb54cfcc645babaa12ee03e18adb34d3b9a8946b805efe170a2cb7f052",
+      "serial_version_uid": null,
+      "field_count": 7
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Report": {
+      "sha256": "4ee03d492a1d038133f2921f92ef095e573a1b96a986db6be98d49f8627cbe77",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.DR_Table": {
+      "sha256": "bfa92dfc714c9a0e6bfea7ef431f7ffb369ddd781ff1a960732d1cb0fe894ebf",
+      "serial_version_uid": null,
+      "field_count": 18
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Enumeration": {
+      "sha256": "209a3651670c0391d91cc6fa0e2026dbb7bce2d196683b5bce42872743e2502c",
+      "serial_version_uid": null,
+      "field_count": 4
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Facet": {
+      "sha256": "3e92b7846ea048043bbb8a52c8c870f4770a3bd20298de2c45df29e99e780be4",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FieldMapping": {
+      "sha256": "8edccb22af76174b97ca15407555c7f64d7bfdabe4e5d0e33866e497b1d7fc62",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FileContent": {
+      "sha256": "c4b0aceb66678f9965925d08bb9a0bad792c043a2700ac0b126e834c8db964f1",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FileString": {
+      "sha256": "664a41a64b4e5ca06a69ee34e0386b22c9e5c1a9fa7500d0ae438dd52d84360a",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Font": {
+      "sha256": "b89ed6f3d8a62c706673c6b86629723fd86b56b0cb0eabcef46d3e7953136fc0",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Form": {
+      "sha256": "cc3bf0e00716a16bd09a217be99e40e6870f8fcc5501c244276e578b6c2fe7ed",
+      "serial_version_uid": null,
+      "field_count": 12
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormCommand": {
+      "sha256": "37c59ec0e8cc1a120787993850c80ceb5597513a6f128d41ccbceb8f473e6289",
+      "serial_version_uid": null,
+      "field_count": 29
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormDefinitionGenerator": {
+      "sha256": "ba59ad857ea0efe992ca9508cbbd5edacef0b06a2f4d92980a064cb8116b4670",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormDefinitionHelper": {
+      "sha256": "de14dcd58b3d5930faa7954827578b853d9f4884865b076e503102774790cf5a",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormField": {
+      "sha256": "c8e58cd21f36b896348aadaf7da66b2f02bdef569c2e598f732dfcb994a42ec1",
+      "serial_version_uid": null,
+      "field_count": 63
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormGenerator": {
+      "sha256": "edb4f391ac02000aba9128dad3b38db3a522c04984cc60b73a763de996b1e7c2",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.FormGroup": {
+      "sha256": "d60003f53a31257b7f2f6d4bc8618efda8a311bf997c9051e9b84fc9b44f5ba7",
+      "serial_version_uid": null,
+      "field_count": 22
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Identifier": {
+      "sha256": "55cca2c9e05d068c18c79b5d82b999c3dd00231bc51c0ea12ddf199245441e99",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Index": {
+      "sha256": "b836a87a1b4705975c67bd730a21e18d0a61c47505b9544c806303a14232c702",
+      "serial_version_uid": null,
+      "field_count": 8
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.IndexColumn": {
+      "sha256": "9c4a43cb63e17493b1560043bbc405f7794ff2ce4b1e3f9ec930dfed74f680b7",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.IndexField": {
+      "sha256": "da5168efcfc97d20f988fe627b1b9b75b822812fbf09d48b3b93e70e73ead73f",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.IndexUsage": {
+      "sha256": "b9de4b2aa2ccdaf1827cc18c1a4dc10784f554e436105163a2c91822a094133c",
+      "serial_version_uid": null,
+      "field_count": 4
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.InputField": {
+      "sha256": "06045b0566d81743962979063b5283e3501321987def22462cb8ece5f10f98da",
+      "serial_version_uid": null,
+      "field_count": 8
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.InteractionPoint": {
+      "sha256": "19092dcae48daae1afecabc163b278c9f1f35bc49a7d82b6e5916d8f0e0d9ca2",
+      "serial_version_uid": null,
+      "field_count": 9
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.LabelVariant": {
+      "sha256": "d789c83e88c75543c852c774bc48e9420d1e1823244378ee84d1bb9c0d88d35d",
+      "serial_version_uid": null,
+      "field_count": 7
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Layout": {
+      "sha256": "986e8e0fe20e22990ad375a270ff250b3213cacd245118a8121b453c2b27b484",
+      "serial_version_uid": null,
+      "field_count": 11
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.License": {
+      "sha256": "29925adc063e83d6ffb81a4b9451558d8fb5db6777caa6bf0e1b4740202b87ce",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Localization": {
+      "sha256": "cf7f7ae13f7ad784d0a5d378ad54720547eab116ef8dd3f7a312de9e7e2e5410",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.LockGroup": {
+      "sha256": "340e418e8457e11140f335113da84b3eb93bd51e15bf6296cbcde432a0e55f08",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.LockGroupColumn": {
+      "sha256": "e689f4f2135d1901c4acf01f53c34fbddcf230ddc522853ca28cacb2d23c6695",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Margins": {
+      "sha256": "c08d1f2d43478ff2168b39e2f0014905ca178176cda9d8e525eea22a8f921338",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.MenuChoice": {
+      "sha256": "9e325cfc24913aca849d897de51da1110959503412182ab85a6ae41b3e758b7c",
+      "serial_version_uid": null,
+      "field_count": 9
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.MenuChoiceSort": {
+      "sha256": "7362ee835ab7287310244729f6f1a24e38c9a4f052531163de3826eb993b53f5",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.MessageTranslation": {
+      "sha256": "8e02941011712e59fd417e7a4b75aa950943ec351f484cdd96a3d9a90ecd0e9c",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ModuleMessage": {
+      "sha256": "16ffd0cd0d44656f2725d778306ee6ec161f3fc93f6152a2f3319feebd547d12",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ModuleRelationship": {
+      "sha256": "c6d8578b0005e07e52efa13c77d9f3c2e7f7d91305c746f9c92db1cdfa282923",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.objectLabel": {
+      "sha256": "3a4c59846afe41e4810a0a2b8b3d174d47fd890b4909a2e4891b4f8eb779ef60",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.PageSetup": {
+      "sha256": "eca2fc7ce0339fac50ee5a4f3ff83147be82b706c2fed437d39912090a78f350",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Paper": {
+      "sha256": "7b7ee5c02deef543ce2eab532eeee51fd59077f3a601eb88e2271830acf6596d",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.PhysicalFormLayout": {
+      "sha256": "3b834f94a3c89a6f364db78c22c87d07065050f26f52ae6860bc8b699c5c4aab",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.physicalLayout": {
+      "sha256": "9a4cbd54461c2da348e95507220a8fd5139dd66c85d86a90ac04fdb84aa3c060",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.PhysicalReportLayout": {
+      "sha256": "88508bcec2d35c5a4805440338707cbf43cd8e49694ba71433984bb1493826f4",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Problem": {
+      "sha256": "0fa7098fd33e507c9a562bce6a68e3f4acfdde4257d1ee042e17b354c66bd438",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ProblemOrigin": {
+      "sha256": "094e14bac9f08ba7af4ac2278094542a3cbaf0101a0501b292f146a1a1fa4aba",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Procedure": {
+      "sha256": "25b80f09aaf819fa4e3b5d3a3d86299ecdbb2d939aea550cb7829937a9a7c608",
+      "serial_version_uid": null,
+      "field_count": 7
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ProcedureArgument": {
+      "sha256": "e1a5e3b0c3295d0358d0d69c5d9ff7d7ed22779155c5478931332f1384ed37fc",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.question": {
+      "sha256": "cec2aab253921c661d3423bd7e7faaeb83fd002ee83795ade91cd717eed6fe5f",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.QuestionTranslation": {
+      "sha256": "e03dc82e25e941594db7a9abfffe1b78add3b1dabb72063edad6cff6627c8e11",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportGroup": {
+      "sha256": "7bfe3b153833f7beb9c7ca64d70664c9df541fa05a38ca60424e08db87406290",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportLayoutText": {
+      "sha256": "daed78f12d16d13f2d78c45aaf5ade80fe1c56d6fbda30a3c2b402ba040e2f5f",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportOutputField": {
+      "sha256": "a22f541a850e492e0eefcc1002e48570c8a31802a841b8e7a9b4084fd2c1193a",
+      "serial_version_uid": null,
+      "field_count": 23
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportRelation": {
+      "sha256": "70a7e8e17cbb97910bdac27e2048180150fbc90b276eb40b7b924830f3d45481",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportRelationModel": {
+      "sha256": "eb2558612f03ad6a4b93ef95de8b3055b7aa001841922bc930fb39aa47bd64a4",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.ReportSpecial": {
+      "sha256": "3163af4655d89afedc68022c69a1fca1ae3050ca887ef60e83b3c32f17acc1b7",
+      "serial_version_uid": null,
+      "field_count": 14
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.SingletonType": {
+      "sha256": "10f0568b5b0a05d4d967ae8db5496aeb7ee3531fa60f217e1a0f4fc91b83da2e",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.SkipFieldComparison": {
+      "sha256": "c2b50bf0655adf30853f28c656ad2a4af41f201ca6ecf09e969b30ffea209149",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.SkipTypeComparison": {
+      "sha256": "413321dd40af28a68cebf130d5451cc5cb28b322aad50df479e8507242341602",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Source": {
+      "sha256": "8bc2168a0fe28eb2894b551facd8095e1eb6b4ec69473514d8bb76da45dc2e65",
+      "serial_version_uid": null,
+      "field_count": 8
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.sourceVersion": {
+      "sha256": "5208ea1ff8fd8aede9e591ef030dc0faef280ecb0366674fa8373522557586ab",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.StandardCommand": {
+      "sha256": "0e6a62571a9207afb1c3c5243bfc4788d8118fed38ef141ae821e3218220b682",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.StandardCommandGroup": {
+      "sha256": "d4a1ef22d79a474d25ec9b244688d83e757712c9049c3cdf03fea3a68290355a",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TableIndex": {
+      "sha256": "5891ab2e269b0587bc4aa46c3d52417a9f46ba69858a2ecd9f7ca12fa1a61f74",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TableIndexModel": {
+      "sha256": "ba7855a7046f0364ca031eedb5ad5c0247abf49a53152053f26c28f563663f74",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TableMessage": {
+      "sha256": "1fa2264bb84d2cecf9bad24582036a8a54827451b72dd4ed144c7380b7c12dce",
+      "serial_version_uid": null,
+      "field_count": 6
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TableRelationship": {
+      "sha256": "5c41c1f4a2d8682889376592f3d482c31adae058398085053b5db74f58f2ce49",
+      "serial_version_uid": null,
+      "field_count": 14
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TableRelationshipColumn": {
+      "sha256": "54415e28b212fb3bfdbe3b40dd6037bd47dc0d7cb619b7404b9132222f80293a",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TextField": {
+      "sha256": "185729f48204b7593ed3be88f7dff06bc8405b21991895f8a3cc679346b5633f",
+      "serial_version_uid": null,
+      "field_count": 7
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TreeFormCommand": {
+      "sha256": "a616cdeae7168794868c97c1e40806cc58b617dd51f0defaaa7fb8de42d2ad59",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.TreeStandardCommand": {
+      "sha256": "0837fb6a9f52a4beba6564df8300e344a80c6acc3518d130b6dc923b2ec39c26",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.UIMethod": {
+      "sha256": "71f3a4946bb3b695e2afbaf58f0ba3a1087cb7020557cc5a82ac9963c4b7494e",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.common.core.model.tde.concrete.Version": {
+      "sha256": "5d30f7486924ab53bb75d590e580f3c523efe04b9a9dffe48e886848d62a27cd",
+      "serial_version_uid": null,
+      "field_count": 13
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentAtomicEntity$1": {
+      "sha256": "1e552e3be5a88361c92d4066b9517103bb2cf8ddffab3e328b5ffa11bbd1db9a",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentAtomicEntity": {
+      "sha256": "674eefcb0eba02637ae0ecd9ce0bd5a329e267a1aa0b30cee24ff2324114d14c",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentColumn$1": {
+      "sha256": "1aa7d6aaeeacc7706d88d8bba0c5219d68711d835d71f85ae8bebfaf7138f8f3",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentColumn": {
+      "sha256": "06a96195056154c493c74f0345b57a55c5ee28369f4fe8021ff962f72f79ae43",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentGroup$1": {
+      "sha256": "baeb24c9c112becf44e4833b9ea3a1e9583712630a81eb26bd2061f430097cc2",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentGroup": {
+      "sha256": "ea9127fc45304e7e927916eb2645e43ed9fc3dec613d4b17378e8bc7b48f0805",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentPositions": {
+      "sha256": "e574ebdb9ea82b110c7c855fe59b67a75c61bcb0eb0019b2e545e0954e355a38",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentRow$1": {
+      "sha256": "758c01ee722d9ab6647315b862bb96ff5f542bb0b57216e842753362f013d29d",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$AlignmentRow": {
+      "sha256": "3176e0db57e927677051be8cb1879b772b06f17f020cd344f9cbbb9ca60d0505",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$ByRefArguments": {
+      "sha256": "309665cdecc56539225dd987b63b95b71184fb9406e02fa9dd0c46fc9100a886",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$Contains": {
+      "sha256": "86f06baf973416e9e4d915b0e33023159554d48617aa4278e34ee0c928b35545",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment$SafeMap": {
+      "sha256": "5847efa23601461606cec9cf3735bdbef3e3dbe5c49b7b8e15b994988a2ccc0e",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormAlignment": {
+      "sha256": "6b9b482378d0d185f014b9c69598fdcca5f50bf922b4f63a429a00fc4907585a",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormElementMove$RelativePosition": {
+      "sha256": "f291c6e9bc3b1eab00ddbdc440bae46f7109a421c6bbecb93db657bb896f5a11",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormElementMove$TDEChildrenByParent": {
+      "sha256": "4bbc0c665e2c11c5f376af0705a033524ae55b428abd729e1728e2de3d8cbb74",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormElementMove": {
+      "sha256": "71cd16eaf7f56e7f66c37fe4a1090fa5de1cdd725b1e7a4e5714cfe42efa9d82",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormTDEUtil$FieldAlignment": {
+      "sha256": "b6ca5458e7ea7d255b61565b2dde9bc03589a9366074e46db8a8ad038f08a7ef",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.FormTDEUtil": {
+      "sha256": "e6faa28e243446bd369b9d3d7f22b5bff11b471678fcc8ca10e55eb5d19efdac",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.ITDELabeledComponent": {
+      "sha256": "a1433019a27e8025164728370650f89e54fe52d785ac721100bd0313c157bded",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.ITDEParentNode": {
+      "sha256": "5588c0e3aefc85672aef7afe013af6f0becfd43befcad80a9611d85e8cb18f86",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEFactory": {
+      "sha256": "bd25bee7bb69276db8578796de14b403c3d7f555b2c89209143d757c1d6d02ff",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEFile": {
+      "sha256": "0558a79c60414ddc59b0fb735ec7b1c4e20e68fc8719d42a53d85b19b19df70b",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEParentNode": {
+      "sha256": "08900ade2a9aedda1cd2028f8c9d46b0da96c3e44321cbe34df83585c6e4703e",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEParentNodeLabeledComponent": {
+      "sha256": "615f75b7a5f904dea3712e005bb158bcb079d3cff0bd6efa3b74cd5f693d0ab9",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEProperties": {
+      "sha256": "1add742412580ebf8ca3465a96f81a608df81402d8b73f18eebcbfde6167ba94",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEPropertiesFile": {
+      "sha256": "d871e2baddb12e464a4ad380ca49c757796c2f5462662b5f720361512df6dba3",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEPropertiesLabeledComponent": {
+      "sha256": "7925358034ce9c791b7fb0e42799700a7808023b0fddc541539f8fcecb8c58a0",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDERevisionStorage": {
+      "sha256": "6929acfdb9c20904ace9a2aaace750bae382eee13c2fbf9f4019e744deda48e0",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDESourceCode": {
+      "sha256": "3917f7c4131f4e360a5e0517f17c0eb522ca118ab2eb97dfb5387fb7f633c86b",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDESourceCodeFile": {
+      "sha256": "69fd1de6534eab93202b227964df4dc7ac89fa7967c6383eb916a697688c7690",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.model.tde.TDEStorage": {
+      "sha256": "e24b18c567f508bfab6e0574edee447d58fdf29e74884e6cc706af17b38f9476",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.ps.internal.DR_Solution$SolutionStatus": {
+      "sha256": "52b618e390dcf4b8a48257857b2f38aef6a0533a2481b93ef7a7d4d30a745db2",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.common.core.ps.internal.DR_Solution": {
+      "sha256": "c8889a70ee9db12919578e35dbd044682ebab7e7e94a9455d65c5bf5fe65bb0c",
+      "serial_version_uid": null,
+      "field_count": 16
+    },
+    "com.infor.ln.studio.apps.core.model.additional.AdditionalFactory": {
+      "sha256": "24866b58b932700fa1deac2d4ef7345d3354d7a9a0894c6c3187347776895648",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.AdditionalFileRefDT": {
+      "sha256": "406c2f70098a7b63e31fb934ce49392a32485202f0789b670f1be7de5bf5f404",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.AdditionalPackage$Literals": {
+      "sha256": "fcf459925b176aba728f7cb09086128c63eeaa23e0ad47753b6b36fd4dfafd6d",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.AdditionalPackage": {
+      "sha256": "51c5a96444a1d4d9a33b6bd28cd45a82b6da5073afc189a6475813a02c1e20d2",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ContextMessagesType": {
+      "sha256": "bd43e51829b328ceea2730a6d9909dd4ebc96fd17da59aa30eaaa9a3384a6a00",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ContextMessageType": {
+      "sha256": "67885643846780abd4ee4abc65c659dfa6d06b07978e3c08b8d2a55e346d8339",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.DRAdditionalFile": {
+      "sha256": "9998b6c9a7bef4ffa04053ec4261ee6b6498808c6dda4c4ac609c483aef008d6",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.DrillbackType": {
+      "sha256": "389996297cdd3d08d889b5a95d68ff2c8b787cb40f0a6eac6c91483a160db56a",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.FieldMappingsType": {
+      "sha256": "f29b02951f9e76f320e4bae64da629ae92aeab43e0c414d40f299e971ebb01e4",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.FieldMappingType": {
+      "sha256": "eeaf68a29a933e8d1f2d8ff6a05424ed3350d97915eff5f018ef47c6805c36f1",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.FileContent": {
+      "sha256": "f9a3bd66e591fa6503f4e783934de00013216efad882694c21ddeada8434cba0",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.FileString": {
+      "sha256": "5a3a69e9acda656b684c42997d88a3f64416e6da6970f398e32e10067bb23ec8",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.HookType": {
+      "sha256": "a606b9235004a1fcdba0b1606792dddb5911c0445e8504bff4601c4449ab51ca",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.AdditionalFactoryImpl": {
+      "sha256": "a9b7573854014ffabef400427e0180c3b702341fd27571acbf90063156b3b5a4",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.AdditionalFileRefDTImpl": {
+      "sha256": "b4161f7895250134359a52b2f45b1283d1a27dadac61a6eb0596b07c77486849",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.AdditionalPackageImpl": {
+      "sha256": "34934999315fd031ffdd2cdd7dd625a10d8a0fe4b79895d70ad771abe127f0aa",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.ContextMessagesTypeImpl": {
+      "sha256": "115f7a106cd65b13f2e3c0028a95d824636c2d2ffd7abce8b16d97a16084cb0b",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.ContextMessageTypeImpl": {
+      "sha256": "61dc2725ac5d10bd86c3338a51e5d8c8e876f21dd78f016eb1521c8d56013302",
+      "serial_version_uid": null,
+      "field_count": 17
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.DRAdditionalFileImpl": {
+      "sha256": "707faab4b27642f46bb552c8676b89017de36d8e8367e5a96986786379b0eb72",
+      "serial_version_uid": null,
+      "field_count": 17
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.DrillbackTypeImpl": {
+      "sha256": "4dbda8bba85648e0e1a1ec86977603e8ac2e9424839da74533010e6f3ac8c3cd",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.FieldMappingsTypeImpl": {
+      "sha256": "0561d001bf4e78f53d3953b6be89733376a62575e9965c2ad1ecc97ddff074b4",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.FieldMappingTypeImpl": {
+      "sha256": "2d5c232fd48686685bdd40a2af1d6797da826d0a11dba196742cfe2ee03eea4c",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.FileContentImpl": {
+      "sha256": "1145e3dcba7a4bffd96c35d18db6afae14e5a3528cd211d21b136ab72fcb700b",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.FileStringImpl": {
+      "sha256": "5bf6dcc03f02c442a944943a8f85f5963462a51700c4b06c98ff95c10143df83",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.HookTypeImpl": {
+      "sha256": "f4b07f93cce2ae18ce113740ff510b8674feca193ab67cffe35cec0e95b2060e",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.InContextImplementationModelImpl": {
+      "sha256": "249deae2f029a1d444e4bb976e38a941c03204df17f4e0d192adeecc62110efd",
+      "serial_version_uid": null,
+      "field_count": 10
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.KeyTypeImpl": {
+      "sha256": "69ee0cab12194bb3d5edcaf34561f3466a834dc5f01f9434936987cf6db4b4f2",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.MappingsTypeImpl": {
+      "sha256": "0aeed4fb6f0029646940d3ef98542e2d5e1e6ab9a290efed7c4773d7af4f0f5f",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.MappingTypeImpl": {
+      "sha256": "e7b8edd11a5639d7a219a88a109daf58c75b4521e81658e73dc4a6a28e17414d",
+      "serial_version_uid": null,
+      "field_count": 2
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.NestedQueryTypeImpl": {
+      "sha256": "a7fb208aea9087aabe4536c86c303095fe4138f0ce650baaced6d470688684ab",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.ReferencedTablesTypeImpl": {
+      "sha256": "5621ec96fa682e535c05d9b7860b56504462db59b40bd2ed9525ac7def4c2ec1",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.ReferencedTableTypeImpl": {
+      "sha256": "a0fe82b7a0ef07c694e2879af6b0faa4f86ed1eb6c5e31bec45733d2868270fe",
+      "serial_version_uid": null,
+      "field_count": 14
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.ReferencePathTypeImpl": {
+      "sha256": "879702310699b953f288fd82b31d559aead7de8d3a279523818068bd17875e06",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.RefersTypeImpl": {
+      "sha256": "4cad0fba327820385859b98aeeb8b83e02f6416338b8ebef75597cbec3886cf4",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.SessionTypeImpl": {
+      "sha256": "8b9634d95577b647efa8e6103ea36b3568d44ee4dd3f5ca1faed57b1b47e6b00",
+      "serial_version_uid": null,
+      "field_count": 4
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.SourceTypeImpl": {
+      "sha256": "d3b49a0199a894b19956b39d0063a6a6d6bc3debb8af69b05bb69a89668cfbac",
+      "serial_version_uid": null,
+      "field_count": 5
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.TableExtendsTypeImpl": {
+      "sha256": "64feb1f17a71ce42077af8bf544ade60c0200688b87913f6c3edef765664f6d2",
+      "serial_version_uid": null,
+      "field_count": 3
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.TableTypeImpl": {
+      "sha256": "4021dd32d9fe252a89c2aca1fb487cd166406f0e81d64bb9bc63ebea0b1d68f8",
+      "serial_version_uid": null,
+      "field_count": 4
+    },
+    "com.infor.ln.studio.apps.core.model.additional.impl.WhereTypeImpl": {
+      "sha256": "7bbf32e36672f2e2f8aac272b0e23729f715f002090f5235ae918dbefe433ad0",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.InContextImplementationModel": {
+      "sha256": "062026b37a855374aea91209bcfe2cd18c78ebf1b16aa49fa15b95041f45009f",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.KeyType": {
+      "sha256": "babd598b93ae7bcd4f3e74223cc90dab63e7d992ed79309993ea2730f062817c",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.MappingsType": {
+      "sha256": "cc08766de36ae24572d4c4dc77b0ed1ce6282bb07197730c8ec81f7ffe0d4b29",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.MappingType": {
+      "sha256": "c5e06ea12e622e148a1abd239b20f854253502cceb79aed341bddc1c3b22a9a9",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ModeType": {
+      "sha256": "153f5a9cfe5b7fc398dace43772ccac391401bcc9b5b96a73f2e68e5d2f627e0",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.NestedQueryType": {
+      "sha256": "d9ad1e7975b4f4f4056d7469fd89ee30830f8e36037189bd48e4b55452b43ed8",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.OriginType": {
+      "sha256": "582b4486d39796accbff993efb589e79034741625d0ec96e50857a1cf5fac5db",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ReferencedTablesType": {
+      "sha256": "6e5f710d76942d8d1ffd013d4b4e708ff769432bc9f407e89d6dd9a559c273dd",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ReferencedTableType": {
+      "sha256": "78faa75aa450f1907ffd9153d4f34796f862f3d102fef7e9ab0f0fd2b4fdb92d",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.ReferencePathType": {
+      "sha256": "59523ae3c48d04e84333f5f6e00626c4945d264b593e01e8c3a0f317c3355c42",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.RefersType": {
+      "sha256": "c41086fa04208fe21df82cfa710b879603ec24958a2cc76ab95194709d340249",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.SessionType": {
+      "sha256": "d96bf2f48e353371ef3ec63eb30b7dc18dc4354ce3c4df5a7dc94aa0a21b9ad5",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.SourceType": {
+      "sha256": "a4f82b9995b71b0e4ddfbc28618051363ef4970972488b407ed688f006102d3e",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.TableExtendsType": {
+      "sha256": "a808e4e8ebc5efa37675e81b14bede0b0546e66cb16c06b067279b72eb9eb45c",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.TableType": {
+      "sha256": "e2973a9b686108e7af6d77aab518ed0e1377bd2ee568a7551ed8d0e6b01513c4",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalAdapterFactory$1": {
+      "sha256": "7aba1c565a7f0e2d449bfcd30b65f9e80328a86961ba693ae001482c4e925421",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalAdapterFactory": {
+      "sha256": "5770a005d8cd3717a903986f0dc2a520ec24f2025afefe11eaeadd557a35ad47",
+      "serial_version_uid": null,
+      "field_count": 1
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalResourceFactoryImpl": {
+      "sha256": "71cd6a18ba9614db3c21d39c945e94f77d90ce02ada7a8d03ce1557164eb254b",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalResourceImpl": {
+      "sha256": "0b28368937cfa54728b3e47079d82e313a2db36ad562f1fbb4f8ff1e157c70d1",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalSwitch": {
+      "sha256": "adcbb65cd18f2224cfe0583c925a1f34e2f18f09f4c32e71d4332edd28a6f756",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.AdditionalXMLProcessor": {
+      "sha256": "9b7f61ee39f1ae09224c1c39f686fdd2a391d3f13eb2c2b5be457cbd2a0b6ec3",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.util.HookElement": {
+      "sha256": "29d90a8ffdd6266acb58784ac978b59132a7b9ea9b95b2f9e4d3165d6e192988",
+      "serial_version_uid": null,
+      "field_count": 0
+    },
+    "com.infor.ln.studio.apps.core.model.additional.WhereType": {
+      "sha256": "5d4c25d8736801ccc09a40b7f97d235bfd10a2b711de1c0ab5228036eb03b9da",
+      "serial_version_uid": null,
+      "field_count": 0
+    }
+  }
+}
