@@ -1,72 +1,55 @@
 # Task Tickets: 100% Native Rust Single-Binary Architecture (`skill-ln` — ADR 0021)
 
-- **Active Specification**: [`docs/plans/SPEC_NATIVE_RUST_SKILL_LN.md`](SPEC_NATIVE_RUST_SKILL_LN.md) ([`.scratch/native-rust-skill-ln/spec.md`](../../.scratch/native-rust-skill-ln/spec.md))
-- **Active Implementation Plan**: [`docs/plans/native-rust-skill-ln-plan.md`](native-rust-skill-ln-plan.md)
+- **Active Phase 6 Specification**: [`docs/plans/SPEC_RUST_SKILL_LN_PRODUCTION_HARDENING.md`](SPEC_RUST_SKILL_LN_PRODUCTION_HARDENING.md) ([`.scratch/rust-skill-ln-production-hardening/spec.md`](../../.scratch/rust-skill-ln-production-hardening/spec.md))
+- **Active Phase 6 Implementation Plan**: [`docs/plans/rust-skill-ln-production-hardening-plan.md`](rust-skill-ln-production-hardening-plan.md)
+- **Active Phase 6 Wayfinder Map**: [`.scratch/rust-skill-ln-production-hardening/map.md`](../../.scratch/rust-skill-ln-production-hardening/map.md)
+- **Parent Architecture Spec (Phases 1–5)**: [`docs/plans/SPEC_NATIVE_RUST_SKILL_LN.md`](SPEC_NATIVE_RUST_SKILL_LN.md) ([`.scratch/native-rust-skill-ln/spec.md`](../../.scratch/native-rust-skill-ln/spec.md))
 - **Architecture Decision Record**: [`docs/adr/0021-native-rust-skill-ln-single-binary-architecture.md`](../adr/0021-native-rust-skill-ln-single-binary-architecture.md)
-- **Wayfinder Map**: [`.scratch/native-rust-skill-ln/map.md`](../../.scratch/native-rust-skill-ln/map.md)
 - **Target Skills**: `erp-ln-progguide`, `ln_studio_skill`
+- **Target Model for Execution**: `flash` (Gemini 3.8 Flash High)
 
 ---
 
-## Active Batch Dependency Graph (`Batch: Native Rust Single-Binary Toolchain skill-ln — ADR 0021`)
+## Active Batch: Phase 6 Production Hardening & Live CloudSuite Integration (`SCS_TEST` / `dev_natt_v01108-1`)
 
 ```mermaid
 flowchart TD
-    T01["01: Cargo Workspace & ln-eclipse-compat\n(.admin 0xACED0005, properties.index, .markers)"]
-    T02["02: ln-auth 3-Tier OAuth2 Lifecycle\n(.ionapi, prefs, Loopback OOB, Pre-Fetch-Auth-Gate)"]
-    T03["03: ln-jca Clean-Room HTTP/1.1 Wire Client\n(5-Mode BdeManager, 250-Pagination, Hard-Block)"]
-    T04["04: [CHECKPOINT 1] ln-daemon Single-Leader\n(Sequential FIFO Queue, Token Hot-Swap & Phase 1 Gate)"]
+    P6_01["01: Windows 8MB Stack & JVM 0xACED0005 .admin Codec Fix\n(.cargo/config.toml, main.rs, ln-eclipse-compat/src/admin.rs)"]
+    P6_02["02: DOM Table/Session Validator & Real-XML 4GL Linter Fixes\n(ln-model/src/validator.rs, ln-linter/src/auditor.rs)"]
+    P6_03["03: JCA Numeric conid Multiplexer & Workspace Context Resolver\n(ln-jca/src/http_client.rs, bde_manager.rs, ln-scm/src/context.rs)"]
+    P6_04["04: Full CLI 60-Subcommand Wiring & Generator Path Fix\n(rust/bins/skill-ln/src/commands.rs, ln-daemon)"]
+    P6_05["05: Full MCP Stdio 25-Tool Wiring & Hermetic/Live Dispatch\n(rust/bins/skill-ln/src/mcp/tools.rs, server.rs)"]
+    P6_06["06: [FINAL GATE] SKILL.md Cutover, run_checks.py Guardrails & Live SCS_TST Smoke Test\n(SKILL.md, references/, scripts/run_checks.py)"]
 
-    T05["05: ln-kb Zero-Copy Knowledge Base\n(rkyv 2,266 Functions, Syntax Dict, fn/doc-search)"]
-    T06["06: ln-linter Part 1: Lexer, AST & 15 Core Rules\n(SYN, INC, ARR002, SQL008, STR001, CLD, DAL001-005)"]
-    T07["07: [CHECKPOINT 2] ln-linter Part 2: Call Graph, DD & EXT\n(CAV003, TBL001-003, DMN001-003, EXT001-003 & Phase 2 Gate)"]
-
-    T08["08: TDE Bytecode Schema Extractor\n(tde_schema_0640.json 129 Classes + 39 owtemplates)"]
-    T09["09: ln-model Part 1: 12-Component XML Generators\n(Single-XML TDE Layout & Multi-Component YAML)"]
-    T10["10: [CHECKPOINT 3] ln-model Part 2: Lossless DOM Surgery\n(Unknown Node Inspector, 4-Layer Validate & Phase 3 Gate)"]
-
-    T11["11: ln-scm Part 1: Project/Activity & Explorer\n(project-info, new/open-activity, GetBrowseList, sync-reference)"]
-    T12["12: ln-scm Part 2: Pre-Commit SCM & Build Pipeline\n(CheckOut/Put/CheckIn, deploy-test, EXT Guide-and-Paste)"]
-    T13["13: [CHECKPOINT 4] ln-scm Part 3: FglStudio Code Intel\n(compile-source, search, call-hierarchy, diff & Phase 4 Gate)"]
-
-    T14["14: ln-verify Crash Fixtures, Auto-Fallback & Build Differ\n(LN_FALLBACK_MODE & verify-studio-build 0xCAFEBABE)"]
-    T15["15: [CHECKPOINT 5] Unified skill-ln Binary\n(60 CLI Cmds + 25 MCP Stdio Tools + CI & Final Gate)"]
-
-    T01 --> T02
-    T01 --> T03
-    T02 --> T03
-    T01 --> T04
-    T02 --> T04
-    T03 --> T04
-
-    T01 --> T05
-    T05 --> T06
-    T06 --> T07
-
-    T01 --> T08
-    T08 --> T09
-    T07 --> T10
-    T09 --> T10
-
-    T04 --> T11
-    T10 --> T11
-    T11 --> T12
-    T12 --> T13
-
-    T08 --> T14
-    T13 --> T14
-    T14 --> T15
+    P6_01 --> P6_04
+    P6_02 --> P6_04
+    P6_03 --> P6_04
+    P6_04 --> P6_05
+    P6_05 --> P6_06
 ```
+
+### Phase 6 Ticket Roster (6 Self-Contained Tracer-Bullet Slices)
+
+- **Local Issues Directory**: [`.scratch/rust-skill-ln-production-hardening/issues/`](../../.scratch/rust-skill-ln-production-hardening/issues/)
+
+| ID | Phase | Title | Blocked by | What It Delivers | Status | Ticket File |
+|---|---|---|---|---|---|---|
+| **01** | Phase 6 | Windows 8MB Main Thread Stack & JVM `0xACED0005` `.admin` Serialization Handle Fix | *None (can start immediately)* | Configures `/STACK:8388608` (`8 MB`) in `rust/.cargo/config.toml` + `main.rs`, fixes `TC_CLASSDESC`/`TC_OBJECT` handle allocation order (`0x007E0000`–`0x007E0005`) and `TC_REFERENCE`/`TC_STRING` `m_path` handling in `ln-eclipse-compat/src/admin.rs`, and verifies against real `dev_natt_v01108-1/.admin` | `open` | [`01-windows-stack-and-java-admin-serialization-fix.md`](../../.scratch/rust-skill-ln-production-hardening/issues/01-windows-stack-and-java-admin-serialization-fix.md) |
+| **02** | Phase 6 | DOM-Based `.tbl`/`.ses` XML Validator (`roxmltree`) & Real-Workspace 4GL Linter (`ln-linter`) Fixes | *None (can start immediately)* | Replaces naive regexes in `ln-model/src/validator.rs` with `roxmltree` direct-child `<Column><name>` and `<IndexColumn><column>` traversal, adds Single-XML `<expression>` extraction/unescaping + `ext.get.*` `long` return whitelist (`EXT003`) + dotted `.return.` boundary fix (`DAL003`) in `ln-linter/src/auditor.rs`, and verifies 0 false positives on `dev_natt_v01108-1` | `open` | [`02-roxmltree-table-validator-and-linter-real-xml-fixes.md`](../../.scratch/rust-skill-ln-production-hardening/issues/02-roxmltree-table-validator-and-linter-real-xml-fixes.md) |
+| **03** | Phase 6 | JCA Numeric `conid` Session Multiplexer (`ln-jca`) & Workspace Context Resolver (`ln-scm`) | *None (can start immediately)* | Adds `ConnectionRegistry` to `HttpClient` resolving `"ProjectServer"` $\rightarrow$ primary `<conid>` from `connect()` (`0`) and repo addresses (`"EXTce01108_dev"`) $\rightarrow$ shared `<conid>` from `share()` (`1`), enforces numeric `conid` in mock JCA servers, and implements `ln_scm::context::WorkspaceContext` (`.prefs`, `.project`, `Pre-Fetch-Auth-Gate`) | `open` | [`03-jca-conid-session-resolver-and-workspace-discovery.md`](../../.scratch/rust-skill-ln-production-hardening/issues/03-jca-conid-session-resolver-and-workspace-discovery.md) |
+| **04** | Phase 6 | Full CLI 60-Subcommand Wiring (`commands.rs`), Single-XML Generator Path Fix & Daemon Integration | **01, 02, 03** | Fixes `message`, `question`, `function`, `additional`, `report` to use `ln_model::generators::*` and `resolve_component_path` (`{pkg}/emess/`, etc.), wires all 30+ server/SCM/code-intel/daemon subcommands in `commands.rs` to `WorkspaceContext`, `ln-scm`, and `ln-daemon`, and verifies via stateful mock JCA tests | `open` | [`04-daemon-and-cli-60-subcommands-full-wiring.md`](../../.scratch/rust-skill-ln-production-hardening/issues/04-daemon-and-cli-60-subcommands-full-wiring.md) |
+| **05** | Phase 6 | Full MCP Stdio 25-Tool Wiring (`mcp/tools.rs`) & Hermetic/Live Dispatch | **04** | Wires all 25 MCP tools in `rust/bins/skill-ln/src/mcp/tools.rs` to async `ln-scm`, `ln-model`, `ln-linter`, `ln-auth`, and `ln-daemon` (preserving hermetic test mode when offline), fixes `ln_create_component` for all 12 component types, and tests child-process `mcp-stdio` against stateful mock JCA | `open` | [`05-mcp-stdio-25-tools-full-wiring.md`](../../.scratch/rust-skill-ln-production-hardening/issues/05-mcp-stdio-25-tools-full-wiring.md) |
+| **06** | Phase 6 | **[FINAL GATE]** `SKILL.md` Cutover (`<= 80` Lines), `run_checks.py` Guardrails & Live `SCS_TST` Verification | **05** | Updates `ln_studio_skill/SKILL.md` & `erp-ln-progguide/SKILL.md` (`<= 80` lines) + `references/` to invoke `skill-ln`, adds Suite 4d anti-stub & process-level binary check to `scripts/run_checks.py`, rebuilds release zip, and runs live end-to-end verification on `SCS_TST` (`EXTce01108` / `dev_natt_v01108-1`) | `open` | [`06-skill-markdown-cutover-and-live-scs-test-verification.md`](../../.scratch/rust-skill-ln-production-hardening/issues/06-skill-markdown-cutover-and-live-scs-test-verification.md) |
 
 ---
 
-## Active Ticket Roster (15 Tracer-Bullet Vertical Slices)
+## Completed Foundation Roster (Phases 1–5 — 15 Tracer-Bullet Vertical Slices)
 
 - **Local Issues Directory**: [`.scratch/native-rust-skill-ln/issues/`](../../.scratch/native-rust-skill-ln/issues/)
 
 | ID | Phase | Title | Blocked by | What It Delivers | Status | Ticket File |
 |---|---|---|---|---|---|---|
-| **01** | Phase 1 | Cargo Workspace Scaffold & `ln-eclipse-compat` Binary Codecs | *None (can start immediately)* | Initializes `rust/` Cargo Workspace and pure-Rust `.admin` (`0xACED0005` `AdministrationComponent` `serialVersionUID=2L`), `properties.index` (`PropertyBucket` v1), `.markers` (`MarkerReader_3` v3), and `.metadata/.lock` detector with 1:1 Java/Python differential parity tests | `resolved` | [`01-cargo-workspace-and-eclipse-binary-codecs.md`](../../.scratch/native-rust-skill-ln/issues/01-cargo-workspace-and-eclipse-binary-codecs.md) |
+| **01** | Phase 1 | Cargo Workspace Scaffold & `ln-eclipse-compat` Binary Codecs | *None* | Initializes `rust/` Cargo Workspace and pure-Rust `.admin` (`0xACED0005` `AdministrationComponent` `serialVersionUID=2L`), `properties.index` (`PropertyBucket` v1), `.markers` (`MarkerReader_3` v3), and `.metadata/.lock` detector | `resolved` | [`01-cargo-workspace-and-eclipse-binary-codecs.md`](../../.scratch/native-rust-skill-ln/issues/01-cargo-workspace-and-eclipse-binary-codecs.md) |
 | **02** | Phase 1 | `ln-auth` 3-Tier OAuth2 Lifecycle, `.ionapi` & `Pre-Fetch-Auth-Gate` | **01** | Implements `.ionapi` & Eclipse `.prefs` parsers, 3-Tier OAuth2 token lifecycle (`~/.ln_studio/tokens/<workspace>.json`), local loopback OOB listener (`oob://localhost/lnstudio`), and `Pre-Fetch-Auth-Gate` | `resolved` | [`02-oauth2-lifecycle-and-ionapi-auth.md`](../../.scratch/native-rust-skill-ln/issues/02-oauth2-lifecycle-and-ionapi-auth.md) |
 | **03** | Phase 1 | `ln-jca` Clean-Room JCA HTTP/1.1 Wire Client & 5-Mode `JcaBdeManager` | **01, 02** | Implements `HttpClient` (`connect`, `share`, `bdecall`, `ping`, `disconnect`), all 5 `BdeManager` modes (`LIST`, `SHOW`, `BDE`, `SPECIALLIST`, `BROWSELIST`), 250-item `<iteratorID>` pagination, `ControllingAttributes`, `rustls-tls-native-certs`, and `EndActivity`/`CloseTask` hard-block | `resolved` | [`03-jca-http-wire-protocol-and-5-mode-bdemanager.md`](../../.scratch/native-rust-skill-ln/issues/03-jca-http-wire-protocol-and-5-mode-bdemanager.md) |
 | **04** | Phase 1 | **[CHECKPOINT 1]** `ln-daemon` Single-Leader Native Daemon & Phase 1 Gate | **01, 02, 03** | Implements per-workspace Single-Leader daemon (`daemon_<workspace_hash>.lock`), Sequential FIFO Command Queue (`Pool Size = 1` `bshell`), token hot-swap, keepalive timer, and clears Phase 1 Gate | `resolved` | [`04-checkpoint-1-single-leader-daemon-and-phase-1-gate.md`](../../.scratch/native-rust-skill-ln/issues/04-checkpoint-1-single-leader-daemon-and-phase-1-gate.md) |
@@ -80,4 +63,4 @@ flowchart TD
 | **12** | Phase 4 | `ln-scm` Part 2: Pre-Commit SCM Engine, Split `deploy-test` & Extension Modeler | **11** | Implements `CheckOut`, `UnCheckOut`, `Put`, `CheckIn`, `[GET_ONLY_EXTENSION]` guard, Extension `Guide-and-Paste` workflow, `Compile`, `CRDD`, `CreateTables`, `VSC.executeVSC`, split `deploy-test`, and `prepare-end-activity` | `resolved` | [`12-precommit-scm-engine-and-build-pipeline.md`](../../.scratch/native-rust-skill-ln/issues/12-precommit-scm-engine-and-build-pipeline.md) |
 | **13** | Phase 4 | **[CHECKPOINT 4]** `ln-scm` Part 3: `FglStudio` Code Intelligence, Revision Diff & Phase 4 Gate | **12** | Implements `compile-source`, `search-server`, `call-hierarchy`, `open-declaration`, `related-components`, `revisions`, `diff-component`, `generate-report-server`, and clears Phase 4 Gate | `resolved` | [`13-checkpoint-4-fglstudio-code-intelligence-revision-diff-and-phase-4-gate.md`](../../.scratch/native-rust-skill-ln/issues/13-checkpoint-4-fglstudio-code-intelligence-revision-diff-and-phase-4-gate.md) |
 | **14** | Phase 5 | `ln-verify` Crash Fixtures, Auto-Fallback (`LN_FALLBACK_MODE`) & `verify-studio-build` | **08, 13** | Implements token-redacted Crash Fixture recorder (`unmapped_packets/`), `LN_FALLBACK_MODE=auto\|strict\|off` fallback bridge, and pure-Rust `0xCAFEBABE` classfile & `owtemplates` build differ | `resolved` | [`14-auto-fallback-crash-fixtures-and-verify-studio-build.md`](../../.scratch/native-rust-skill-ln/issues/14-auto-fallback-crash-fixtures-and-verify-studio-build.md) |
-| **15** | Phase 5 | **[CHECKPOINT 5]** Unified `skill-ln` Binary (60 CLI Cmds + 25 MCP Tools) & Final Gate | **14** | Wires all 60 CLI subcommands and 25 Stdio MCP tools into `bins/skill-ln`, integrates `cargo test` into `scripts/run_checks.py`, and clears Final Checkpoint 5 Gate (including live `SCS_TEST` verification) | `resolved` | [`15-checkpoint-5-unified-cli-mcp-server-and-final-cutover-gate.md`](../../.scratch/native-rust-skill-ln/issues/15-checkpoint-5-unified-cli-mcp-server-and-final-cutover-gate.md) |
+| **15** | Phase 5 | **[CHECKPOINT 5]** Unified `skill-ln` Binary (60 CLI Cmds + 25 MCP Tools) & Final Gate | **14** | Wires all 60 CLI subcommands and 25 Stdio MCP tools into `bins/skill-ln`, integrates `cargo test` into `scripts/run_checks.py`, and clears Final Checkpoint 5 Gate | `resolved` | [`15-checkpoint-5-unified-cli-mcp-server-and-final-cutover-gate.md`](../../.scratch/native-rust-skill-ln/issues/15-checkpoint-5-unified-cli-mcp-server-and-final-cutover-gate.md) |
