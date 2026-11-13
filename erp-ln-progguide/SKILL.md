@@ -1,6 +1,6 @@
 ---
 name: erp-ln-progguide
-description: Authoritative Infor ERP LN / Baan 4GL programmer's reference, architectural cookbooks, and static 4GL code auditor. Use when writing, debugging, or reviewing Baan/LN 4GL code, DAL 1 & 2 logic, Extension Modeler hooks (table, session), Baan SQL queries, bshell runtime APIs, or running offline 4GL code audits via scripts/audit_4gl.py. Do NOT use for LN Studio workspace management, SCM check-out/check-in, declarative component XML generation, or deploy-test (use ln_studio_skill instead).
+description: Authoritative Infor ERP LN / Baan 4GL programmer's reference, architectural cookbooks, and static 4GL code auditor. Use when writing, debugging, or reviewing Baan/LN 4GL code, DAL 1 & 2 logic, Extension Modeler hooks (table, session), Baan SQL queries, bshell runtime APIs, or running offline 4GL code audits via skill-ln audit-4gl. Do NOT use for LN Studio workspace management, SCM check-out/check-in, declarative component XML generation, or deploy-test (use ln_studio_skill instead).
 ---
 
 # Infor ERP LN Programmer's Guide & Best Practices (Baan 4GL)
@@ -11,8 +11,8 @@ Authoritative reference for Infor ERP LN / Baan 4GL, DAL 1 & 2, Extension Modele
 
 ### 1. `Search-Before-Read` (Information Retrieval)
 Never scan reference folders blindly. Locate authoritative facts in this sequence:
-- **Known bshell API**: Grep `references/FUNCTION_INDEX.md` (single-line index with Cloud Trust indicators and `#include` headers) or inspect `index/functions_db.json`.
-- **Free-text / Topic Search**: Run `python scripts/search.py "<terms>"` to search 5,700+ pages ranked by relevance.
+- **Known bshell API**: Run `skill-ln fn-search "<term>"` or grep `references/FUNCTION_INDEX.md` / `index/functions_db.json`.
+- **Free-text / Topic Search**: Run `skill-ln doc-search "<terms>"` to search 5,700+ pages ranked by relevance.
 - **Syntax & Completion Dictionaries**: Inspect `references/STUDIO_SYNTAX_COMPLETION.md` for keywords, sections, and hook signatures.
 
 ### 2. `Branching Reference Pointers`
@@ -43,6 +43,6 @@ Every generated or reviewed script must comply with these 6 non-negotiable rules
 ### 4. `Audit-Before-Deliver` (Static Verification Gate)
 Before returning or presenting any 4GL, DAL 2, or Extension script, run the offline auditor:
 ```bash
-python scripts/audit_4gl.py <target_script> [--mode dal2|uedll|general] [--cloud]
+skill-ln audit-4gl <target_script> [--mode dal2|uedll|general] [--cloud]
 ```
 Resolve all syntax errors (SYN), DAL violations (DAL), Extension boundary bugs (EXT), datatype mismatches (DMN/TBL/STR), and Cloud governance warnings (CLD) until 0 errors remain.

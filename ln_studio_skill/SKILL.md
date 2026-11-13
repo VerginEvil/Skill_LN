@@ -17,24 +17,25 @@ Automation engine for Infor LN Studio (Eclipse RCP, Activity-Based SCM) and decl
 ## Core Procedural Workflows
 
 1. **`Pre-Fetch-Auth-Gate`: Environment Auth & Remote Inspection/Fetch**:
-   - Verify token: `python tools/ln_component_builder.py login --workspace <ws> --status`
-   - Inspect components: `python tools/ln_component_builder.py explorer --type <t> [--filter <pat>]`
-   - Fetch component/script: `python tools/ln_component_builder.py get-component --type <t> --name <n> [--export-script <path>]`
+   - Verify token: `skill-ln login --workspace <ws> --status`
+   - Inspect components: `skill-ln explorer --type <t> [--filter <pat>]`
+   - Fetch component/script: `skill-ln get-component --type <t> --name <n> [--export-script <path>]`
 
 2. **`Read-Only-SCM-Guardrail` & `Pre-Commit-Boundary`: SCM & Deploy-Test**:
-   - Check out: `python tools/ln_component_builder.py checkout-component --type <t> --name <n> --activity <a>`
-   - Test changes: `python tools/ln_component_builder.py deploy-test --type <t> --name <n> --activity <a> [--mode compile-only|schema-crdd]`
-   - Verify activity: `python tools/ln_component_builder.py prepare-end-activity --activity <a>`
+   - Check out: `skill-ln checkout-component --type <t> --name <n> --activity <a>`
+   - Test changes: `skill-ln deploy-test --type <t> --name <n> --activity <a> [--mode compile-only|schema-crdd]`
+   - Verify activity: `skill-ln prepare-end-activity --activity <a>`
 
 3. **`Single-XML TDE Layout`: Declarative Component Generation & Fix**:
-   - Scaffold from schema: `python tools/ln_component_builder.py component --spec schema.yaml [--output-dir <path>]`
-   - Synchronize & repair: `python tools/ln_component_builder.py validate <activity_path> --fix`
-   - Synchronize SCM cache: `python tools/ln_component_builder.py sync-admin --activity <act>`
+   - Scaffold from schema: `skill-ln component --spec schema.yaml [--output-dir <path>]`
+   - Synchronize & repair: `skill-ln validate <activity_path> --fix`
+   - Synchronize SCM cache: `skill-ln sync-admin --activity <act>`
 
-4. **`Guide-and-Paste`: Extension Modeler Delivery**:
-   - Scaffold local script: `python tools/ln_component_builder.py new-extension --type <table|session> --target <comp>`
-   - Verify offline: `python tools/ln_component_builder.py check-script <ext_file> --strict`
-   - Deliver hook blocks: Output clean code blocks for user to paste into `ttext1500m000` while preserving non-context boilerplate (`EXT003`).
+4. **`Guide-and-Paste` & Stdio MCP Server**:
+   - Scaffold extension: `skill-ln new-extension --type <table|session> --target <comp>`
+   - Verify offline: `skill-ln check-script <ext_file> --strict`
+   - Start MCP server: `skill-ln mcp-stdio` (or register via `skill-ln mcp-setup --client <c> --apply`)
+   - Deliver hook blocks cleanly for pasting into `ttext1500m000` while preserving non-context boilerplate (`EXT003`).
 
 ## Branching Reference Pointers
 

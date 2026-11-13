@@ -184,3 +184,56 @@ fn test_java_admin_sync_helper_differential_roundtrip() {
         }
     }
 }
+
+#[test]
+fn test_admin_jvm_exact_handle_layout_and_string_variants() {
+    let mut admin = AdminFile::new();
+    admin.after_get("tx/etable/cmg/cmg011.tbl");
+    admin.after_checkout("tx/esess/cmg/cmg0512m000.ses");
+    admin.entries.insert(
+        "tx/elib/ess/esssli2620m0.lib".to_string(),
+        AdministrationComponent {
+            is_checked_out: false,
+            is_created: false,
+            is_ever_checked_in: true,
+            is_expired: false,
+            is_dirty: false,
+            is_vsc_happy: true,
+            path: "/dev_natt_v01108-1 [EXTce01108]/tx/elib/ess/esssli2620m0.lib".to_string(),
+        },
+    );
+
+    let bytes = admin.serialize().expect("serialize should succeed");
+    // Entry 1 (second entry) must reference AdministrationComponent ClassDesc at 0x007E0003:
+    // 0x73 (TC_OBJECT) followed by 0x71 (TC_REFERENCE) 0x00 0x7E 0x00 0x03
+    let needle = [0x73u8, 0x71, 0x00, 0x7E, 0x00, 0x03];
+    assert!(
+        bytes.windows(needle.len()).any(|w| w == needle),
+        "Expected TC_OBJECT -> TC_REFERENCE(0x007E0003) for AdministrationComponent ClassDesc in serialized bytes"
+    );
+
+    let parsed = AdminFile::deserialize(&bytes).expect("round-trip deserialize must succeed");
+    assert_eq!(parsed.entries.len(), 3);
+    assert!(parsed.get("tx/etable/cmg/cmg011.tbl").is_some());
+    assert!(parsed.get("tx/esess/cmg/cmg0512m000.ses").unwrap().is_checked_out);
+    assert!(parsed.get("tx/elib/ess/esssli2620m0.lib").unwrap().is_ever_checked_in);
+}
+
+#[test]
+fn test_real_workspace_dev_natt_v01108_admin_file() {
+    let real_admin = std::path::Path::new(
+        r"C:\Users\nutdo\OneDrive\Documents\workspace_lnstudio\SCS_TST\dev_natt_v01108-1 [EXTce01108]\.admin",
+    );
+    if !real_admin.exists() {
+        eprintln!("[SKIP] Real workspace .admin not found at {:?}", real_admin);
+        return;
+    }
+
+    let admin = AdminFile::load_from_path(real_admin)
+        .expect("Must parse real Eclipse .admin file without handle errors");
+    assert!(!admin.entries.is_empty(), "Real .admin should have entries");
+
+    let bytes = admin.serialize().expect("Re-serialize real .admin");
+    let roundtrip = AdminFile::deserialize(&bytes).expect("Round-trip deserialize real .admin");
+    assert_eq!(roundtrip.entries.len(), admin.entries.len());
+}

@@ -781,3 +781,107 @@ fn test_rayon_parallel_directory_audit() {
     assert_eq!(syn002.len(), 1);
 }
 
+#[test]
+fn test_audit_single_xml_extension_lib_zero_false_positives() {
+    let tmp = tempfile::tempdir().unwrap();
+    let lib_path = tmp.path().join("txesssli2620m0.lib");
+    let lib_xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<Library>
+  <name>txesssli2620m0</name>
+  <script>
+    <Script>
+      <expression>#context_on "declarations"
+#include &lt;bic_dam&gt;
+#context_off
+
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+
+function extern long ext.get.form.fields()
+{
+    long node
+    node = 0
+    return(node)
+}
+
+function extern long ext.get.session.indices()
+{
+    return(0)
+}
+
+function extern long ext.get.command.extensions()
+{
+    return(0)
+}
+
+function extern long ext.get.report.extensions()
+{
+    return(0)
+}
+
+#context_on "function.ext.gen.return.man.sales.before.command"
+function extern void function.ext.gen.return.man.sales.before.command()
+{
+    dam.set.error.message("txgen0001")
+}
+#context_off
+</expression>
+    </Script>
+  </script>
+</Library>"#;
+    fs::write(&lib_path, lib_xml).unwrap();
+
+    // Also include a pure metadata .tbl file with no <expression>
+    let tbl_path = tmp.path().join("txcmg011.tbl");
+    fs::write(&tbl_path, r#"<?xml version="1.0" encoding="UTF-8"?><DR_Table><name>txcmg011</name></DR_Table>"#).unwrap();
+
+    let auditor = Auditor4GL::new();
+    let diags = auditor.audit_path(tmp.path(), None).unwrap();
+    assert!(
+        diags.is_empty(),
+        "Expected 0 diagnostics on Single-XML extension library and metadata table, got: {:?}",
+        diags
+    );
+}
+
+#[test]
+fn test_audit_real_workspace_dev_natt_v01108_zero_false_positives() {
+    let real_act = std::path::Path::new(
+        r"C:\Users\nutdo\OneDrive\Documents\workspace_lnstudio\SCS_TST\dev_natt_v01108-1 [EXTce01108]",
+    );
+    if !real_act.exists() {
+        eprintln!("[SKIP] Real activity not found at {:?}", real_act);
+        return;
+    }
+
+    let auditor = Auditor4GL::new();
+    let diags = auditor.audit_path(real_act, None).unwrap();
+    let false_positive_rules = ["EXT001", "EXT003", "INC001", "DAL003"];
+    let false_positives: Vec<_> = diags
+        .iter()
+        .filter(|d| false_positive_rules.contains(&d.code.as_str()))
+        .collect();
+    assert!(
+        false_positives.is_empty(),
+        "Expected 0 EXT001/EXT003/INC001/DAL003 false positives on dev_natt_v01108-1, got: {:?}",
+        false_positives
+    );
+
+    let clean_files = ["txcmg011.tbl", "txcmg012.tbl", "txcmg0512m000.ses"];
+    let clean_file_diags: Vec<_> = diags
+        .iter()
+        .filter(|d| {
+            clean_files.iter().any(|name| d.file.ends_with(name))
+                && (d.severity == Severity::Error || d.severity == Severity::Warning)
+        })
+        .collect();
+    assert!(
+        clean_file_diags.is_empty(),
+        "Expected 0 errors/warnings on clean files {:?}, got: {:?}",
+        clean_files,
+        clean_file_diags
+    );
+}
+

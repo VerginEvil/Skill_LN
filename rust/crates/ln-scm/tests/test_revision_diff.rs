@@ -60,7 +60,23 @@ async fn test_fglstudio_revisions_and_diff_mock_suite() {
             log.push(req.clone());
             drop(log);
 
-            let body = if req.contains("bdename=FglStudio") && req.contains("bdemethod=GetRevisions") {
+            let req_line = req.lines().next().unwrap_or("");
+            let is_numeric_conid = req_line
+                .split("conid=")
+                .nth(1)
+                .map(|r| r.split(['&', ' ']).next().unwrap_or(""))
+                .map(|c| !c.is_empty() && c.chars().all(|ch| ch.is_ascii_digit()))
+                .unwrap_or(false);
+
+            let body = if req_line.contains("method=connect") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>"
+            } else if req_line.contains("method=share") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>"
+            } else if req_line.contains("method=bdecall") && !is_numeric_conid {
+                let resp = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/xml\r\nContent-Length: 74\r\nConnection: close\r\n\r\n<error><info>null</info><message>POST request failed</message><reason>0</reason></error>";
+                let _ = socket.write_all(resp.as_bytes()).await;
+                continue;
+            } else if req.contains("bdename=FglStudio") && req.contains("bdemethod=GetRevisions") {
                 assert!(req.contains("<compCode>whwmd400</compCode>"));
                 "<FglStudioResponse><DataArea><revisions><revision number=\"1\" versionID=\"B61O_a_ext\" date=\"2026-01-10\" time=\"10:00:00\" author=\"userA\" comment=\"Initial creation\" task=\"TASK001\"/><revision number=\"2\" versionID=\"B61O_a_ext\" date=\"2026-02-15\" time=\"14:30:00\" author=\"userB\" comment=\"Added warehouse field\" task=\"TASK002\"/></revisions></DataArea></FglStudioResponse>"
             } else if req.contains("bdename=DR_Table") && req.contains("bdemethod=GetRevision") {

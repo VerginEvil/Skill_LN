@@ -1,4 +1,5 @@
 pub mod xml_tree;
+pub mod context;
 pub mod project;
 pub mod activity;
 pub mod explorer;
@@ -9,6 +10,7 @@ pub mod code_intel;
 pub mod revision_diff;
 
 pub use xml_tree::*;
+pub use context::*;
 pub use project::*;
 pub use activity::*;
 pub use explorer::*;

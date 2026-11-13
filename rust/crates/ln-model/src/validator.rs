@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
+use quick_xml::events::Event;
+use quick_xml::Reader;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -101,6 +103,7 @@ struct TableMeta {
     table_code: String,
     description_reference: String,
     columns: HashSet<String>,
+    column_datatypes: Vec<(String, Option<String>)>,
     indexes: Vec<Vec<String>>,
     raw_xml: String,
 }
@@ -169,6 +172,8 @@ pub struct ActivityValidator {
     menus: HashMap<String, MenuMeta>,
     reports: HashMap<String, ReportMeta>,
     functions: HashMap<String, PathBuf>,
+    admin_loaded: bool,
+    created_or_untracked: HashSet<String>,
 }
 
 impl ActivityValidator {
@@ -189,6 +194,8 @@ impl ActivityValidator {
             menus: HashMap::new(),
             reports: HashMap::new(),
             functions: HashMap::new(),
+            admin_loaded: false,
+            created_or_untracked: HashSet::new(),
         }
     }
 
@@ -294,38 +301,118 @@ impl ActivityValidator {
 
         if let Ok(content) = fs::read_to_string(path) {
             meta.raw_xml = content.clone();
-            // Extract table name
-            if let Some(m) = Regex::new(r"<name>([^<]+)</name>").ok().and_then(|re| re.captures(&content)) {
-                meta.table_code = m.get(1).unwrap().as_str().to_string();
-            }
             if let Some(m) = Regex::new(r#"descriptionReference="([^"]+)""#).ok().and_then(|re| re.captures(&content)) {
                 meta.description_reference = m.get(1).unwrap().as_str().to_string();
-            } else if let Some(m) = Regex::new(r"<descriptionReference>([^<]+)</descriptionReference>").ok().and_then(|re| re.captures(&content)) {
-                meta.description_reference = m.get(1).unwrap().as_str().to_string();
             }
 
-            // Extract columns
-            let col_re = Regex::new(r"(?s)<Column>(.*?)</Column>").unwrap();
-            let col_name_re = Regex::new(r"<name>([^<]+)</name>").unwrap();
-            for col_cap in col_re.captures_iter(&content) {
-                let col_xml = col_cap.get(1).unwrap().as_str();
-                if let Some(cname_cap) = col_name_re.captures(col_xml) {
-                    let cname = cname_cap.get(1).unwrap().as_str();
-                    meta.columns.insert(cname.to_string());
-                    meta.columns.insert(format!("{}.{}", meta.table_code, cname));
+            // DOM traversal via quick-xml tag stack so nested <DatatypeReference><name>
+            // and <Index><name> never shadow direct <Column><name> or <IndexColumn><column>.
+            let mut reader = Reader::from_str(&content);
+            reader.config_mut().trim_text(true);
+            let mut stack: Vec<String> = Vec::new();
+            let mut cur_text = String::new();
+
+            let mut cur_col_name: Option<String> = None;
+            let mut cur_col_dt: Option<String> = None;
+            let mut pending_cols: Vec<(String, Option<String>)> = Vec::new();
+
+            let mut cur_idx_cols: Vec<String> = Vec::new();
+            let mut cur_ic_col: Option<String> = None;
+            let mut cur_ic_name: Option<String> = None;
+
+            loop {
+                match reader.read_event() {
+                    Ok(Event::Start(e)) => {
+                        let tag = String::from_utf8_lossy(e.name().as_ref()).to_string();
+                        cur_text.clear();
+                        match tag.as_str() {
+                            "Column" => {
+                                cur_col_name = None;
+                                cur_col_dt = None;
+                            }
+                            "Index" => {
+                                cur_idx_cols.clear();
+                            }
+                            "IndexColumn" => {
+                                cur_ic_col = None;
+                                cur_ic_name = None;
+                            }
+                            _ => {}
+                        }
+                        stack.push(tag);
+                    }
+                    Ok(Event::Empty(e)) => {
+                        let tag = String::from_utf8_lossy(e.name().as_ref()).to_string();
+                        if tag == "Index" {
+                            meta.indexes.push(Vec::new());
+                        }
+                    }
+                    Ok(Event::Text(e)) => {
+                        if let Ok(t) = e.unescape() {
+                            cur_text.push_str(&t);
+                        }
+                    }
+                    Ok(Event::CData(e)) => {
+                        cur_text.push_str(&String::from_utf8_lossy(e.as_ref()));
+                    }
+                    Ok(Event::End(e)) => {
+                        let tag = String::from_utf8_lossy(e.name().as_ref()).to_string();
+                        let text = cur_text.trim().to_string();
+                        let parent = if stack.len() >= 2 { Some(stack[stack.len() - 2].as_str()) } else { None };
+                        let root_tag = stack.first().map(|s| s.as_str());
+
+                        if tag == "name" && stack.len() == 2 && root_tag == Some("DR_Table") && !text.is_empty() {
+                            meta.table_code = text.clone();
+                        } else if tag == "descriptionReference" && stack.len() == 2 && root_tag == Some("DR_Table") && !text.is_empty() {
+                            meta.description_reference = text.clone();
+                        } else if tag == "name" && parent == Some("Column") && !text.is_empty() {
+                            cur_col_name = Some(text.clone());
+                        } else if tag == "nativeDatatype" && stack.iter().any(|s| s == "Column") && !text.is_empty() {
+                            cur_col_dt = Some(text.clone());
+                        } else if tag == "column" && parent == Some("IndexColumn") && !text.is_empty() {
+                            cur_ic_col = Some(text.clone());
+                        } else if tag == "name" && parent == Some("IndexColumn") && !text.is_empty() {
+                            cur_ic_name = Some(text.clone());
+                        } else if tag == "IndexColumn" {
+                            if let Some(col_ref) = cur_ic_col.take().or_else(|| cur_ic_name.take()) {
+                                let bare = col_ref.split('.').last().unwrap_or(&col_ref).to_string();
+                                cur_idx_cols.push(bare);
+                            }
+                        } else if tag == "Index" {
+                            meta.indexes.push(std::mem::take(&mut cur_idx_cols));
+                        } else if tag == "Column" {
+                            if let Some(cname) = cur_col_name.take() {
+                                pending_cols.push((cname, cur_col_dt.take()));
+                            }
+                        }
+
+                        cur_text.clear();
+                        stack.pop();
+                    }
+                    Ok(Event::Eof) | Err(_) => break,
+                    _ => {}
                 }
             }
 
-            // Extract indexes
-            let idx_re = Regex::new(r"(?s)<Index>(.*?)</Index>").unwrap();
-            let idx_col_re = Regex::new(r"<name>([^<]+)</name>").unwrap();
-            for idx_cap in idx_re.captures_iter(&content) {
-                let idx_xml = idx_cap.get(1).unwrap().as_str();
-                let mut idx_cols = Vec::new();
-                for ic_cap in idx_col_re.captures_iter(idx_xml) {
-                    idx_cols.push(ic_cap.get(1).unwrap().as_str().to_string());
-                }
-                meta.indexes.push(idx_cols);
+            // Determine package-prefixed alias too if table_code lacks package prefix (e.g. cmg011 -> txcmg011)
+            let pkg_prefix = path
+                .strip_prefix(&self.activity_path)
+                .ok()
+                .and_then(|rel| rel.components().next())
+                .and_then(|c| c.as_os_str().to_str())
+                .map(|s| s.to_ascii_lowercase())
+                .unwrap_or_default();
+            let full_table_code = if !pkg_prefix.is_empty() && !meta.table_code.to_ascii_lowercase().starts_with(&pkg_prefix) {
+                format!("{}{}", pkg_prefix, meta.table_code)
+            } else {
+                meta.table_code.clone()
+            };
+
+            for (cname, dt) in pending_cols {
+                meta.columns.insert(cname.clone());
+                meta.columns.insert(format!("{}.{}", meta.table_code, cname));
+                meta.columns.insert(format!("{}.{}", full_table_code, cname));
+                meta.column_datatypes.push((cname, dt));
             }
         }
         meta
@@ -472,12 +559,12 @@ impl ActivityValidator {
     // ----------------------------------------------------
     fn validate_layer1_scm(&mut self) {
         let admin_file = self.activity_path.join(".admin");
-        let mut registered_map: HashMap<String, bool> = HashMap::new();
+        let mut registered_map: HashMap<String, (bool, bool)> = HashMap::new(); // (is_checked_out, is_created)
         let admin_loaded = if admin_file.is_file() {
             match AdminFile::load_from_path(&admin_file) {
                 Ok(af) => {
                     for (p, comp) in &af.entries {
-                        registered_map.insert(p.replace('\\', "/"), comp.is_checked_out);
+                        registered_map.insert(p.replace('\\', "/"), (comp.is_checked_out, comp.is_created));
                     }
                     true
                 }
@@ -507,6 +594,7 @@ impl ActivityValidator {
             );
             false
         };
+        self.admin_loaded = admin_loaded;
 
         let managed_ext_set: HashSet<&str> = MANAGED_EXTENSIONS.iter().copied().collect();
         let disk_files = walk_managed_files(&self.activity_path, &managed_ext_set);
@@ -539,18 +627,29 @@ impl ActivityValidator {
                 let rel_str = rel.to_string_lossy().replace('\\', "/");
                 disk_rel_set.insert(rel_str.clone());
 
-                if admin_loaded && !registered_map.contains_key(&rel_str) {
-                    let sev = if self.strict {
-                        ValidationSeverity::Error
-                    } else {
-                        ValidationSeverity::Warning
-                    };
-                    self.report.add(
-                        &p_str, 1, 1,
-                        sev,
-                        &format!("Component '{}' exists on disk but is not registered in .admin.", rel_str),
-                        1,
-                    );
+                if admin_loaded {
+                    match registered_map.get(&rel_str) {
+                        None => {
+                            self.created_or_untracked.insert(p_str.to_string());
+                            let sev = if self.strict {
+                                ValidationSeverity::Error
+                            } else {
+                                ValidationSeverity::Warning
+                            };
+                            self.report.add(
+                                &p_str, 1, 1,
+                                sev,
+                                &format!("Component '{}' exists on disk but is not registered in .admin.", rel_str),
+                                1,
+                            );
+                        }
+                        Some((_, is_created)) if *is_created => {
+                            self.created_or_untracked.insert(p_str.to_string());
+                        }
+                        _ => {}
+                    }
+                } else {
+                    self.created_or_untracked.insert(p_str.to_string());
                 }
             }
         }
@@ -593,16 +692,9 @@ impl ActivityValidator {
                 );
             }
 
-            // Columns datatype check
-            let col_re = Regex::new(r"(?s)<Column>(.*?)</Column>").unwrap();
-            let col_name_re = Regex::new(r"<name>([^<]+)</name>").unwrap();
-            let dtype_re = Regex::new(r"<nativeDatatype>([^<]+)</nativeDatatype>").unwrap();
-
-            for col_cap in col_re.captures_iter(xml) {
-                let c_xml = col_cap.get(1).unwrap().as_str();
-                let cname = col_name_re.captures(c_xml).map(|c| c.get(1).unwrap().as_str()).unwrap_or("unknown");
-                if let Some(dt_cap) = dtype_re.captures(c_xml) {
-                    let dt_str = dt_cap.get(1).unwrap().as_str();
+            // Columns datatype check (DOM-extracted)
+            for (cname, dt_opt) in &tdata.column_datatypes {
+                if let Some(dt_str) = dt_opt {
                     if let Ok(dt) = dt_str.parse::<i64>() {
                         if !VALID_DATATYPES.contains(&dt) {
                             self.report.add(
@@ -747,10 +839,14 @@ impl ActivityValidator {
             }
         }
 
-        // Validate labels against catalog
+        // Validate labels against catalog (skip server-resident labels when activity has no .lbl files
+        // and the referencing component is an already checked-in server component unless --strict).
         for (lbl_code, ref_path) in referenced_labels {
             let is_local = self.packages.iter().any(|pkg| lbl_code.to_ascii_lowercase().starts_with(pkg));
             if is_local {
+                if self.labels.is_empty() && !self.strict && self.admin_loaded && !self.created_or_untracked.contains(&ref_path) {
+                    continue;
+                }
                 let lbl_base = lbl_code.to_ascii_lowercase();
                 let found = self.labels.contains(&lbl_base)
                     || self.labels.iter().any(|l| l == &lbl_base || l.ends_with(&lbl_base) || lbl_base.ends_with(l));
@@ -771,7 +867,14 @@ impl ActivityValidator {
             let p_str = sdata.path.to_string_lossy().to_string();
             let ctrl_table = &sdata.controller_table;
             if !ctrl_table.is_empty() {
-                if let Some(tdata) = self.tables.get(&ctrl_table.to_ascii_lowercase()) {
+                let ctrl_lower = ctrl_table.to_ascii_lowercase();
+                let found_table = self.tables.get(&ctrl_lower).or_else(|| {
+                    self.tables.values().find(|t| {
+                        t.table_code.eq_ignore_ascii_case(ctrl_table)
+                            || ctrl_lower.ends_with(&t.table_code.to_ascii_lowercase())
+                    })
+                });
+                if let Some(tdata) = found_table {
                     for ff in &sdata.form_fields {
                         if ff.contains('.') {
                             let col_name = ff.split('.').last().unwrap_or(ff);

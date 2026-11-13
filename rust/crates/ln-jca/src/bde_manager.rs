@@ -173,12 +173,14 @@ impl<'a> JcaBdeManager<'a> {
         // Safety check
         assert_not_prohibited_operation(&params.bde_name, &params.method_name, req_xml)?;
 
+        let resolved_conid = self.client.resolve_conid(&self.conid).await?;
+
         match mode {
             BdeExecutionMode::List | BdeExecutionMode::BrowseList => {
-                self.execute_list_with_pagination(params, None).await
+                self.execute_list_with_pagination(params, None, &resolved_conid).await
             }
             BdeExecutionMode::SpecialList => {
-                self.execute_list_with_pagination(params, Some(req_xml)).await
+                self.execute_list_with_pagination(params, Some(req_xml), &resolved_conid).await
             }
             BdeExecutionMode::Show => {
                 let ctrl_xml = self.build_control_area(
@@ -192,7 +194,7 @@ impl<'a> JcaBdeManager<'a> {
                     &params.controlling_attributes,
                 );
                 let env_xml = self.build_request_envelope(&params.method_name, &ctrl_xml, Some(req_xml));
-                let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &self.conid, &env_xml).await?;
+                let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &resolved_conid, &env_xml).await?;
                 Ok(extract_first_child_of_data_area(&resp_xml).unwrap_or(resp_xml))
             }
             BdeExecutionMode::Bde => {
@@ -225,7 +227,7 @@ impl<'a> JcaBdeManager<'a> {
                 } else {
                     self.build_request_envelope(&params.method_name, &ctrl_xml, if req_xml.is_empty() { None } else { Some(req_xml) })
                 };
-                let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &self.conid, &env_xml).await?;
+                let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &resolved_conid, &env_xml).await?;
                 Ok(extract_first_child_of_data_area(&resp_xml).unwrap_or(resp_xml))
             }
         }
@@ -236,6 +238,7 @@ impl<'a> JcaBdeManager<'a> {
         &self,
         params: &BdeParams,
         initial_data_area: Option<&str>,
+        resolved_conid: &str,
     ) -> Result<String, JcaError> {
         let mut accumulated_data_items = Vec::new();
         let mut current_iterator_id: Option<i64> = None;
@@ -264,7 +267,7 @@ impl<'a> JcaBdeManager<'a> {
             let resp_xml = self.client.bde_call(
                 &params.bde_name,
                 &params.method_name,
-                &self.conid,
+                resolved_conid,
                 &envelope,
             ).await?;
 

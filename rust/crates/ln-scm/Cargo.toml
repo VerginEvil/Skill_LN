@@ -13,6 +13,7 @@ quick-xml = { workspace = true }
 regex = { workspace = true }
 sha2 = { workspace = true }
 tokio = { workspace = true }
+dirs = { workspace = true }
 ln-eclipse-compat = { path = "../ln-eclipse-compat" }
 ln-auth = { path = "../ln-auth" }
 ln-jca = { path = "../ln-jca" }

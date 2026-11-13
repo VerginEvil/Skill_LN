@@ -62,7 +62,21 @@ async fn test_component_explorer_and_clone_mock() {
             log.push(req.clone());
             drop(log);
 
-            let (status_line, headers, body) = if req.contains("bdename=StudioComponent") && req.contains("bdemethod=GetBrowseList") {
+            let req_line = req.lines().next().unwrap_or("");
+            let is_numeric_conid = req_line
+                .split("conid=")
+                .nth(1)
+                .map(|r| r.split(['&', ' ']).next().unwrap_or(""))
+                .map(|c| !c.is_empty() && c.chars().all(|ch| ch.is_ascii_digit()))
+                .unwrap_or(false);
+
+            let (status_line, headers, body) = if req_line.contains("method=connect") {
+                ("HTTP/1.1 200 OK", "Set-Cookie: JSESSIONID=exp_s0; Path=/\r\nContent-Type: application/xml\r\n", "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>")
+            } else if req_line.contains("method=share") {
+                ("HTTP/1.1 200 OK", "Content-Type: application/xml\r\n", "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>")
+            } else if req_line.contains("method=bdecall") && !is_numeric_conid {
+                ("HTTP/1.1 500 Internal Server Error", "Content-Type: application/xml\r\n", "<error><info>null</info><message>POST request failed</message><reason>0</reason></error>")
+            } else if req.contains("bdename=StudioComponent") && req.contains("bdemethod=GetBrowseList") {
                 // Verify Controlling Attributes
                 assert!(req.contains("<package>tc</package>") || req.contains("package"));
                 assert!(req.contains("<type>table</type>") || req.contains("type"));

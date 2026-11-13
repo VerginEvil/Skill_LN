@@ -28,7 +28,23 @@ async fn test_compile_diagnostics_and_mock_server() {
             log.push(req.clone());
             drop(log);
 
-            let body = if req.contains("bdename=DR_Table") && req.contains("bdemethod=Compile") {
+            let req_line = req.lines().next().unwrap_or("");
+            let is_numeric_conid = req_line
+                .split("conid=")
+                .nth(1)
+                .map(|r| r.split(['&', ' ']).next().unwrap_or(""))
+                .map(|c| !c.is_empty() && c.chars().all(|ch| ch.is_ascii_digit()))
+                .unwrap_or(false);
+
+            let body = if req_line.contains("method=connect") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>"
+            } else if req_line.contains("method=share") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>"
+            } else if req_line.contains("method=bdecall") && !is_numeric_conid {
+                let resp = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/xml\r\nContent-Length: 74\r\nConnection: close\r\n\r\n<error><info>null</info><message>POST request failed</message><reason>0</reason></error>";
+                let _ = socket.write_all(resp.as_bytes()).await;
+                continue;
+            } else if req.contains("bdename=DR_Table") && req.contains("bdemethod=Compile") {
                 assert!(req.contains("<name>ttadv999</name>"));
                 assert!(req.contains("<isCheckedOut>yes</isCheckedOut>"));
                 "<DR_TableShowResponse><DataArea><compileResult><error line=\"42\" source=\"ttadv999.4gl\">Undefined identifier 'foo'</error><warning line=\"15\" source=\"ttadv999.4gl\" level=\"W1\">Variable 'bar' is unused</warning><bicCommand>bic6.2 -w -u ttadv999</bicCommand><summary totalErrors=\"1\" totalWarnings=\"1\"/></compileResult></DataArea></DR_TableShowResponse>"
@@ -163,7 +179,23 @@ async fn test_prepare_end_activity_and_diagnose() {
             let n = socket.read(&mut buf).await.unwrap_or(0);
             let req = String::from_utf8_lossy(&buf[..n]).to_string();
 
-            let body = if req.contains("bdename=CMLabel") && req.contains("bdemethod=GetModifiedComponents") {
+            let req_line = req.lines().next().unwrap_or("");
+            let is_numeric_conid = req_line
+                .split("conid=")
+                .nth(1)
+                .map(|r| r.split(['&', ' ']).next().unwrap_or(""))
+                .map(|c| !c.is_empty() && c.chars().all(|ch| ch.is_ascii_digit()))
+                .unwrap_or(false);
+
+            let body = if req_line.contains("method=connect") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>"
+            } else if req_line.contains("method=share") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>"
+            } else if req_line.contains("method=bdecall") && !is_numeric_conid {
+                let resp = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/xml\r\nContent-Length: 74\r\nConnection: close\r\n\r\n<error><info>null</info><message>POST request failed</message><reason>0</reason></error>";
+                let _ = socket.write_all(resp.as_bytes()).await;
+                continue;
+            } else if req.contains("bdename=CMLabel") && req.contains("bdemethod=GetModifiedComponents") {
                 "<CMLabelResponse><DataArea><ModifiedComponent><name>ttadv999</name><type>table</type></ModifiedComponent></DataArea></CMLabelResponse>"
             } else if req.contains("bdename=DR_Solution") && req.contains("bdemethod=ValidateDevelopmentActivity") {
                 assert!(req.contains("<CMLabel>"));

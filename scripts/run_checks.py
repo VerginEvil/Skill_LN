@@ -247,6 +247,41 @@ def run_unit_tests() -> bool:
             print(f"[FAIL] Native Rust workspace test suite failed with exit code {proc_rust.returncode}.")
             return False
 
+        # Suite 4d: Anti-stub static source guard + skill-ln.exe smoke check
+        print("\n--- [4d/4] Running Rust Anti-Stub & CLI Binary Smoke Check ---")
+        forbidden_patterns = [
+            "<DR_Message name=",
+            "<DR_Question name=",
+            "<DR_Function name=",
+            "<DR_Additional name=",
+            "<DR_Report name=",
+            "http://localhost:8080/jca",
+        ]
+        for src_rel in ("rust/bins/skill-ln/src/commands.rs", "rust/bins/skill-ln/src/mcp/tools.rs"):
+            src_path = REPO_ROOT / src_rel
+            if src_path.exists():
+                src_text = src_path.read_text(encoding="utf-8")
+                for pat in forbidden_patterns:
+                    if pat in src_text:
+                        print(f"[FAIL] Forbidden stub pattern '{pat}' found in {src_rel}")
+                        return False
+
+        bin_candidates = [
+            Path("C:/Temp/skill_ln_target/release/skill-ln.exe"),
+            Path("C:/Temp/skill_ln_target/debug/skill-ln.exe"),
+            rust_dir / "target" / "release" / "skill-ln.exe",
+            rust_dir / "target" / "debug" / "skill-ln.exe",
+        ]
+        exe_path = next((p for p in bin_candidates if p.exists()), None)
+        if exe_path is not None:
+            for args in (["--version"], ["fn-search", "db.eq"]):
+                p = subprocess.run([str(exe_path), *args], cwd=str(REPO_ROOT), capture_output=True, text=True)
+                if p.returncode != 0:
+                    print(f"[FAIL] {exe_path.name} {' '.join(args)} failed (rc={p.returncode}): {p.stderr}")
+                    return False
+        else:
+            print("[WARN] skill-ln.exe binary not found in target dirs; skipped process smoke check.")
+
     print("[PASS] Full test suite across all skills passed cleanly.")
     return True
 

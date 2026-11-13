@@ -1,3 +1,5 @@
+use quick_xml::events::Event;
+use quick_xml::Reader;
 use rayon::prelude::*;
 use regex::Regex;
 use std::collections::HashSet;
@@ -30,6 +32,73 @@ fn is_preceded_by_dot_or_word(text: &str, start_idx: usize) -> bool {
     }
     let prev_char = text[..start_idx].chars().next_back().unwrap_or(' ');
     prev_char == '.' || prev_char.is_alphanumeric() || prev_char == '_'
+}
+
+enum Extracted4gl<'a> {
+    Raw(&'a str),
+    Extracted(String),
+    EmptyXml,
+}
+
+/// Extracts and XML-unescapes `<expression>` payloads when auditing Single-XML
+/// LN Studio component files (`.lib`, `.tbl`, `.ses`, `.rpt`, `.fnc`).
+fn extract_4gl_from_xml_if_needed<'a>(raw: &'a str) -> Extracted4gl<'a> {
+    let trimmed = raw.trim_start();
+    let looks_like_xml = trimmed.starts_with("<?xml")
+        || (trimmed.starts_with('<')
+            && (trimmed.contains("<DR_")
+                || trimmed.contains("<Library")
+                || trimmed.contains("<expression>")));
+    if !looks_like_xml {
+        return Extracted4gl::Raw(raw);
+    }
+
+    let mut reader = Reader::from_str(raw);
+    reader.config_mut().trim_text(false);
+    let mut expressions: Vec<String> = Vec::new();
+    let mut in_expr_depth: usize = 0;
+    let mut current_expr = String::new();
+
+    loop {
+        match reader.read_event() {
+            Ok(Event::Start(e)) => {
+                if e.name().as_ref() == b"expression" {
+                    in_expr_depth += 1;
+                    if in_expr_depth == 1 {
+                        current_expr.clear();
+                    }
+                }
+            }
+            Ok(Event::Text(e)) => {
+                if in_expr_depth > 0 {
+                    if let Ok(unescaped) = e.unescape() {
+                        current_expr.push_str(&unescaped);
+                    }
+                }
+            }
+            Ok(Event::CData(e)) => {
+                if in_expr_depth > 0 {
+                    current_expr.push_str(&String::from_utf8_lossy(e.as_ref()));
+                }
+            }
+            Ok(Event::End(e)) => {
+                if e.name().as_ref() == b"expression" && in_expr_depth > 0 {
+                    in_expr_depth -= 1;
+                    if in_expr_depth == 0 && !current_expr.trim().is_empty() {
+                        expressions.push(std::mem::take(&mut current_expr));
+                    }
+                }
+            }
+            Ok(Event::Eof) | Err(_) => break,
+            _ => {}
+        }
+    }
+
+    if expressions.is_empty() {
+        Extracted4gl::EmptyXml
+    } else {
+        Extracted4gl::Extracted(expressions.join("\n"))
+    }
 }
 
 pub struct Auditor4GL {
@@ -309,6 +378,16 @@ impl Auditor4GL {
         mode_override: Option<&str>,
         dd_cache_override: Option<&DataDictionaryCache>,
     ) -> Vec<Diagnostic> {
+        let extracted_buf;
+        let content = match extract_4gl_from_xml_if_needed(content) {
+            Extracted4gl::Raw(s) => s,
+            Extracted4gl::Extracted(s) => {
+                extracted_buf = s;
+                &extracted_buf
+            }
+            Extracted4gl::EmptyXml => return Vec::new(),
+        };
+
         let mode = match mode_override {
             Some(m) if m != "auto" => m.to_string(),
             _ => self.detect_archetype(file_path, content),
@@ -404,7 +483,7 @@ impl Auditor4GL {
         let mut declarations_includes = HashSet::new();
         let mut dal_call_lines: Vec<(usize, String)> = Vec::new();
 
-        let re_add_decl = Regex::new(r"\|\s*Additional generated declarations").unwrap();
+        let re_add_decl = Regex::new(r"\|\s*Additional generated declaration(?:s|\s+lines)").unwrap();
         let re_ctx_on = Regex::new(r#"^\s*#context_on\s*(?:["']([^"']+)["'])?"#).unwrap();
         let re_ctx_off = Regex::new(r"^\s*#context_off\b").unwrap();
         let re_ext_inc = Regex::new(r#"^\s*#include\s+([<"][^>"]+[>"])"#).unwrap();
@@ -523,7 +602,12 @@ impl Auditor4GL {
                     let inc_clean = inc_raw.trim_matches(|c| c == '<' || c == '>' || c == '"' || c == '\'').trim_end_matches(".h").to_lowercase();
                     if current_context.as_deref() == Some("declarations") {
                         declarations_includes.insert(inc_clean);
-                    } else if in_additional_declarations && (STD_EXTENSION_INCLUDES.contains(&inc_clean.as_str()) || inc_clean.starts_with("bic_")) {
+                    } else if (in_additional_declarations && (STD_EXTENSION_INCLUDES.contains(&inc_clean.as_str()) || inc_clean.starts_with("bic_")))
+                        || matches!(
+                            inc_clean.as_str(),
+                            "bic_interface" | "bic_sessionext" | "bic_tableext" | "bic_reportext"
+                        )
+                    {
                         declarations_includes.insert(inc_clean);
                     } else {
                         diagnostics.push(Diagnostic::new(
@@ -702,7 +786,7 @@ impl Auditor4GL {
                     let re_fn_st = Regex::new(r"^\s*(?:function\s+)?(?:extern\s+)?(?:[a-zA-Z0-9_.]+\s+)?[a-zA-Z0-9_.]+\s*\(").unwrap();
                     let re_var_st = Regex::new(r"^(?:extern\s+|global\s+)?(?:domain\s+[a-zA-Z0-9_.]+|long|string|double|boolean)\s+").unwrap();
 
-                    if in_additional_declarations && re_tbl_st.is_match(code_line_stripped) {
+                    if in_additional_declarations && (re_tbl_st.is_match(code_line_stripped) || re_var_st.is_match(code_line_stripped)) {
                         // Permitted in additional declarations
                     } else if re_fn_st.is_match(code_line_stripped) {
                         // Function start
@@ -810,6 +894,24 @@ impl Auditor4GL {
                                             Severity::Error,
                                             "EXT003",
                                             format!("EXT003: Standard framework function '{func_name}' has invalid return type '{}'; expected 'boolean'.", if ret_type.is_empty() { "void" } else { &ret_type }),
+                                            *raw_line,
+                                        ));
+                                    }
+                                } else if matches!(
+                                    func_name.as_str(),
+                                    "ext.get.form.fields"
+                                        | "ext.get.session.indices"
+                                        | "ext.get.command.extensions"
+                                        | "ext.get.report.extensions"
+                                ) {
+                                    if !ret_type.is_empty() && ret_type != "void" && ret_type != "long" {
+                                        diagnostics.push(Diagnostic::new(
+                                            file_path,
+                                            line_no,
+                                            1,
+                                            Severity::Error,
+                                            "EXT003",
+                                            format!("EXT003: Standard framework function '{func_name}' has invalid return type '{ret_type}'; expected 'long' or 'void'."),
                                             *raw_line,
                                         ));
                                     }
@@ -1045,72 +1147,78 @@ impl Auditor4GL {
             }
 
             // 4. DAL003: Return values in void functions & DAL hooks
+            let is_func_decl_line = re_func_decl.is_match(code_line)
+                && code_line_stripped.to_lowercase().starts_with("function");
             if let Some(ref cur_fn) = current_func_name {
-                if let Some(ret_match) = re_return.captures(code_line) {
-                    let ret_val = ret_match
-                        .get(1)
-                        .or_else(|| ret_match.get(2))
-                        .map(|m| m.as_str().trim())
-                        .unwrap_or_default();
+                if !is_func_decl_line {
+                    if let Some(ret_match) = re_return.captures(code_line) {
+                        if !is_preceded_by_dot_or_word(code_line, ret_match.get(0).unwrap().start()) {
+                            let ret_val = ret_match
+                                .get(1)
+                                .or_else(|| ret_match.get(2))
+                                .map(|m| m.as_str().trim())
+                                .unwrap_or_default();
 
-                    if current_func_is_void && !ret_val.is_empty() {
-                        diagnostics.push(Diagnostic::new(
-                            file_path,
-                            line_no,
-                            1,
-                            Severity::Error,
-                            "DAL003",
-                            format!(
-                                "Return value '{ret_val}' inside void function/hook '{cur_fn}' is not allowed in Baan 4GL; compiler blocks with 'Return value for void function not allowed'. Use bare 'return' or 'return()' without an expression."
-                            ),
-                            *raw_line,
-                        ));
-                    }
-
-                    if cur_fn == "get.extension.point.version" {
-                        if !ret_val.chars().all(|c| c.is_ascii_digit()) {
-                            diagnostics.push(Diagnostic::new(
-                                file_path,
-                                line_no,
-                                1,
-                                Severity::Error,
-                                "EXT003",
-                                "EXT003: Standard framework function 'get.extension.point.version' modified; must return a valid integer version number (e.g. return(3)).",
-                                *raw_line,
-                            ));
-                        }
-                    } else if let Some(ref sfx) = current_func_hook_suffix {
-                        if sfx.ends_with(".is.valid")
-                            || sfx.ends_with(".is.readonly")
-                            || sfx.ends_with(".is.mandatory")
-                            || sfx.ends_with(".is.applicable")
-                            || sfx.ends_with(".is.never.applicable")
-                        {
-                            let val_lower = ret_val.to_lowercase();
-                            if !val_lower.is_empty()
-                                && !matches!(val_lower.as_str(), "true" | "false" | "0" | "1")
-                                && (val_lower.contains("dalhookerror") || val_lower.starts_with('-'))
-                            {
+                            if current_func_is_void && !ret_val.is_empty() {
                                 diagnostics.push(Diagnostic::new(
                                     file_path,
                                     line_no,
                                     1,
                                     Severity::Error,
                                     "DAL003",
-                                    format!("Boolean DAL hook '{cur_fn}' cannot return error code '{ret_val}'; must return true or false."),
+                                    format!(
+                                        "Return value '{ret_val}' inside void function/hook '{cur_fn}' is not allowed in Baan 4GL; compiler blocks with 'Return value for void function not allowed'. Use bare 'return' or 'return()' without an expression."
+                                    ),
                                     *raw_line,
                                 ));
                             }
-                        } else if sfx == ".update" && !ret_val.is_empty() {
-                            diagnostics.push(Diagnostic::new(
-                                file_path,
-                                line_no,
-                                1,
-                                Severity::Error,
-                                "DAL003",
-                                format!("Void DAL hook '{cur_fn}' cannot return a value '{ret_val}'."),
-                                *raw_line,
-                            ));
+
+                            if cur_fn == "get.extension.point.version" {
+                                if !ret_val.chars().all(|c| c.is_ascii_digit()) {
+                                    diagnostics.push(Diagnostic::new(
+                                        file_path,
+                                        line_no,
+                                        1,
+                                        Severity::Error,
+                                        "EXT003",
+                                        "EXT003: Standard framework function 'get.extension.point.version' modified; must return a valid integer version number (e.g. return(3)).",
+                                        *raw_line,
+                                    ));
+                                }
+                            } else if let Some(ref sfx) = current_func_hook_suffix {
+                                if sfx.ends_with(".is.valid")
+                                    || sfx.ends_with(".is.readonly")
+                                    || sfx.ends_with(".is.mandatory")
+                                    || sfx.ends_with(".is.applicable")
+                                    || sfx.ends_with(".is.never.applicable")
+                                {
+                                    let val_lower = ret_val.to_lowercase();
+                                    if !val_lower.is_empty()
+                                        && !matches!(val_lower.as_str(), "true" | "false" | "0" | "1")
+                                        && (val_lower.contains("dalhookerror") || val_lower.starts_with('-'))
+                                    {
+                                        diagnostics.push(Diagnostic::new(
+                                            file_path,
+                                            line_no,
+                                            1,
+                                            Severity::Error,
+                                            "DAL003",
+                                            format!("Boolean DAL hook '{cur_fn}' cannot return error code '{ret_val}'; must return true or false."),
+                                            *raw_line,
+                                        ));
+                                    }
+                                } else if sfx == ".update" && !ret_val.is_empty() {
+                                    diagnostics.push(Diagnostic::new(
+                                        file_path,
+                                        line_no,
+                                        1,
+                                        Severity::Error,
+                                        "DAL003",
+                                        format!("Void DAL hook '{cur_fn}' cannot return a value '{ret_val}'."),
+                                        *raw_line,
+                                    ));
+                                }
+                            }
                         }
                     }
                 }
@@ -1635,7 +1743,10 @@ impl Auditor4GL {
 
         if target.is_dir() {
             let mut matched_files = Vec::new();
-            let patterns = [".cln", ".dal", ".dalsrc", ".lib", ".ue", ".3gl", ".4gl", ".spt"];
+            let patterns = [
+                ".cln", ".dal", ".dalsrc", ".lib", ".ue", ".3gl", ".4gl", ".spt", ".tbl", ".ses",
+                ".rpt", ".fnc",
+            ];
             Self::collect_files_recursive(target, &patterns, &mut matched_files);
             matched_files.sort();
             matched_files.dedup();

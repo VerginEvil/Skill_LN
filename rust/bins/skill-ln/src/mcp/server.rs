@@ -3,7 +3,7 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use crate::mcp::protocol::{JsonRpcRequest, JsonRpcResponse};
 use crate::mcp::tools::{execute_tool, list_registered_tools};
 
-pub fn handle_jsonrpc_request(request: JsonRpcRequest) -> Option<JsonRpcResponse> {
+pub async fn handle_jsonrpc_request(request: JsonRpcRequest) -> Option<JsonRpcResponse> {
     let method = request.method.as_str();
 
     // Ignore notifications
@@ -54,7 +54,7 @@ pub fn handle_jsonrpc_request(request: JsonRpcRequest) -> Option<JsonRpcResponse
             }
             let empty_args = json!({});
             let args = params.get("arguments").unwrap_or(&empty_args);
-            let res = execute_tool(name, args);
+            let res = execute_tool(name, args).await;
             Some(JsonRpcResponse::success(request.id, res))
         }
 
@@ -97,7 +97,7 @@ pub async fn run_stdio_server() -> Result<(), Box<dyn std::error::Error + Send +
             }
         };
 
-        if let Some(resp) = handle_jsonrpc_request(req) {
+        if let Some(resp) = handle_jsonrpc_request(req).await {
             let out = serde_json::to_string(&resp)?;
             stdout.write_all(out.as_bytes()).await?;
             stdout.write_all(b"\n").await?;

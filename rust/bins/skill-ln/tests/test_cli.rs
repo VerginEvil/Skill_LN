@@ -56,3 +56,30 @@ async fn test_cli_mcp_setup_output() {
     let res = execute_command(setup_cli.command).await;
     assert!(res.is_ok());
 }
+
+#[test]
+fn test_cli_child_process_no_stack_overflow() {
+    let bin = env!("CARGO_BIN_EXE_skill-ln");
+
+    let ver = std::process::Command::new(bin)
+        .arg("--version")
+        .output()
+        .expect("Failed to spawn skill-ln --version");
+    assert!(
+        ver.status.success(),
+        "skill-ln --version failed (status={:?}): stderr={}",
+        ver.status,
+        String::from_utf8_lossy(&ver.stderr)
+    );
+
+    let fn_search = std::process::Command::new(bin)
+        .args(["fn-search", "db.insert", "--limit", "3", "--json"])
+        .output()
+        .expect("Failed to spawn skill-ln fn-search");
+    assert!(
+        fn_search.status.success(),
+        "skill-ln fn-search failed (status={:?}): stderr={}",
+        fn_search.status,
+        String::from_utf8_lossy(&fn_search.stderr)
+    );
+}

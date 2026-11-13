@@ -31,12 +31,31 @@ pub struct ConnectResponse {
     pub raw_xml: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct ConnectionRegistry {
+    pub primary_conid: Option<String>,
+    pub named_conids: HashMap<String, String>,
+    pub default_company: String,
+}
+
+impl Default for ConnectionRegistry {
+    fn default() -> Self {
+        Self {
+            primary_conid: None,
+            named_conids: HashMap::new(),
+            default_company: "0".to_string(),
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct HttpClient {
     base_url: String,
     access_token: Arc<Mutex<String>>,
     cookies: Arc<Mutex<HashMap<String, String>>>,
     client: Client,
+    registry: Arc<Mutex<ConnectionRegistry>>,
+    resolve_gate: Arc<tokio::sync::Mutex<()>>,
 }
 
 impl HttpClient {
@@ -53,6 +72,8 @@ impl HttpClient {
             access_token: Arc::new(Mutex::new(access_token.to_string())),
             cookies: Arc::new(Mutex::new(HashMap::new())),
             client,
+            registry: Arc::new(Mutex::new(ConnectionRegistry::default())),
+            resolve_gate: Arc::new(tokio::sync::Mutex::new(())),
         }
     }
 
@@ -63,6 +84,17 @@ impl HttpClient {
             access_token: Arc::new(Mutex::new(access_token.to_string())),
             cookies: Arc::new(Mutex::new(HashMap::new())),
             client,
+            registry: Arc::new(Mutex::new(ConnectionRegistry::default())),
+            resolve_gate: Arc::new(tokio::sync::Mutex::new(())),
+        }
+    }
+
+    pub fn set_default_company(&self, company: &str) {
+        let co = company.trim();
+        if !co.is_empty() {
+            if let Ok(mut reg) = self.registry.lock() {
+                reg.default_company = co.to_string();
+            }
         }
     }
 
@@ -178,7 +210,18 @@ impl HttpClient {
             )));
         }
 
-        parse_connect_response(&body)
+        let parsed = parse_connect_response(&body)?;
+        if let Ok(mut reg) = self.registry.lock() {
+            reg.primary_conid = Some(parsed.conid.clone());
+            reg.named_conids
+                .insert("ProjectServer".to_string(), parsed.conid.clone());
+            if let Some(co) = &options.company {
+                if !co.trim().is_empty() {
+                    reg.default_company = co.trim().to_string();
+                }
+            }
+        }
+        Ok(parsed)
     }
 
     /// Share (`GET ?method=share[&company=<company>]`)
@@ -305,6 +348,53 @@ impl HttpClient {
         Ok(())
     }
 
+    /// Resolves a logical JCA connection name (e.g. `"ProjectServer"`, `"EXTce01108_dev"`, `""`)
+    /// or an already numeric string to a valid integer `<conid>` from `connect`/`share`.
+    pub async fn resolve_conid(&self, logical_or_numeric: &str) -> Result<String, JcaError> {
+        let key = logical_or_numeric.trim();
+        if !key.is_empty() && key.chars().all(|c| c.is_ascii_digit()) {
+            return Ok(key.to_string());
+        }
+
+        let _gate = self.resolve_gate.lock().await;
+
+        let (cached_conid, has_primary, company) = {
+            let reg = self
+                .registry
+                .lock()
+                .map_err(|_| JcaError::Protocol("ConnectionRegistry lock poisoned".into()))?;
+            let found = if key.is_empty() || key == "ProjectServer" {
+                reg.primary_conid.clone()
+            } else {
+                reg.named_conids.get(key).cloned()
+            };
+            (found, reg.primary_conid.is_some(), reg.default_company.clone())
+        };
+
+        if let Some(id) = cached_conid {
+            return Ok(id);
+        }
+
+        if !has_primary {
+            let conn = self
+                .connect(&ConnectOptions {
+                    company: Some(company.clone()),
+                    ..Default::default()
+                })
+                .await?;
+            if key.is_empty() || key == "ProjectServer" {
+                return Ok(conn.conid);
+            }
+        }
+
+        let shared = self.share(Some(&company)).await?;
+        if let Ok(mut reg) = self.registry.lock() {
+            reg.named_conids
+                .insert(key.to_string(), shared.conid.clone());
+        }
+        Ok(shared.conid)
+    }
+
     /// Disconnect (`GET ?method=disconnect[&conid=<conid>]`)
     pub async fn disconnect(&self, conid: Option<&str>) -> Result<(), JcaError> {
         let mut url = Url::parse(&self.base_url)?;
@@ -318,6 +408,49 @@ impl HttpClient {
 
         let headers = self.build_headers(None);
         let _ = self.client.get(url).headers(headers).send().await;
+
+        if let Ok(mut reg) = self.registry.lock() {
+            match conid {
+                None => {
+                    reg.primary_conid = None;
+                    reg.named_conids.clear();
+                }
+                Some(cid) => {
+                    if reg.primary_conid.as_deref() == Some(cid) {
+                        reg.primary_conid = None;
+                        reg.named_conids.clear();
+                    } else {
+                        reg.named_conids.retain(|_, v| v != cid);
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// Disconnects all shared `<conid>` sessions followed by the primary `<conid>`.
+    pub async fn disconnect_all(&self) -> Result<(), JcaError> {
+        let (primary, shared): (Option<String>, Vec<String>) = {
+            let reg = self
+                .registry
+                .lock()
+                .map_err(|_| JcaError::Protocol("ConnectionRegistry lock poisoned".into()))?;
+            let primary = reg.primary_conid.clone();
+            let mut shared = Vec::new();
+            for v in reg.named_conids.values() {
+                if Some(v) != primary.as_ref() && !shared.contains(v) {
+                    shared.push(v.clone());
+                }
+            }
+            (primary, shared)
+        };
+
+        for cid in shared {
+            let _ = self.disconnect(Some(&cid)).await;
+        }
+        if let Some(pid) = primary {
+            let _ = self.disconnect(Some(&pid)).await;
+        }
         Ok(())
     }
 

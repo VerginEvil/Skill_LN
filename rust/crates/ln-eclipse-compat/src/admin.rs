@@ -282,10 +282,10 @@ impl AdminFile {
         w.write_u16::<BigEndian>(0xACED)?;
         w.write_u16::<BigEndian>(0x0005)?;
 
-        // TC_OBJECT (0x73) -> Handle 0x007E0000: java.util.HashMap
+        // TC_OBJECT (0x73): java.util.HashMap
         w.write_u8(0x73)?;
 
-        // TC_CLASSDESC (0x72) -> Handle 0x007E0001: java.util.HashMap class descriptor
+        // TC_CLASSDESC (0x72) -> Handle 0x007E0000: java.util.HashMap class descriptor
         w.write_u8(0x72)?;
         write_utf(&mut w, "java.util.HashMap")?;
         w.write_i64::<BigEndian>(362498820763181265_i64)?; // serialVersionUID = 0x0507DAC1C31660D1
@@ -299,6 +299,7 @@ impl AdminFile {
         write_utf(&mut w, "threshold")?;
         w.write_u8(0x78)?; // TC_ENDBLOCKDATA
         w.write_u8(0x70)?; // TC_NULL (super classdesc)
+        // Object(HashMap) -> Handle 0x007E0001
 
         // HashMap values:
         // loadFactor = 0.75f (0x3F400000)
@@ -322,9 +323,9 @@ impl AdminFile {
         let mut class_desc_written = false;
         let mut class_desc_handle: u32 = 0x007E0003;
 
-        // Current next handle counter
-        // 0: HashMap
-        // 1: HashMap classdesc
+        // Current next handle counter per JVM ObjectOutputStream rules:
+        // 0x007E0000: ClassDesc(HashMap)
+        // 0x007E0001: Object(HashMap)
         let mut next_handle: u32 = 0x007E0002;
 
         for (key, comp) in &self.entries {
@@ -344,6 +345,10 @@ impl AdminFile {
                 w.write_i64::<BigEndian>(2_i64)?; // serialVersionUID = 2L
                 w.write_u8(0x02)?; // flags = SC_SERIALIZABLE
                 w.write_u16::<BigEndian>(7)?; // numFields = 7
+
+                // Per JVM ObjectOutputStream spec, ClassDesc gets its handle BEFORE field descriptors
+                class_desc_handle = next_handle; // 0x007E0003 for entry 0
+                next_handle += 1;
 
                 // 7 fields in exact JVM canonical order:
                 // 1. 'Z' "isCheckedout"
@@ -369,19 +374,20 @@ impl AdminFile {
                 write_utf(&mut w, "m_path")?;
                 w.write_u8(0x74)?; // TC_STRING
                 write_utf(&mut w, "Ljava/lang/String;")?;
+                next_handle += 1; // 0x007E0004: String("Ljava/lang/String;")
 
                 w.write_u8(0x78)?; // TC_ENDBLOCKDATA
                 w.write_u8(0x70)?; // TC_NULL (super classdesc)
 
-                class_desc_handle = next_handle + 2; // 0x007E0005: Object (0x007E0003), "Ljava/lang/String;" (0x007E0004), ClassDesc (0x007E0005)
-                next_handle += 3;
                 class_desc_written = true;
             } else {
                 // Subsequent occurrences: TC_REFERENCE to class descriptor
                 w.write_u8(0x71)?;
                 w.write_u32::<BigEndian>(class_desc_handle)?;
-                next_handle += 1; // AdministrationComponent instance
             }
+
+            // Object(AdministrationComponent) gets its handle AFTER classDesc and BEFORE classdata[]
+            next_handle += 1; // 0x007E0005 for entry 0
 
             // Field values in order:
             w.write_u8(if comp.is_checked_out { 1 } else { 0 })?;
@@ -391,9 +397,15 @@ impl AdminFile {
             w.write_u8(if comp.is_dirty { 1 } else { 0 })?;
             w.write_u8(if comp.is_vsc_happy { 1 } else { 0 })?;
 
-            // m_path: reference to key handle
-            w.write_u8(0x71)?; // TC_REFERENCE
-            w.write_u32::<BigEndian>(key_handle)?;
+            // m_path: TC_REFERENCE to key_handle when equal, else distinct TC_STRING
+            if comp.path == *key {
+                w.write_u8(0x71)?; // TC_REFERENCE
+                w.write_u32::<BigEndian>(key_handle)?;
+            } else {
+                w.write_u8(0x74)?; // TC_STRING
+                write_utf(&mut w, &comp.path)?;
+                next_handle += 1;
+            }
         }
 
         // Terminating TC_ENDBLOCKDATA
@@ -490,14 +502,13 @@ impl<'a> JavaStreamParser<'a> {
     fn parse_admin(&mut self) -> Result<AdminFile, AdminError> {
         let mut admin = AdminFile::new();
 
-        // Expect TC_OBJECT (0x73) for HashMap
+        // Expect TC_OBJECT (0x73) for HashMap: read classDesc first, then record object handle
         let tag = self.r.read_u8()?;
         if tag != 0x73 {
             return Err(AdminError::MalformedStream(format!("Expected TC_OBJECT (0x73), found {tag:#04x}")));
         }
-        self.record_handle(HandleValue::Object); // HashMap handle
-
         let class_desc = self.read_class_desc()?;
+        self.record_handle(HandleValue::Object); // HashMap handle (0x007E0001)
         if !class_desc.name.contains("HashMap") {
             return Err(AdminError::MalformedStream(format!("Expected HashMap class, got {}", class_desc.name)));
         }
@@ -557,6 +568,14 @@ impl<'a> JavaStreamParser<'a> {
                 let name = read_utf(&mut self.r)?;
                 let _serial_version_uid = self.r.read_i64::<BigEndian>()?;
                 let _flags = self.r.read_u8()?;
+
+                // JVM ObjectInputStream assigns the ClassDesc handle BEFORE reading field descriptors!
+                let handle_idx = self.handles.len();
+                self.handles.push(HandleValue::ClassDesc(ClassDescriptor {
+                    name: name.clone(),
+                    fields: Vec::new(),
+                }));
+
                 let num_fields = self.r.read_u16::<BigEndian>()? as usize;
                 let mut fields = Vec::with_capacity(num_fields);
 
@@ -582,14 +601,10 @@ impl<'a> JavaStreamParser<'a> {
                 }
 
                 // super class desc: TC_NULL (0x70) or another classdesc
-                let super_tag = self.r.read_u8()?;
-                if super_tag != 0x70 {
-                    // Recursive read if not null
-                    // For our purposes AdministrationComponent and HashMap have superclass null or java.lang.Object
-                }
+                let _super_desc = self.read_class_desc()?;
 
                 let desc = ClassDescriptor { name, fields };
-                self.record_handle(HandleValue::ClassDesc(desc.clone()));
+                self.handles[handle_idx] = HandleValue::ClassDesc(desc.clone());
                 Ok(desc)
             }
             0x71 => { // TC_REFERENCE
@@ -624,6 +639,7 @@ impl<'a> JavaStreamParser<'a> {
                     _ => Err(AdminError::MalformedStream(format!("Handle {handle:#010x} is not a String"))),
                 }
             }
+            0x70 => Ok(String::new()), // TC_NULL
             other => Err(AdminError::MalformedStream(format!("Expected TC_STRING or TC_REFERENCE, found {other:#04x}"))),
         }
     }
@@ -633,9 +649,9 @@ impl<'a> JavaStreamParser<'a> {
         if tag != 0x73 {
             return Err(AdminError::MalformedStream(format!("Expected TC_OBJECT (0x73) for component, found {tag:#04x}")));
         }
-        self.record_handle(HandleValue::Object); // Component object handle
-
+        // Per JVM ObjectInputStream: read classDesc first, then record object handle
         let class_desc = self.read_class_desc()?;
+        self.record_handle(HandleValue::Object); // Component object handle
         let mut is_checked_out = false;
         let mut is_created = false;
         let mut is_ever_checked_in = false;

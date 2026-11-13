@@ -25,7 +25,23 @@ async fn test_fglstudio_code_intel_mock_suite() {
             log.push(req.clone());
             drop(log);
 
-            let body = if req.contains("bdename=FglStudio") && req.contains("bdemethod=compileSource") {
+            let req_line = req.lines().next().unwrap_or("");
+            let is_numeric_conid = req_line
+                .split("conid=")
+                .nth(1)
+                .map(|r| r.split(['&', ' ']).next().unwrap_or(""))
+                .map(|c| !c.is_empty() && c.chars().all(|ch| ch.is_ascii_digit()))
+                .unwrap_or(false);
+
+            let body = if req_line.contains("method=connect") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>"
+            } else if req_line.contains("method=share") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>"
+            } else if req_line.contains("method=bdecall") && !is_numeric_conid {
+                let resp = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/xml\r\nContent-Length: 74\r\nConnection: close\r\n\r\n<error><info>null</info><message>POST request failed</message><reason>0</reason></error>";
+                let _ = socket.write_all(resp.as_bytes()).await;
+                continue;
+            } else if req.contains("bdename=FglStudio") && req.contains("bdemethod=compileSource") {
                 assert!(req.contains("<packageCode>tx</packageCode>"));
                 assert!(req.contains("select * from tccom001"));
                 "<FglStudioShowResponse><DataArea><compileResult><error line=\"5\" source=\"adhoc.4gl\">Syntax error</error><warning line=\"2\" source=\"adhoc.4gl\" level=\"W2\">Unused variable</warning><bicCommand>bic6.2 -w adhoc.4gl</bicCommand><summary totalErrors=\"1\" totalWarnings=\"1\"/></compileResult></DataArea></FglStudioShowResponse>"

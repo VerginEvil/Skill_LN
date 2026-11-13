@@ -1,6 +1,6 @@
-# Infor LN Studio CLI Reference (`ln_component_builder.py`)
+# Infor LN Studio CLI Reference (`skill-ln`)
 
-Comprehensive catalog of all 50+ subcommands provided by `tools/ln_component_builder.py`, organized by development lifecycle stage, along with common high-frequency command recipes.
+Comprehensive catalog of subcommands provided by the native Rust `skill-ln` binary (`skill-ln.exe`), organized by development lifecycle stage, along with common high-frequency command recipes.
 
 ---
 
@@ -85,7 +85,12 @@ Comprehensive catalog of all 50+ subcommands provided by `tools/ln_component_bui
 | `end-activity` | `--task <act> --project <p>` | Hard-blocked pre-commit delivery gate (raises error) |
 | `inject` | `--source <f.dal> --target <f.tbl>` | Inject 4GL script into Single-XML `<expression>` |
 | `extract` | `--source <f.tbl> --output <f.dal>` | Extract 4GL script from Single-XML `<expression>` |
-| `mcp-setup` | `[--client claude\|cursor\|antigravity\|generic] [--apply]` | Register Stdio MCP Server in client configuration |
+| `mcp-stdio` | _(no arguments)_ | Run native JSON-RPC 2.0 Stdio MCP server (25 tools) |
+| `mcp-setup` | `[--client claude\|cursor\|antigravity\|generic] [--apply]` | Register Stdio MCP Server (`skill-ln mcp-stdio`) in client configuration |
+| `verify-studio-build` | `--studio-home <path>` | Verify Studio Build 0640 plugin JARs vs pure-Rust crate coverage |
+| `audit-4gl` | `<file> [--mode dal2\|uedll\|general] [--cloud] [--json]` | Run offline 4GL/DAL/Extension static code audit |
+| `fn-search` | `<term> [--cloud-only]` | Search bshell API function index |
+| `doc-search` | `<query> [--limit N]` | Full-text search across ERP LN documentation |
 
 ---
 
@@ -94,30 +99,30 @@ Comprehensive catalog of all 50+ subcommands provided by `tools/ln_component_bui
 ### 2.1 Check Token Status & Trigger Silent Refresh
 ```bash
 # Non-interactive check with silent refresh (no browser opened)
-python tools/ln_component_builder.py login --workspace SCS_TST --status
+skill-ln login --workspace SCS_TST --status
 
 # Output status as JSON
-python tools/ln_component_builder.py login --workspace SCS_TST --status --json
+skill-ln login --workspace SCS_TST --status --json
 ```
 
 ### 2.2 Fetch Extension Component & Export 4GL Script
 ```bash
 # By session code (maps to txesssli2620m0.lib and exports scripts/cisli2620m000.cln)
-python tools/ln_component_builder.py get-component --type extension --name cisli2620m000 --export-script ./scripts
+skill-ln get-component --type extension --name cisli2620m000 --export-script ./scripts
 
 # By table code (maps to txestcisli220.lib and exports scripts/cisli220.cln)
-python tools/ln_component_builder.py get-component --type extension --name cisli220 --export-script ./scripts
+skill-ln get-component --type extension --name cisli220 --export-script ./scripts
 ```
 
 ### 2.3 Persistent JCA Daemon Control
 ```bash
-python tools/ln_component_builder.py daemon --status
-python tools/ln_component_builder.py daemon --restart
-python tools/ln_component_builder.py daemon --stop
+skill-ln daemon --status
+skill-ln daemon --restart
+skill-ln daemon --stop
 ```
 
 ### 2.4 Activity Validation with Non-Destructive Auto-Fix
 ```bash
 # Validates .admin, XML schema, label references, and 4GL expressions; auto-generates missing labels
-python tools/ln_component_builder.py validate "C:\workspace\SCS_TST\dev_act [EXT01]" --fix
+skill-ln validate "C:\workspace\SCS_TST\dev_act [EXT01]" --fix
 ```
