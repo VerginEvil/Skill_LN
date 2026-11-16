@@ -101,6 +101,20 @@ def package_vscode_assets(version_str: str, dist_dir: Path) -> Path:
     return target_zip
 
 
+def package_skill_ln_binary(version_str: str, dist_dir: Path) -> Optional[Path]:
+    target_bin = Path("C:/Temp/skill_ln_target/release/skill-ln.exe")
+    if not target_bin.exists():
+        target_bin = REPO_ROOT / "rust" / "target" / "release" / "skill-ln.exe"
+    if not target_bin.exists():
+        return None
+    target_zip = dist_dir / f"skill-ln-{version_str}-x86_64-pc-windows-msvc.zip"
+    print(f"Packaging {target_zip.name} ...")
+    with zipfile.ZipFile(target_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.write(target_bin, "skill-ln.exe")
+    print(f"  -> Added skill-ln.exe to {target_zip.name} ({target_zip.stat().st_size:,} bytes)")
+    return target_zip
+
+
 def main():
     parser = argparse.ArgumentParser(description="Package Skill_LN release assets")
     parser.add_argument("--version", default="v1.0.0", help="Release version tag (e.g. v1.0.0)")
@@ -122,9 +136,11 @@ def main():
     p1 = package_erp_ln_progguide(version_str, dist_dir)
     p2 = package_ln_studio_skill(version_str, dist_dir)
     p3 = package_vscode_assets(version_str, dist_dir)
+    p4 = package_skill_ln_binary(version_str, dist_dir)
 
-    print(f"\n[SUCCESS] Successfully packaged 3 release assets in {dist_dir}:")
-    for p in (p1, p2, p3):
+    packages = [p for p in (p1, p2, p3, p4) if p is not None]
+    print(f"\n[SUCCESS] Successfully packaged {len(packages)} release assets in {dist_dir}:")
+    for p in packages:
         print(f"  * {p.name} ({p.stat().st_size / (1024 * 1024):.2f} MB)")
 
 

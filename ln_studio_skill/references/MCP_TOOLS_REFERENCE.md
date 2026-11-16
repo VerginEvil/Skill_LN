@@ -1,6 +1,6 @@
-# Infor LN Studio MCP Tools Reference (`ln_studio_mcp.py`)
+# Infor LN Studio MCP Tools Reference (`skill-ln mcp-stdio`)
 
-Reference catalog for the zero-dependency Stdio Model Context Protocol (MCP) server bundled with `ln_studio_skill` (25 total tools: 4 consolidated high-efficiency + 21 detailed backward-compatible).
+Reference catalog for the native Rust Stdio Model Context Protocol (MCP) server (`skill-ln mcp-stdio`, 25 total tools: 4 consolidated high-efficiency + 21 detailed backward-compatible).
 
 ---
 
@@ -38,7 +38,7 @@ Legacy granular tools supported across all MCP clients:
 | `ln_checkin_component` | `comp_type`, `comp_name`, `activity_name`, `comment` | **Safe Check-In**: Puts component to server and checks in for LN UI Cloud testing. |
 | `ln_checkout_activity` | `activity_name`, `project_name` | **Bulk SCM**: Checks out all components within an activity. |
 | `ln_checkin_activity` | `activity_name`, `project_name`, `comment` | **Bulk SCM**: Checks in all components within an activity. |
-| `ln_create_component` | `comp_type`, `spec_yaml`, `activity_name`, `output_dir` | **Generation**: Generates any of the 12 LN Studio components and registers in `.admin`. |
+| `ln_create_component` | `type`, `code`, `description`, `activity`, `spec`, `dry_run` | **Generation**: Generates any of the 12 Single-XML TDE components (`table`..`businessobject`) and registers in `.admin`. |
 | `ln_clone_component` | `source_type`, `source_name`, `target_name`, `activity_name` | **Renaming**: Clones standard/custom component into renamed custom activity component. |
 | `ln_validate_activity` | `activity_path`, `strict_mode`, `auto_fix` | **Read-only / Safe Fix**: 4-layer activity validation (`.admin`, XML schema, cross-refs, 4GL). |
 | `ln_deploy_test` | `comp_type`, `comp_name`, `activity_name`, `mode` | **Cloud Testing**: Composite pipeline: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn. |
@@ -51,16 +51,16 @@ Legacy granular tools supported across all MCP clients:
 
 ```bash
 # Register in Claude Desktop configuration (~/AppData/Roaming/Claude/claude_desktop_config.json)
-python tools/ln_component_builder.py mcp-setup --client claude --apply
+skill-ln mcp-setup --client claude --apply
 
 # Register in Cursor configuration (.cursor/mcp.json)
-python tools/ln_component_builder.py mcp-setup --client cursor --apply
+skill-ln mcp-setup --client cursor --apply
 
 # Register in Antigravity configuration
-python tools/ln_component_builder.py mcp-setup --client antigravity --apply
+skill-ln mcp-setup --client antigravity --apply
 
 # Output generic JSON configuration to stdout
-python tools/ln_component_builder.py mcp-setup --client generic --dry-run
+skill-ln mcp-setup --client generic --dry-run
 ```
 
 ---

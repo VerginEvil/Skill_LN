@@ -1,0 +1,24 @@
+[package]
+name = "ln-verify"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+byteorder.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+dirs.workspace = true
+sha2.workspace = true
+zip.workspace = true
+regex.workspace = true
+
+ln-eclipse-compat = { path = "../ln-eclipse-compat" }
+ln-auth = { path = "../ln-auth" }
+ln-jca = { path = "../ln-jca" }
+ln-model = { path = "../ln-model" }
+
+[dev-dependencies]
+tempfile.workspace = true

@@ -1,0 +1,347 @@
+{
+  "owtemplates": {
+    "ApplicationHasModifiedComponents.xml": {
+      "name": "ApplicationHasModifiedComponents.xml",
+      "source": "common.core",
+      "root_tag": "Application",
+      "sha256": "40ed61cafbe018c59414cefdd4ee04c7e0dd41a5e5007249259b82968cdd5e68",
+      "content": "<Application><name>%name</name><ApplicationPackage><applicationPackageName>%applicationPackageName</applicationPackageName></ApplicationPackage></Application>"
+    },
+    "ApplicationSCMAllowed.xml": {
+      "name": "ApplicationSCMAllowed.xml",
+      "source": "common.core",
+      "root_tag": "Application",
+      "sha256": "3baca04b568dffb0f4b972c1b373ff77fbfde022129690b1ce59a1ae5b1bc677",
+      "content": "<Application><name>%name</name></Application>"
+    },
+    "ChangeDevelopmentEnvironment.xml": {
+      "name": "ChangeDevelopmentEnvironment.xml",
+      "source": "common.core",
+      "root_tag": "DevelopmentEnvironment",
+      "sha256": "c01d357d8c0f8d93ccbbf02d600b72dd1caa608704be3bdbafa52f8fa24a180b",
+      "content": "<DevelopmentEnvironment actionType=\"%actionType\"><environment>%environment</environment><hostname>%hostname</hostname><bsePath>%bsePath</bsePath><bshell>%bshell</bshell></DevelopmentEnvironment>"
+    },
+    "ChangeSoftwareProject.xml": {
+      "name": "ChangeSoftwareProject.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "bd817d52794850c65df680cf99789c817c830bfa703fe6536392f7f4da7c1d69",
+      "content": "<SoftwareProject actionType=\"%projectActionType\"><projectName>%projectName</projectName><applicationServer>%applicationServer</applicationServer><developmentEnvironment>%developmentEnvironment</developmentEnvironment><developmentRepositoryAddress>%developmentRepositoryAddress</developmentRepositoryAddress><projectDescription>%projectDescription</projectDescription><projectDocumentation>%projectDocumentation</projectDocumentation><projectRequirementID>%projectRequirementID</projectRequirementID><projectStatus>%projectStatus</projectStatus><projectVersionID>%projectVersionID</projectVersionID><runtimeRepositoryAddress>%runtimeRepositoryAddress</runtimeRepositoryAddress><isPartialEndAllowed>%isPartialEndAllowed</isPartialEndAllowed><isSharingActivitiesAllowed>%isSharingActivitiesAllowed</isSharingActivitiesAllowed><integrationWithPMC>%integrationWithPMC</integrationWithPMC>%projectRelation</SoftwareProject>"
+    },
+    "ChangeSoftwareTaskStatus.xml": {
+      "name": "ChangeSoftwareTaskStatus.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "1ad43a4722a8259d7adbe0294783120e1e05569040fed62fda6bfefbbd4a8052",
+      "content": "<SoftwareProject actionType=\"unchanged\"><projectName>%projectName</projectName><Task actionType=\"%taskActionType\"><taskName>%taskName</taskName><taskStatus>%taskStatus</taskStatus><taskVersionID>%taskVersionID</taskVersionID></Task></SoftwareProject>"
+    },
+    "CheckKBNumberExists.xml": {
+      "name": "CheckKBNumberExists.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "d45a45bd5c9dc98d990ecd4903f9b1a92fd6cb3da18d96d1668cb8396b445831",
+      "content": "<SoftwareProject_V2><Task><solutionCode>%kBNumber</solutionCode></Task></SoftwareProject_V2>"
+    },
+    "CreateDevelopmentEnvironment.xml": {
+      "name": "CreateDevelopmentEnvironment.xml",
+      "source": "common.core",
+      "root_tag": "DevelopmentEnvironment",
+      "sha256": "81c8dc2aad5883547ec1ca05c25374a2b6f76b2f8fc72f5063b01cf77eaaef5c",
+      "content": "<DevelopmentEnvironment><environment>%environment</environment><hostname>%hostname</hostname><bsePath>%bsePath</bsePath><bshell>%bshell</bshell></DevelopmentEnvironment>"
+    },
+    "CreateOrUpdateSoftwareTaskV2.xml": {
+      "name": "CreateOrUpdateSoftwareTaskV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "0da60867240ebe1ac84cc51983b0d0451d973a97bde2622cf709a5a3abf58fa1",
+      "content": "<SoftwareProject_V2 actionType=\"%projectActionType\"><projectName>%projectName</projectName><Task actionType=\"%taskActionType\"><taskName>%taskName</taskName><assignedTo>%assignedTo</assignedTo><taskDescription>%taskDescription</taskDescription><taskDocumentation>%taskDocumentation</taskDocumentation><taskRequirementID>%taskRequirementID</taskRequirementID><taskStatus>%taskStatus</taskStatus><typeOfTask>%typeOfTask</typeOfTask><taskUUID>%taskUUID</taskUUID><taskSeverity>%severity</taskSeverity><functionalChange>%functionalChange</functionalChange>%assignees</Task></SoftwareProject_V2>"
+    },
+    "CreateProjectRelation.xml": {
+      "name": "CreateProjectRelation.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "839128f52b1292fd67e3c257f681401e82045de2ab8691fb6db514b23b4fcd80",
+      "content": "<SoftwareProject actionType=\"unchanged\"><projectName>%projectName</projectName><SoftwareProjectRelationship actionType=\"%relationActionType\"><parentProject>%parentProject</parentProject></SoftwareProjectRelationship></SoftwareProject>"
+    },
+    "CreateSoftwareProject.xml": {
+      "name": "CreateSoftwareProject.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "d178e665e79708ae1804abbc0a9ac5e6970d3c0426f54e8d7ce77b96823029e2",
+      "content": "<SoftwareProject><projectName>%projectName</projectName><applicationServer>%applicationServer</applicationServer><developmentEnvironment>%developmentEnvironment</developmentEnvironment><developmentRepositoryAddress>%developmentRepositoryAddress</developmentRepositoryAddress><projectDescription>%projectDescription</projectDescription><projectDocumentation>%projectDocumentation</projectDocumentation><projectRequirementID>%projectRequirementID</projectRequirementID><projectStatus>%projectStatus</projectStatus><projectVersionID>%projectVersionID</projectVersionID><runtimeRepositoryAddress>%runtimeRepositoryAddress</runtimeRepositoryAddress><isPartialEndAllowed>%isPartialEndAllowed</isPartialEndAllowed><isSharingActivitiesAllowed>%isSharingActivitiesAllowed</isSharingActivitiesAllowed><integrationWithPMC>%integrationWithPMC</integrationWithPMC>%projectRelation</SoftwareProject>\r\n"
+    },
+    "CreateSoftwareTask.xml": {
+      "name": "CreateSoftwareTask.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "138a0970281ca9e54ddf18f60781896105d2f3888f06babeb1facecb14fed6bf",
+      "content": "<SoftwareProject actionType=\"unchanged\"><projectName>%projectName</projectName><Task actionType=\"%taskActionType\"><taskName>%taskName</taskName><assignedTo>%assignedTo</assignedTo><taskDescription>%taskDescription</taskDescription><taskDocumentation>%taskDocumentation</taskDocumentation><taskRequirementID>%taskRequirementID</taskRequirementID><taskStatus>%taskStatus</taskStatus><taskVersionID>%taskVersionID</taskVersionID><typeOfTask>%typeOfTask</typeOfTask><taskUUID>%taskSolutionCode</taskUUID>%Assignee%TaskRelation</Task></SoftwareProject>"
+    },
+    "CreateSoftwareTaskV2.xml": {
+      "name": "CreateSoftwareTaskV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "a671785176380d676521a022d1b06c87f6f96025530cfd0519b1ade2a265f5a8",
+      "content": "<SoftwareProject_V2 actionType=\"unchanged\"><projectName>%projectName</projectName><Task actionType=\"%taskActionType\"><taskName>%taskName</taskName><assignedTo>%assignedTo</assignedTo><taskDescription>%taskDescription</taskDescription><taskDocumentation>%taskDocumentation</taskDocumentation><taskRequirementID>%taskRequirementID</taskRequirementID><taskStatus>%taskStatus</taskStatus><taskVersionID>%taskVersionID</taskVersionID><typeOfTask>%typeOfTask</typeOfTask><taskUUID>%taskSolutionCode</taskUUID>%Assignee%TaskRelation<taskSeverity>%severity</taskSeverity><functionalChange>%functionalChange</functionalChange></Task></SoftwareProject_V2>"
+    },
+    "CreateSolution.xml": {
+      "name": "CreateSolution.xml",
+      "source": "common.core",
+      "root_tag": "DR_Solution",
+      "sha256": "87d005994b945620ff1678fa7ce17f1f50fc4e7c198274f79f1ed0fe571527b8",
+      "content": "<DR_Solution actionType=\"%solutionActionType\"><solutionCode>%solutionCode</solutionCode><baseVRC>%baseVRC</baseVRC><description>%description</description><solutionStatus>%solutionStatus</solutionStatus><exportSequence>%exportSequence</exportSequence><obsoleteSolution>%obsoleteSolution</obsoleteSolution><published>%published</published><details>%details</details><solutionType>%solutionType</solutionType>%Component%Dependency%PostDependency</DR_Solution>"
+    },
+    "CurrentUser.xml": {
+      "name": "CurrentUser.xml",
+      "source": "common.core",
+      "root_tag": "FglStudio",
+      "sha256": "eb0eacb2aa094181979422ce1da796ba2430a56a89450038f9f3d65698a72413",
+      "content": "<FglStudio><loginCode>*</loginCode><userName>*</userName><userDescription>*</userDescription></FglStudio>"
+    },
+    "DeleteDevelopmentEnvironment.xml": {
+      "name": "DeleteDevelopmentEnvironment.xml",
+      "source": "common.core",
+      "root_tag": "DevelopmentEnvironment",
+      "sha256": "6c139628c9195d27bd2c778453cacd772041cb0a6d55c6d3c445bcfb0e5f6ef2",
+      "content": "<DevelopmentEnvironment><environment>%environment</environment></DevelopmentEnvironment>"
+    },
+    "DeleteProjectRelation.xml": {
+      "name": "DeleteProjectRelation.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "2d293643db04248459b1ded685dd11f748dcc4f3b48361f238ed94a023220b1f",
+      "content": "<SoftwareProject actionType=\"unchanged\"><projectName>%projectName</projectName><SoftwareProjectRelationship actionType=\"delete\"><parentProject>%parentProject</parentProject></SoftwareProjectRelationship></SoftwareProject>"
+    },
+    "DeleteProjectRelationV2.xml": {
+      "name": "DeleteProjectRelationV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "e255cbd08f6f33a4822191912ba84fa3f7fbe7ee0b295d0afb497dd7e7512824",
+      "content": "<SoftwareProject_V2 actionType=\"%projectActionType\"><projectName>%projectName</projectName><SoftwareProjectRelationship actionType=\"%relationActionType\"><relationshipProjectName>%relationProjectName</relationshipProjectName></SoftwareProjectRelationship></SoftwareProject_V2>"
+    },
+    "DeleteSoftwareProject.xml": {
+      "name": "DeleteSoftwareProject.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "cbd0ef0987cdbba1e93b96c4cfa67ba1ec3f0b3031519f3e1b444844524b9bbe",
+      "content": "<SoftwareProject><projectName>%projectName</projectName></SoftwareProject>"
+    },
+    "DeleteSoftwareTask.xml": {
+      "name": "DeleteSoftwareTask.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "0c241aa8ba62f0af6e82b9aa5552773f1cd48a1d6da868b404e4f8bf81573ecf",
+      "content": "<SoftwareProject actionType=\"unchanged\"><projectName>%projectName</projectName><Task actionType=\"%taskActionType\"><taskName>%taskName</taskName></Task></SoftwareProject>\r\n"
+    },
+    "DeleteSolution.xml": {
+      "name": "DeleteSolution.xml",
+      "source": "common.core",
+      "root_tag": "DR_Solution",
+      "sha256": "a57e47123e702ebdb6b8cfeaa1c3fcdc2f6268d4d74068237b60d03d5c99971c",
+      "content": "<DR_Solution><solutionCode>%solutionCode</solutionCode><baseVRC>%baseVRC</baseVRC></DR_Solution>"
+    },
+    "GetActivitiesWithSameMaintenanceID.xml": {
+      "name": "GetActivitiesWithSameMaintenanceID.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "9093100d069eb789c1a3ae724e38d78471e1f5f18646a1a1e01816b1f4b3a0bd",
+      "content": "<SoftwareProject_V2><projectName>%projectName</projectName><Task><taskUUID>%taskUUID</taskUUID></Task></SoftwareProject_V2>"
+    },
+    "GetActivitySoftwareProjectV2.xml": {
+      "name": "GetActivitySoftwareProjectV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "59f0495cc445fb16e228c24e1ff7e7eab10a4415058f821d83bfdd9e08fc2fee",
+      "content": "<SoftwareProject_V2><projectName>%projectName</projectName><Task><taskName>%taskName</taskName></Task></SoftwareProject_V2>"
+    },
+    "GetRelatedActivities.xml": {
+      "name": "GetRelatedActivities.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "30a9ff7abfe6f29c02d6104b763f70ed91225d3bfeccb5cf32173249a4ea3387",
+      "content": "<SoftwareProject_V2><projectName>%projectName</projectName><activityName>%activityName</activityName></SoftwareProject_V2>"
+    },
+    "GetRelatedProjects.xml": {
+      "name": "GetRelatedProjects.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "f3e8a54f9f16244f1c4252d6a294cabfdd31f6b571818948d158864409537ed2",
+      "content": "<SoftwareProject_V2><projectName>%projectName</projectName></SoftwareProject_V2>"
+    },
+    "GlobalSearchAvailable.xml": {
+      "name": "GlobalSearchAvailable.xml",
+      "source": "common.core",
+      "root_tag": "FglStudio",
+      "sha256": "4ca8ab12fd629bebf536749f37a86c5c5e4892f784744875d9bd6cf78f004ded",
+      "content": "<FglStudio><userName>*</userName></FglStudio>"
+    },
+    "ListUsers.xml": {
+      "name": "ListUsers.xml",
+      "source": "common.core",
+      "root_tag": "FglStudio",
+      "sha256": "4ca8ab12fd629bebf536749f37a86c5c5e4892f784744875d9bd6cf78f004ded",
+      "content": "<FglStudio><userName>*</userName></FglStudio>"
+    },
+    "ProjectsHavingNoTasks.xml": {
+      "name": "ProjectsHavingNoTasks.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "cc3362e6d0eaabcd0b753b34cbacd684e3d544ec1b0021df619aadfe339b86c4",
+      "content": "<SoftwareProject><projectName>*</projectName></SoftwareProject>"
+    },
+    "ProjectsHavingNoTasksV2.xml": {
+      "name": "ProjectsHavingNoTasksV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "61cf6ac841eaf79e9c5bbc527b03c3003794d5aeac0211cad6aa5592cc4d93a8",
+      "content": "<SoftwareProject_V2><projectName>*</projectName></SoftwareProject_V2>"
+    },
+    "SaveProjectRelationV2.xml": {
+      "name": "SaveProjectRelationV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "fb108693fae8a69b41bb2f9b3960c09f32cac74523254f91ad590e933562a255",
+      "content": "<SoftwareProject_V2 actionType=\"%projectActionType\"><projectName>%projectName</projectName><SoftwareProjectRelationship actionType=\"%relationActionType\"><relationshipProjectName>%relationProjectName</relationshipProjectName><relationSeverity>%severity</relationSeverity><projectRelationType>%relationType</projectRelationType></SoftwareProjectRelationship></SoftwareProject_V2>"
+    },
+    "ShowSoftwareApplication.xml": {
+      "name": "ShowSoftwareApplication.xml",
+      "source": "common.core",
+      "root_tag": "Application",
+      "sha256": "3baca04b568dffb0f4b972c1b373ff77fbfde022129690b1ce59a1ae5b1bc677",
+      "content": "<Application><name>%name</name></Application>"
+    },
+    "ShowSoftwareProject.xml": {
+      "name": "ShowSoftwareProject.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject",
+      "sha256": "cbd0ef0987cdbba1e93b96c4cfa67ba1ec3f0b3031519f3e1b444844524b9bbe",
+      "content": "<SoftwareProject><projectName>%projectName</projectName></SoftwareProject>"
+    },
+    "ShowSoftwareProjectV2.xml": {
+      "name": "ShowSoftwareProjectV2.xml",
+      "source": "common.core",
+      "root_tag": "SoftwareProject_V2",
+      "sha256": "f3e8a54f9f16244f1c4252d6a294cabfdd31f6b571818948d158864409537ed2",
+      "content": "<SoftwareProject_V2><projectName>%projectName</projectName></SoftwareProject_V2>"
+    },
+    "ValidateDevelopmentActivity.xml": {
+      "name": "ValidateDevelopmentActivity.xml",
+      "source": "common.core",
+      "root_tag": "DR_Solution",
+      "sha256": "7d213aaa2424a0cec941a1e35c0f53c7ee6d7736ff00bc38ddb743849b723538",
+      "content": "<DR_Solution><projectName>%projectName</projectName><taskName>%taskName</taskName><relatedProjectName>%relatedProjectName</relatedProjectName><relatedTaskName>%relatedTaskName</relatedTaskName><relatedActivityUUID>%relatedActivityUUID</relatedActivityUUID><CMLabel>%modifiedComponentsList</CMLabel></DR_Solution>"
+    },
+    "ChangeApplication.xml": {
+      "name": "ChangeApplication.xml",
+      "source": "apps.ui",
+      "root_tag": "Application",
+      "sha256": "b2e0452492e257e16e88c762c3848dc390d020e28aef127a06d2c7e5f251d2f8",
+      "content": "<Application actionType=\"%applicationActionType\"><name>%name</name><description>%description</description><release>%release</release><base>%base</base><documentation>%documentation</documentation><isSCM>%isSCM</isSCM><timeStamp>%timeStamp</timeStamp>%RefModel%SoftwareLanguage%ApplicationPackage%SoftwareLocalization<applicationSpecific><empty></empty></applicationSpecific></Application>"
+    },
+    "CreateApplication.xml": {
+      "name": "CreateApplication.xml",
+      "source": "apps.ui",
+      "root_tag": "Application",
+      "sha256": "dc5efe293dccc09b80f342e73cb8fdade142e0da0f76beaa95566b6fad3b96e9",
+      "content": "<Application><name>%name</name><description>%description</description><release>%release</release><base>%base</base><documentation>%documentation</documentation><isSCM>%isSCM</isSCM><timeStamp>%timeStamp</timeStamp>%RefModel%SoftwareLanguage%ApplicationPackage%SoftwareLocalization<applicationSpecific><empty></empty></applicationSpecific></Application>"
+    },
+    "CreateBaseVrc.xml": {
+      "name": "CreateBaseVrc.xml",
+      "source": "apps.ui",
+      "root_tag": "BaseVrcs",
+      "sha256": "dc183fb7d111cea423c5d52b3c3db05ec7c7438301d4a3aec95b9f601ba6c897",
+      "content": "<BaseVrcs><baseVersion>%baseVersion</baseVersion><baseRelease>%baseRelease</baseRelease><baseCustomer>%baseCustomer</baseCustomer><exportVersion>%exportVersion</exportVersion><exportRelease>%exportRelease</exportRelease><exportCustomer>%exportCustomer</exportCustomer></BaseVrcs>"
+    },
+    "DeleteApplication.xml": {
+      "name": "DeleteApplication.xml",
+      "source": "apps.ui",
+      "root_tag": "Application",
+      "sha256": "3baca04b568dffb0f4b972c1b373ff77fbfde022129690b1ce59a1ae5b1bc677",
+      "content": "<Application><name>%name</name></Application>"
+    },
+    "DeleteBaseVrc.xml": {
+      "name": "DeleteBaseVrc.xml",
+      "source": "apps.ui",
+      "root_tag": "BaseVrcs",
+      "sha256": "75e2559a410fa4cfd5a985a839461d3279f8e683cba3691924b4889b906e11e8",
+      "content": "<BaseVrcs><baseVersion>%baseVersion</baseVersion><baseRelease>%baseRelease</baseRelease><baseCustomer>%baseCustomer</baseCustomer></BaseVrcs>"
+    },
+    "ListPackages.xml": {
+      "name": "ListPackages.xml",
+      "source": "apps.ui",
+      "root_tag": "Group",
+      "sha256": "00680c00c3bf2f329a14bbfa1596d208ff8675bc71d0931a6bf4457ef0aab53f",
+      "content": "<Group><name>%name</name></Group>"
+    },
+    "ListReleases.xml": {
+      "name": "ListReleases.xml",
+      "source": "apps.ui",
+      "root_tag": "Application",
+      "sha256": "19277cb75996701e52404b11b108e7400dcabb19da16b9f211f7f73db49c0e18",
+      "content": "<Application><name>*</name></Application>"
+    },
+    "PutApplication.xml": {
+      "name": "PutApplication.xml",
+      "source": "apps.ui",
+      "root_tag": "Application",
+      "sha256": "916befb2fc189247635896b4853b82a52f430fd76f12a05cdba1892aab829e71",
+      "content": "<Application actionType=\"%applicationActionType\"><name>%name</name><description>%description</description><release>%release</release><base>%base</base><documentation>%documentation</documentation><isSCM>%isSCM</isSCM><timeStamp>%timeStamp</timeStamp>%RefModel%ApplicationPackage%SoftwareLanguage<applicationSpecific><empty></empty></applicationSpecific></Application>"
+    }
+  },
+  "script_templates": {
+    "Bol": {
+      "name": "Bol",
+      "source": "common.core",
+      "sha256": "43a5fc66ba126890987e7fc9750d34b7db708c0e477a63e13eaf0b3fdb2b8413",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n|* Script Type: \r\n|******************************************************************************\r\n                                                                                \r\n"
+    },
+    "Dal": {
+      "name": "Dal",
+      "source": "common.core",
+      "sha256": "accd7c50b12913852f13a4e58d251f7a05466b5d9211550ec1b95aae734626c8",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n|* Script Type: DAL\r\n|******************************************************************************\r\n                                                                                \r\n#include <bic_dal>\r\n\r\n\r\nfunction extern long before.open.object.set()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long before.save.object(long type)\r\n{\r\n\treturn(0)\r\n}\r\n"
+    },
+    "DalTwo": {
+      "name": "DalTwo",
+      "source": "common.core",
+      "sha256": "ab3cf30dac6f27a8088f7c2135a6a6bf2bea6fe8d0ecd7cd7affa3796a128e82",
+      "content": "|*******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|*******************************************************************************\r\n|* Script Type: DAL\r\n|*******************************************************************************\r\n                                                                                \r\n|*************************** declaration section *******************************\r\n\r\n#include <bic_dal2>\r\n\r\n|*************************** object hooks section ******************************\r\n\r\nfunction extern boolean method.is.allowed(\r\n\t\t\tlong\t\ti.method)\r\n{\r\n\ton case i.method\r\n\tcase DAL_NEW:\r\n\t\tbreak\r\n\tcase DAL_UPDATE:\r\n\t\tbreak\r\n\tcase DAL_DESTROY:\r\n\t\tbreak\r\n\tendcase\r\n\treturn(true)\r\n}\r\n\r\nfunction extern long before.open.object.set()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long before.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long after.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long before.save.object(\r\n\t\t\tlong\t\ti.mode)\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long after.save.object(\r\n\t\t\tlong\t\ti.mode)\r\n{\r\n\treturn(0)\r\n}\r\n\r\n|*************************** field hooks section *******************************\r\n|*************************** business methods section **************************\r\n|*************************** internal functions section ************************\r\n|*************************** end of DAL source *********************************\r\n"
+    },
+    "Function": {
+      "name": "Function",
+      "source": "common.core",
+      "sha256": "a529437bd0967aba502edfb77df5263d167cfc127b1d095d4d64962c66c6424e",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n\r\nfunction %METHOD_NAME()\r\n{\r\n}\r\n"
+    },
+    "Integration": {
+      "name": "Integration",
+      "source": "common.core",
+      "sha256": "d747017fc45c6da00d8a62877f5e4a762374d0ac9df7c289ee420c5738c369e6",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n|* Script Type: Library\r\n|******************************************************************************\r\n                                                                                \r\nfunction extern some_function()\r\n{\r\n}\r\n"
+    },
+    "Report": {
+      "name": "Report",
+      "source": "common.core",
+      "sha256": "e9374126d862fc06c4261875e1f7f9e3379f53b82d52b0e94c98f75d20c2cd29",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n\r\n|****************************** declaration section ***************************\r\n"
+    },
+    "ThreeGL": {
+      "name": "ThreeGL",
+      "source": "common.core",
+      "sha256": "d9fe101b416abe5b1bf6bfed9849429846568218ecf3e9f15dd4a42b64cdf872",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n|* Script Type: 0\r\n|******************************************************************************\r\n                                                                                \r\nfunction main()\r\n{\r\n}\r\n"
+    },
+    "UIDatabase": {
+      "name": "UIDatabase",
+      "source": "common.core",
+      "sha256": "712ec40efe6b7b811cb9b2fb8cdb8a39b42fee86b8a4c113018927f72ade303a",
+      "content": "|*******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|*******************************************************************************\r\n|* Script Type: 123\r\n|*******************************************************************************\r\n\r\n|*************************** declaration section *******************************\r\ndeclaration:\r\n\r\n|*************************** program section ***********************************\r\n|*************************** zoom from section *********************************\r\n|*************************** form section **************************************\r\n|*************************** choice section ************************************\r\n|*************************** input fields section ******************************\r\n|*************************** display fields section ****************************\r\n|*************************** function section **********************************\r\nfunctions:\r\n\r\n|*************************** end of source *************************************\r\n"
+    },
+    "UserExitDLL": {
+      "name": "UserExitDLL",
+      "source": "common.core",
+      "sha256": "2a38e01cef68e62e119aa24b303a4ec2e0f00f836ab5efb147cdecdbb0e5ce0b",
+      "content": "|******************************************************************************\r\n|* %NAME  %VERSION\r\n|* %DESCRIPTION\r\n|* %USER\r\n|* %DATE [%TIME]\r\n|******************************************************************************\r\n|* Script Type: User Exit DLL\r\n|******************************************************************************\r\n                                                                                \r\n\ttable\tt%TABLE\r\n\r\n#include <bic_dal>\r\n\r\n\r\nfunction extern long ue.before.before.save.object(long mode)\r\n{\r\n\ton case mode\r\n\tcase DAL_NEW:\r\n\t\tbreak\r\n\tcase DAL_UPDATE:\r\n\t\tbreak\r\n\tendcase\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.after.before.save.object(long mode)\r\n{\r\n\ton case mode\r\n\tcase DAL_NEW:\r\n\t\tbreak\r\n\tcase DAL_UPDATE:\r\n\t\tbreak\r\n\tendcase\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.before.after.save.object(long mode)\r\n{\r\n\ton case mode\r\n\tcase DAL_NEW:\r\n\t\tbreak\r\n\tcase DAL_UPDATE:\r\n\t\tbreak\r\n\tendcase\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.after.after.save.object(long mode)\r\n{\r\n\ton case mode\r\n\tcase DAL_NEW:\r\n\t\tbreak\r\n\tcase DAL_UPDATE:\r\n\t\tbreak\r\n\tendcase\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.before.before.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.after.before.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.before.after.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n\r\nfunction extern long ue.after.after.destroy.object()\r\n{\r\n\treturn(0)\r\n}\r\n"
+    }
+  }
+}
