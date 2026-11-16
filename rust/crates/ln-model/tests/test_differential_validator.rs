@@ -55,7 +55,7 @@ fn test_differential_parity_against_python_validator() {
     let rust_report = validate_activity(act, false, false);
 
     // 5. Run Python validator
-    let python_script = std::path::Path::new("../../../ln_studio_skill/tools/validate_ln_activity.py");
+    let python_script = std::path::Path::new("../../../.agents/skills/ln_studio_skill/tools/validate_ln_activity.py");
     let repo_root = fs::canonicalize(python_script)
         .expect("Should locate validate_ln_activity.py");
 

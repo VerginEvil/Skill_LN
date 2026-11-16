@@ -11,12 +11,20 @@ class TestReadmeLinks(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Resolve repo root relative to this test file
-        cls.repo_root = Path(__file__).resolve().parents[3]
+        # Resolve repo root relative to this test file (works at root or under .agents/skills/)
+        here = Path(__file__).resolve()
+        cls.repo_root = next(
+            (p for p in here.parents if (p / "scripts" / "run_checks.py").exists()),
+            here.parents[3],
+        )
+
+        def _skill_readme(name: str) -> Path:
+            return cls.repo_root / ".agents" / "skills" / name / "README.md"
+
         cls.readme_files = [
             cls.repo_root / "README.md",
-            cls.repo_root / "ln_studio_skill" / "README.md",
-            cls.repo_root / "erp-ln-progguide" / "README.md",
+            _skill_readme("ln_studio_skill"),
+            _skill_readme("erp-ln-progguide"),
         ]
 
     def _slugify_heading(self, text: str) -> str:

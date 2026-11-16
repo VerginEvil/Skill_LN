@@ -17,9 +17,10 @@ import shutil
 import zipfile
 import argparse
 from pathlib import Path
-from typing import List, Set
+from typing import List, Optional, Set
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SKILLS_ROOT_REL = Path(".agents") / "skills"
 
 EXCLUDE_NAMES: Set[str] = {
     "__pycache__",
@@ -72,7 +73,7 @@ def zip_directory(src_dir: Path, zip_file: zipfile.ZipFile, arcname_prefix: str)
 
 
 def package_erp_ln_progguide(version_str: str, dist_dir: Path) -> Path:
-    skill_dir = REPO_ROOT / "erp-ln-progguide"
+    skill_dir = REPO_ROOT / SKILLS_ROOT_REL / "erp-ln-progguide"
     target_zip = dist_dir / f"erp-ln-progguide-{version_str}.zip"
     print(f"Packaging {target_zip.name} ...")
     with zipfile.ZipFile(target_zip, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -82,7 +83,7 @@ def package_erp_ln_progguide(version_str: str, dist_dir: Path) -> Path:
 
 
 def package_ln_studio_skill(version_str: str, dist_dir: Path) -> Path:
-    skill_dir = REPO_ROOT / "ln_studio_skill"
+    skill_dir = REPO_ROOT / SKILLS_ROOT_REL / "ln_studio_skill"
     target_zip = dist_dir / f"ln_studio_skill-{version_str}.zip"
     print(f"Packaging {target_zip.name} ...")
     with zipfile.ZipFile(target_zip, "w", zipfile.ZIP_DEFLATED) as zf:

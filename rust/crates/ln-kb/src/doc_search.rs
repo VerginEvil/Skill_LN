@@ -6,33 +6,19 @@ use crate::types::{DocHit, DocSearchResult};
 
 pub const MAX_OUTPUT_CHARS: usize = 12000;
 
-pub fn find_progguide_references_dir() -> Option<PathBuf> {
-    if let Ok(env_val) = std::env::var("ERP_LN_PROGGUIDE_DIR") {
-        let p = PathBuf::from(env_val).join("references");
-        if p.exists() {
-            return Some(p);
-        }
-    }
-
-    let candidates = [
+pub fn find_progguide_references_dir_from(
+    cwd: Option<&Path>,
+    exe: Option<&Path>,
+) -> Option<PathBuf> {
+    let rel_candidates = [
+        ".agents/skills/erp-ln-progguide/references",
         "erp-ln-progguide/references",
-        "../erp-ln-progguide/references",
-        "../../erp-ln-progguide/references",
-        "../../../erp-ln-progguide/references",
     ];
 
-    for c in candidates {
-        let p = PathBuf::from(c);
-        if p.exists() {
-            return p.canonicalize().ok().or(Some(p));
-        }
-    }
-
-    // Check relative to current exe
-    if let Ok(exe) = std::env::current_exe() {
-        if let Some(parent) = exe.parent() {
-            for c in candidates {
-                let p = parent.join(c);
+    for base in [cwd, exe.and_then(|p| p.parent())].into_iter().flatten() {
+        for ancestor in base.ancestors().take(5) {
+            for rel in rel_candidates {
+                let p = ancestor.join(rel);
                 if p.exists() {
                     return p.canonicalize().ok().or(Some(p));
                 }
@@ -41,6 +27,20 @@ pub fn find_progguide_references_dir() -> Option<PathBuf> {
     }
 
     None
+}
+
+pub fn find_progguide_references_dir() -> Option<PathBuf> {
+    if let Ok(env_val) = std::env::var("ERP_LN_PROGGUIDE_DIR") {
+        let p = PathBuf::from(env_val).join("references");
+        if p.exists() {
+            return Some(p);
+        }
+    }
+
+    find_progguide_references_dir_from(
+        std::env::current_dir().ok().as_deref(),
+        std::env::current_exe().ok().as_deref(),
+    )
 }
 
 /// Searches documentation markdown corpus, matching the scoring, ranking, and output of `search.py`.

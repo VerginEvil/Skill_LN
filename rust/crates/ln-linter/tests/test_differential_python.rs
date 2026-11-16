@@ -35,7 +35,7 @@ fn run_python_audit(
     let temp_path = temp.path().to_str().unwrap().to_string();
 
     let mut cmd = Command::new("python");
-    cmd.arg("../../../erp-ln-progguide/scripts/audit_4gl.py")
+    cmd.arg("../../../.agents/skills/erp-ln-progguide/scripts/audit_4gl.py")
         .arg(&temp_path)
         .arg("--format")
         .arg("json");

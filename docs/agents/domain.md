@@ -25,8 +25,11 @@ Single-context repo:
 │   └── plans/
 │       ├── Tickets.md
 │       └── ...
-├── erp-ln-progguide/
-├── ln_studio_skill/
+├── .agents/
+│   ├── rules/
+│   └── skills/
+│       ├── erp-ln-progguide/
+│       └── ln_studio_skill/
 └── scripts/
 ```
 

@@ -1,6 +1,11 @@
+---
+trigger: model_decision
+description: Infor ERP LN, Baan 4GL, DAL 2, UI script, SQL, and Extension Modeler (ttext1500m000, EXT001-EXT003) coding architecture rules and guardrails. Load whenever writing, modifying, debugging, or reviewing Baan 4GL, .dal, .cln, .4gl, or Extension Modeler scripts.
+---
+
 # Infor LN & Baan 4GL Architecture Rules and Coding Guidelines
 
-This document defines the authoritative architecture rules, coding standards, and CLI automation protocols for any engineer or AI coding assistant developing on Infor LN Studio 10.8 build 0640 (April 2026 tree) and Infor Enterprise Server.
+Authoritative architecture rules and coding standards for Infor LN Studio 10.8 build 0640 (April 2026 tree) and Infor Enterprise Server.
 
 ---
 
@@ -79,103 +84,42 @@ txptc100.seqn = tem.seqn + 1
 
 ---
 
-## 3. Automation Toolchain Workflows for AI Agents
-
-When implementing features, creating tables, or debugging compilation errors, agents MUST use the unified CLI tools in `ln_studio_skill/tools/`:
-
-### 3.1 Step 1: Component Definition & Generation
-Define the table, fields, indices, and session in a YAML schema file (see `ln_studio_skill/templates/table_schema_sample.yaml`). Generate metadata directly into the target activity:
-
-```bash
-python ln_studio_skill/tools/ln_component_builder.py component --spec schema.yaml --activity "<activity_name>"
-```
-
-### 3.2 Step 2: 4GL Code Development & Synchronization
-Develop Baan 4GL source in standalone `.dal` or `.cln` files in `scripts/`:
-- DAL: `scripts/dal/<table_code>.dal`
-- UI: `scripts/ui/<session_code>.cln`
-
-Inject the code into workspace metadata XML:
-```bash
-python ln_studio_skill/tools/ln_component_builder.py inject --source scripts/dal/txptc100.dal --target "<activity_path>/tx/table/ptc/txptc100.tbl"
-```
-
-### 3.3 Step 3: Eclipse SCM Synchronization
-Register new components in the activity `.admin` file:
-```bash
-python ln_studio_skill/tools/ln_component_builder.py sync-admin --activity "<activity_name>"
-```
-
-### 3.4 Step 4: Closed-Loop Compilation & Diagnostic Fixing
-Trigger Eclipse build and inspect line-accurate compiler error markers:
-```bash
-python ln_studio_skill/tools/ln_component_builder.py build --activity "<activity_name>"
-```
-
-If compilation errors exist, the tool prints exact files, line numbers, and error descriptions. Fix the code in `scripts/`, re-inject, and rebuild until 0 errors are reported.
-
----
-
-## 4. Pre-Fetch Authentication Verification & User Alert Guardrail (ADR 0010)
-
-Before executing any operation that fetches, downloads, inspects, extracts, checks out, or synchronizes remote code, scripts, or components from an Infor LN server or activity (e.g. `get-component`, `sync-reference`, `checkout-component`, `extract`, `explorer`, `ln_get_component`, `ln_checkout_component`):
-
-### 4.1 Mandatory User Notification
-The AI Assistant and CLI tools MUST explicitly notify the user beforehand:
-- **Target Object & Type**: e.g. Library `txibddllitem01`, Table `whwmd400`, Session `txcmg0110m100`.
-- **Target Workspace & Cloud Environment**: e.g. `SCS_TST`.
-- **Target Software Project & Activity**: e.g. Project `EXTce01107`, Activity `dev_natt_1107-1`.
-- **Operation Mode**: In-Memory Inspection, Read-Only Fetch, or Check-Out.
-
-### 4.2 Mandatory Authentication Pre-Flight Check & Auto-Authenticate
-1. **Token Status Check**: Verify cached OAuth2 token in `~/.ln_studio/tokens/<env>.json`.
-2. **Auto-Refresh**: If token is expired or within the 300s safety buffer, automatically perform silent refresh using `refresh_token`.
-3. **Auto-Authenticate / Alert**: If token is missing or refresh fails:
-   - Alert the user immediately that authentication is required.
-   - Launch or guide the user through the self-contained multi-channel SSO login (`ln_login` / `ln_auth_helper.py` via Windows `oob://` protocol handler or clipboard detection).
-4. **Resilience**: Never fail silently or crash unexpectedly without alerting the user of the authentication and connection status.
-
----
-
-## 5. Extension Modeler (`ttext1500m000`) Compiler Rules & Static Guardrails (ADR 0013, ADR 0020)
+## 3. Extension Modeler (`ttext1500m000`) Compiler Rules & Static Guardrails (ADR 0013, ADR 0020)
 
 Infor ERP LN Cloud Extension Modeler (`ttext1500m000`) generates 4GL code from discrete hook blocks wrapped in `#context_on "<hook>"` ... `#context_off`. To eliminate Baan C compiler errors (`bic6.2`), developers and AI assistants MUST enforce the following guardrails:
 
-### 5.1 Declarations Context & Header Placement (`EXT001`)
+### 3.1 Declarations Context & Header Placement (`EXT001`)
 - The Extension Modeler code generator **only** routes custom code enclosed in `#context_on "declarations"` ... `#context_off` into the declarations segment of the compiled script.
 - Standard generated `#include` headers (such as `<bic_dam>`, `<bic_dal2>`, `<bic_tableext>`, `<bic_text>`, `<bic_interface>`) generated under `| Additional generated declarations` are recognized as standard framework boilerplate and must remain untouched in place.
 - Any **custom** `#include` header (such as custom DLLs `otxslidll...`) placed outside `#context_on "declarations"` is ignored by the code generator and triggers `EXT001 [ERROR]`.
 - Whenever `dal.*` operations (`dal.change.object`, `dal.set.field`, `dal.save.object`, etc.) are invoked in extension scripts, `#include <bic_dam>` (or `<bic_dal2>`) MUST be present either in standard generated declarations or inside `#context_on "declarations"`.
 
-### 5.2 Form Command Hook Prototypes & Void Return Constraints (`DAL002`, `DAL003`)
-- **Form Command Hooks**:
+### 3.2 Form Command Hook Prototypes & Void Return Constraints (`DAL002`, `DAL003`)
+- **Form Command Hooks:**
   - Visibility / Enablement hooks (`.is.visible`, `.is.enabled`): Prototype MUST return `boolean` (`return(true)` / `return(false)`).
   - Command execution hooks (`.before.command`, `.after.command`): Standard prototype is `void` (or `long`).
-- **Void Function Return Constraint**: In Baan 4GL, returning any expression with a value (e.g. `return(true)` or `return(0)`) from a `void` function triggers a fatal compiler error: `Return value for void function not allowed`. Always use bare `return` (or `return()`) without an argument.
-- **Command Interception**: To cancel standard command execution inside a `function.<cmd>.before.command()` hook, call `choice.again()` and issue `return;`.
+- **Void Function Return Constraint:** In Baan 4GL, returning any expression with a value (e.g. `return(true)` or `return(0)`) from a `void` function triggers a fatal compiler error: `Return value for void function not allowed`. Always use bare `return` (or `return()`) without an argument.
+- **Command Interception:** To cancel standard command execution inside a `function.<cmd>.before.command()` hook, call `choice.again()` and issue `return;`.
 
-### 5.3 Cross-Component Hook Scope Separation (`EXT002`)
-- **Table Extensions (`.est`, `^[a-z]{5}\d{3}$`)**:
+### 3.3 Cross-Component Hook Scope Separation (`EXT002`)
+- **Table Extensions (`.est`, `^[a-z]{5}\d{3}$`):**
   - Supported: Table DAL hooks (`before.save.object`, `after.save.object`, `before.destroy.object`, `method.is.allowed`, field hooks).
   - Prohibited: Form Command hooks (`function.<cmd>.before.command`, `function.<cmd>.is.enabled`, etc.).
-- **Session Extensions (`.ess`, `m\d{3}$`)**:
+- **Session Extensions (`.ess`, `m\d{3}$`):**
   - Supported: Form Command hooks, session UI hooks, custom helper functions.
   - Prohibited: Table DAL lifecycle hooks (`before.save.object`, `after.save.object`, etc.).
 
-### 5.4 Session Extension Archetype & Transaction Boundaries
+### 3.4 Session Extension Archetype & Transaction Boundaries
 - Session Extensions (`whinh4131m000.cln`, `ess`) are classified under the `general` archetype (UI program scripts).
 - When a Session Extension coordinates business operations across secondary tables via DAL 2 (`dal.change.object()`), it is fully permitted to initiate and manage its own transaction boundaries (`db.retry.point()`, `commit.transaction()`, `abort.transaction()`). The auditor MUST NOT flag `DAL005` on Session Extensions.
 
-### 5.5 Non-Context Standard Code Read-Only Boundary & Anti-Tamper (`EXT003` - ADR 0020)
-- **Automatic Extension Detection**: Any 4GL script containing `#context_on` or `#context_off` directives is automatically recognized as an Extension Modeler script.
-- **Strict Non-Context Read-Only Boundary**: All code outside `#context_on` ... `#context_off` blocks is strictly **Read-Only / Immutable**. AI assistants MUST NEVER modify, delete, reformat, or insert code outside context blocks. This includes:
+### 3.5 Non-Context Standard Code Read-Only Boundary & Anti-Tamper (`EXT003` - ADR 0020)
+- **Automatic Extension Detection:** Any 4GL script containing `#context_on` or `#context_off` directives is automatically recognized as an Extension Modeler script.
+- **Strict Non-Context Read-Only Boundary:** All code outside `#context_on` ... `#context_off` blocks is strictly **Read-Only / Immutable**. AI assistants MUST NEVER modify, delete, reformat, or insert code outside context blocks. This includes:
   - Header comments and SCM metadata comments.
   - The `| Additional generated declarations` section and standard `table` declarations.
   - Standard generated framework functions: `get.extension.point.version()`, `ext.is.cdfs.of.ref.tables.selected()`, `ext.get.form.fields()`, `ext.get.session.indices()`, `ext.get.command.extensions()`, and `ext.get.report.extensions()`.
-- **Strict No-Relocation Policy**: AI assistants MUST NEVER move existing code across `#context` boundaries. Do not move declarations from `| Additional generated declarations` into `#context_on "declarations"`. New custom declarations must be added inside `#context_on "declarations"`, leaving standard declarations untouched.
-- **Dual-Mode Delivery**: When presenting changes:
+- **Strict No-Relocation Policy:** AI assistants MUST NEVER move existing code across `#context` boundaries. Do not move declarations from `| Additional generated declarations` into `#context_on "declarations"`. New custom declarations must be added inside `#context_on "declarations"`, leaving standard declarations untouched.
+- **Dual-Mode Delivery:** When presenting changes:
   1. Maintain the full-fidelity cohesive `.4gl` file in the project with all standard boilerplate preserved.
   2. Output clean, individual hook code blocks in chat (stripped of `#context` tags) for 1-click pasting into LN UI (`ttext1500m000`).
-
-
-

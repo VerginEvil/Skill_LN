@@ -102,8 +102,8 @@ fn main() {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let repo_root = manifest_dir.join("../../../");
 
-    let fn_db_path = repo_root.join("erp-ln-progguide/index/functions_db.json");
-    let syntax_path = repo_root.join("erp-ln-progguide/references/studio_syntax_completion.json");
+    let fn_db_path = repo_root.join(".agents/skills/erp-ln-progguide/index/functions_db.json");
+    let syntax_path = repo_root.join(".agents/skills/erp-ln-progguide/references/studio_syntax_completion.json");
 
     println!("cargo:rerun-if-changed={}", fn_db_path.display());
     println!("cargo:rerun-if-changed={}", syntax_path.display());

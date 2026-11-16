@@ -10,7 +10,15 @@ import tempfile
 import subprocess
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+def _find_repo_root() -> Path:
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        if (parent / "scripts" / "run_checks.py").exists():
+            return parent
+    return here.parents[3]
+
+
+REPO_ROOT = _find_repo_root()
 CHECKS_SCRIPT = REPO_ROOT / "scripts" / "run_checks.py"
 GITHUB_CI_FILE = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 GITLAB_CI_FILE = REPO_ROOT / ".gitlab-ci.yml"
@@ -83,7 +91,7 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
             self.assertTrue(any("erp-ln-progguide" in d for d in drifted_after))
 
     def _create_mock_skill(self, root: Path, sname: str, content: str) -> Path:
-        sdir = root / sname
+        sdir = root / ".agents" / "skills" / sname
         sdir.mkdir(parents=True, exist_ok=True)
         (sdir / "SKILL.md").write_text(content, encoding="utf-8")
         return sdir
@@ -94,7 +102,7 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             fake_root = Path(td)
             for sname in ("ln_studio_skill", "erp-ln-progguide"):
-                sdir = fake_root / sname
+                sdir = fake_root / ".agents" / "skills" / sname
                 (sdir / "references").mkdir(parents=True)
                 ref_file = sdir / "references" / "REF.md"
                 ref_file.write_text("# Reference\n", encoding="utf-8")
@@ -163,6 +171,61 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
         )
         self.assertEqual(proc.returncode, 0)
         self.assertIn("--skill-lint-only", proc.stdout)
+
+    def test_resolve_skill_dir_canonical_agents_layout(self):
+        """Asserts resolve_skill_dir resolves canonical .agents/skills/<name> layout."""
+        from run_checks import resolve_skill_dir
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            self.assertEqual(
+                resolve_skill_dir(fake_root, "ln_studio_skill"),
+                fake_root / ".agents" / "skills" / "ln_studio_skill",
+            )
+
+    def test_check_skill_markdown_agents_layout(self):
+        """Asserts check_skill_markdown passes when skills live under .agents/skills/."""
+        from run_checks import check_skill_markdown
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            for sname in ("ln_studio_skill", "erp-ln-progguide"):
+                sdir = fake_root / ".agents" / "skills" / sname
+                (sdir / "references").mkdir(parents=True)
+                (sdir / "references" / "REF.md").write_text("# Reference\n", encoding="utf-8")
+                content = (
+                    "---\n"
+                    f"name: {sname}\n"
+                    "description: Valid description for testing.\n"
+                    "---\n\n"
+                    f"# {sname}\n\n"
+                    "Check [ref](references/REF.md).\n"
+                )
+                (sdir / "SKILL.md").write_text(content, encoding="utf-8")
+
+            self.assertTrue(check_skill_markdown(repo_root=fake_root, max_lines=80))
+
+    def test_package_release_dual_path_and_arcname(self):
+        """Asserts package_release resolves .agents/skills/ while keeping top-level ZIP arcnames."""
+        import zipfile
+        import package_release
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            for sname in ("erp-ln-progguide", "ln_studio_skill"):
+                sdir = fake_root / ".agents" / "skills" / sname
+                sdir.mkdir(parents=True)
+                (sdir / "SKILL.md").write_text(f"---\nname: {sname}\ndescription: test\n---\n", encoding="utf-8")
+            dist_dir = fake_root / "dist"
+            dist_dir.mkdir()
+            orig_root = package_release.REPO_ROOT
+            try:
+                package_release.REPO_ROOT = fake_root
+                z1 = package_release.package_erp_ln_progguide("v9.9.9", dist_dir)
+                z2 = package_release.package_ln_studio_skill("v9.9.9", dist_dir)
+            finally:
+                package_release.REPO_ROOT = orig_root
+            with zipfile.ZipFile(z1) as zf:
+                self.assertIn("erp-ln-progguide/SKILL.md", zf.namelist())
+            with zipfile.ZipFile(z2) as zf:
+                self.assertIn("ln_studio_skill/SKILL.md", zf.namelist())
 
 
 if __name__ == "__main__":

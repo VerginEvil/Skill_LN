@@ -1,4 +1,4 @@
-[⬅️ Back to Skill_LN Main Repository](../README.md)
+[⬅️ Back to Skill_LN Main Repository](../../../README.md)
 
 ---
 
@@ -42,7 +42,7 @@ Historically, developing applications and extensions in Infor LN Studio required
 3. **Remote Server Explorers & Workspace Reference Sync (`ln_component_explorer.py`)**: Browse remote Applications, Software Projects, Activities, and Components across all 12 types, or pull Read-Only reference copies (`sync-reference`) into `.reference/<type>/` while automatically indexing `.tbl` and `.dmn` XMLs into `.ln_dd_cache.json`.
 4. **Complete 12-Component Ecore Generators & Report Cloning**: Declarative generation for Tables (`.tbl`), Sessions (`.ses`), Domains (`.dmn`), Libraries (`.lib`), Menus (`.mnu`), Labels (`.lbl`), Messages (`.msg`), Questions (`.qst`/`.que`), Include Functions (`.fnc`/`.fun`), and Additional Files (`.add`), plus baseline report/component cloning (`clone-component --source-type report`).
 5. **Pre-Commit SCM Engine & Split `deploy-test` (`ln_scm_engine.py`, `ln_build_pipeline.py`)**: Safe `--mode compile-only` (default: `Put -> Compile -> VSC -> CheckIn`) and `--mode schema-crdd` (`Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn` with `--dry-run` pre-check and active LN UI session lock warning).
-6. **Strict Human-in-the-Loop Commit Gate ([ADR 0007](../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))**: Hard-blocks `End Activity` / `CloseTask` / `FinalizeActivity` in CLI, MCP, and at the Java protocol level inside `LNStudioJcaBridge.java`.
+6. **Strict Human-in-the-Loop Commit Gate ([ADR 0007](../../../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))**: Hard-blocks `End Activity` / `CloseTask` / `FinalizeActivity` in CLI, MCP, and at the Java protocol level inside `LNStudioJcaBridge.java`.
 7. **Native Stdio MCP Server (`ln_studio_mcp.py`)**: Exposes all capabilities via JSON-RPC 2.0 stdio with 16 tools, ready for Claude Desktop, Cursor, Antigravity, and AI Agents.
 
 ---
@@ -130,7 +130,7 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
     "infor-ln-studio": {
       "command": "python",
       "args": [
-        "c:/Users/nutdo/OneDrive/Documents/Gitlab/Skill_LN/ln_studio_skill/tools/ln_studio_mcp.py"
+        "<repo_root>/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",
@@ -149,7 +149,7 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
     "infor-ln-studio": {
       "command": "python",
       "args": [
-        "${workspaceFolder}/ln_studio_skill/tools/ln_studio_mcp.py"
+        "${workspaceFolder}/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8"
@@ -166,7 +166,7 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
     "infor-ln-studio": {
       "command": "python",
       "args": [
-        "${workspaceRoot}/ln_studio_skill/tools/ln_studio_mcp.py"
+        "${workspaceRoot}/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
       ]
     }
   }
@@ -176,8 +176,8 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
 ### 4. Gemini CLI / Generic Stdio MCP
 ```bash
 # Automated setup for supported clients:
-python ln_studio_skill/tools/ln_component_builder.py mcp-setup --target claude-desktop
-python ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target claude-desktop
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
 ```
 
 ---
@@ -215,18 +215,18 @@ All 16 MCP tools and 37 CLI subcommands are mapped into 5 logical lifecycle phas
 
 | Component Type | Extension | Ecore Datatype ID | CLI Generator Flag | CLI Command Example |
 |---|---|---|---|---|
-| **Table** | `.tbl` | Ecore Model 1-14 | `table` | `python ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml` |
-| **Session** | `.ses` | Type 1-4, MMT | `session` | `python ln_studio_skill/tools/ln_component_builder.py session --spec schema.yaml` |
-| **Domain** | `.dmn` | Byte, Long, String, Enum | `domain` | `python ln_studio_skill/tools/ln_component_builder.py domain --spec schema.yaml` |
-| **Library** | `.lib` | DLL / Extension | `library` | `python ln_studio_skill/tools/ln_component_builder.py library --spec schema.yaml` |
-| **Menu** | `.mnu` | Menu Hierarchy | `menu` | `python ln_studio_skill/tools/ln_component_builder.py menu --spec schema.yaml` |
-| **Label** | `.lbl` | Multi-language | `label` | `python ln_studio_skill/tools/ln_component_builder.py label --code txcmg011.lbl --desc "Batch"` |
-| **Report** | `.rpt` | Layout & Data Source | `report` / `clone-component` | `python ln_studio_skill/tools/ln_component_builder.py clone-component --source-type report ...` |
-| **Message** | `.msg` | Severity Levels | `message` | `python ln_studio_skill/tools/ln_component_builder.py message --code txcmg0001 --desc "Invalid"` |
-| **Question** | `.qst` | Yes/No/Cancel | `question` | `python ln_studio_skill/tools/ln_component_builder.py question --code txcmg0002 --desc "Proceed?"` |
-| **Function** | `.fnc` | Reusable Include | `function` | `python ln_studio_skill/tools/ln_component_builder.py function --code txcmgfnc01 --desc "Calc"` |
-| **Additional File** | `.add` | Text / Binary Asset | `additional` | `python ln_studio_skill/tools/ln_component_builder.py additional --code txcmgcfg --desc "Config"` |
-| **MMT Controller** | `.ses` | Type 2 MMT | `session` | `python ln_studio_skill/tools/ln_component_builder.py session --spec mmt_spec.yaml` |
+| **Table** | `.tbl` | Ecore Model 1-14 | `table` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml` |
+| **Session** | `.ses` | Type 1-4, MMT | `session` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py session --spec schema.yaml` |
+| **Domain** | `.dmn` | Byte, Long, String, Enum | `domain` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py domain --spec schema.yaml` |
+| **Library** | `.lib` | DLL / Extension | `library` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py library --spec schema.yaml` |
+| **Menu** | `.mnu` | Menu Hierarchy | `menu` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py menu --spec schema.yaml` |
+| **Label** | `.lbl` | Multi-language | `label` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py label --code txcmg011.lbl --desc "Batch"` |
+| **Report** | `.rpt` | Layout & Data Source | `report` / `clone-component` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py clone-component --source-type report ...` |
+| **Message** | `.msg` | Severity Levels | `message` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py message --code txcmg0001 --desc "Invalid"` |
+| **Question** | `.qst` | Yes/No/Cancel | `question` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py question --code txcmg0002 --desc "Proceed?"` |
+| **Function** | `.fnc` | Reusable Include | `function` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py function --code txcmgfnc01 --desc "Calc"` |
+| **Additional File** | `.add` | Text / Binary Asset | `additional` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py additional --code txcmgcfg --desc "Config"` |
+| **MMT Controller** | `.ses` | Type 2 MMT | `session` | `python .agents/skills/ln_studio_skill/tools/ln_component_builder.py session --spec mmt_spec.yaml` |
 
 ### Consolidated Declarative YAML Specification (`schema.yaml`)
 
@@ -307,7 +307,7 @@ sessions:
 
 > [!WARNING]
 > <a id="human-commit-gate"></a>
-> ### Strict Human-in-the-Loop Commit Gate ([ADR 0007](../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))
+> ### Strict Human-in-the-Loop Commit Gate ([ADR 0007](../../../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))
 > To protect enterprise environments against accidental or automated delivery closures:
 > - Calling `end-activity` in CLI, MCP, or Java bridge raises `PreCommitBoundaryError` and is **hard-blocked**.
 > - Automated agents must run `prepare-end-activity` to verify activity readiness, synchronize `.project` and `.admin`, and generate a structured commit handoff report.
@@ -321,45 +321,45 @@ sessions:
 # -------------------------------------------------------------
 # 1. Environment & Workspace Management
 # -------------------------------------------------------------
-python ln_studio_skill/tools/ln_component_builder.py environments
-python ln_studio_skill/tools/ln_component_builder.py connect --ionapi credentials/PRD_ENV.ionapi --workspace PRD_ENV
-python ln_studio_skill/tools/ln_component_builder.py workspace --list-workspaces
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py environments
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py connect --ionapi credentials/PRD_ENV.ionapi --workspace PRD_ENV
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py workspace --list-workspaces
 
 # -------------------------------------------------------------
 # 2. Remote Server Explorers
 # -------------------------------------------------------------
-python ln_studio_skill/tools/ln_component_builder.py project --list
-python ln_studio_skill/tools/ln_component_builder.py activity --list --project PROJ_CUSTOM_01
-python ln_studio_skill/tools/ln_component_builder.py activity --create ACT_DEV_001 --project PROJ_CUSTOM_01 --desc "New Feature" --bootstrap
-python ln_studio_skill/tools/ln_component_builder.py clean-activity --project PROJ_CUSTOM_01 --activity-id ACT_DEV_001
-python ln_studio_skill/tools/ln_component_builder.py explorer --type table --filter "tx*" --project PROJ_CUSTOM_01
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py project --list
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py activity --list --project PROJ_CUSTOM_01
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py activity --create ACT_DEV_001 --project PROJ_CUSTOM_01 --desc "New Feature" --bootstrap
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py clean-activity --project PROJ_CUSTOM_01 --activity-id ACT_DEV_001
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py explorer --type table --filter "tx*" --project PROJ_CUSTOM_01
 
 # -------------------------------------------------------------
 # 3. Declarative Component Modeling & Cloning
 # -------------------------------------------------------------
-python ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml --output-dir .
-python ln_studio_skill/tools/ln_component_builder.py session --spec schema.yaml --output-dir .
-python ln_studio_skill/tools/ln_component_builder.py clone-component --source-type report --source-name tdsls440101000 --target-name txsls440101000 --activity ACT_DEV_001
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml --output-dir .
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py session --spec schema.yaml --output-dir .
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py clone-component --source-type report --source-name tdsls440101000 --target-name txsls440101000 --activity ACT_DEV_001
 
 # -------------------------------------------------------------
 # 4. SCM, Reference Sync & Automated deploy-test Pipeline
 # -------------------------------------------------------------
-python ln_studio_skill/tools/ln_component_builder.py sync-reference --type table --name "tdsls40*" --workspace PRD_ENV
-python ln_studio_skill/tools/ln_component_builder.py checkout-component --type table --name txcmg011 --activity ACT_DEV_001 --comment "Modify batch"
-python ln_studio_skill/tools/ln_component_builder.py checkin-component --type table --name txcmg011 --activity ACT_DEV_001 --comment "Updated"
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py sync-reference --type table --name "tdsls40*" --workspace PRD_ENV
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py checkout-component --type table --name txcmg011 --activity ACT_DEV_001 --comment "Modify batch"
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py checkin-component --type table --name txcmg011 --activity ACT_DEV_001 --comment "Updated"
 
 # Safe Script-Only Deploy & Test (Default: Put -> Compile -> VSC -> CheckIn):
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode compile-only --comment "Deploy script"
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode compile-only --comment "Deploy script"
 
 # Full Schema Reconfiguration (Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn):
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode schema-crdd --dry-run
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode schema-crdd --comment "Deploy schema"
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode schema-crdd --dry-run
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode schema-crdd --comment "Deploy schema"
 
 # -------------------------------------------------------------
 # 5. Verification & Pre-Commit Gates
 # -------------------------------------------------------------
-python ln_studio_skill/tools/ln_component_builder.py validate ACT_DEV_001 --strict --fix
-python ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity ACT_DEV_001
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py validate ACT_DEV_001 --strict --fix
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity ACT_DEV_001
 ```
 
 ---
@@ -369,13 +369,13 @@ python ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --acti
 Run the full unit test suite across all tools:
 
 ```bash
-python -m unittest discover -s ln_studio_skill/tools/tests -p "test_*.py"
+python -m unittest discover -s .agents/skills/ln_studio_skill/tools/tests -p "test_*.py"
 ```
 
 Validate documentation integrity & links:
 
 ```bash
-python ln_studio_skill/tools/validate_skill.py --skill-dir ln_studio_skill
+python .agents/skills/ln_studio_skill/tools/validate_skill.py --skill-dir .agents/skills/ln_studio_skill
 ```
 
 ---

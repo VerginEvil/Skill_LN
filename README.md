@@ -2,9 +2,9 @@
 
 [![Infor LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8%20Build%200640-0052CC?style=for-the-badge&logo=infor&logoColor=white)](https://www.infor.com)
 [![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-4CAF50?style=for-the-badge&logo=anthropic&logoColor=white)](#installation--agent-configuration)
-[![MCP Server](https://img.shields.io/badge/MCP%20Server-Native%20Stdio%20(16%20Tools)-FF6F00?style=for-the-badge&logo=json&logoColor=white)](ln_studio_skill#native-stdio-mcp-server-ln_studio_mcppy)
-[![Headless JCA](https://img.shields.io/badge/Headless%20Engine-JCA%201.6%20Bridge%20(JDK%2011)-795548?style=for-the-badge&logo=openjdk&logoColor=white)](ln_studio_skill#headless-jca-architecture)
-[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](erp-ln-progguide#standalone-4gl--dal-audit-engine-audit_4glpy)
+[![MCP Server](https://img.shields.io/badge/MCP%20Server-Native%20Stdio%20(16%20Tools)-FF6F00?style=for-the-badge&logo=json&logoColor=white)](.agents/skills/ln_studio_skill#native-stdio-mcp-server-ln_studio_mcppy)
+[![Headless JCA](https://img.shields.io/badge/Headless%20Engine-JCA%201.6%20Bridge%20(JDK%2011)-795548?style=for-the-badge&logo=openjdk&logoColor=white)](.agents/skills/ln_studio_skill#headless-jca-architecture)
+[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](.agents/skills/erp-ln-progguide#standalone-4gl--dal-audit-engine-audit_4glpy)
 [![Tests](https://img.shields.io/badge/Tests-291%2F291%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
 [![CI](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml/badge.svg)](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml)
 [![Releases](https://img.shields.io/github/v/release/VerginEvil/Skill_LN?style=for-the-badge&logo=github)](https://github.com/VerginEvil/Skill_LN/releases)
@@ -27,8 +27,8 @@ Download standalone zip packages ready for immediate import without cloning the 
 
 ### ⚡ Quick Navigation
 [⚡ 60-Second Quick Start](#-60-second-quick-start) • 
-[🛠 Pillar 1: Studio MCP Skill](ln_studio_skill/README.md) • 
-[📚 Pillar 2: 4GL Audit & Guide](erp-ln-progguide/README.md) • 
+[🛠 Pillar 1: Studio MCP Skill](.agents/skills/ln_studio_skill/README.md) • 
+[📚 Pillar 2: 4GL Audit & Guide](.agents/skills/erp-ln-progguide/README.md) • 
 [🎨 Pillar 3: VS Code Assets](export/vscode/README.md) • 
 [⚖️ Feature Matrix](#feature-matrix-eclipse-gui-vs-skill_ln-headless) • 
 [📖 Architecture Docs & ADRs](docs/)
@@ -39,7 +39,7 @@ Download standalone zip packages ready for immediate import without cloning the 
 
 Skill_LN solves the high complexity, friction, and fragility of developing on **Infor ERP LN** by establishing three interconnected, enterprise-hardened pillars:
 
-| 🛠 [Pillar 1: Studio Automation & MCP](ln_studio_skill/README.md) | 📚 [Pillar 2: Knowledge Base & Linter](erp-ln-progguide/README.md) | 🎨 [Pillar 3: VS Code Assets](export/vscode/README.md) |
+| 🛠 [Pillar 1: Studio Automation & MCP](.agents/skills/ln_studio_skill/README.md) | 📚 [Pillar 2: Knowledge Base & Linter](.agents/skills/erp-ln-progguide/README.md) | 🎨 [Pillar 3: VS Code Assets](export/vscode/README.md) |
 |---|---|---|
 | **Headless JCA & AI Agent Orchestration** | **5,700+ Pages Reference & Static Linter** | **Production IDE Language Pack** |
 | • Headless JCA 1.6 Connector (JDK 11) | • 5,700+ Pages Converted Markdown | • TextMate Syntax Grammar (`.tmLanguage.json`) |
@@ -49,9 +49,9 @@ Skill_LN solves the high complexity, friction, and fragility of developing on **
 | • Pre-Commit SCM Engine & `deploy-test` | • 6 Architectural Cookbooks (DAL2, SoC) | • Ready to Package into VSIX / Language Server |
 | • Native Stdio MCP Server (16 Tools) | • Token-Efficient Single-Line Grep Index | • Full Preprocessor & Embedded SQL Support |
 
-1. **[Infor LN Studio Automation Toolset & Native MCP Server](ln_studio_skill/README.md)** (`ln_studio_skill/`):  
+1. **[Infor LN Studio Automation Toolset & Native MCP Server](.agents/skills/ln_studio_skill/README.md)** (`.agents/skills/ln_studio_skill/`):  
    Self-contained reverse-engineered CLI toolchain (`ln_component_builder.py` with 37 subcommands) and native JSON-RPC 2.0 Stdio MCP Server (`ln_studio_mcp.py` with 16 tools). Communicates directly with Infor LN servers via headless JCA 1.6 BDE calls on JDK 11, automating multi-environment `.ionapi` credentials, remote explorers, 12-component declarative XML generation, SCM check-out/check-in, `deploy-test` on Activity VRC, and 4-layer static verification with human-in-the-loop commit gates ([ADR 0006](docs/adr/0006-ln-studio-extension-readonly-and-lnui-workflow.md), [ADR 0007](docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md)).
-2. **[Baan 4GL Programmer's Guide, Dev Tools & Standalone Audit Engine](erp-ln-progguide/README.md)** (`erp-ln-progguide/`):  
+2. **[Baan 4GL Programmer's Guide, Dev Tools & Standalone Audit Engine](.agents/skills/erp-ln-progguide/README.md)** (`.agents/skills/erp-ln-progguide/`):  
    Over 5,700 converted Markdown reference pages covering **2,266 authoritative bshell functions** from Studio Build 0640 with Cloud Multi-Tenant Trust ratings, 1,833 public interfaces / process extensions, AFS `stpapi.*` primitives, 13 chapters of Infor LN Development Tools (2016), a 6-part architectural Best Practices Cookbook suite, official Studio script templates, and a zero-dependency **Standalone 4GL & DAL Audit Engine** (`scripts/audit_4gl.py`) enforcing 14 static rules ([ADR 0005](docs/adr/0005-progguide-studio-dictionaries-and-audit-engine.md), [ADR 0008](docs/adr/0008-semantic-ast-auditor-oauth-dd-cache-and-byoj-hardening.md)).
 3. **[VS Code Extension Production-Ready Assets](export/vscode/README.md)** (`export/vscode/`):  
    Production-grade TextMate grammar (`tmLanguage.json`), 19 rich code snippets (`.code-snippets`), language configuration, and hover/completion catalog covering 2,491 symbols, ready for immediate packaging into VS Code extensions or language servers.
@@ -170,25 +170,25 @@ Experience Skill_LN immediately through a three-step progressive onboarding path
 ### Step 1: Instant Static Audit (Zero Setup, Offline Python)
 Lint any Baan 4GL, DAL2, or User Exit script offline with zero dependencies:
 ```bash
-python erp-ln-progguide/scripts/audit_4gl.py <script_path>.4gl --mode dal2 --cloud
+python .agents/skills/erp-ln-progguide/scripts/audit_4gl.py <script_path>.4gl --mode dal2 --cloud
 ```
 *Detects syntax mismatches, direct database mutations in UI scripts (`DAL004`), float equality hazards (`CAV001`), and untrusted cloud functions.*
 
 ### Step 2: Headless Infor LN Connectivity (One-Liner)
 Import your `.ionapi` credentials and establish an authenticated workspace with token caching:
 ```bash
-python ln_studio_skill/tools/ln_component_builder.py connect --ionapi credentials/PRD_ENV.ionapi --workspace PRD_ENV
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py connect --ionapi credentials/PRD_ENV.ionapi --workspace PRD_ENV
 ```
 *Automatically validates HTTPS BDE connectivity, tests OAuth2 tokens, and caches credentials at `~/.ln_studio/tokens/`.*
 
 ### Step 3: Launch Native AI Agent MCP Server
 Connect your favorite AI Coding Agent (Claude Desktop, Cursor, Antigravity) to Infor LN:
 ```bash
-python ln_studio_skill/tools/ln_component_builder.py mcp-setup --target claude-desktop
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target claude-desktop
 # or
-python ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
 ```
-👉 *See the [AI Agent Configuration Matrix](ln_studio_skill/README.md#ai-agent-configuration-matrix) for ready-to-copy JSON configuration blocks.*
+👉 *See the [AI Agent Configuration Matrix](.agents/skills/ln_studio_skill/README.md#ai-agent-configuration-matrix) for ready-to-copy JSON configuration blocks.*
 
 ---
 
@@ -225,7 +225,7 @@ python ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
 
 ## Pillar 1: Infor LN Studio Automation & MCP Skill (`ln_studio_skill`)
 
-Located in [`ln_studio_skill/`](ln_studio_skill/README.md).
+Located in [`.agents/skills/ln_studio_skill/`](.agents/skills/ln_studio_skill/README.md).
 
 ### Key Capabilities
 - **Headless JCA 1.6 Connectivity**: Connects directly to Infor LN Enterprise Server / CloudSuite via BDE XML protocol on JDK 11.
@@ -262,27 +262,27 @@ Located in [`ln_studio_skill/`](ln_studio_skill/README.md).
 ### Quick CLI Examples (Sanitized)
 ```bash
 # Explore environments & servers:
-python ln_studio_skill/tools/ln_component_builder.py environments
-python ln_studio_skill/tools/ln_component_builder.py connect --ionapi PRD_ENV.ionapi --workspace PRD_ENV
-python ln_studio_skill/tools/ln_component_builder.py explorer --type table --filter "tx*" --project PROJ_CUSTOM_01
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py environments
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py connect --ionapi PRD_ENV.ionapi --workspace PRD_ENV
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py explorer --type table --filter "tx*" --project PROJ_CUSTOM_01
 
 # Declaratively generate components:
-python ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml
-python ln_studio_skill/tools/ln_component_builder.py clone-component --type report --source tdsls440101000 --target txsls440101000 --activity ACT_DEV_001
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py table --spec schema.yaml
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py clone-component --type report --source tdsls440101000 --target txsls440101000 --activity ACT_DEV_001
 
 # Deploy & test on Cloud Activity VRC:
-python ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --mode compile-only --activity ACT_DEV_001 --comment "Ready for test"
-python ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity ACT_DEV_001
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --mode compile-only --activity ACT_DEV_001 --comment "Ready for test"
+python .agents/skills/ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity ACT_DEV_001
 ```
 
-👉 *See the full [ln_studio_skill README](ln_studio_skill/README.md) for detailed CLI commands, schema specifications, and MCP configuration.*
+👉 *See the full [ln_studio_skill README](.agents/skills/ln_studio_skill/README.md) for detailed CLI commands, schema specifications, and MCP configuration.*
 </details>
 
 ---
 
 ## Pillar 2: Programmer's Guide, Dev Tools & Audit Engine (`erp-ln-progguide`)
 
-Located in [`erp-ln-progguide/`](erp-ln-progguide/README.md).
+Located in [`.agents/skills/erp-ln-progguide/`](.agents/skills/erp-ln-progguide/README.md).
 
 ### Key Capabilities
 - **5,700+ Reference Pages**: Comprehensive Markdown reference covering bshell functions, SQL, Extension Modeler, public interfaces, and dev tools.
@@ -313,14 +313,14 @@ Located in [`erp-ln-progguide/`](erp-ln-progguide/README.md).
 | `CAV003` | Caveat | `ERROR` [Exit 1] | Intra-file Call Graph detection of direct and transitive nested transactions |
 
 ### 6 Architectural Best Practices Cookbooks
-1. [`01_extension_hooks_cookbook.md`](erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md): Table/Session hook lifecycles, CDF recipes, `DALHOOKERROR`, Cloud governance.
-2. [`02_dal_architecture_and_business_logic.md`](erp-ln-progguide/references/best_practices/02_dal_architecture_and_business_logic.md): Separation of Concerns (SoC), DAL 1 vs 2, business methods.
-3. [`03_sql_query_optimization_and_transactions.md`](erp-ln-progguide/references/best_practices/03_sql_query_optimization_and_transactions.md): Embedded Baan SQL, index alignment, array fetching, `db.retry.point()`.
-4. [`04_data_model_and_domain_design.md`](erp-ln-progguide/references/best_practices/04_data_model_and_domain_design.md): Domain modeling, referential integrity, safe 2-step `crdd` table reconfiguration.
-5. [`05_session_and_mmt_patterns.md`](erp-ln-progguide/references/best_practices/05_session_and_mmt_patterns.md): Session types 1-4, MMT Controller & Satellite synchronization.
-6. [`06_4gl_coding_standards_and_caveats.md`](erp-ln-progguide/references/best_practices/06_4gl_coding_standards_and_caveats.md): Domains vs primitives, buffer collision prevention, float equality caveats (`double.cmp`), 1-based arrays.
+1. [`01_extension_hooks_cookbook.md`](.agents/skills/erp-ln-progguide/references/best_practices/01_extension_hooks_cookbook.md): Table/Session hook lifecycles, CDF recipes, `DALHOOKERROR`, Cloud governance.
+2. [`02_dal_architecture_and_business_logic.md`](.agents/skills/erp-ln-progguide/references/best_practices/02_dal_architecture_and_business_logic.md): Separation of Concerns (SoC), DAL 1 vs 2, business methods.
+3. [`03_sql_query_optimization_and_transactions.md`](.agents/skills/erp-ln-progguide/references/best_practices/03_sql_query_optimization_and_transactions.md): Embedded Baan SQL, index alignment, array fetching, `db.retry.point()`.
+4. [`04_data_model_and_domain_design.md`](.agents/skills/erp-ln-progguide/references/best_practices/04_data_model_and_domain_design.md): Domain modeling, referential integrity, safe 2-step `crdd` table reconfiguration.
+5. [`05_session_and_mmt_patterns.md`](.agents/skills/erp-ln-progguide/references/best_practices/05_session_and_mmt_patterns.md): Session types 1-4, MMT Controller & Satellite synchronization.
+6. [`06_4gl_coding_standards_and_caveats.md`](.agents/skills/erp-ln-progguide/references/best_practices/06_4gl_coding_standards_and_caveats.md): Domains vs primitives, buffer collision prevention, float equality caveats (`double.cmp`), 1-based arrays.
 
-👉 *See the full [erp-ln-progguide README](erp-ln-progguide/README.md) for detailed reference documentation and audit engine usage.*
+👉 *See the full [erp-ln-progguide README](.agents/skills/erp-ln-progguide/README.md) for detailed reference documentation and audit engine usage.*
 </details>
 
 ---
@@ -345,7 +345,8 @@ Copy or link the skill folders to your agent's configuration directory:
 | **Claude Code** | `~/.claude/skills/erp-ln-progguide/` | `~/.claude/skills/ln_studio_skill/` |
 | **OpenClaw** | `~/.openclaw/skills/erp-ln-progguide/` | `~/.openclaw/skills/ln_studio_skill/` |
 | **Cursor** | `.cursor/skills/erp-ln-progguide/` | `.cursor/skills/ln_studio_skill/` |
-| **Gemini CLI / Antigravity** | `~/.gemini/skills/erp-ln-progguide/` | `~/.gemini/skills/ln_studio_skill/` |
+| **Antigravity (Global Cache)** | `~/.gemini/config/skills/erp-ln-progguide/` | `~/.gemini/config/skills/ln_studio_skill/` |
+| **Antigravity (Home Repo Workspace)** | `.agents/skills/erp-ln-progguide/` | `.agents/skills/ln_studio_skill/` |
 
 ---
 
@@ -383,22 +384,25 @@ Skill_LN/
 ├── README.md                         # Main repository documentation (Executive Developer Portal)
 ├── CHANGELOG.md                      # Release notes & version history (Keep a Changelog)
 ├── LICENSE                           # Open source MIT license
-├── AGENTS.md                         # AI agent behavioral & testing guardrails
+├── AGENTS.md                         # Home Repo steering & verification guidelines
+├── CLAUDE.md                         # Claude Code pointer (@AGENTS.md)
 │
-├── ln_studio_skill/                  # PILLAR 1: Infor LN Studio Automation & MCP Skill
-│   ├── README.md                     # Modern DevOps & AI Agent Toolkit documentation
-│   ├── SKILL.md                      # AI agent skill definition & instructions
-│   ├── references/                   # Distilled LN Studio Application Development Guide
-│   └── tools/                        # 37 CLI subcommands, 16 MCP tools, 283 unit tests
-│
-├── erp-ln-progguide/                 # PILLAR 2: Programmer's Guide & Static Linter
-│   ├── README.md                     # Static Linter & Knowledge Base platform documentation
-│   ├── SKILL.md                      # AI agent skill definition & instructions
-│   ├── index/                        # 2,266 bshell functions database (functions_db.json)
-│   ├── references/                   # 5,700+ MD pages, 6 cookbooks, 13 dev tools ch
-│   ├── templates/                    # 9 official Studio script templates
-│   ├── scripts/                      # audit_4gl.py (static auditor) & search.py
-│   └── tests/                        # Unit tests & samples for audit engine (8 tests)
+├── .agents/                          # Antigravity-first workspace rules & canonical skills
+│   ├── rules/                        # Modular progressive-disclosure rules (always_on / model_decision)
+│   └── skills/
+│       ├── ln_studio_skill/          # PILLAR 1: Infor LN Studio Automation & MCP Skill
+│       │   ├── README.md             # Modern DevOps & AI Agent Toolkit documentation
+│       │   ├── SKILL.md              # AI agent skill definition & instructions
+│       │   ├── references/           # Distilled LN Studio Application Development Guide
+│       │   └── tools/                # 37 CLI subcommands, 16 MCP tools, unit tests
+│       └── erp-ln-progguide/         # PILLAR 2: Programmer's Guide & Static Linter
+│           ├── README.md             # Static Linter & Knowledge Base platform documentation
+│           ├── SKILL.md              # AI agent skill definition & instructions
+│           ├── index/                # 2,266 bshell functions database (functions_db.json)
+│           ├── references/           # 5,700+ MD pages, 6 cookbooks, 13 dev tools ch
+│           ├── templates/            # 9 official Studio script templates
+│           ├── scripts/              # audit_4gl.py (static auditor) & search.py
+│           └── tests/                # Unit tests & samples for audit engine
 │
 ├── export/vscode/                    # PILLAR 3: VS Code Extension Production Assets
 │   ├── README.md                     # VS Code package wiring guide

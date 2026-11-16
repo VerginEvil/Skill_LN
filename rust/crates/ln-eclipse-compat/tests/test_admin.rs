@@ -138,7 +138,7 @@ fn test_java_admin_sync_helper_differential_roundtrip() {
     let repo_root = std::path::Path::new(manifest_dir)
         .parent().unwrap()
         .parent().unwrap();
-    let tools_lib = repo_root.join("ln_studio_skill").join("tools").join("lib");
+    let tools_lib = repo_root.join(".agents").join("skills").join("ln_studio_skill").join("tools").join("lib");
     let helper_class = tools_lib.join("tools").join("lib").join("AdminSyncHelper.class");
     if !helper_class.exists() {
         eprintln!("[SKIP] AdminSyncHelper.class not found at {:?}", helper_class);

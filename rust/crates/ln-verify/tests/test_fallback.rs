@@ -74,3 +74,30 @@ fn test_find_python_builder_script() {
     assert!(p.exists());
     assert!(p.to_string_lossy().contains("ln_component_builder.py"));
 }
+
+#[test]
+fn test_find_python_builder_script_prefers_agents_layout_with_root_fallback() {
+    let td = tempdir().unwrap();
+    let root = td.path();
+    let nested = root.join("rust").join("crates");
+    std::fs::create_dir_all(&nested).unwrap();
+
+    // Only root layout exists -> falls back to root (standalone bundle)
+    let root_builder = root.join("ln_studio_skill").join("tools").join("ln_component_builder.py");
+    std::fs::create_dir_all(root_builder.parent().unwrap()).unwrap();
+    std::fs::write(&root_builder, "# stub").unwrap();
+    let resolved_fallback = find_python_builder_script_from(Some(&nested), None).unwrap();
+    assert_eq!(resolved_fallback, root_builder.canonicalize().unwrap());
+
+    // When .agents/skills layout exists -> prefers .agents/skills
+    let agents_builder = root
+        .join(".agents")
+        .join("skills")
+        .join("ln_studio_skill")
+        .join("tools")
+        .join("ln_component_builder.py");
+    std::fs::create_dir_all(agents_builder.parent().unwrap()).unwrap();
+    std::fs::write(&agents_builder, "# stub").unwrap();
+    let resolved_agents = find_python_builder_script_from(Some(&nested), None).unwrap();
+    assert_eq!(resolved_agents, agents_builder.canonicalize().unwrap());
+}

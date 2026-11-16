@@ -143,3 +143,11 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Sanitized Crash Fixture (`LN_FALLBACK_MODE`)**: Automated resilience mechanism that strips bearer tokens, writes failing BDE request/response payloads to `~/.ln_studio/unmapped_packets/<timestamp>_<bde>_<method>.json` for immediate `cargo test` replay, and optionally falls back to the legacy Python/Java bridge when `LN_FALLBACK_MODE=auto`.
 - **Built-in Studio Build Differ (`skill-ln verify-studio-build`)**: Zero-dependency JVM `.class` (`0xCAFEBABE`) and `owtemplates/*.xml` comparator embedded in `skill-ln` that diffs future Infor LN Studio builds against the Build 0640 baseline manifest in `< 1 second`.
 
+### Home Repo Pattern & Antigravity Workspace Layout (ADR 0022)
+- **Home Repo (`Skill_LN`)**: The single central repository where AI agent sessions start, housing canonical workspace skills, shared cross-repo steering (`AGENTS.md`), modular rules, shared domain docs, and navigation pointers to active project repositories.
+- **Workspace `.agents/` Layout**: Antigravity-native project customization layout placing workspace skills under `.agents/skills/<skill>/SKILL.md` and workspace rules under `.agents/rules/*.md` (superseding ADR 0015 root skill placement).
+- **Local Repo Pointer Overlay (`repos.local.md`)**: A gitignored `always_on` rule file (`.agents/rules/repos.local.md`, paired with a tracked `.example.md` template) that stores private customer repository names, local Windows paths, and internal GitLab URLs without exposing them in the public `Skill_LN` repository.
+- **Global Slash-Command Sync Cache (`~/.gemini/config/skills/`)**: The machine-local Antigravity skills directory populated via one-way real-directory copy (`python scripts/run_checks.py --sync-skill`) rather than Windows junctions, ensuring `/` slash-command discovery works reliably without stale drift.
+- **Expand–Contract Path Migration**: A zero-downtime migration sequence that first adds `.agents/skills/` path support alongside root fallbacks in Python/Rust tooling, moves the skill directories, and finally contracts obsolete root paths and duplicate global copies.
+
+

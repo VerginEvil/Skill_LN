@@ -78,7 +78,8 @@ class ValidateTests(unittest.TestCase):
         self.assertEqual(failures, [])
 
     def test_cli_exit_code(self):
-        proc = subprocess.run([sys.executable, "ln_studio_skill/tools/validate_skill.py",
+        script_path = Path(__file__).resolve().parent.parent / "validate_skill.py"
+        proc = subprocess.run([sys.executable, str(script_path),
                                "--skill-dir", str(self.skill)],
                               capture_output=True, text=True, cwd=Path.cwd())
         self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)

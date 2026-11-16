@@ -570,7 +570,7 @@ To use these assets in a new or existing VS Code extension:
 
 
 def main() -> int:
-    skill_dir = Path("erp-ln-progguide")
+    skill_dir = Path(".agents/skills/erp-ln-progguide")
     export_dir = Path("export/vscode")
 
     print("=== VS Code Extension Assets Export Pipeline ===")

@@ -58,8 +58,8 @@ venv.bak/
 # (Authentic JCA jars must be provided by user via BYOJ / Eclipse installation)
 # ------------------------------------------------------------------------------
 *.class
-ln_studio_skill/tools/lib/tools/
-ln_studio_skill/tools/lib/*.jar
+.agents/skills/ln_studio_skill/tools/lib/tools/
+.agents/skills/ln_studio_skill/tools/lib/*.jar
 **/JCAAdapter4ERPln*.jar
 **/lnstudio_commoncore.jar
 
@@ -86,3 +86,8 @@ desktop.ini
 !.vscode/launch.json
 *.sublime-project
 *.sublime-workspace
+
+# ------------------------------------------------------------------------------
+# 7. Home Repo Local Pointer Overlay (ADR 0022)
+# ------------------------------------------------------------------------------
+.agents/rules/repos.local.md
