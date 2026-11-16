@@ -111,7 +111,11 @@ def generate_function_index(skill: Path) -> tuple[str, int]:
             import json
             import sys
             # Look in scripts/developer (modern repo layout) or legacy tools directory
-            repo_root = Path(__file__).resolve().parent.parent.parent
+            here = Path(__file__).resolve()
+            repo_root = next(
+                (p for p in here.parents if (p / "scripts" / "developer").exists() or (p / "tools").exists()),
+                here.parent.parent.parent,
+            )
             scripts_dev_dir = repo_root / "scripts" / "developer"
             legacy_tools_dir = repo_root / "tools"
             for d in (scripts_dev_dir, legacy_tools_dir):
@@ -220,7 +224,7 @@ def generate_public_interfaces_index(skill: Path, edition: str, pages: int,
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Regenerate skill indices.")
-    ap.add_argument("--skill-dir", default="erp-ln-progguide")
+    ap.add_argument("--skill-dir", default=".agents/skills/erp-ln-progguide")
     ap.add_argument("--edition", default="25082026")
     ap.add_argument("--pages", type=int, default=2361)
     ap.add_argument("--source-pdf",

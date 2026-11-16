@@ -2,9 +2,9 @@ import sys
 import json
 from pathlib import Path
 
-# Add ln_studio_skill/tools to sys.path
+# Add .agents/skills/ln_studio_skill/tools to sys.path
 repo_root = Path(__file__).resolve().parents[4]
-tools_dir = repo_root / "ln_studio_skill" / "tools"
+tools_dir = repo_root / ".agents" / "skills" / "ln_studio_skill" / "tools"
 sys.path.insert(0, str(tools_dir))
 
 from generate_ln_table import generate_table_xml, generate_label_xml, generate_domain_xml

@@ -286,8 +286,8 @@ def generate_studio_index(
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Convert LN Studio Application Guide txt to Markdown.")
     ap.add_argument("--src", default="update/Infor LN Studio Application Development Guide (Cloud and On-premises) 09-2025.txt")
-    ap.add_argument("--out-dir", default="ln_studio_skill/references/studio_guide")
-    ap.add_argument("--index", default="ln_studio_skill/references/STUDIO_INDEX.md")
+    ap.add_argument("--out-dir", default=".agents/skills/ln_studio_skill/references/studio_guide")
+    ap.add_argument("--index", default=".agents/skills/ln_studio_skill/references/STUDIO_INDEX.md")
     args = ap.parse_args(argv)
 
     src = Path(args.src)

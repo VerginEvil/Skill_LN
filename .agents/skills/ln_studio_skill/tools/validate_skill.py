@@ -113,7 +113,7 @@ def check_page_links(skill: Path) -> tuple[int, list[str]]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Validate skill index/link integrity.")
-    ap.add_argument("--skill-dir", default="erp-ln-progguide")
+    ap.add_argument("--skill-dir", default=".agents/skills/erp-ln-progguide")
     args = ap.parse_args(argv)
     skill = Path(args.skill_dir)
 

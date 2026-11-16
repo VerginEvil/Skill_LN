@@ -46,7 +46,7 @@ fn test_python_markers_differential_roundtrip() {
     let repo_root = std::path::Path::new(manifest_dir)
         .parent().unwrap()
         .parent().unwrap();
-    let py_script = repo_root.join("ln_studio_skill").join("tools").join("ln_error_reader.py");
+    let py_script = repo_root.join(".agents").join("skills").join("ln_studio_skill").join("tools").join("ln_error_reader.py");
     if !py_script.exists() {
         eprintln!("[SKIP] ln_error_reader.py not found at {:?}", py_script);
         return;

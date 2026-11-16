@@ -26,9 +26,17 @@ from pathlib import Path
 from typing import Optional, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-TOOLS_DIR = REPO_ROOT / "ln_studio_skill" / "tools"
+
+
+def resolve_skill_dir(repo_root: Path, skill_name: str) -> Path:
+    """Resolves canonical skill directory under .agents/skills/<name> (ADR 0022)."""
+    return repo_root / ".agents" / "skills" / skill_name
+
+
+STUDIO_DIR = resolve_skill_dir(REPO_ROOT, "ln_studio_skill")
+TOOLS_DIR = STUDIO_DIR / "tools"
 TESTS_DIR = TOOLS_DIR / "tests"
-PROGGUIDE_DIR = REPO_ROOT / "erp-ln-progguide"
+PROGGUIDE_DIR = resolve_skill_dir(REPO_ROOT, "erp-ln-progguide")
 PROGGUIDE_SCRIPTS_DIR = PROGGUIDE_DIR / "scripts"
 PROGGUIDE_TESTS_DIR = PROGGUIDE_DIR / "tests"
 
@@ -119,7 +127,7 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
     path_prefixes = ("references/", "scripts/", "tools/", "templates/", "index/", "../")
 
     for sname in skill_names:
-        skill_dir = root / sname
+        skill_dir = resolve_skill_dir(root, sname)
         skill_file = skill_dir / "SKILL.md"
         if not skill_file.exists():
             errors.append(f"{sname}/SKILL.md does not exist.")
@@ -290,9 +298,9 @@ def _get_target_pairs(target_dir: Optional[Path]) -> List[Tuple[str, Path, Path,
     """Resolves (skill_name, src_dir, dest_dir, include_prefix) pairs for drift & sync."""
     dest_base = target_dir or (Path.home() / ".gemini" / "config" / "skills")
     if target_dir and target_dir.name in SKILL_CONFIGS:
-        return [(target_dir.name, REPO_ROOT / target_dir.name, target_dir, False)]
+        return [(target_dir.name, resolve_skill_dir(REPO_ROOT, target_dir.name), target_dir, False)]
     return [
-        (sname, REPO_ROOT / sname, dest_base / sname, True)
+        (sname, resolve_skill_dir(REPO_ROOT, sname), dest_base / sname, True)
         for sname in SKILL_CONFIGS
     ]
 

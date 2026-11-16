@@ -392,12 +392,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--out-dir",
-        default="erp-ln-progguide/references/dev_tools",
+        default=".agents/skills/erp-ln-progguide/references/dev_tools",
         help="Destination directory for chapter markdown files",
     )
     parser.add_argument(
         "--index",
-        default="erp-ln-progguide/references/DEV_TOOLS_INDEX.md",
+        default=".agents/skills/erp-ln-progguide/references/DEV_TOOLS_INDEX.md",
         help="Destination path for DEV_TOOLS_INDEX.md",
     )
     args = parser.parse_args(argv)

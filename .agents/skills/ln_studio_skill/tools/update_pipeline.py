@@ -236,7 +236,7 @@ def run_pipeline(args) -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Update the ERP LN skill from update/ artifacts.")
     ap.add_argument("--update-dir", default="update")
-    ap.add_argument("--skill-dir", default="erp-ln-progguide")
+    ap.add_argument("--skill-dir", default=".agents/skills/erp-ln-progguide")
     ap.add_argument("--output-dir", default=None,
                     help="alias for --skill-dir (ticket 01 CLI contract)")
     ap.add_argument("--workdir", default=None)

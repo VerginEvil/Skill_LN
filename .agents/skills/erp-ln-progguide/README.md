@@ -1,4 +1,4 @@
-[⬅️ Back to Skill_LN Main Repository](../README.md)
+[⬅️ Back to Skill_LN Main Repository](../../../README.md)
 
 ---
 
@@ -196,13 +196,13 @@ Modeled after modern static analyzers (Ruff, ESLint, Semgrep), `audit_4gl.py` ca
 
 ```bash
 # 1. Audit a single DAL2 script
-python erp-ln-progguide/scripts/audit_4gl.py path/to/txcmg011.dal --mode dal2
+python .agents/skills/erp-ln-progguide/scripts/audit_4gl.py path/to/txcmg011.dal --mode dal2
 
 # 2. Audit in strict Cloud Multi-Tenant governance mode
-python erp-ln-progguide/scripts/audit_4gl.py path/to/txcmg0110m100.cln --cloud --strict
+python .agents/skills/erp-ln-progguide/scripts/audit_4gl.py path/to/txcmg0110m100.cln --cloud --strict
 
 # 3. Audit entire directory and output machine-readable JSON for CI/CD
-python erp-ln-progguide/scripts/audit_4gl.py src/ --format json --output audit_report.json
+python .agents/skills/erp-ln-progguide/scripts/audit_4gl.py src/ --format json --output audit_report.json
 ```
 
 ---
@@ -286,13 +286,13 @@ Located in [`templates/`](templates/):
 
 ```bash
 # Search by topic keywords
-python erp-ln-progguide/scripts/search.py "before.save.object" --dir best_practices
+python .agents/skills/erp-ln-progguide/scripts/search.py "before.save.object" --dir best_practices
 
 # Search bshell functions with regex
-python erp-ln-progguide/scripts/search.py "Json\." --dir guide --max 10
+python .agents/skills/erp-ln-progguide/scripts/search.py "Json\." --dir guide --max 10
 
 # List all available topic documentation groups
-python erp-ln-progguide/scripts/search.py --list-groups
+python .agents/skills/erp-ln-progguide/scripts/search.py --list-groups
 ```
 
 ---
@@ -302,13 +302,13 @@ python erp-ln-progguide/scripts/search.py --list-groups
 Run unit tests for the Standalone Audit Engine:
 
 ```bash
-python -m unittest discover -s erp-ln-progguide/tests
+python -m unittest discover -s .agents/skills/erp-ln-progguide/tests
 ```
 
 Validate documentation integrity & links:
 
 ```bash
-python ln_studio_skill/tools/validate_skill.py --skill-dir erp-ln-progguide
+python .agents/skills/ln_studio_skill/tools/validate_skill.py --skill-dir .agents/skills/erp-ln-progguide
 ```
 
 ---

@@ -56,35 +56,43 @@ pub enum VerifyError {
     General(String),
 }
 
-/// Discovers the location of `ln_component_builder.py` in the workspace or repository.
-pub fn find_python_builder_script() -> Option<PathBuf> {
-    if let Ok(cur_dir) = std::env::current_dir() {
-        let mut d = cur_dir.as_path();
-        loop {
-            let cand = d.join("ln_studio_skill").join("tools").join("ln_component_builder.py");
-            if cand.exists() {
-                return cand.canonicalize().ok().or(Some(cand));
-            }
-            if let Some(parent) = d.parent() {
-                d = parent;
-            } else {
-                break;
-            }
-        }
-    }
+/// Discovers `ln_component_builder.py` from explicit CWD and executable base paths,
+/// checking `.agents/skills/` first and retaining root fallback for standalone bundles.
+pub fn find_python_builder_script_from(
+    cwd: Option<&Path>,
+    exe: Option<&Path>,
+) -> Option<PathBuf> {
+    let rel_candidates = [
+        Path::new(".agents")
+            .join("skills")
+            .join("ln_studio_skill")
+            .join("tools")
+            .join("ln_component_builder.py"),
+        Path::new("ln_studio_skill")
+            .join("tools")
+            .join("ln_component_builder.py"),
+    ];
 
-    if let Ok(cur_exe) = std::env::current_exe() {
-        let mut d = cur_exe.as_path();
-        while let Some(parent) = d.parent() {
-            let cand = parent.join("ln_studio_skill").join("tools").join("ln_component_builder.py");
-            if cand.exists() {
-                return cand.canonicalize().ok().or(Some(cand));
+    for base in [cwd, exe.and_then(|p| p.parent())].into_iter().flatten() {
+        for ancestor in base.ancestors() {
+            for rel in &rel_candidates {
+                let cand = ancestor.join(rel);
+                if cand.exists() {
+                    return cand.canonicalize().ok().or(Some(cand));
+                }
             }
-            d = parent;
         }
     }
 
     None
+}
+
+/// Discovers the location of `ln_component_builder.py` in the workspace or repository.
+pub fn find_python_builder_script() -> Option<PathBuf> {
+    find_python_builder_script_from(
+        std::env::current_dir().ok().as_deref(),
+        std::env::current_exe().ok().as_deref(),
+    )
 }
 
 /// Invokes the legacy Python tool `ln_component_builder.py` with the supplied command line arguments.

@@ -560,7 +560,7 @@ def generate_enriched_function_index(functions_db: Dict[str, Any], skill_path: P
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extract LN Studio build 0640 knowledge into erp-ln-progguide.")
     parser.add_argument("--studio-path", default=str(DEFAULT_STUDIO_PATH), help="Path to LN Studio root")
-    parser.add_argument("--skill-path", default="erp-ln-progguide", help="Path to erp-ln-progguide skill root")
+    parser.add_argument("--skill-path", default=".agents/skills/erp-ln-progguide", help="Path to erp-ln-progguide skill root")
     parser.add_argument("--skip-java", action="store_true", help="Skip Java reflection and use existing extracted json")
     args = parser.parse_args()
 
@@ -582,18 +582,18 @@ def main() -> int:
 
     # 2. Extract Syntax & Completion Dictionaries
     print("\n[2/3] Extracting editor dictionaries & code templates...")
+    fallback_json = Path(".agents/skills/ln_studio_skill/references/studio_syntax_completion.json")
     if args.skip_java:
         existing_json = skill_path / "references" / "studio_syntax_completion.json"
         if not existing_json.exists():
-            existing_json = Path("ln_studio_skill/references/studio_syntax_completion.json")
+            existing_json = fallback_json
         data = json.loads(existing_json.read_text(encoding="utf-8"))
     else:
         try:
             data = extract_editor_dictionaries_java(studio_path)
         except Exception as e:
             print(f"Warning: Java reflection failed: {e}. Falling back to baseline json.")
-            existing_json = Path("ln_studio_skill/references/studio_syntax_completion.json")
-            data = json.loads(existing_json.read_text(encoding="utf-8"))
+            data = json.loads(fallback_json.read_text(encoding="utf-8"))
 
     # Also extract 12 UI templates
     ui_templates = extract_ui_code_templates(studio_path)
