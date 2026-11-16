@@ -4,12 +4,10 @@
 
 # Infor LN Studio Automation Toolset & Assistant Skill (`ln_studio_skill`)
 
-[![Infor LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8%20Build%200640-0052CC?style=for-the-badge&logo=infor&logoColor=white)](https://www.infor.com)
-[![MCP Server](https://img.shields.io/badge/MCP%20Server-Native%20Stdio%20(16%20Tools)-FF6F00?style=for-the-badge&logo=anthropic&logoColor=white)](#native-stdio-mcp-server-ln_studio_mcppy)
-[![Headless JCA](https://img.shields.io/badge/Headless%20Engine-JCA%201.6%20Bridge%20(JDK%2011)-4CAF50?style=for-the-badge&logo=openjdk&logoColor=white)](#headless-jca-architecture)
-[![Components](https://img.shields.io/badge/Generators-12%2F12%20Studio%20Types-9C27B0?style=for-the-badge)](#12-component-archetype-matrix)
-[![SCM Guardrails](https://img.shields.io/badge/SCM%20Guardrails-ADR%200006%20%26%200007-D32F2F?style=for-the-badge)](#strict-human-in-the-loop-commit-gate-adr-0007)
-[![Tests](https://img.shields.io/badge/Tests-283%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
+[![Infor LN](https://img.shields.io/badge/Infor%20LN-10.8%20Build%200640-0052CC?style=flat)](https://www.infor.com)
+[![MCP Server](https://img.shields.io/badge/MCP-16%20Tools-FF6F00?style=flat)](#5-stage-lifecycle-matrix)
+[![Headless JCA](https://img.shields.io/badge/Headless%20JCA-JDK%2011-4CAF50?style=flat)](#headless-jca-architecture)
+[![Generators](https://img.shields.io/badge/Generators-12%20Components-9C27B0?style=flat)](#12-component-archetype-matrix)
 
 > **Self-contained, production-grade intelligence, headless JCA connectivity, declarative 12-component modeling, pre-commit SCM engine, and native Model Context Protocol (MCP) server for Infor LN Studio 10.8 (Build 0640, April 2026 tree, Eclipse RCP).**
 

@@ -1,15 +1,10 @@
 # Skill_LN: Modern Infor ERP LN Developer Platform & Toolchain
 
-[![Infor LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8%20Build%200640-0052CC?style=for-the-badge&logo=infor&logoColor=white)](https://www.infor.com)
-[![Agent Skill](https://img.shields.io/badge/AI%20Skill-Claude%20Code%20%7C%20OpenClaw%20%7C%20Cursor%20%7C%20Antigravity-4CAF50?style=for-the-badge&logo=anthropic&logoColor=white)](#installation--agent-configuration)
-[![MCP Server](https://img.shields.io/badge/MCP%20Server-Native%20Stdio%20(16%20Tools)-FF6F00?style=for-the-badge&logo=json&logoColor=white)](.agents/skills/ln_studio_skill#native-stdio-mcp-server-ln_studio_mcppy)
-[![Headless JCA](https://img.shields.io/badge/Headless%20Engine-JCA%201.6%20Bridge%20(JDK%2011)-795548?style=for-the-badge&logo=openjdk&logoColor=white)](.agents/skills/ln_studio_skill#headless-jca-architecture)
-[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](.agents/skills/erp-ln-progguide#standalone-4gl--dal-audit-engine-audit_4glpy)
-[![Tests](https://img.shields.io/badge/Tests-291%2F291%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
 [![CI](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml/badge.svg)](https://github.com/VerginEvil/Skill_LN/actions/workflows/ci.yml)
-[![Releases](https://img.shields.io/github/v/release/VerginEvil/Skill_LN?style=for-the-badge&logo=github)](https://github.com/VerginEvil/Skill_LN/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Author](https://img.shields.io/badge/Author-Natthaphon%20Srikasem-blueviolet?style=for-the-badge)](#credits--maintainer)
+[![Releases](https://img.shields.io/github/v/release/VerginEvil/Skill_LN?style=flat&logo=github)](https://github.com/VerginEvil/Skill_LN/releases)
+[![Infor LN](https://img.shields.io/badge/Infor%20LN-10.8%20Build%200640-0052CC?style=flat)](https://www.infor.com)
+[![MCP Server](https://img.shields.io/badge/MCP-16%20Tools-FF6F00?style=flat)](.agents/skills/ln_studio_skill/README.md#5-stage-lifecycle-matrix)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
 
 > **Unshackle Infor ERP LN Development from the Heavy Eclipse GUI — Built for Terminal & AI Agents.**  
 > A unified, production-grade intelligence, headless JCA 1.6 modeling, pre-commit SCM automation, and static verification ecosystem for Infor ERP LN & CloudSuite (Studio 10.8 Build 0640, April 2026 tree, Eclipse RCP).

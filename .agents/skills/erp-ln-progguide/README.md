@@ -4,12 +4,10 @@
 
 # Baan 4GL Programmer's Guide, Dev Tools & Standalone Audit Engine (`erp-ln-progguide`)
 
-[![Infor ERP LN](https://img.shields.io/badge/ERP-Infor%20LN%2010.8%20%7C%20Baan%204GL-0052CC?style=for-the-badge&logo=infor&logoColor=white)](https://www.infor.com)
-[![Knowledge Base](https://img.shields.io/badge/Documentation-5%2C700%2B%20Pages%20Markdown-4CAF50?style=for-the-badge&logo=markdown&logoColor=white)](#knowledge-base-contents)
-[![Bshell Functions](https://img.shields.io/badge/Bshell%20Functions-2%2C266%20Authoritative-FF9800?style=for-the-badge)](#grep-friendly-single-line-function-index)
-[![Audit Engine](https://img.shields.io/badge/Static%20Auditor-Zero--Dependency%20Python-9C27B0?style=for-the-badge&logo=python&logoColor=white)](#standalone-4gl--dal-audit-engine-audit_4glpy)
-[![Cloud Multi-Tenant](https://img.shields.io/badge/Cloud%20Trust-Governance%20Verified-00BCD4?style=for-the-badge)](#cloud-extensibility-governance)
-[![Unit Tests](https://img.shields.io/badge/Tests-8%2F8%20Passed-brightgreen?style=for-the-badge)](#automated-test-suite)
+[![Infor LN](https://img.shields.io/badge/Infor%20LN-10.8%20%7C%20Baan%204GL-0052CC?style=flat)](https://www.infor.com)
+[![Docs](https://img.shields.io/badge/Docs-5%2C700%2B%20Pages-4CAF50?style=flat)](#knowledge-base-contents)
+[![Bshell API](https://img.shields.io/badge/Bshell%20API-2%2C266%20Functions-FF9800?style=flat)](#1-authoritative-bshell-functions-database-functions_dbjson)
+[![Static Auditor](https://img.shields.io/badge/Auditor-Python%20CLI-9C27B0?style=flat)](#standalone-4gl--dal-audit-engine-audit_4glpy)
 
 > **Comprehensive developer reference, runtime API dictionary, architectural cookbook suite, and static verification engine for Infor ERP LN, Baan 4GL/3GL, DAL 2, Extension Modeler, and Infor Cloud Multi-Tenant governance.**
 
