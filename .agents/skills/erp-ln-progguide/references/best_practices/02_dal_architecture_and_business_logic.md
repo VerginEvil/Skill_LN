@@ -122,6 +122,11 @@ function extern long before.save.object(long mode)
 }
 ```
 
+> [!WARNING]
+> **`with.old.object.values.do()` Scope & Table Extension Runtime Modes**:
+> - `with.old.object.values.do()` is only supported in field hooks and `before.save.object()`—never call it inside `after.save.object()` (`DAL006`).
+> - In **Table Extensions**, Runtime Layer saves (`db.insert()` / `db.update()` bypassing DAL) pass negative mode constants (`-DAL_NEW`, `-DAL_UPDATE`). Capture pre-save DB values in `before.save.object()` via an isolated table alias query (`from <table> old_rec`) when `mode = DAL_UPDATE or mode = -DAL_UPDATE`, and handle both positive and negative modes in `after.save.object` (`EXT004`).
+
 ---
 
 ## 4. Property Hooks & Dependency Engine
@@ -227,3 +232,4 @@ function extern boolean method.is.allowed(long method)
 | Displaying `message()` inside a DAL hook | Hangs background servers, BOD listeners, and bshell engines | Use `dal.set.error.message("@msg_code")` and return `DALHOOKERROR` |
 | Writing complex SQL queries inside property hooks | High query overhead on every field keystroke | Cache lookup values in module DLL or use `as set with 1 rows` with leading indices |
 | Hardcoding error strings (`"Error occurred"`) | Prevents multi-language translation and automated error triage | Register message codes in `ttadv4150m000` (`@tx...`) |
+| Calling `with.old.object.values.do()` in `after.save.object()` or ignoring `-DAL_UPDATE` in Table Extensions | Fails silently after `table.super()` or when standard LN uses Runtime Layer `db.update()` (`mode = -2`) | Capture pre-save values in `before.save.object()` via isolated table alias (`DAL_UPDATE` / `-DAL_UPDATE`), read `get.long.arg(1)` before `table.super()`, and handle `-DAL_NEW` / `-DAL_UPDATE` |

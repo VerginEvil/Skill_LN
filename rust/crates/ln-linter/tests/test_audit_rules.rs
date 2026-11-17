@@ -885,3 +885,115 @@ fn test_audit_real_workspace_dev_natt_v01108_zero_false_positives() {
     );
 }
 
+#[test]
+fn test_dal006_and_ext004_catch_and_pass() {
+    let bad_script = r#"
+#context_on "declarations"
+#include <bic_dam>
+#context_off
+| Additional generated declarations
+table twhinh200
+#include <bic_dal2>
+#include <bic_tableext>
+#context_on "functions"
+function void get.old.vals() {}
+function boolean should.sync(long i.mode) {
+    if i.mode = DAL_UPDATE then
+        with.old.object.values.do(get.old.vals)
+        return(true)
+    endif
+    return(false)
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...) {
+    static long mode
+    table.super()
+    if get.argc() >= 1 then
+        mode = get.long.arg(1)
+    endif
+    if should.sync(mode) then
+    endif
+    return(0)
+}
+#context_off
+function extern long get.extension.point.version() {
+    return(3)
+}
+"#;
+    let auditor = Auditor4GL::new();
+    let bad_diags = auditor.audit_content(bad_script, "whinh200.cln", None, None);
+    assert!(bad_diags.iter().any(|d| d.code == "DAL006" && d.severity == Severity::Error));
+    assert!(bad_diags.iter().filter(|d| d.code == "EXT004" && d.severity == Severity::Error).count() >= 2);
+
+    let good_script = r#"
+#context_on "declarations"
+#include <bic_dam>
+domain whinh.hsta g.old.hsta
+boolean g.old.captured
+#context_off
+| Additional generated declarations
+table twhinh200
+#include <bic_dal2>
+#include <bic_tableext>
+#context_on "functions"
+function capture.old.vals() {
+    g.old.captured = false
+}
+function boolean should.sync(long i.mode) {
+    if i.mode = DAL_NEW or i.mode = -DAL_NEW then
+        return(true)
+    endif
+    if i.mode = DAL_UPDATE or i.mode = -DAL_UPDATE then
+        return(not g.old.captured or g.old.hsta <> whinh200.hsta)
+    endif
+    return(false)
+}
+#context_off
+#context_on "method.is.allowed"
+function extern boolean method.is.allowed(long method) {
+    on case method
+    case DAL_NEW:
+        break
+    case DAL_UPDATE:
+        break
+    endcase
+    return(true)
+}
+#context_off
+#context_on "before.save"
+function extern long before.save.object(long mode) {
+    if mode = DAL_UPDATE or mode = -DAL_UPDATE then
+        capture.old.vals()
+    else
+        g.old.captured = false
+    endif
+    return(0)
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...) {
+    static long mode
+    mode = 0
+    if get.argc() >= 1 then
+        mode = get.long.arg(1)
+    endif
+    table.super()
+    if should.sync(mode) then
+    endif
+    g.old.captured = false
+    return(0)
+}
+#context_off
+function extern long get.extension.point.version() {
+    return(3)
+}
+"#;
+    let good_diags = auditor.audit_content(good_script, "whinh200.cln", None, None);
+    let issues: Vec<_> = good_diags
+        .iter()
+        .filter(|d| d.severity == Severity::Error || d.severity == Severity::Warning)
+        .collect();
+    assert!(issues.is_empty(), "Expected 0 issues, got: {:?}", issues);
+}
+

@@ -10,6 +10,7 @@ pub struct FunctionASTNode {
     pub return_type: String,
     pub params: String,
     pub direct_tx_calls: Vec<(String, usize, usize, String)>,
+    pub direct_with_old_calls: Vec<(String, usize, usize, String)>,
     pub callees: Vec<(String, usize, usize, String)>,
     pub calls_inside_tx: Vec<(String, usize, usize, String, usize)>,
     pub nested_tx_starts: Vec<(String, usize, usize, String, usize)>,
@@ -24,6 +25,7 @@ impl FunctionASTNode {
             return_type: String::new(),
             params: String::new(),
             direct_tx_calls: Vec::new(),
+            direct_with_old_calls: Vec::new(),
             callees: Vec::new(),
             calls_inside_tx: Vec::new(),
             nested_tx_starts: Vec::new(),
@@ -381,6 +383,10 @@ impl ASTParser4GL {
                                         tx_active_since_line = None;
                                     }
                                 }
+                            } else if val_lower == "with.old.object.values.do" {
+                                if let Some(fnode) = self.functions.get_mut(fname) {
+                                    fnode.direct_with_old_calls.push((val_lower.clone(), tok.line, tok.column, tok.raw_line.clone()));
+                                }
                             } else {
                                 if let Some(fnode) = self.functions.get_mut(fname) {
                                     fnode.callees.push((val_lower.clone(), tok.line, tok.column, tok.raw_line.clone()));
@@ -465,5 +471,35 @@ impl ASTParser4GL {
         }
 
         tx_map
+    }
+
+    pub fn find_transitive_with_old_functions(&self) -> HashMap<String, Vec<String>> {
+        let mut old_map: HashMap<String, Vec<String>> = HashMap::new();
+        for (fname, fnode) in &self.functions {
+            if !fnode.direct_with_old_calls.is_empty() {
+                old_map.insert(fname.clone(), vec!["with.old.object.values.do()".to_string()]);
+            }
+        }
+
+        let mut changed = true;
+        while changed {
+            changed = false;
+            for (fname, fnode) in &self.functions {
+                if old_map.contains_key(fname) {
+                    continue;
+                }
+                for (callee_name, _, _, _) in &fnode.callees {
+                    if let Some(chain) = old_map.get(callee_name).cloned() {
+                        let mut full_chain = vec![callee_name.clone()];
+                        full_chain.extend(chain);
+                        old_map.insert(fname.clone(), full_chain);
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        old_map
     }
 }

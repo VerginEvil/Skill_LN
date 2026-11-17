@@ -525,6 +525,79 @@ function extern void my_unwrapped_helper()
             "EXT003",
             Severity::Error,
         ),
+        // 26. DAL006
+        (
+            r#"
+#context_on "declarations"
+#include <bic_dal2>
+#include <bic_tableext>
+#context_off
+#context_on "functions"
+function void get.old() {
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...) {
+    with.old.object.values.do(get.old)
+    return(0)
+}
+#context_off
+"#,
+            "whinh200.cln",
+            None,
+            false,
+            None,
+            None,
+            "DAL006",
+            Severity::Error,
+        ),
+        // 27. EXT004 (table.super before get.long.arg)
+        (
+            r#"
+#context_on "declarations"
+#include <bic_dal2>
+#include <bic_tableext>
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...) {
+    static long mode
+    table.super()
+    mode = get.long.arg(1)
+    return(0)
+}
+#context_off
+"#,
+            "whinh200.cln",
+            None,
+            false,
+            None,
+            None,
+            "EXT004",
+            Severity::Error,
+        ),
+        // 28. EXT004 (missing -DAL_UPDATE in Table Extension save hook)
+        (
+            r#"
+#context_on "declarations"
+#include <bic_dal2>
+#include <bic_tableext>
+#context_off
+#context_on "after.save"
+function extern long after.save.object(long mode) {
+    if mode = DAL_UPDATE then
+    endif
+    return(0)
+}
+#context_off
+"#,
+            "whinh431.cln",
+            None,
+            false,
+            None,
+            None,
+            "EXT004",
+            Severity::Error,
+        ),
     ];
 
     for (script, file_ext, mode, cloud, dd_path, main_table, expected_code, expected_sev) in test_cases {

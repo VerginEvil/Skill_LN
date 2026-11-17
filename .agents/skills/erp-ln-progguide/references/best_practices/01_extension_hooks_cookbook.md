@@ -19,31 +19,31 @@ Infor LN Extensibility provides non-intrusive customization ("last-mile customiz
 
 ## 2. Table Extension Hook Lifecycle & Execution Order
 
-Table extensions extend the Data Access Layer (DAL) of standard or custom tables. Even if the standard table does not implement a DAL or bypasses it for bulk operations, table extension hooks are guaranteed to execute.
+Table extensions extend the Data Access Layer (DAL) of standard or custom tables. Even if the standard table does not implement a DAL or bypasses it via Runtime Layer operations (`db.insert()` / `db.update()` / `db.delete()`), table extension hooks are guaranteed to execute—**with critical differences in `mode` values and old-value availability**.
 
 ### 2.1 Complete CRUD Lifecycle Flow
 
 ```mermaid
 flowchart TD
-    subgraph INSERT ["Insert Operation (DAL_NEW)"]
+    subgraph INSERT ["Insert Operation (DAL_NEW / -DAL_NEW)"]
         I1["before.open.object.set()"] --> I2["set.object.defaults()"]
         I2 --> I3["Field Logic: <field>.update()"]
         I3 --> I4["Field Validation: <field>.check.input() / is.valid()"]
-        I4 --> I5["Extension before.save.object(DAL_NEW)"]
-        I5 --> I6["Standard DAL before.save.object(DAL_NEW)"]
+        I4 --> I5["Extension before.save.object(mode)"]
+        I5 --> I6["Standard DAL before.save.object(mode)"]
         I6 --> I7["Database INSERT"]
-        I7 --> I8["Extension after.save.object(DAL_NEW)"]
-        I8 --> I9["Standard DAL after.save.object(DAL_NEW)"]
+        I7 --> I8["Extension after.save.object(mode)"]
+        I8 --> I9["Standard DAL after.save.object(mode)"]
     end
 
-    subgraph UPDATE ["Update Operation (DAL_UPDATE)"]
+    subgraph UPDATE ["Update Operation (DAL_UPDATE / -DAL_UPDATE)"]
         U1["before.read.object()"] --> U2["Field Change: <field>.update()"]
         U2 --> U3["Field Validation: <field>.is.valid()"]
-        U3 --> U4["Extension before.save.object(DAL_UPDATE)"]
-        U4 --> U5["Standard DAL before.save.object(DAL_UPDATE)"]
+        U3 --> U4["Extension before.save.object(mode)"]
+        U4 --> U5["Standard DAL before.save.object(mode)"]
         U5 --> U6["Database UPDATE"]
-        U6 --> U7["Extension after.save.object(DAL_UPDATE)"]
-        U7 --> U8["Standard DAL after.save.object(DAL_UPDATE)"]
+        U6 --> U7["Extension after.save.object(mode)"]
+        U7 --> U8["Standard DAL after.save.object(mode)"]
     end
 
     subgraph DELETE ["Delete Operation (DAL_DESTROY)"]
@@ -55,45 +55,128 @@ flowchart TD
     end
 ```
 
-### 2.2 Execution Ordering Between Extension and Standard DAL
+### 2.2 Runtime Layer Negative Mode Constants (`-DAL_NEW`, `-DAL_UPDATE`)
+
+> [!CAUTION]
+> **Silent Hook Skip Hazard (`EXT004`)**:
+> Standard Infor LN modules (such as Warehousing, Manufacturing, and background batch jobs) frequently update tables via the **Runtime Layer (`db.insert()` / `db.update()` bypassing DAL)** for performance. When a Table Extension is invoked from the Runtime Layer, the bshell passes **negated** mode values to `before.save.object` and `after.save.object`:
+> - **DAL Save**: `DAL_NEW` (`1`), `DAL_UPDATE` (`2`)
+> - **Runtime Layer Save**: `-DAL_NEW` (`-1`), `-DAL_UPDATE` (`-2`)
+>
+> Checking only `case DAL_NEW:` / `case DAL_UPDATE:` causes the Table Extension to **silently skip** all Runtime Layer updates! (By contrast, `method.is.allowed(long method)` is only called by the DAL engine with positive constants.)
+
+Always handle both positive and negative modes in `before.save.object`, `after.save.object`, and any helper functions they call:
+```baan
+l.is.new    = (i.mode = DAL_NEW or i.mode = -DAL_NEW)
+l.is.update = (i.mode = DAL_UPDATE or i.mode = -DAL_UPDATE)
+```
+Or normalize once at hook entry before dispatching: `l.norm.mode = abs(mode)`.
+
+### 2.3 Execution Ordering Between Extension and Standard DAL
 
 By default, Table Extension hooks execute **before** the corresponding standard DAL hook:
 - `before.save.object`: Extension runs first. If the extension returns `DALHOOKERROR`, the standard DAL hook and the database write are aborted.
 - `after.save.object`: Extension runs first, followed by the standard DAL `after.save.object`.
 - **Calling `table.super()`**: If the extension requires standard DAL logic to complete before executing custom logic, the extension must explicitly call `table.super()`.
 
-### 2.3 Safe Hook Signature Pattern (`table.super` and Optional Mode)
+### 2.4 Safe Hook Signature, Argument Order, and Pre-Save Value Capture (`EXT004`, `DAL006`)
 
-When using `table.super()`, recursive calls may occur if standard logic internally updates the same table. To prevent recursion and signature mismatches, use the optional argument pattern:
+When writing `before.save.object` and `after.save.object` in Table Extensions, enforce these three rules:
+
+1. **Read `get.long.arg(1)` BEFORE `table.super()` (`EXT004`)**:
+   Calling `table.super()` executes the standard DAL hook, which may trigger nested operations or re-enter hooks on the same table. Always extract `mode` via `get.argc()` / `get.long.arg(1)` **before** calling `table.super()`.
+2. **Never Call `with.old.object.values.do()` inside `after.save.object()` (`DAL006`)**:
+   `with.old.object.values.do()` is only supported in field hooks and `before.save.object()`. Inside `after.save.object()`—especially after `table.super()` or during Runtime Layer (`-DAL_UPDATE`) saves where DAL old-object buffering is absent—`with.old.object.values.do()` fails silently and leaves old values zero/empty.
+3. **Capture Pre-Save Values in `before.save.object()` Using an Isolated Table Alias**:
+   Query the committed pre-save row in `before.save.object(long mode)` (when `mode = DAL_UPDATE or mode = -DAL_UPDATE`) using an **isolated table alias** (`from <table> old_rec`) bound to **local host variables**, storing the snapshot in global extension state with a `boolean g.old.captured` flag. Reset `g.old.captured = false` for non-updates and at exit of `after.save.object`.
 
 ```baan
+#context_on "declarations"
+#include <bic_dam>
+domain  tcmcs.str50  g.old.city
+boolean              g.old.captured
+#context_off
+
+#context_on "functions"
+function capture.old.values()
+{
+    domain  tccom.cadr   l.cadr
+    domain  tcmcs.str50  l.old.city
+
+    g.old.city = ""
+    g.old.captured = false
+    l.cadr = tcmcs004.cadr
+
+    |* Isolated table alias + local variable binding preserves current table buffer
+    select  old004.city:l.old.city
+    from    tcmcs004 old004
+    where   old004.cadr = :l.cadr
+    as set with 1 rows
+    selectdo
+        g.old.city = l.old.city
+        g.old.captured = true
+    selectempty
+        |* New or missing record in DB
+    endselect
+}
+#context_off
+
+#context_on "before.save"
+function extern long before.save.object(long mode)
+{
+    if mode = DAL_UPDATE or mode = -DAL_UPDATE then
+        capture.old.values()
+    else
+        g.old.city = ""
+        g.old.captured = false
+    endif
+    return(0)
+}
+#context_off
+
+#context_on "after.save"
 function extern long after.save.object(...)
 {
     static long mode
     static long ret
-    
+
     mode = 0
     ret = 0
+    |* 1. Extract mode BEFORE calling table.super()
     if get.argc() >= 1 then
         mode = get.long.arg(1)
     endif
 
-    |* Invoke standard DAL hook first
+    |* 2. Invoke standard DAL hook
     table.super()
 
-    on case mode
-    case DAL_NEW:
+    |* 3. Handle both DAL (positive) and Runtime Layer (negative) modes
+    if mode = DAL_NEW or mode = -DAL_NEW then
         |* Custom logic for newly inserted record
-        break
-    case DAL_UPDATE:
-        |* Custom logic for modified record
-        with.old.object.values.do(check_modifications)
-        break
-    endcase
+    else
+        if mode = DAL_UPDATE or mode = -DAL_UPDATE then
+            if not g.old.captured or tcmcs004.city <> g.old.city then
+                ret = txcomdll0001.log.city.change(g.old.city, tcmcs004.city)
+            endif
+        endif
+    endif
 
+    g.old.captured = false
+    if ret <> 0 then
+        dal.set.error.message("@txcom0002")
+        return(DALHOOKERROR)
+    endif
     return(0)
 }
+#context_off
 ```
+
+### 2.5 Standard-Flow Bypass & Target Creation Timing Watchpoints
+
+When designing Table Extensions that synchronize downstream tables on status or date transitions:
+- **Check Auto-Process Bypass Paths**: Standard LN workflows may auto-advance a header status (e.g., auto-completing an order directly via `db.update` on the header table) without passing through manual line-level confirmation. Replacing a line-level extension with a header-only extension breaks partial updates (where header status has not yet reached the final state). Use a **Hybrid Line + Header Extension** architecture when both partial line updates and auto-completed header transitions exist, guarding target writes idempotently (`target.field <> new_value`).
+- **Group & Aggregate Child Lines Deterministically**: When a header `after.save.object` aggregates child lines, `order by` the business line key + sequence and aggregate (e.g. `max` timestamp per line) so earlier sequences never overwrite later ones.
+- **Verify Target Row Creation Order**: Confirm in a live trace/debugger that the downstream target row already exists when `after.save.object` executes. If a standard process inserts the target row *after* the source save completes, `selectempty` occurs and a complementary hook on the target table is required.
 
 ---
 
@@ -307,6 +390,9 @@ Raw extension scripts copied from Infor LN Studio contain two distinct partition
 - **Strict No-Relocation Policy**: Never move standard `table` or `#include` lines from `| Additional generated declarations` into `#context_on "declarations"`. Never move custom declarations outside `#context`.
 - **Refined Rule `EXT001`**: Standard generated includes under `| Additional generated declarations` (`<bic_dal2>`, `<bic_tableext>`, `<bic_sessionext>`, `<bic_text>`, `<bic_interface>`, `<bic_dam>`) are recognized as valid standard boilerplate and not flagged. Any **custom** `#include` placed outside `#context_on "declarations"` is flagged with `EXT001 [ERROR]`.
 - **Anti-Tamper Rule `EXT003`**: Flags any deletion, modification, or context-wrapping of standard framework functions, unmatched or unclosed `#context_on`/`#context_off` directives, and custom functions or declarations placed outside `#context`.
+- **Runtime Mode & Save-Hook Lifecycle (`EXT004` & `DAL006`)**:
+  - `EXT004` flags `table.super()` invoked before `get.long.arg()` in variadic hooks, and Table Extension save hooks/helpers checking `DAL_NEW`/`DAL_UPDATE` without handling Runtime Layer negative modes (`-DAL_NEW`/`-DAL_UPDATE`).
+  - `DAL006` flags direct or transitive calls to `with.old.object.values.do()` inside `after.save.object()`.
 - **Dual-Mode Delivery**:
   1. Maintain the full-fidelity cohesive `.4gl` file in the project with all standard boilerplate preserved.
   2. Deliver clean hook blocks in chat (stripped of `#context` tags) for 1-click pasting into LN UI (`ttext1500m000`).

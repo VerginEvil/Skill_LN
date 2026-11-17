@@ -39,10 +39,11 @@ Every generated or reviewed script must comply with these 6 non-negotiable rules
 4. **Transaction Bounds**: Bound mutations strictly inside `db.retry.point()` and `commit.transaction()`; never commit transactions inside DAL hooks, Table Extensions, or helper DLLs ([03_sql](references/best_practices/03_sql_query_optimization_and_transactions.md)).
 5. **Defensive Declarations & Datatypes**: Use Data Dictionary domains; string arrays require 2D syntax string arr(len, count) (ARR002); 4GL arrays are 1-based; respect Julian date vs UTC epoch seconds (DMN002); avoid mandatory zero constraints on lines (TBL003) ([06_std](references/best_practices/06_4gl_coding_standards_and_caveats.md)).
 6. **Cloud Governance & Extension Rules**: Comply with execution time limits (`5,000 ms`); verify Cloud Trust badges; preserve standard non-context boilerplate (`EXT003`); place custom `#include` inside `#context_on "declarations"` (`EXT001`); keep command hooks `void` ([01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
+7. **Table Extension Runtime Mode & Old-Value Safety**: Handle Runtime Layer negative modes (`-DAL_NEW`, `-DAL_UPDATE`) alongside `DAL_NEW`/`DAL_UPDATE` in `before.save.object`/`after.save.object`; read `get.long.arg(1)` **before** `table.super()`; never call `with.old.object.values.do()` in `after.save.object()`—capture pre-save DB values in `before.save.object()` via an isolated table alias (`EXT004`/`DAL006`, [01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
 
 ### 4. `Audit-Before-Deliver` (Static Verification Gate)
 Before returning or presenting any 4GL, DAL 2, or Extension script, run the offline auditor:
 ```bash
 skill-ln audit-4gl <target_script> [--mode dal2|uedll|general] [--cloud]
 ```
-Resolve all syntax errors (SYN), DAL violations (DAL), Extension boundary bugs (EXT), datatype mismatches (DMN/TBL/STR), and Cloud governance warnings (CLD) until 0 errors remain.
+Resolve all syntax errors (SYN), DAL violations (DAL001-DAL006), Extension boundary/runtime bugs (EXT001-EXT004), datatype mismatches (DMN/TBL/STR), and Cloud governance warnings (CLD) until 0 errors remain.

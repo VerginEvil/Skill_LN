@@ -174,8 +174,14 @@ This table shows the Mode values:
 
 | Mode | Description |
 |---|---|
-| `DAL_NEW` | A new record is inserted. |
-| `DAL_UPDATE` | An existing record is updated. |
+| `DAL_NEW` | A new record is inserted. (Runtime Layer `db.insert()` passes `-DAL_NEW` / `-1`.) |
+| `DAL_UPDATE` | An existing record is updated. (Runtime Layer `db.update()` passes `-DAL_UPDATE` / `-2`.) |
+
+> [!WARNING]
+> **Runtime Layer Negative Modes (`-DAL_NEW`, `-DAL_UPDATE`) & `with.old.object.values.do()` Caveat**:
+> Although the standard manual examples below show only `DAL_NEW` / `DAL_UPDATE` and call `with.old.object.values.do()` inside `after.save.object()`, in live Infor LN runtimes:
+> 1. When standard LN modules update a table via the Runtime Layer (`db.insert()` / `db.update()` bypassing DAL), `before.save.object` and `after.save.object` receive **negative** mode values (`-DAL_NEW = -1`, `-DAL_UPDATE = -2`). Always handle both positive and negative modes (or `abs(mode)`).
+> 2. `with.old.object.values.do()` is documented for field hooks and `before.save.object()` only; inside `after.save.object()` (especially after `table.super()` or under `-DAL_UPDATE`), it can leave old values empty. Capture pre-save values in `before.save.object()` using an isolated table alias query instead. See [Extension Hooks Cookbook](../best_practices/01_extension_hooks_cookbook.md#24-safe-hook-signature-argument-order-and-pre-save-value-capture-ext004-dal006).
 
 This hook is executed before the `before.save.object()` hook of the standard Data Access Layer is executed. If the standard hook must be executed before the extension hook is executed, you can force the standard hook to execute anytime you prefer. This can be achieved by calling the `table.super()` function.
 
@@ -241,8 +247,14 @@ Use this hook to perform additional actions after the current (new or existing) 
 
 | Mode | Description |
 |---|---|
-| `DAL_NEW` | A new record is inserted. |
-| `DAL_UPDATE` | An existing record is updated. |
+| `DAL_NEW` | A new record is inserted. (Runtime Layer `db.insert()` passes `-DAL_NEW` / `-1`.) |
+| `DAL_UPDATE` | An existing record is updated. (Runtime Layer `db.update()` passes `-DAL_UPDATE` / `-2`.) |
+
+> [!WARNING]
+> **Runtime Layer Negative Modes (`-DAL_NEW`, `-DAL_UPDATE`) & `with.old.object.values.do()` Caveat**:
+> Although the standard manual examples below show only `DAL_NEW` / `DAL_UPDATE` and call `with.old.object.values.do()` inside `after.save.object()`, in live Infor LN runtimes:
+> 1. When standard LN modules update a table via the Runtime Layer (`db.insert()` / `db.update()` bypassing DAL), `before.save.object` and `after.save.object` receive **negative** mode values (`-DAL_NEW = -1`, `-DAL_UPDATE = -2`). Always handle both positive and negative modes (or `abs(mode)`).
+> 2. `with.old.object.values.do()` is documented for field hooks and `before.save.object()` only; inside `after.save.object()` (especially after `table.super()` or under `-DAL_UPDATE`), it can leave old values empty. Capture pre-save values in `before.save.object()` using an isolated table alias query instead. See [Extension Hooks Cookbook](../best_practices/01_extension_hooks_cookbook.md#24-safe-hook-signature-argument-order-and-pre-save-value-capture-ext004-dal006).
 
 This hook is executed before the `after.save.object()` hook of the standard Data Access Layer is executed. If the standard hook must be executed before the extension hook is executed, you can force the standard hook being executed anytime you prefer. This can be achieved by calling the `table.super()` function.
 

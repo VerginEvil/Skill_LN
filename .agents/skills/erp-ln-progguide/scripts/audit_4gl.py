@@ -459,6 +459,7 @@ class FunctionASTNode:
     return_type: str = ""
     params: str = ""
     direct_tx_calls: List[Tuple[str, int, int, str]] = field(default_factory=list)
+    direct_with_old_calls: List[Tuple[str, int, int, str]] = field(default_factory=list)
     callees: List[Tuple[str, int, int, str]] = field(default_factory=list)
     calls_inside_tx: List[Tuple[str, int, int, str, int]] = field(default_factory=list)
     nested_tx_starts: List[Tuple[str, int, int, str, int]] = field(default_factory=list)
@@ -878,6 +879,8 @@ class ASTParser4GL:
                                     tx_active_since_line = tok.line
                             elif val_lower in ("commit.transaction", "abort.transaction"):
                                 tx_active_since_line = None
+                        elif val_lower == "with.old.object.values.do":
+                            current_func.direct_with_old_calls.append((val_lower, tok.line, tok.column, tok.raw_line))
                         else:
                             current_func.callees.append((val_lower, tok.line, tok.column, tok.raw_line))
                             if tx_active_since_line is not None:
@@ -955,6 +958,29 @@ class ASTParser4GL:
                         changed = True
                         break
         return tx_map
+
+    def find_transitive_with_old_functions(self) -> Dict[str, List[str]]:
+        """
+        Compute transitive closure over the intra-file Call Graph to identify every
+        function that directly or transitively calls `with.old.object.values.do()`.
+        """
+        old_map: Dict[str, List[str]] = {}
+        for fname, fnode in self.functions.items():
+            if fnode.direct_with_old_calls:
+                old_map[fname] = ["with.old.object.values.do()"]
+
+        changed = True
+        while changed:
+            changed = False
+            for fname, fnode in self.functions.items():
+                if fname in old_map:
+                    continue
+                for callee_name, _, _, _ in fnode.callees:
+                    if callee_name in old_map:
+                        old_map[fname] = [callee_name] + old_map[callee_name]
+                        changed = True
+                        break
+        return old_map
 
 
 def load_syntax_dictionaries(skill_dir: Path) -> Dict[str, Any]:
@@ -1387,6 +1413,7 @@ class Auditor4GL:
         ast_diags, ast_functions = ast_parser.parse()
         diagnostics.extend(ast_diags)
         transitive_tx_map = ast_parser.find_transitive_tx_functions()
+        transitive_with_old_map = ast_parser.find_transitive_with_old_functions()
 
         # Includes collection: `#include <header>` or `#include "header"`
         includes_found: Set[str] = set()
@@ -1414,6 +1441,8 @@ class Auditor4GL:
         current_func_ret_type: Optional[str] = None
         current_func_is_void: bool = False
         current_func_hook_suffix: Optional[str] = None
+        func_table_super_line: Optional[Tuple[int, str]] = None
+        reported_ext004_super_order: bool = False
         reported_tbl001: Set[Tuple[str, int]] = set()
         fetched_attempts: Set[Tuple[str, str]] = set()
 
@@ -2512,12 +2541,37 @@ class Auditor4GL:
                             )
                         )
 
+            # EXT004: table.super() called before reading hook argument via get.*.arg()
+            if current_func_name is not None:
+                if func_table_super_line is None and re.search(r"(?<![.\w])table\.super\s*\(", code_line, re.IGNORECASE):
+                    func_table_super_line = (line_no, raw_line)
+                elif (
+                    func_table_super_line is not None
+                    and not reported_ext004_super_order
+                    and re.search(r"(?<![.\w])get\.(?:long|double|string)\.arg\s*\(", code_line, re.IGNORECASE)
+                ):
+                    super_line, super_raw = func_table_super_line
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            super_line,
+                            1,
+                            "ERROR",
+                            "EXT004",
+                            f"EXT004: 'table.super()' called before reading hook argument via 'get.*.arg()' (line {line_no}); read hook arguments before calling 'table.super()' so nested DAL operations cannot clobber argument state.",
+                            super_raw,
+                        )
+                    )
+                    reported_ext004_super_order = True
+
             # Reset current function state when exiting function curly braces
             if had_positive_brace and brace_depth == 0:
                 current_func_name = None
                 current_func_ret_type = None
                 current_func_is_void = False
                 current_func_hook_suffix = None
+                func_table_super_line = None
+                reported_ext004_super_order = False
                 had_positive_brace = False
 
         # ----------------------------------------------------
@@ -2599,6 +2653,123 @@ class Auditor4GL:
                     lines[ctx_line - 1] if 0 <= ctx_line - 1 < len(lines) else "",
                 )
             )
+
+        # ----------------------------------------------------
+        # 10. DAL006: with.old.object.values.do() inside after.save.object (Direct or Transitive)
+        # ----------------------------------------------------
+        after_save_fn = ast_functions.get("after.save.object")
+        if after_save_fn is not None:
+            for _, call_line, call_col, raw_l in after_save_fn.direct_with_old_calls:
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        call_line,
+                        call_col,
+                        "ERROR",
+                        "DAL006",
+                        "DAL006: 'with.old.object.values.do()' is unsupported inside 'after.save.object()' (especially after 'table.super()' or during Runtime Layer '-DAL_UPDATE' saves). Capture pre-save values in 'before.save.object(long mode)' via an isolated table alias query instead.",
+                        raw_l,
+                    )
+                )
+            for callee_name, call_line, call_col, raw_l in after_save_fn.callees:
+                if callee_name in transitive_with_old_map:
+                    chain = " -> ".join([callee_name] + transitive_with_old_map[callee_name])
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            call_line,
+                            call_col,
+                            "ERROR",
+                            "DAL006",
+                            f"DAL006: 'after.save.object()' calls '{callee_name}()' which executes '{chain}'. 'with.old.object.values.do()' is unsupported inside 'after.save.object()'; capture pre-save values in 'before.save.object(long mode)' via an isolated table alias query instead.",
+                            raw_l,
+                        )
+                    )
+
+        # ----------------------------------------------------
+        # 11. EXT004: Missing Runtime Layer negative modes (-DAL_NEW / -DAL_UPDATE) in Table Extension save hooks
+        # ----------------------------------------------------
+        if is_table_ext:
+            save_hooks = ("before.save.object", "after.save.object")
+            hook_uses_abs: Dict[str, bool] = {}
+            reach_map: Dict[str, Set[str]] = {}
+            for hook_name in save_hooks:
+                if hook_name not in ast_functions:
+                    continue
+                h_node = ast_functions[hook_name]
+                h_end = h_node.end_line if h_node.end_line > 0 else len(cleaned_lines)
+                h_body = "\n".join(cleaned_lines[max(0, h_node.line - 1) : h_end])
+                hook_uses_abs[hook_name] = bool(re.search(r"\babs\s*\(", h_body, re.IGNORECASE))
+                visited: Set[str] = set()
+                queue: List[str] = [hook_name]
+                while queue:
+                    cur = queue.pop(0)
+                    if cur in visited or cur not in ast_functions:
+                        continue
+                    visited.add(cur)
+                    for c_name, _, _, _ in ast_functions[cur].callees:
+                        if c_name in ast_functions and c_name != "method.is.allowed" and c_name not in visited:
+                            queue.append(c_name)
+                reach_map[hook_name] = visited
+
+            all_save_reachable: Set[str] = set()
+            for vset in reach_map.values():
+                all_save_reachable.update(vset)
+
+            for fn_name in sorted(all_save_reachable, key=lambda fn: ast_functions[fn].line):
+                callers_with_fn = [h for h, vset in reach_map.items() if fn_name in vset]
+                if callers_with_fn and all(hook_uses_abs.get(h, False) for h in callers_with_fn):
+                    continue
+                fn_node = ast_functions[fn_name]
+                fn_end = fn_node.end_line if fn_node.end_line > 0 else len(cleaned_lines)
+                fn_slice = cleaned_lines[max(0, fn_node.line - 1) : fn_end]
+                if any(re.search(r"\babs\s*\(", ln, re.IGNORECASE) for ln in fn_slice):
+                    continue
+
+                first_pos_new: Optional[Tuple[int, int]] = None
+                has_neg_new = False
+                first_pos_update: Optional[Tuple[int, int]] = None
+                has_neg_update = False
+
+                for offset, c_line in enumerate(fn_slice):
+                    cur_line_no = max(1, fn_node.line) + offset
+                    for m_new in re.finditer(r"(?<![.\w])DAL_NEW\b", c_line, re.IGNORECASE):
+                        if c_line[: m_new.start()].rstrip().endswith("-"):
+                            has_neg_new = True
+                        elif first_pos_new is None:
+                            first_pos_new = (cur_line_no, m_new.start() + 1)
+                    for m_upd in re.finditer(r"(?<![.\w])DAL_UPDATE\b", c_line, re.IGNORECASE):
+                        if c_line[: m_upd.start()].rstrip().endswith("-"):
+                            has_neg_update = True
+                        elif first_pos_update is None:
+                            first_pos_update = (cur_line_no, m_upd.start() + 1)
+
+                if first_pos_new is not None and not has_neg_new:
+                    l_no, c_no = first_pos_new
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            l_no,
+                            c_no,
+                            "ERROR",
+                            "EXT004",
+                            f"EXT004: Table Extension save hook/helper '{fn_name}' checks 'DAL_NEW' without handling Runtime Layer mode '-DAL_NEW' (-1). Standard LN db.insert() bypassing DAL passes '-DAL_NEW'; handle both 'DAL_NEW' and '-DAL_NEW' (or normalize with 'abs()').",
+                            lines[l_no - 1] if 0 <= l_no - 1 < len(lines) else "",
+                        )
+                    )
+                if first_pos_update is not None and not has_neg_update:
+                    l_no, c_no = first_pos_update
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            l_no,
+                            c_no,
+                            "ERROR",
+                            "EXT004",
+                            f"EXT004: Table Extension save hook/helper '{fn_name}' checks 'DAL_UPDATE' without handling Runtime Layer mode '-DAL_UPDATE' (-2). Standard LN db.update() bypassing DAL passes '-DAL_UPDATE'; handle both 'DAL_UPDATE' and '-DAL_UPDATE' (or normalize with 'abs()').",
+                            lines[l_no - 1] if 0 <= l_no - 1 < len(lines) else "",
+                        )
+                    )
 
         # Filter by severity
         filtered: List[Diagnostic] = []

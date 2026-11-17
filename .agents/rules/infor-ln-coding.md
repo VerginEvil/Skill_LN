@@ -123,3 +123,8 @@ Infor ERP LN Cloud Extension Modeler (`ttext1500m000`) generates 4GL code from d
 - **Dual-Mode Delivery:** When presenting changes:
   1. Maintain the full-fidelity cohesive `.4gl` file in the project with all standard boilerplate preserved.
   2. Output clean, individual hook code blocks in chat (stripped of `#context` tags) for 1-click pasting into LN UI (`ttext1500m000`).
+
+### 3.6 Table Extension Save-Hook Runtime Modes & Pre-Save Capture (`EXT004`, `DAL006`)
+- **Runtime Layer Negative Modes (`EXT004`):** Standard LN modules frequently bypass DAL via `db.insert()` / `db.update()`, invoking Table Extension `before.save.object` and `after.save.object` with negated modes `-DAL_NEW` (`-1`) and `-DAL_UPDATE` (`-2`). Always handle both positive and negative modes (or normalize via `abs(mode)`) in save hooks and any helper functions they call.
+- **Argument Extraction Order (`EXT004`):** In variadic hooks (`after.save.object(...)`), extract `mode = get.long.arg(1)` **before** calling `table.super()`.
+- **Pre-Save Value Capture (`DAL006`):** Never call `with.old.object.values.do()` inside `after.save.object()` (directly or via helpers). Instead, capture pre-save values in `before.save.object(long mode)` when `mode = DAL_UPDATE or mode = -DAL_UPDATE` using an isolated table alias query (`from <table> old_rec ... as set with 1 rows`) bound to local host variables, guarded by a `boolean g.old.captured` flag that is reset at exit of `after.save.object()`.

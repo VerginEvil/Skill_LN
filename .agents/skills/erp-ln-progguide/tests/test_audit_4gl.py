@@ -1044,5 +1044,202 @@ domain cus.num num_arr(100)
         self.assertIn("custom_arr", arr002_diags[0].message)
 
 
+    def test_dal006_with_old_object_values_in_after_save(self):
+        """Asserts DAL006 flags direct and transitive with.old.object.values.do() in after.save.object()."""
+        script_bad = """
+#context_on "declarations"
+#include <bic_dam>
+#context_off
+| Additional generated declarations
+table twhinh200
+#include <bic_dal2>
+#include <bic_tableext>
+#context_on "functions"
+function void get.old.vals()
+{
+}
+function boolean helper.check()
+{
+    with.old.object.values.do(get.old.vals)
+    return(true)
+}
+#context_off
+#context_on "before.save"
+function extern long before.save.object(long mode)
+{
+    with.old.object.values.do(get.old.vals)
+    return(0)
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...)
+{
+    static long mode
+    if get.argc() >= 1 then
+        mode = get.long.arg(1)
+    endif
+    table.super()
+    if helper.check() then
+        with.old.object.values.do(get.old.vals)
+    endif
+    return(0)
+}
+#context_off
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.auditor.audit_content(script_bad, "whinh200.cln")
+        dal006_diags = [d for d in diags if d.code == "DAL006"]
+        self.assertEqual(len(dal006_diags), 2, f"Expected 2 DAL006 errors, got: {dal006_diags}")
+        self.assertTrue(all(d.severity == "ERROR" for d in dal006_diags))
+
+    def test_ext004_table_super_before_get_long_arg_and_runtime_modes(self):
+        """Asserts EXT004 catches table.super() before get.long.arg() and missing -DAL_NEW/-DAL_UPDATE in Table Extensions."""
+        script_bad = """
+#context_on "declarations"
+#include <bic_dam>
+#context_off
+| Additional generated declarations
+table twhinh431
+#include <bic_dal2>
+#include <bic_tableext>
+#context_on "functions"
+function boolean should.sync(long i.mode)
+{
+    on case i.mode
+    case DAL_NEW:
+        return(true)
+    case DAL_UPDATE:
+        return(true)
+    endcase
+    return(false)
+}
+#context_off
+#context_on "method.is.allowed"
+function extern boolean method.is.allowed(long method)
+{
+    on case method
+    case DAL_NEW:
+        break
+    case DAL_UPDATE:
+        break
+    endcase
+    return(true)
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...)
+{
+    static long mode
+    table.super()
+    mode = 0
+    if get.argc() >= 1 then
+        mode = get.long.arg(1)
+    endif
+    if should.sync(mode) then
+    endif
+    return(0)
+}
+#context_off
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.auditor.audit_content(script_bad, "whinh431.cln")
+        ext004_diags = [d for d in diags if d.code == "EXT004"]
+        self.assertEqual(len(ext004_diags), 3, f"Expected 3 EXT004 errors, got: {[str(d) for d in ext004_diags]}")
+        self.assertTrue(any("table.super()" in d.message for d in ext004_diags))
+        self.assertTrue(any("-DAL_NEW" in d.message for d in ext004_diags))
+        self.assertTrue(any("-DAL_UPDATE" in d.message for d in ext004_diags))
+
+    def test_ext004_and_dal006_compliant_table_extension_passes(self):
+        """Asserts compliant Table Extension handling -DAL_NEW/-DAL_UPDATE, reading args before table.super(), and alias capture passes cleanly."""
+        script_good = """
+#context_on "declarations"
+#include <bic_dam>
+domain whinh.hsta g.old.hsta
+boolean           g.old.captured
+#context_off
+| Additional generated declarations
+table twhinh200
+#include <bic_dal2>
+#include <bic_tableext>
+#context_on "functions"
+function capture.old.values()
+{
+    domain whinh.hsta l.old.hsta
+    g.old.captured = false
+    select old200.hsta:l.old.hsta
+    from   whinh200 old200
+    where  old200.orno = :whinh200.orno
+    as set with 1 rows
+    selectdo
+        g.old.hsta = l.old.hsta
+        g.old.captured = true
+    selectempty
+    endselect
+}
+function boolean should.sync(long i.mode)
+{
+    if i.mode = DAL_NEW or i.mode = -DAL_NEW then
+        return(true)
+    endif
+    if i.mode = DAL_UPDATE or i.mode = -DAL_UPDATE then
+        return(not g.old.captured or g.old.hsta <> whinh200.hsta)
+    endif
+    return(false)
+}
+#context_off
+#context_on "method.is.allowed"
+function extern boolean method.is.allowed(long method)
+{
+    on case method
+    case DAL_NEW:
+        break
+    case DAL_UPDATE:
+        break
+    endcase
+    return(true)
+}
+#context_off
+#context_on "before.save"
+function extern long before.save.object(long mode)
+{
+    if mode = DAL_UPDATE or mode = -DAL_UPDATE then
+        capture.old.values()
+    else
+        g.old.captured = false
+    endif
+    return(0)
+}
+#context_off
+#context_on "after.save"
+function extern long after.save.object(...)
+{
+    static long mode
+    mode = 0
+    if get.argc() >= 1 then
+        mode = get.long.arg(1)
+    endif
+    table.super()
+    if should.sync(mode) then
+    endif
+    g.old.captured = false
+    return(0)
+}
+#context_off
+function extern long get.extension.point.version()
+{
+    return(3)
+}
+"""
+        diags = self.auditor.audit_content(script_good, "whinh200.cln")
+        errors_and_warnings = [d for d in diags if d.severity in ("ERROR", "WARNING")]
+        self.assertEqual(len(errors_and_warnings), 0, f"Expected 0 issues, got: {[str(d) for d in errors_and_warnings]}")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -2,7 +2,7 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use rayon::prelude::*;
 use regex::Regex;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::Path;
 
@@ -405,6 +405,7 @@ impl Auditor4GL {
         let (ast_diags, _) = ast_parser.parse();
         diagnostics.extend(ast_diags.iter().cloned());
         let transitive_tx_map = ast_parser.find_transitive_tx_functions();
+        let transitive_with_old_map = ast_parser.find_transitive_with_old_functions();
         let ast_functions = ast_parser.functions.clone();
 
         // Includes collection
@@ -439,6 +440,8 @@ impl Auditor4GL {
         let mut _current_func_ret_type: Option<String> = None;
         let mut current_func_is_void = false;
         let mut current_func_hook_suffix: Option<String> = None;
+        let mut func_table_super_line: Option<(usize, String)> = None;
+        let mut reported_ext004_super_order = false;
         let mut reported_tbl001 = HashSet::new();
 
         // Extension Modeler State
@@ -504,6 +507,8 @@ impl Auditor4GL {
         let re_float_cmp1 = Regex::new(r"==\s*\d+\.\d+|\d+\.\d+\s*==").unwrap();
         let re_float_cmp2 = Regex::new(r"==\s*0\.0\b|0\.0\s*==").unwrap();
         let re_call = Regex::new(r"\b([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)+)\s*\(").unwrap();
+        let re_table_super = Regex::new(r"(?i)\btable\.super\s*\(").unwrap();
+        let re_get_arg = Regex::new(r"(?i)\bget\.(?:long|double|string)\.arg\s*\(").unwrap();
 
         for (line_idx, raw_line) in lines.iter().enumerate() {
             let line_no = line_idx + 1;
@@ -1642,12 +1647,46 @@ impl Auditor4GL {
                 }
             }
 
+            // EXT004: table.super() called before reading hook argument via get.*.arg()
+            if current_func_name.is_some() {
+                if func_table_super_line.is_none() {
+                    if let Some(m_sup) = re_table_super.find(code_line) {
+                        let prev_ok = m_sup.start() == 0
+                            || !matches!(code_line.as_bytes()[m_sup.start() - 1], b'.' | b'_');
+                        if prev_ok {
+                            func_table_super_line = Some((line_no, raw_line.to_string()));
+                        }
+                    }
+                } else if !reported_ext004_super_order {
+                    if let Some(m_arg) = re_get_arg.find(code_line) {
+                        let prev_ok = m_arg.start() == 0
+                            || !matches!(code_line.as_bytes()[m_arg.start() - 1], b'.' | b'_');
+                        if prev_ok {
+                            if let Some((super_line, ref super_raw)) = func_table_super_line {
+                                diagnostics.push(Diagnostic::new(
+                                    file_path,
+                                    super_line,
+                                    1,
+                                    Severity::Error,
+                                    "EXT004",
+                                    format!("EXT004: 'table.super()' called before reading hook argument via 'get.*.arg()' (line {line_no}); read hook arguments before calling 'table.super()' so nested DAL operations cannot clobber argument state."),
+                                    super_raw,
+                                ));
+                                reported_ext004_super_order = true;
+                            }
+                        }
+                    }
+                }
+            }
+
             // Reset current function state when exiting function curly braces
             if had_positive_brace && brace_depth == 0 {
                 current_func_name = None;
                 _current_func_ret_type = None;
                 current_func_is_void = false;
                 current_func_hook_suffix = None;
+                func_table_super_line = None;
+                reported_ext004_super_order = false;
                 had_positive_brace = false;
             }
         }
@@ -1669,7 +1708,7 @@ impl Auditor4GL {
         }
 
         // 11. Intra-File Call Graph Nested Transaction Detection (CAV003)
-        for (fn_name, fn_node) in ast_functions {
+        for (fn_name, fn_node) in &ast_functions {
             // Direct nested db.retry.point() inside an already open transaction in the same function
             for (tx_fn, call_line, call_col, raw_l, start_line) in &fn_node.nested_tx_starts {
                 diagnostics.push(Diagnostic::new(
@@ -1728,6 +1767,168 @@ impl Auditor4GL {
                 format!("EXT003: Unclosed '{ctx_type}' directive (opened at line {ctx_line})."),
                 if ctx_line >= 1 && ctx_line <= lines.len() { lines[ctx_line - 1] } else { "" },
             ));
+        }
+
+        // 12. DAL006: with.old.object.values.do() inside after.save.object (Direct or Transitive)
+        if let Some(after_save_fn) = ast_functions.get("after.save.object") {
+            for (_, call_line, call_col, raw_l) in &after_save_fn.direct_with_old_calls {
+                diagnostics.push(Diagnostic::new(
+                    file_path,
+                    *call_line,
+                    *call_col,
+                    Severity::Error,
+                    "DAL006",
+                    "DAL006: 'with.old.object.values.do()' is unsupported inside 'after.save.object()' (especially after 'table.super()' or during Runtime Layer '-DAL_UPDATE' saves). Capture pre-save values in 'before.save.object(long mode)' via an isolated table alias query instead.",
+                    raw_l,
+                ));
+            }
+            for (callee_name, call_line, call_col, raw_l) in &after_save_fn.callees {
+                if let Some(chain_tail) = transitive_with_old_map.get(callee_name) {
+                    let mut chain = vec![callee_name.clone()];
+                    chain.extend(chain_tail.clone());
+                    diagnostics.push(Diagnostic::new(
+                        file_path,
+                        *call_line,
+                        *call_col,
+                        Severity::Error,
+                        "DAL006",
+                        format!(
+                            "DAL006: 'after.save.object()' calls '{callee_name}()' which executes '{}'. 'with.old.object.values.do()' is unsupported inside 'after.save.object()'; capture pre-save values in 'before.save.object(long mode)' via an isolated table alias query instead.",
+                            chain.join(" -> ")
+                        ),
+                        raw_l,
+                    ));
+                }
+            }
+        }
+
+        // 13. EXT004: Missing Runtime Layer negative modes (-DAL_NEW / -DAL_UPDATE) in Table Extension save hooks
+        if is_table_ext {
+            let re_abs = Regex::new(r"(?i)\babs\s*\(").unwrap();
+            let re_dal_new = Regex::new(r"(?i)\bDAL_NEW\b").unwrap();
+            let re_dal_upd = Regex::new(r"(?i)\bDAL_UPDATE\b").unwrap();
+
+            let save_hooks = ["before.save.object", "after.save.object"];
+            let mut hook_uses_abs: HashMap<String, bool> = HashMap::new();
+            let mut reach_map: HashMap<String, HashSet<String>> = HashMap::new();
+
+            for hook_name in &save_hooks {
+                if let Some(h_node) = ast_functions.get(*hook_name) {
+                    let h_start = h_node.line.saturating_sub(1);
+                    let h_end = if h_node.end_line > 0 { h_node.end_line.min(cleaned_lines.len()) } else { cleaned_lines.len() };
+                    let h_body = if h_start < h_end { cleaned_lines[h_start..h_end].join("\n") } else { String::new() };
+                    hook_uses_abs.insert((*hook_name).to_string(), re_abs.is_match(&h_body));
+
+                    let mut visited = HashSet::new();
+                    let mut queue = std::collections::VecDeque::new();
+                    queue.push_back((*hook_name).to_string());
+                    while let Some(cur) = queue.pop_front() {
+                        if visited.contains(&cur) {
+                            continue;
+                        }
+                        if let Some(cnode) = ast_functions.get(&cur) {
+                            visited.insert(cur.clone());
+                            for (c_name, _, _, _) in &cnode.callees {
+                                if ast_functions.contains_key(c_name) && c_name != "method.is.allowed" && !visited.contains(c_name) {
+                                    queue.push_back(c_name.clone());
+                                }
+                            }
+                        }
+                    }
+                    reach_map.insert((*hook_name).to_string(), visited);
+                }
+            }
+
+            let mut all_save_reachable: Vec<String> = reach_map
+                .values()
+                .flat_map(|s| s.iter().cloned())
+                .collect::<HashSet<String>>()
+                .into_iter()
+                .collect();
+            all_save_reachable.sort_by_key(|fn_name| ast_functions.get(fn_name).map(|n| n.line).unwrap_or(usize::MAX));
+
+            for fn_name in all_save_reachable {
+                let callers_with_fn: Vec<&String> = reach_map
+                    .iter()
+                    .filter_map(|(h, vset)| if vset.contains(&fn_name) { Some(h) } else { None })
+                    .collect();
+                if !callers_with_fn.is_empty() && callers_with_fn.iter().all(|h| *hook_uses_abs.get(*h).unwrap_or(&false)) {
+                    continue;
+                }
+                let fn_node = match ast_functions.get(&fn_name) {
+                    Some(n) => n,
+                    None => continue,
+                };
+                let fn_start = fn_node.line.saturating_sub(1);
+                let fn_end = if fn_node.end_line > 0 { fn_node.end_line.min(cleaned_lines.len()) } else { cleaned_lines.len() };
+                if fn_start >= fn_end {
+                    continue;
+                }
+                let fn_slice = &cleaned_lines[fn_start..fn_end];
+                if fn_slice.iter().any(|ln| re_abs.is_match(ln)) {
+                    continue;
+                }
+
+                let mut first_pos_new: Option<(usize, usize)> = None;
+                let mut has_neg_new = false;
+                let mut first_pos_update: Option<(usize, usize)> = None;
+                let mut has_neg_update = false;
+
+                for (offset, c_line) in fn_slice.iter().enumerate() {
+                    let cur_line_no = fn_node.line.max(1) + offset;
+                    for m in re_dal_new.find_iter(c_line) {
+                        let prev_ok = m.start() == 0 || !matches!(c_line.as_bytes()[m.start() - 1], b'.' | b'_');
+                        if !prev_ok {
+                            continue;
+                        }
+                        if c_line[..m.start()].trim_end().ends_with('-') {
+                            has_neg_new = true;
+                        } else if first_pos_new.is_none() {
+                            first_pos_new = Some((cur_line_no, m.start() + 1));
+                        }
+                    }
+                    for m in re_dal_upd.find_iter(c_line) {
+                        let prev_ok = m.start() == 0 || !matches!(c_line.as_bytes()[m.start() - 1], b'.' | b'_');
+                        if !prev_ok {
+                            continue;
+                        }
+                        if c_line[..m.start()].trim_end().ends_with('-') {
+                            has_neg_update = true;
+                        } else if first_pos_update.is_none() {
+                            first_pos_update = Some((cur_line_no, m.start() + 1));
+                        }
+                    }
+                }
+
+                if let Some((l_no, c_no)) = first_pos_new {
+                    if !has_neg_new {
+                        let snip = if l_no >= 1 && l_no <= lines.len() { lines[l_no - 1] } else { "" };
+                        diagnostics.push(Diagnostic::new(
+                            file_path,
+                            l_no,
+                            c_no,
+                            Severity::Error,
+                            "EXT004",
+                            format!("EXT004: Table Extension save hook/helper '{fn_name}' checks 'DAL_NEW' without handling Runtime Layer mode '-DAL_NEW' (-1). Standard LN db.insert() bypassing DAL passes '-DAL_NEW'; handle both 'DAL_NEW' and '-DAL_NEW' (or normalize with 'abs()')."),
+                            snip,
+                        ));
+                    }
+                }
+                if let Some((l_no, c_no)) = first_pos_update {
+                    if !has_neg_update {
+                        let snip = if l_no >= 1 && l_no <= lines.len() { lines[l_no - 1] } else { "" };
+                        diagnostics.push(Diagnostic::new(
+                            file_path,
+                            l_no,
+                            c_no,
+                            Severity::Error,
+                            "EXT004",
+                            format!("EXT004: Table Extension save hook/helper '{fn_name}' checks 'DAL_UPDATE' without handling Runtime Layer mode '-DAL_UPDATE' (-2). Standard LN db.update() bypassing DAL passes '-DAL_UPDATE'; handle both 'DAL_UPDATE' and '-DAL_UPDATE' (or normalize with 'abs()')."),
+                            snip,
+                        ));
+                    }
+                }
+            }
         }
 
         // Filter by min_severity
