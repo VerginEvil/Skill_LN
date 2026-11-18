@@ -4,7 +4,8 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use ln_auth::{
-    check_auth_status, read_connectivity_prefs, read_prefs_file, IonapiConfig, OAuth2TokenManager,
+    check_auth_status, read_connectivity_prefs, read_prefs_file, sync_connectivity_prefs,
+    IonapiConfig, OAuth2TokenManager,
 };
 use ln_eclipse_compat::PropertyBucket;
 use ln_jca::client::HttpClient;
@@ -13,6 +14,8 @@ use ln_jca::client::HttpClient;
 pub enum ContextError {
     #[error("Workspace could not be discovered (pass --workspace or set LN_WORKSPACE)")]
     WorkspaceNotFound,
+    #[error("Ambiguous workspace: pass --workspace. Available workspaces: {0:?}")]
+    AmbiguousWorkspace(Vec<String>),
     #[error("Activity '{0}' could not be resolved in workspace")]
     ActivityNotFound(String),
     #[error("I/O error: {0}")]
@@ -222,22 +225,99 @@ impl WorkspaceContext {
         workspace_override: Option<&Path>,
         activity_override: Option<&Path>,
     ) -> Result<Self, ContextError> {
+        Self::discover_with_root(workspace_override, activity_override, None)
+    }
+
+    pub fn default_workspace_roots() -> Vec<PathBuf> {
+        let mut roots = Vec::new();
+        if let Ok(r) = std::env::var("LN_WORKSPACE_ROOT") {
+            let p = PathBuf::from(r.trim());
+            if p.is_dir() {
+                roots.push(p);
+            }
+        }
+        if let Some(d) = dirs::document_dir() {
+            let p = d.join("workspace_lnstudio");
+            if p.is_dir() && !roots.contains(&p) {
+                roots.push(p);
+            }
+        }
+        if let Some(h) = dirs::home_dir() {
+            for p in [
+                h.join("OneDrive").join("Documents").join("workspace_lnstudio"),
+                h.join("Documents").join("workspace_lnstudio"),
+            ] {
+                if p.is_dir() && !roots.contains(&p) {
+                    roots.push(p);
+                }
+            }
+        }
+        roots
+    }
+
+    pub fn resolve_workspace_arg(ws: &str) -> Option<PathBuf> {
+        let direct = PathBuf::from(ws);
+        if direct.exists() && direct.is_dir() {
+            return Some(direct);
+        }
+        for root in Self::default_workspace_roots() {
+            let cand = root.join(ws);
+            if cand.exists() && cand.is_dir() {
+                return Some(cand);
+            }
+        }
+        None
+    }
+
+    pub fn discover_with_root(
+        workspace_override: Option<&Path>,
+        activity_override: Option<&Path>,
+        ws_root_override: Option<&Path>,
+    ) -> Result<Self, ContextError> {
         let mut ws_dir: Option<PathBuf> = None;
         let mut act_dir: Option<PathBuf> = activity_override.map(|p| p.to_path_buf());
 
         if let Some(w) = workspace_override {
             if w.exists() {
                 ws_dir = Some(w.to_path_buf());
+            } else if let Some(s) = w.to_str() {
+                if let Some(resolved) = Self::resolve_workspace_arg(s) {
+                    ws_dir = Some(resolved);
+                }
+            }
+        }
+
+        let find_ws_in_ancestors = |start: &Path| -> Option<(PathBuf, Option<PathBuf>)> {
+            let mut cur_act: Option<PathBuf> = None;
+            let abs = std::fs::canonicalize(start).unwrap_or_else(|_| start.to_path_buf());
+            for anc in abs.ancestors() {
+                if cur_act.is_none() && (anc.join(".project").exists() || anc.join(".admin").exists()) {
+                    cur_act = Some(anc.to_path_buf());
+                }
+                if anc.join(".metadata").is_dir() {
+                    return Some((anc.to_path_buf(), cur_act));
+                }
+            }
+            None
+        };
+
+        if ws_dir.is_none() {
+            if let Some(act) = activity_override {
+                if let Some((w, detected_act)) = find_ws_in_ancestors(act) {
+                    ws_dir = Some(w);
+                    if detected_act.is_some() {
+                        act_dir = detected_act;
+                    }
+                }
             }
         }
 
         if ws_dir.is_none() {
-            if let Some(act) = activity_override {
-                if act.join(".project").exists() {
-                    if let Some(parent) = act.parent() {
-                        if parent.join(".metadata").exists() {
-                            ws_dir = Some(parent.to_path_buf());
-                        }
+            if let Ok(cwd) = std::env::current_dir() {
+                if let Some((w, detected_act)) = find_ws_in_ancestors(&cwd) {
+                    ws_dir = Some(w);
+                    if act_dir.is_none() {
+                        act_dir = detected_act;
                     }
                 }
             }
@@ -245,9 +325,12 @@ impl WorkspaceContext {
 
         if ws_dir.is_none() {
             if let Ok(env_ws) = std::env::var("LN_WORKSPACE") {
-                let p = PathBuf::from(env_ws.trim());
+                let trimmed = env_ws.trim();
+                let p = PathBuf::from(trimmed);
                 if p.exists() {
                     ws_dir = Some(p);
+                } else if let Some(resolved) = Self::resolve_workspace_arg(trimmed) {
+                    ws_dir = Some(resolved);
                 }
             }
         }
@@ -271,16 +354,37 @@ impl WorkspaceContext {
         }
 
         if ws_dir.is_none() {
-            let candidates = [
-                dirs::document_dir().map(|d| d.join("workspace_lnstudio").join("SCS_TST")),
-                dirs::home_dir().map(|h| h.join("OneDrive").join("Documents").join("workspace_lnstudio").join("SCS_TST")),
-                dirs::home_dir().map(|h| h.join("Documents").join("workspace_lnstudio").join("SCS_TST")),
-            ];
-            for cand in candidates.into_iter().flatten() {
-                if cand.exists() {
-                    ws_dir = Some(cand);
-                    break;
+            let roots: Vec<PathBuf> = if let Some(r) = ws_root_override {
+                vec![r.to_path_buf()]
+            } else {
+                Self::default_workspace_roots()
+            };
+            let mut found_workspaces: Vec<PathBuf> = Vec::new();
+            for root in roots {
+                if !root.is_dir() {
+                    continue;
                 }
+                if root.join(".metadata").is_dir() {
+                    found_workspaces.push(root.clone());
+                }
+                if let Ok(entries) = std::fs::read_dir(&root) {
+                    for entry in entries.flatten() {
+                        let p = entry.path();
+                        if p.is_dir() && p.join(".metadata").is_dir() && !found_workspaces.contains(&p) {
+                            found_workspaces.push(p);
+                        }
+                    }
+                }
+            }
+            if found_workspaces.len() == 1 {
+                ws_dir = Some(found_workspaces.remove(0));
+            } else if found_workspaces.len() > 1 {
+                let mut names: Vec<String> = found_workspaces
+                    .iter()
+                    .filter_map(|p| p.file_name().and_then(|s| s.to_str()).map(|s| s.to_string()))
+                    .collect();
+                names.sort();
+                return Err(ContextError::AmbiguousWorkspace(names));
             }
         }
 
@@ -449,7 +553,7 @@ impl WorkspaceContext {
             return Ok(client);
         }
 
-        if report.status == "needs_refresh" {
+        if report.status == "needs_refresh" || report.status == "expired" {
             let mgr = OAuth2TokenManager::new(None);
             if let Some(cached) = mgr.load_token(&token_env) {
                 if let Some(refresh_tok) = cached.refresh_token {
@@ -457,6 +561,16 @@ impl WorkspaceContext {
                         if let Ok(new_tok) = mgr.refresh_access_token(&ionapi, &refresh_tok).await {
                             let access = new_tok.access_token.clone();
                             let _ = mgr.save_token(&token_env, new_tok);
+                            let prefs_path = self
+                                .workspace_dir
+                                .join(".metadata")
+                                .join(".plugins")
+                                .join("org.eclipse.core.runtime")
+                                .join(".settings")
+                                .join("com.infor.erpln.jca.connectivity.prefs");
+                            if prefs_path.exists() {
+                                let _ = sync_connectivity_prefs(&prefs_path, &token_env, &ionapi, None);
+                            }
                             let client = HttpClient::new(&self.endpoint_url, &access);
                             client.set_default_company(&self.company);
                             return Ok(client);
@@ -475,7 +589,55 @@ impl WorkspaceContext {
         )))
     }
 
-    fn find_ionapi_config(&self) -> Option<IonapiConfig> {
+    pub fn load_ionapi_from_cloudenv(env_name: &str, studio_override: Option<&Path>) -> Option<IonapiConfig> {
+        let mut studio_candidates: Vec<PathBuf> = Vec::new();
+        if let Some(p) = studio_override {
+            studio_candidates.push(p.to_path_buf());
+        }
+        if let Ok(p) = std::env::var("LN_STUDIO_PATH") {
+            studio_candidates.push(PathBuf::from(p));
+        }
+        if let Ok(p) = std::env::var("LN_STUDIO_HOME") {
+            studio_candidates.push(PathBuf::from(p));
+        }
+
+        for studio_dir in studio_candidates {
+            let prefs_path = studio_dir
+                .join("configuration")
+                .join(".settings")
+                .join("com.infor.erpln.jca.connectivity.cloudenv.prefs");
+            if !prefs_path.is_file() {
+                continue;
+            }
+            if let Ok(props) = read_prefs_file(&prefs_path) {
+                let count: usize = props.get("EnvironmentsCount").and_then(|s| s.parse().ok()).unwrap_or(0);
+                for i in 0..count {
+                    let name_i = props.get(&format!("EnvironmentName{i}")).map(|s| s.as_str()).unwrap_or("");
+                    if name_i.eq_ignore_ascii_case(env_name) {
+                        let json_val = serde_json::json!({
+                            "ti": props.get(&format!("TenantID{i}")).cloned().unwrap_or_default(),
+                            "cn": "LNStudio",
+                            "dt": "11",
+                            "ci": props.get(&format!("ClientID{i}")).cloned().unwrap_or_default(),
+                            "cs": props.get(&format!("ClientSecret{i}")).cloned().unwrap_or_default(),
+                            "iu": props.get(&format!("GatewayURL{i}")).cloned().unwrap_or_default(),
+                            "pu": "",
+                            "oa": props.get(&format!("AuthorizationCodeURL{i}")).cloned().unwrap_or_default(),
+                            "ot": props.get(&format!("RequestTokenURL{i}")).cloned().unwrap_or_default(),
+                            "or": props.get(&format!("RevokeTokenURL{i}")).cloned().unwrap_or_default(),
+                            "sc": props.get(&format!("AppScope{i}")).cloned().unwrap_or_default(),
+                        });
+                        if let Ok(cfg) = IonapiConfig::from_str(&json_val.to_string()) {
+                            return Some(cfg);
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    pub fn find_ionapi_config(&self) -> Option<IonapiConfig> {
         let mut candidates = Vec::new();
         if let Ok(p) = std::env::var("LN_IONAPI_PATH") {
             candidates.push(PathBuf::from(p));
@@ -500,6 +662,13 @@ impl WorkspaceContext {
                 }
             }
         }
-        None
+
+        let ws_folder = self
+            .workspace_dir
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or(&self.env_name);
+        Self::load_ionapi_from_cloudenv(&self.env_name, None)
+            .or_else(|| Self::load_ionapi_from_cloudenv(ws_folder, None))
     }
 }

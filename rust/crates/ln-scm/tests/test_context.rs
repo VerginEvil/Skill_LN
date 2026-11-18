@@ -88,3 +88,30 @@ fn test_workspace_context_real_scs_tst_workspace() {
     assert_eq!(dot_proj.dev_repo_address, "EXTce01108_dev");
     assert_eq!(dot_proj.rt_repo_address, "EXTce01108_rt");
 }
+
+#[test]
+fn test_workspace_discover_fails_fast_when_ambiguous_and_loads_cloudenv_ionapi() {
+    let tmp = tempdir().unwrap();
+    let ws_root = tmp.path().join("ws_root");
+    for name in ["WS_ONE", "WS_TWO"] {
+        let sdir = ws_root.join(name).join(".metadata").join(".plugins").join("org.eclipse.core.runtime").join(".settings");
+        std::fs::create_dir_all(&sdir).unwrap();
+        std::fs::write(
+            sdir.join("com.infor.erpln.jca.connectivity.prefs"),
+            format!("ActivationType1=http_oauth2\nCloudEnvironment1={name}\nCompany1=0\nConfigurationCount=2\nHostName1=https\\://gw.example.com/T/LN/webservice\nName1=ProjectServer\n"),
+        ).unwrap();
+    }
+
+    // Ambiguous root with 2 workspaces and no override/CWD match must fail fast listing available workspaces
+    let err = WorkspaceContext::discover_with_root(None, None, Some(&ws_root)).unwrap_err();
+    let msg = err.to_string();
+    assert!(msg.contains("WS_ONE") && msg.contains("WS_TWO"), "Expected available workspaces in error: {msg}");
+
+    // Infers workspace even from nested file/dir inside activity
+    let act = ws_root.join("WS_TWO").join("act_01 [EXTdemo]");
+    let nested = act.join("tx").join("session").join("inr");
+    std::fs::create_dir_all(&nested).unwrap();
+    std::fs::write(act.join(".project"), "<projectDescription><name>act_01 [EXTdemo]</name></projectDescription>").unwrap();
+    let ctx = WorkspaceContext::discover_with_root(None, Some(&nested), Some(&ws_root)).unwrap();
+    assert_eq!(ctx.env_name, "WS_TWO");
+}

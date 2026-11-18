@@ -42,5 +42,5 @@ pub fn generate_function_xml(
         "</DR_Module>",
     ];
 
-    lines.join("\n") + "\n"
+    crate::generators::label::compact_tde_xml(&lines.join("\n"))
 }

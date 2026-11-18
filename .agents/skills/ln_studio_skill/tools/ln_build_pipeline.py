@@ -315,12 +315,24 @@ def create_tables(
     return "error" not in resp_xml.lower() or "ok" in resp_xml.lower()
 
 
+def _derive_package_combination(project_name: str, meta: Optional[Dict[str, Any]] = None) -> str:
+    if meta:
+        rel = (meta.get("applicationRelease") or "").strip()
+        if rel and not rel.startswith("B61"):
+            return rel
+    pname = (project_name or "").strip()
+    if pname.lower().startswith("ext") and len(pname) > 3:
+        return pname[3:]
+    return pname
+
+
 def execute_vsc(
     client: LNStudioServerClient,
     comp_type: str,
     comp_name: str,
     project_name: str,
     activity_dir: Optional[Path] = None,
+    package_combination: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Executes Verification of Source Code (VSC) on the LN Server via VSC.executeVSC in SHOW mode (1).
@@ -331,6 +343,7 @@ def execute_vsc(
     dev_cp = f"{project_name}_dev"
 
     context_xml = None
+    meta = None
     if activity_dir:
         from ln_scm_engine import resolve_activity_scm_metadata, build_activity_context_xml
         meta = resolve_activity_scm_metadata(activity_dir)
@@ -341,10 +354,14 @@ def execute_vsc(
             activity_guid=meta["labelUUID"],
         )
 
+    pkg_comb = package_combination or _derive_package_combination(project_name, meta)
+    pkg_comb_xml = f"  <packageCombination>{pkg_comb}</packageCombination>\n" if pkg_comb else ""
+
     req_xml = (
         f"<VSC>\n"
         f"  <componentName>{comp_name}</componentName>\n"
         f"  <componentType>{comp_type.lower()}</componentType>\n"
+        f"{pkg_comb_xml}"
         f"</VSC>"
     )
 
@@ -538,6 +555,7 @@ def prepare_end_activity(
     client: LNStudioServerClient,
     activity_dir: Path,
     project_name: str,
+    skip_vsc: bool = False,
 ) -> Dict[str, Any]:
     """
     Pre-commit readiness verifier for Activity delivery:
@@ -618,8 +636,9 @@ def prepare_end_activity(
     has_props = idx_p is not None and idx_p.exists()
     metadata_ok = has_proj and has_admin and has_props
 
-    # 4. Discover modified components in .admin
+    # 4. Discover modified components in .admin and run executeVSC unless --skip-vsc
     from admin_sync import list_admin_components, scan_and_sync_activity
+    from scm_guardrails import is_extension_component
     try:
         scan_and_sync_activity(activity_dir)
     except Exception:
@@ -627,25 +646,220 @@ def prepare_end_activity(
     comps = list_admin_components(activity_dir)
     comp_paths = [c["path"] for c in comps]
 
+    ext_to_type = _TDE_EXT_TO_TYPE
+    vsc_results = []
+    vsc_passed = True
+    if not skip_vsc:
+        for rel in comp_paths:
+            p = activity_dir / rel
+            if is_extension_component(p) or p.suffix.lower() == ".lbl":
+                continue
+            ctype = ext_to_type.get(p.suffix.lower())
+            if not ctype:
+                continue
+            try:
+                vres = execute_vsc(
+                    client=client,
+                    comp_type=ctype,
+                    comp_name=p.stem,
+                    project_name=project_name,
+                    activity_dir=activity_dir,
+                )
+                vsc_results.append({"component": p.stem, "type": ctype, "passed": vres["passed"]})
+                if not vres["passed"]:
+                    vsc_passed = False
+            except Exception as e:
+                vsc_results.append({"component": p.stem, "type": ctype, "passed": False, "error": str(e)})
+                vsc_passed = False
+
+    overall_server_valid = server_valid and vsc_passed
+    ready = overall_server_valid and metadata_ok
+
     # 5. Generate structured report
     return {
         "activity": task_id,
         "project": project_name,
         "activity_folder": str(activity_dir),
-        "server_valid": server_valid,
+        "server_valid": overall_server_valid,
+        "vsc_passed": vsc_passed,
+        "vsc_results": vsc_results,
         "metadata_synced": metadata_ok,
         "components_count": len(comps),
         "components": comp_paths,
-        "ready_for_human_review": server_valid and metadata_ok,
+        "ready_for_human_review": ready,
         "human_action_required": "Please open Infor LN Studio (Eclipse), review changes, and click 'End Activity'.",
         "commit_summary": (
             f"=== Infor LN Studio Pre-Commit Activity Summary ===\n"
             f"Activity:   {task_id}\n"
             f"Project:    {project_name}\n"
             f"Components: {len(comps)} modified components\n"
-            f"Server VSC: {'PASSED' if server_valid else 'CHECK_REQUIRED'}\n"
+            f"Server VSC: {'PASSED' if overall_server_valid else 'CHECK_REQUIRED'}\n"
             f"Workspace:  {'100% SYNCHRONIZED' if metadata_ok else 'METADATA_INCOMPLETE'}\n"
-            f"Status:     READY FOR HUMAN DELIVERY APPROVAL IN LN STUDIO\n"
+            f"Status:     {'READY FOR HUMAN DELIVERY APPROVAL IN LN STUDIO' if ready else 'CHECK_REQUIRED - SEE VALIDATION RESULTS ABOVE'}\n"
             f"==================================================="
         ),
+    }
+
+
+_TDE_EXT_TO_TYPE: Dict[str, str] = {
+    **{v["ext"]: k for k, v in BDE_TYPE_MAP.items() if k != "extension"},
+    ".que": "question",
+}
+
+
+def sync_activity(
+    client: LNStudioServerClient,
+    activity_dir: Path,
+    project_name: str,
+) -> Dict[str, Any]:
+    """
+    Post-End-Activity / VRC sync command:
+    Queries StudioComponent.GetBrowseList with activity context_xml, refreshes
+    server-committed components (isCheckedOut=no and isCheckedOutParallel=no) that
+    are not locally CheckedOut or Dirty in .admin via GetActivitySource ->
+    compact_tde_xml -> Read-Only -> admin_after_get. Preserves locally
+    CheckedOut/Dirty files untouched and reports both refreshed and skipped items.
+    """
+    from admin_sync import list_admin_components, normalize_admin_path
+    from ln_component_explorer import browse_components, get_component
+    from ln_scm_engine import resolve_activity_scm_metadata, build_activity_context_xml, is_extension_component
+
+    meta = resolve_activity_scm_metadata(activity_dir)
+    task_id = meta["taskName"] or activity_dir.name.split(" ")[0].strip("[]")
+    label_uuid = meta["labelUUID"] or task_id
+    dev_cp = meta["taskContext"] or f"{project_name}_dev"
+    base_vrc = meta["baseVRC"] or "B61O_a_ext"
+
+    context_xml = build_activity_context_xml(
+        activity_name=task_id,
+        base_vrc=base_vrc,
+        connection_point=dev_cp,
+        activity_guid=label_uuid,
+        documentation=meta["taskDocumentation"] or None,
+    )
+
+    ext_to_type = _TDE_EXT_TO_TYPE
+
+    adm_path = activity_dir / ".admin"
+    adm = {}
+    if adm_path.exists():
+        for entry in list_admin_components(activity_dir):
+            adm[normalize_admin_path(entry["path"])] = entry
+
+    local_items = []
+    seen_rel = set()
+    skip_dirs = {".metadata", ".settings", ".reference", ".git"}
+    for p in sorted(activity_dir.rglob("*")):
+        if not p.is_file():
+            continue
+        if any(part in skip_dirs for part in p.relative_to(activity_dir).parts):
+            continue
+        if is_extension_component(p):
+            continue
+        ctype = ext_to_type.get(p.suffix.lower())
+        if not ctype:
+            continue
+        rel = normalize_admin_path(p.relative_to(activity_dir).as_posix())
+        if rel not in seen_rel:
+            seen_rel.add(rel)
+            local_items.append((ctype, p.stem, rel))
+
+    # Group GetBrowseList queries by (ctype, package) to avoid redundant server calls
+    server_index: Dict[tuple, Dict[str, str]] = {}
+    queried_pairs = set()
+    failed_pairs = set()
+    refreshed = []
+    skipped_local = []
+    skipped_server = []
+    errors = []
+
+    for ctype, cname, _ in local_items:
+        pkg = cname[:2] if len(cname) >= 2 else ""
+        pair = (ctype, pkg)
+        if pair in queried_pairs:
+            continue
+        queried_pairs.add(pair)
+        try:
+            items = browse_components(
+                client,
+                package=pkg,
+                comp_type=ctype,
+                name_filter="",
+                connection_point=dev_cp,
+                context_xml=context_xml,
+            )
+            for item in items:
+                iname = item.get("name", "").lower()
+                if iname:
+                    server_index[(ctype, iname)] = item
+        except Exception as e:
+            failed_pairs.add(pair)
+            errors.append({"type": ctype, "name": f"{pkg}*", "path": "", "error": f"GetBrowseList failed: {e}"})
+
+    for ctype, cname, rel in local_items:
+        adm_entry = adm.get(rel, {})
+        if adm_entry.get("isDirty") or adm_entry.get("isCheckedOut"):
+            skipped_local.append({
+                "type": ctype,
+                "name": cname,
+                "path": rel,
+                "reason": "locally CheckedOut or Dirty",
+            })
+            continue
+
+        pkg = cname[:2] if len(cname) >= 2 else ""
+        if (ctype, pkg) in failed_pairs:
+            continue
+
+        srv = server_index.get((ctype, cname.lower()))
+        if not srv:
+            skipped_server.append({
+                "type": ctype,
+                "name": cname,
+                "path": rel,
+                "reason": "not found in server browse list",
+            })
+            continue
+
+        srv_co = (srv.get("isCheckedOut") or "no").strip().lower()
+        srv_par = (srv.get("isCheckedOutParallel") or "no").strip().lower()
+        if srv_co != "no" or srv_par != "no":
+            skipped_server.append({
+                "type": ctype,
+                "name": cname,
+                "path": rel,
+                "reason": f"checked out on server (isCheckedOut={srv_co}, isCheckedOutParallel={srv_par})",
+            })
+            continue
+
+        try:
+            out_path = get_component(
+                client=client,
+                comp_type=ctype,
+                comp_name=cname,
+                activity_dir=activity_dir,
+                read_only=True,
+                connection_point=dev_cp,
+                activity_uuid=label_uuid,
+                base_vrc=base_vrc,
+            )
+            refreshed.append({
+                "type": ctype,
+                "name": cname,
+                "path": normalize_admin_path(out_path.relative_to(activity_dir).as_posix()),
+                "versionID": srv.get("versionID", ""),
+            })
+        except Exception as e:
+            errors.append({"type": ctype, "name": cname, "path": rel, "error": str(e)})
+
+    return {
+        "activity": task_id,
+        "project": project_name,
+        "activity_folder": str(activity_dir),
+        "refreshed": refreshed,
+        "skipped_local": skipped_local,
+        "skipped_server": skipped_server,
+        "errors": errors,
+        "refreshed_count": len(refreshed),
+        "skipped_count": len(skipped_local) + len(skipped_server),
     }

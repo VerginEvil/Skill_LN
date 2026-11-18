@@ -308,5 +308,5 @@ pub fn generate_report_xml(
     lines.push(format!("  <application>{app}</application>"));
     lines.push("</DR_Report>".to_string());
 
-    lines.join("\n") + "\n"
+    crate::generators::label::compact_tde_xml(&lines.join("\n"))
 }

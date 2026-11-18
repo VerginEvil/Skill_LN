@@ -141,6 +141,7 @@ pub struct BrowsedComponent {
     pub description: String,
     pub version_id: String,
     pub is_checked_out: String,
+    pub is_checked_out_parallel: String,
     pub is_expired: String,
 }
 
@@ -152,6 +153,7 @@ pub async fn browse_components(
     comp_type: &str,
     name_filter: &str,
     connection_point: &str,
+    context_xml: Option<&str>,
 ) -> Result<Vec<BrowsedComponent>, JcaError> {
     let ctype = if comp_type.is_empty() { "table" } else { comp_type }.to_lowercase();
     let bde_name = get_bde_type_info(&ctype).map(|i| i.bde).unwrap_or("DR_Table");
@@ -172,8 +174,9 @@ pub async fn browse_components(
     selection.add(&format!("{bde_name}.Version.isCheckedOut"));
     selection.add(&format!("{bde_name}.Version.isCheckedOutParallel"));
 
-    let filter = if !name_filter.is_empty() {
-        Some(BdeFilter::from_raw(&format!("{bde_name}.name LIKE '{name_filter}'")))
+    let sql_filter = name_filter.replace('*', "%");
+    let filter = if !sql_filter.is_empty() {
+        Some(BdeFilter::from_raw(&format!("{bde_name}.name LIKE '{sql_filter}'")))
     } else {
         None
     };
@@ -188,6 +191,7 @@ pub async fn browse_components(
         request_xml: None,
         selection: Some(selection),
         filter,
+        context_xml: context_xml.map(|s| s.to_string()),
         controlling_attributes: ctrl_attrs,
         ..Default::default()
     };
@@ -203,8 +207,8 @@ pub async fn browse_components(
             if !comp_type.is_empty() {
                 req_parts.push_str(&format!("<type>{comp_type}</type>"));
             }
-            if !name_filter.is_empty() {
-                req_parts.push_str(&format!("<filter>{name_filter}</filter>"));
+            if !sql_filter.is_empty() {
+                req_parts.push_str(&format!("<filter>{sql_filter}</filter>"));
             }
             req_parts.push_str("</GetBrowseListRequest></StudioComponent>");
 
@@ -213,6 +217,7 @@ pub async fn browse_components(
                 method_name: "GetBrowseList".to_string(),
                 mode: Some(BdeExecutionMode::Bde),
                 request_xml: Some(req_parts),
+                context_xml: context_xml.map(|s| s.to_string()),
                 ..Default::default()
             };
             mgr.execute(&fb_params).await?
@@ -267,6 +272,10 @@ pub async fn browse_components(
             .or_else(|| elem.attr("isCheckedOut"))
             .unwrap_or("no")
             .to_string();
+        let is_co_parallel = elem.find_text("isCheckedOutParallel")
+            .or_else(|| elem.attr("isCheckedOutParallel"))
+            .unwrap_or("no")
+            .to_string();
         let is_exp = elem.find_text("isExpired")
             .or_else(|| elem.attr("isExpired"))
             .unwrap_or("no")
@@ -281,6 +290,7 @@ pub async fn browse_components(
                 description: desc,
                 version_id: ver_id,
                 is_checked_out: is_co,
+                is_checked_out_parallel: is_co_parallel,
                 is_expired: is_exp,
             });
         }
@@ -839,10 +849,10 @@ pub async fn get_component(
 
     // Resolve context_xml and eff_cp from activity_dir if not explicitly provided
     let (act_ctx, act_cp) = crate::activity::resolve_activity_context(activity_dir);
-    let context_xml = if activity_uuid.is_some() {
-        Some(format!("<ActivityID><activityUUID>{}</activityUUID></ActivityID>", activity_uuid.unwrap()))
-    } else {
+    let context_xml = if act_ctx.is_some() {
         act_ctx
+    } else {
+        activity_uuid.map(|u| format!("<ActivityID><activityUUID>{u}</activityUUID></ActivityID>"))
     };
     let eff_cp = if connection_point.is_empty() || connection_point == "ProjectServer" {
         &act_cp
@@ -878,7 +888,8 @@ pub async fn get_component(
         }
     }
 
-    std::fs::write(&target_file, &resp_xml)?;
+    let compacted_xml = ln_model::compact_tde_xml(&resp_xml);
+    std::fs::write(&target_file, &compacted_xml)?;
 
     if eff_readonly {
         if let Ok(mut perms) = std::fs::metadata(&target_file).map(|m| m.permissions()) {
@@ -966,10 +977,21 @@ pub async fn sync_reference(
             if ctype_lower == "extension" { "library" } else { &ctype_lower },
             name_pattern,
             connection_point,
+            None,
         ).await?;
 
+        let pat_regex = format!(
+            "^{}$",
+            regex::escape(name_pattern)
+                .replace(r"\*", ".*")
+                .replace(r"\?", ".")
+        );
+        let glob_re = regex::Regex::new(&format!("(?i){pat_regex}")).ok();
+
         for b in browsed {
-            target_names.push(b.name);
+            if glob_re.as_ref().map_or(true, |re| re.is_match(&b.name)) {
+                target_names.push(b.name);
+            }
         }
     } else {
         target_names.push(name_pattern.to_string());
@@ -1115,7 +1137,8 @@ pub async fn clone_component(
         }
     }
 
-    std::fs::write(&target_file, &renamed_xml)?;
+    let compacted_xml = ln_model::compact_tde_xml(&renamed_xml);
+    std::fs::write(&target_file, &compacted_xml)?;
 
     // Register in .admin cache via after_create
     let norm_rel = rel_path.to_string_lossy().replace('\\', "/");
@@ -1131,7 +1154,7 @@ pub async fn clone_component(
             bde_name: bde_name.to_string(),
             method_name: "DR_Create".to_string(),
             mode: Some(BdeExecutionMode::Bde),
-            request_xml: Some(renamed_xml),
+            request_xml: Some(compacted_xml),
             context_xml,
             ..Default::default()
         };

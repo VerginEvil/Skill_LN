@@ -206,7 +206,8 @@ def generate_report_xml(spec: Dict[str, Any], application: str) -> str:
         '</DR_Report>',
     ])
 
-    return "\n".join(lines) + "\n"
+    from generate_ln_table import compact_tde_xml
+    return compact_tde_xml("\n".join(lines))
 
 
 def generate_reports(

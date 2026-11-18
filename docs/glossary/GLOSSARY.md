@@ -148,6 +148,14 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Workspace `.agents/` Layout**: Antigravity-native project customization layout placing workspace skills under `.agents/skills/<skill>/SKILL.md` and workspace rules under `.agents/rules/*.md` (superseding ADR 0015 root skill placement).
 - **Local Repo Pointer Overlay (`repos.local.md`)**: A gitignored `always_on` rule file (`.agents/rules/repos.local.md`, paired with a tracked `.example.md` template) that stores private customer repository names, local Windows paths, and internal GitLab URLs without exposing them in the public `Skill_LN` repository.
 - **Global Slash-Command Sync Cache (`~/.gemini/config/skills/`)**: The machine-local Antigravity skills directory populated via one-way real-directory copy (`python scripts/run_checks.py --sync-skill`) rather than Windows junctions, ensuring `/` slash-command discovery works reliably without stale drift.
+
+### Label Parity, Single-Line XML & VRC Sync Hardening (ADR 0023)
+- **Single-Line TDE XML Invariant**: Formatting requirement mandated by Eclipse `CMComponentProperties(IFile)` (`ClassCastException` on non-element text nodes) where all 12 TDE component XMLs must start with `<?xml version="1.0" encoding="UTF-8" standalone="no"?>` and strip inter-tag whitespace while preserving `<![CDATA[...]]>` payloads verbatim.
+- **Package-Local Label Prefix Stripping**: Session XML rule where `<FormField><fieldLabel>` omits the current session's package prefix for package-local and cloned cross-package labels (because LN Studio prepends `<pkg>` automatically), whereas inherited base-package (`tc`) labels and `<FormCommand><descriptionReference>` retain full label codes.
+- **FormCommand Context-10 Variant**: `<LabelVariant><context>` value `10` (`Form Commands`) required by `DR_Controller.Put` for command labels, distinct from `1` (Field / General use) and `2` (Session / Table description).
+- **Activity-Based Cloud SCM Detection**: SCM mode resolution in `scm_guardrails` / `ln-scm` that recognizes active Cloud SCM projects via `labelUUID`, `taskName`, and `*_dev` metadata in `properties.index` even when `ApplicationUsesSCM=no`.
+- **Post-End-Activity VRC Sync (`sync-activity`)**: Workspace refresh workflow that queries `StudioComponent.GetBrowseList` with activity `context_xml`, downloads committed server components (`isCheckedOut=no`, `isCheckedOutParallel=no`) onto non-dirty local files, compacts XML, sets Read-Only, and updates `.admin` via `admin_after_get`.
+
 - **Expand–Contract Path Migration**: A zero-downtime migration sequence that first adds `.agents/skills/` path support alongside root fallbacks in Python/Rust tooling, moves the skill directories, and finally contracts obsolete root paths and duplicate global copies.
 
 

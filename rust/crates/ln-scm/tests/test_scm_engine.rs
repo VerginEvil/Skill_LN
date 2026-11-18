@@ -237,3 +237,168 @@ fn test_build_checkin_payload_injection() {
     assert!(injected.contains("<Version><documentation>Fix bug #123 &amp; verify &lt;tag&gt;</documentation></Version>"));
     assert!(injected.contains("<expression>hello</expression>"));
 }
+
+#[test]
+fn test_activity_cloud_scm_detection_in_indexes_and_exact_case_checkout() {
+    let tmp = tempdir().unwrap();
+    let ws = tmp.path();
+    let act = ws.join("dev_act [EXTdemo]");
+    std::fs::create_dir_all(&act).unwrap();
+
+    let idx = ws
+        .join(".metadata")
+        .join(".plugins")
+        .join("org.eclipse.core.resources")
+        .join(".projects")
+        .join("dev_act [EXTdemo]")
+        .join(".indexes")
+        .join("properties.index");
+
+    let mut bucket = ln_eclipse_compat::PropertyBucket::new();
+    bucket.set_property("ApplicationUsesSCM", "no", "", "");
+    bucket.set_property("Label", "uuid-cloud-act-001", "", "");
+    bucket.set_property("TaskName", "dev_act", "", "");
+    bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTdemo_dev", "", "");
+    bucket.save_to_path(&idx).unwrap();
+
+    let (enabled, reason) = is_project_scm_enabled(&act);
+    assert!(enabled, "Expected Activity-based Cloud SCM enabled despite ApplicationUsesSCM=no, got: {reason}");
+
+    // Genuine NON_SCM (no Label/TaskName/dev repo) in .indexes/properties.index must return false
+    let mut bucket_non = ln_eclipse_compat::PropertyBucket::new();
+    bucket_non.set_property("ApplicationUsesSCM", "no", "", "");
+    bucket_non.save_to_path(&idx).unwrap();
+    let (disabled, _) = is_project_scm_enabled(&act);
+    assert!(!disabled, "Expected genuine ApplicationUsesSCM=no without Cloud SCM metadata to return false");
+
+    let payload = build_checkout_payload("DR_Label", "txinr.addr", "label", "B61O_a_ext", "dev_act", Some("uuid-cloud-act-001"));
+    assert!(payload.contains("<name>txinr.addr</name>"), "payload={payload}");
+}
+
+#[test]
+fn test_sync_admin_preserves_flags_uses_after_create_and_skips_extensions() {
+    let tmp = tempdir().unwrap();
+    let act = tmp.path();
+
+    let ses_file = act.join("tx").join("session").join("inr").join("txinr1110m000.ses");
+    let new_lbl = act.join("tx").join("label").join("txwh.clot.lbl");
+    let ext_lib = act.join("tx").join("library").join("ess").join("txesswhwmd4300.lib");
+    std::fs::create_dir_all(ses_file.parent().unwrap()).unwrap();
+    std::fs::create_dir_all(new_lbl.parent().unwrap()).unwrap();
+    std::fs::create_dir_all(ext_lib.parent().unwrap()).unwrap();
+    std::fs::write(&ses_file, "<DR_Controller><name>txinr1110m000</name></DR_Controller>").unwrap();
+    std::fs::write(&new_lbl, "<DR_Label><name>txwh.clot</name></DR_Label>").unwrap();
+    std::fs::write(&ext_lib, "<DR_Module><name>txesswhwmd4300</name></DR_Module>").unwrap();
+
+    // Pre-existing .admin entry for session with CheckedOut + Dirty + EverCheckedIn, plus a deleted stale file
+    let admin_path = act.join(".admin");
+    let mut admin = AdminFile::new();
+    admin.after_checkout("tx/session/inr/txinr1110m000.ses");
+    admin.get_mut("tx/session/inr/txinr1110m000.ses").unwrap().is_dirty = true;
+    admin.after_create("tx/label/deleted.lbl");
+    admin.save_to_path(&admin_path).unwrap();
+
+    let res = ln_scm::scm_engine::sync_admin(act).unwrap();
+    assert_eq!(res.added, vec!["tx/label/txwh.clot.lbl"]);
+    assert_eq!(res.removed, vec!["tx/label/deleted.lbl"]);
+
+    let reloaded = AdminFile::load_from_path(&admin_path).unwrap();
+    let ses_entry = reloaded.get("tx/session/inr/txinr1110m000.ses").unwrap();
+    assert!(ses_entry.is_checked_out, "Existing CheckedOut flag must be preserved");
+    assert!(ses_entry.is_dirty, "Existing Dirty flag must be preserved");
+
+    let lbl_entry = reloaded.get("tx/label/txwh.clot.lbl").unwrap();
+    assert!(lbl_entry.is_created, "New disk file must use after_create");
+    assert!(lbl_entry.is_checked_out);
+    assert!(lbl_entry.is_dirty);
+
+    assert!(reloaded.get("tx/library/ess/txesswhwmd4300.lib").is_none(), "Extension must be skipped");
+    assert!(reloaded.get("tx/label/deleted.lbl").is_none(), "Deleted file must be pruned");
+}
+
+#[tokio::test]
+async fn test_put_and_checkin_auto_dr_create_and_checkout_mock_server() {
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let addr = listener.local_addr().unwrap();
+    let base_url = format!("http://127.0.0.1:{}/TENANT/LN/webservice", addr.port());
+
+    let created = Arc::new(AtomicBool::new(false));
+    let checked_out = Arc::new(AtomicBool::new(false));
+    let captured_create_req: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
+
+    let c_created = created.clone();
+    let c_checked_out = checked_out.clone();
+    let c_create_req = captured_create_req.clone();
+
+    tokio::spawn(async move {
+        while let Ok((mut socket, _)) = listener.accept().await {
+            let mut buf = [0u8; 16384];
+            let n = socket.read(&mut buf).await.unwrap_or(0);
+            let req = String::from_utf8_lossy(&buf[..n]).to_string();
+            let req_line = req.lines().next().unwrap_or("");
+
+            let (status_line, headers, body) = if req_line.contains("method=connect") {
+                ("HTTP/1.1 200 OK", "Set-Cookie: JSESSIONID=s0; Path=/\r\nContent-Type: application/xml\r\n", "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>")
+            } else if req_line.contains("method=share") {
+                ("HTTP/1.1 200 OK", "Content-Type: application/xml\r\n", "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>")
+            } else if req.contains("bdename=DR_Label") && req.contains("bdemethod=DR_Create") {
+                *c_create_req.lock().await = req.clone();
+                c_created.store(true, Ordering::SeqCst);
+                ("HTTP/1.1 200 OK", "Content-Type: application/xml\r\n", "<DR_LabelResponse><DataArea><DR_Label><name>txwh.clot</name><versionID>B61O_a_ext.1</versionID></DR_Label></DataArea></DR_LabelResponse>")
+            } else if req.contains("bdename=DR_Label") && req.contains("bdemethod=CheckOut") {
+                c_checked_out.store(true, Ordering::SeqCst);
+                ("HTTP/1.1 200 OK", "Content-Type: application/xml\r\n", "<DR_LabelResponse><DataArea><DR_Label><name>txwh.clot</name><versionID>B61O_a_ext.1</versionID></DR_Label></DataArea></DR_LabelResponse>")
+            } else if req.contains("bdename=DR_Label") && (req.contains("bdemethod=Put") || req.contains("bdemethod=CheckIn")) {
+                if !c_created.load(Ordering::SeqCst) {
+                    ("HTTP/1.1 500 Internal Server Error", "Content-Type: application/xml\r\n", "<error><message>Label not found</message></error>")
+                } else if !c_checked_out.load(Ordering::SeqCst) {
+                    ("HTTP/1.1 500 Internal Server Error", "Content-Type: application/xml\r\n", "<error><message>Label has not been checked out</message></error>")
+                } else {
+                    ("HTTP/1.1 200 OK", "Content-Type: application/xml\r\n", "<DR_LabelResponse><DataArea><DR_Label><name>txwh.clot</name><versionID>B61O_a_ext.2</versionID></DR_Label></DataArea></DR_LabelResponse>")
+                }
+            } else {
+                ("HTTP/1.1 404 Not Found", "Content-Type: text/plain\r\n", "Unknown")
+            };
+
+            let resp = format!(
+                "{}\r\n{}Content-Length: {}\r\nConnection: close\r\n\r\n{}",
+                status_line, headers, body.len(), body
+            );
+            let _ = socket.write_all(resp.as_bytes()).await;
+        }
+    });
+
+    let client = HttpClient::new(&base_url, "test_token");
+    let td = tempdir().unwrap();
+    let act_dir = td.path().join("dev_test [EXTce01107]");
+    fs::create_dir_all(&act_dir).unwrap();
+    fs::write(act_dir.join(".project"), "<projectDescription/>").unwrap();
+    let mut admin = AdminFile::new();
+    admin.after_create("tx/label/txwh.clot.lbl");
+    admin.save_to_path(&act_dir.join(".admin")).unwrap();
+
+    let lbl_path = act_dir.join("tx").join("label").join("txwh.clot.lbl");
+    fs::create_dir_all(lbl_path.parent().unwrap()).unwrap();
+    fs::write(&lbl_path, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><DR_Label><name>txwh.clot</name></DR_Label>").unwrap();
+
+    let put_res = put_component(&client, "label", "txwh.clot", &act_dir, "EXTce01107", Some("B61O_a_ext"), None)
+        .await
+        .unwrap();
+    assert_eq!(put_res.status, "SUCCESS");
+    assert!(created.load(Ordering::SeqCst));
+    assert!(checked_out.load(Ordering::SeqCst));
+
+    let create_req_body = captured_create_req.lock().await.clone();
+    assert!(!create_req_body.contains("request=<?xml"), "DR_Create payload should strip <?xml declaration");
+
+    created.store(false, Ordering::SeqCst);
+    checked_out.store(false, Ordering::SeqCst);
+    let cki_res = checkin_component(&client, "label", "txwh.clot", &act_dir, "EXTce01107", "Add lot label", Some("B61O_a_ext"), None)
+        .await
+        .unwrap();
+    assert_eq!(cki_res.status, "SUCCESS");
+    assert!(created.load(Ordering::SeqCst));
+    assert!(checked_out.load(Ordering::SeqCst));
+}

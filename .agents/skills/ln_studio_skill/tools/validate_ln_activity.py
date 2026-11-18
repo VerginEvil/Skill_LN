@@ -26,6 +26,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from admin_sync import list_admin_components, scan_and_sync_activity, MANAGED_EXTENSIONS
 from check_4gl_script import ScriptChecker, Diagnostic
+from generate_ln_table import compact_tde_xml, generate_label_xml, has_multiline_outside_script
 from ln_workspace_manager import detect_current_activity
 from scm_guardrails import is_file_readonly, is_extension_component
 
@@ -54,10 +55,19 @@ class ValidationReport:
 
 
 class ActivityValidator:
-    def __init__(self, activity_path: Path, strict: bool = False, fix: bool = False):
+    def __init__(
+        self,
+        activity_path: Path,
+        strict: bool = False,
+        fix: bool = False,
+        online: bool = False,
+        probe_labels_fn=None,
+    ):
         self.activity_path = activity_path.resolve()
         self.strict = strict
         self.fix = fix
+        self.online = online
+        self.probe_labels_fn = probe_labels_fn
         self.report = ValidationReport(self.activity_path)
         self.script_checker = ScriptChecker()
 
@@ -66,12 +76,17 @@ class ActivityValidator:
         self.sessions: Dict[str, Dict[str, Any]] = {}
         self.domains: Dict[str, Dict[str, Any]] = {}
         self.labels: Set[str] = set()
+        self.reference_labels: Set[str] = set()
+        self.server_labels: Set[str] = set()
         self.libraries: Dict[str, Dict[str, Any]] = {}
         self.menus: Dict[str, Dict[str, Any]] = {}
         self.reports: Dict[str, Dict[str, Any]] = {}
 
         # Activity package detection
         self.packages: Set[str] = set()
+        self._multiline_files: List[Path] = []
+        self._command_labels: Set[str] = set()
+        self._desc_labels: Set[str] = set()
 
     def run(self) -> ValidationReport:
         """Run all 4 validation layers."""
@@ -130,6 +145,63 @@ class ActivityValidator:
                     self.menus[code] = self._parse_menu_metadata(p)
                 elif ext in (".rpt", ".rptdsrc"):
                     self.reports[code] = self._parse_report_metadata(p)
+
+        # Also load workspace .reference/label/*.lbl for offline cross-package label validation
+        ref_lbl_dir = self.activity_path.parent / ".reference" / "label"
+        if ref_lbl_dir.is_dir():
+            for p in ref_lbl_dir.glob("*.lbl"):
+                if p.is_file():
+                    self.reference_labels.add(p.stem.lower())
+
+        if self.online or self.probe_labels_fn is not None:
+            self._probe_online_labels()
+
+    def _probe_online_labels(self) -> None:
+        if self.probe_labels_fn is not None:
+            for p in list(self.packages) + (["tc"] if "tc" not in self.packages else []):
+                for row in self.probe_labels_fn(p) or []:
+                    n = (row.get("name") if isinstance(row, dict) else str(row)).lower()
+                    if n:
+                        self.server_labels.add(n)
+            return
+        try:
+            from ln_component_builder import get_server_client
+            from ln_component_explorer import browse_components
+            from ln_scm_engine import resolve_activity_scm_metadata, build_activity_context_xml
+
+            meta = resolve_activity_scm_metadata(self.activity_path)
+            dev_cp = meta.get("taskContext") or "ProjectServer"
+            task_id = meta.get("taskName") or self.activity_path.name.split(" ")[0].strip("[]")
+            context_xml = None
+            if meta.get("labelUUID") or meta.get("baseVRC"):
+                context_xml = build_activity_context_xml(
+                    activity_name=task_id,
+                    base_vrc=meta.get("baseVRC") or "B61O_a_ext",
+                    connection_point=dev_cp,
+                    activity_guid=meta.get("labelUUID") or task_id,
+                    documentation=meta.get("taskDocumentation") or None,
+                )
+
+            client, _ = get_server_client(
+                workspace_name=None,
+                notify=False,
+                auto_auth=False,
+                target_activity=str(self.activity_path),
+            )
+            for p in list(self.packages) + (["tc"] if "tc" not in self.packages else []):
+                for row in browse_components(client, package=p, comp_type="label", name_filter="%", connection_point=dev_cp, context_xml=context_xml):
+                    n = (row.get("name") or "").lower()
+                    if n:
+                        self.server_labels.add(n)
+        except Exception as e:
+            self.report.add(
+                str(self.activity_path),
+                1,
+                1,
+                "WARNING",
+                f"--online server label probe failed: {e}",
+                layer=3,
+            )
 
     def _parse_table_metadata(self, path: Path) -> Dict[str, Any]:
         meta: Dict[str, Any] = {"path": path, "columns": set(), "indexes": []}
@@ -364,64 +436,125 @@ class ActivityValidator:
             if not root.tag.endswith("Report"):
                 self.report.add(str(path), 1, 1, "ERROR", f"Expected root <DR_Report>, found <{root.tag}>", layer=2)
 
+        # Single-line TDE XML check (Eclipse CMComponentProperties ClassCastException prevention)
+        self._multiline_files = []
+        for p in self.activity_path.rglob("*"):
+            if not p.is_file() or p.suffix.lower() not in MANAGED_EXTENSIONS:
+                continue
+            if ".admin" in p.parts or ".metadata" in p.parts or is_extension_component(p):
+                continue
+            try:
+                raw_txt = p.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if "<" in raw_txt and has_multiline_outside_script(raw_txt):
+                self._multiline_files.append(p)
+                self.report.add(
+                    str(p), 1, 1, "ERROR",
+                    "Component XML must be single-line (no inter-tag whitespace/newlines outside CDATA/expression) for Eclipse CMComponentProperties compatibility.",
+                    layer=2,
+                )
+
     # ----------------------------------------------------
     # Layer 3: Cross-Object Reference Integrity
     # ----------------------------------------------------
+    def _owner_pkg_for_path(self, comp_path: Path, comp_code: str) -> str:
+        try:
+            rel = comp_path.relative_to(self.activity_path)
+            if rel.parts and rel.parts[0].lower() in self.packages:
+                return rel.parts[0].lower()
+        except Exception:
+            pass
+        return comp_code[:2].lower() if len(comp_code) >= 2 else ""
+
     def _validate_layer3_cross_references(self) -> None:
-        """Verify label existence, table-column relationships, and index column validity."""
-        # 1. Label cross-checks
-        all_referenced_labels: Set[Tuple[str, str]] = set()
+        """Verify label existence (modeling <pkg><fieldLabel> vs exact <descriptionReference>), table-column relationships, and index column validity."""
+        # 1. Label cross-checks: (label_code, file_path, kind, owner_pkg)
+        all_referenced_labels: Set[Tuple[str, str, str, str]] = set()
 
         for code, rdata in self.reports.items():
+            opkg = self._owner_pkg_for_path(rdata["path"], code)
             for dref in rdata.get("referenced_labels", set()):
-                all_referenced_labels.add((dref, str(rdata["path"])))
+                all_referenced_labels.add((dref, str(rdata["path"]), "exact", opkg))
 
         for code, tdata in self.tables.items():
+            opkg = self._owner_pkg_for_path(tdata["path"], code)
             dref = tdata.get("descriptionReference", "")
             if dref:
-                all_referenced_labels.add((dref, str(tdata["path"])))
+                self._desc_labels.add(dref.lower())
+                all_referenced_labels.add((dref, str(tdata["path"]), "exact", opkg))
 
             root = tdata.get("xml_root")
             if root is not None:
                 for col in root.findall(".//{*}Column"):
                     cdref = col.findtext("{*}descriptionReference") or col.findtext("descriptionReference")
                     if cdref:
-                        all_referenced_labels.add((cdref, str(tdata["path"])))
+                        all_referenced_labels.add((cdref, str(tdata["path"]), "exact", opkg))
+                for idx in root.findall(".//{*}Index"):
+                    idref = idx.findtext("{*}descriptionReference") or idx.findtext("descriptionReference")
+                    if idref:
+                        self._desc_labels.add(idref.lower())
+                        all_referenced_labels.add((idref, str(tdata["path"]), "exact", opkg))
 
         for code, sdata in self.sessions.items():
+            opkg = self._owner_pkg_for_path(sdata["path"], code)
             dref = sdata.get("descriptionReference", "")
             if dref:
-                all_referenced_labels.add((dref, str(sdata["path"])))
+                self._desc_labels.add(dref.lower())
+                all_referenced_labels.add((dref, str(sdata["path"]), "exact", opkg))
 
             root = sdata.get("xml_root")
             if root is not None:
                 for ff in root.findall(".//{*}FormField"):
                     fl = ff.findtext("{*}fieldLabel") or ff.findtext("fieldLabel")
                     if fl:
-                        all_referenced_labels.add((fl, str(sdata["path"])))
+                        all_referenced_labels.add((fl, str(sdata["path"]), "field_label", opkg))
                 for cmd in root.findall(".//{*}FormCommand"):
                     cl = cmd.findtext("{*}descriptionReference") or cmd.findtext("descriptionReference") or cmd.findtext("label_code")
                     if cl:
-                        all_referenced_labels.add((cl, str(sdata["path"])))
+                        self._command_labels.add(cl.lower())
+                        all_referenced_labels.add((cl, str(sdata["path"]), "exact", opkg))
 
-        for lbl_code, ref_path in sorted(all_referenced_labels):
-            # Check if this label belongs to our activity packages
-            is_local = any(lbl_code.lower().startswith(pkg) for pkg in self.packages)
-            if is_local:
-                lbl_base = lbl_code.lower()
-                # Check directly or check with package variations (e.g. txtxcmg010.user vs txcmg010.user)
-                found = (lbl_base in self.labels)
-                if not found:
-                    for l in self.labels:
-                        if l == lbl_base or l.endswith(lbl_base) or lbl_base.endswith(l):
-                            found = True
-                            break
+        catalog = self.labels | self.reference_labels | self.server_labels
+        for lbl_code, ref_path, kind, opkg in sorted(all_referenced_labels):
+            lbl_lower = lbl_code.lower()
+            if kind == "field_label":
+                # Inherited base package 'tc' labels resolve without local pkg prefix unless overridden
+                if lbl_lower.startswith("tc") and opkg != "tc":
+                    if self.online or self.probe_labels_fn is not None:
+                        if lbl_lower not in catalog and f"{opkg}{lbl_lower}" not in catalog:
+                            self.report.add(
+                                ref_path, 1, 1, "ERROR",
+                                f"Referenced label '{lbl_code}' not found in server 'tc' or activity label catalog.",
+                                layer=3,
+                            )
+                    continue
 
+                prefixed = f"{opkg}{lbl_lower}" if opkg else lbl_lower
+                found = (prefixed in catalog) or (lbl_lower in catalog)
                 if not found:
                     self.report.add(
                         ref_path, 1, 1, "ERROR",
-                        f"Referenced label '{lbl_code}' not found in activity label catalog.",
-                        layer=3
+                        f"Referenced label '{prefixed}' (from fieldLabel '{lbl_code}') not found in activity label catalog.",
+                        layer=3,
+                    )
+            else:
+                is_local = any(lbl_lower.startswith(pkg) for pkg in self.packages)
+                if is_local:
+                    found = (lbl_lower in catalog) or any(
+                        l == lbl_lower or l.endswith(lbl_lower) or lbl_lower.endswith(l) for l in catalog
+                    )
+                    if not found:
+                        self.report.add(
+                            ref_path, 1, 1, "ERROR",
+                            f"Referenced label '{lbl_code}' not found in activity label catalog.",
+                            layer=3,
+                        )
+                elif (self.online or self.probe_labels_fn is not None) and lbl_lower not in catalog:
+                    self.report.add(
+                        ref_path, 1, 1, "ERROR",
+                        f"Referenced label '{lbl_code}' not found in activity or server label catalog.",
+                        layer=3,
                     )
 
         # 2. Session controller table & form field cross-checks
@@ -519,13 +652,29 @@ class ActivityValidator:
     # ----------------------------------------------------
     # Safe Fixes Execution
     # ----------------------------------------------------
+    def _default_app_and_version(self) -> Tuple[str, str]:
+        m = re.search(r"\[([^\]]+)\]", self.activity_path.name)
+        app = m.group(1) if m else "EXTce01108"
+        ver = "B61O_a_ext"
+        return app, ver
+
     def _execute_safe_fixes(self) -> None:
-        """Auto-create missing .lbl files and synchronize .admin entries."""
+        """Compact writable multi-line XML, auto-create missing single-line .lbl files, and synchronize .admin entries."""
+        # 0. Compact writable pretty-printed component XMLs
+        for p in self._multiline_files:
+            if p.exists() and not is_file_readonly(p):
+                raw_txt = p.read_text(encoding="utf-8", errors="replace")
+                compacted = compact_tde_xml(raw_txt)
+                if compacted != raw_txt:
+                    p.write_text(compacted, encoding="utf-8")
+                    self.report.repaired_items.append(f"Compacted single-line XML: {p.name}")
+
         # 1. Missing labels
         missing_label_diags = [
             d for d in self.report.diagnostics
             if "Referenced label" in d.message and "not found in activity" in d.message
         ]
+        app_code, ver_id = self._default_app_and_version()
 
         for d in missing_label_diags:
             m = re.search(r"Referenced label '([^']+)'", d.message)
@@ -546,15 +695,15 @@ class ActivityValidator:
             lbl_file = lbl_dir / f"{lbl_code}.lbl"
 
             if not lbl_file.exists() and not is_file_readonly(lbl_file):
-                xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<DR_Label xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
-  <name>{lbl_code}</name>
-  <language>2</language>
-  <description>{lbl_code}</description>
-  <helpText>{lbl_code}</helpText>
-  <length>30</length>
-</DR_Label>
-"""
+                lbl_ctx = 10 if lbl_code in self._command_labels else (2 if lbl_code in self._desc_labels else 1)
+                xml_content = generate_label_xml(
+                    name=lbl_code,
+                    description=lbl_code,
+                    version_id=ver_id,
+                    application=app_code,
+                    length=30,
+                    context=lbl_ctx,
+                )
                 lbl_file.write_text(xml_content, encoding="utf-8")
                 self.report.repaired_items.append(f"Auto-generated missing label: {lbl_file.name}")
                 self.labels.add(lbl_code)
@@ -567,9 +716,21 @@ class ActivityValidator:
             )
 
 
-def validate_activity(activity_path: Path, strict: bool = False, fix: bool = False) -> ValidationReport:
+def validate_activity(
+    activity_path: Path,
+    strict: bool = False,
+    fix: bool = False,
+    online: bool = False,
+    probe_labels_fn=None,
+) -> ValidationReport:
     """Entrypoint function to validate an activity."""
-    validator = ActivityValidator(activity_path, strict=strict, fix=fix)
+    validator = ActivityValidator(
+        activity_path,
+        strict=strict,
+        fix=fix,
+        online=online,
+        probe_labels_fn=probe_labels_fn,
+    )
     return validator.run()
 
 
@@ -579,6 +740,7 @@ def main() -> None:
                         help="Path to Activity folder (defaults to detected active activity)")
     parser.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     parser.add_argument("--fix", action="store_true", help="Perform safe non-destructive repairs (missing labels, admin sync)")
+    parser.add_argument("--online", action="store_true", help="Probe server catalog via StudioComponent.GetBrowseList for unresolved labels")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     args = parser.parse_args()
 
@@ -595,7 +757,7 @@ def main() -> None:
         print(f"Error: Activity path does not exist: {act_path}", file=sys.stderr)
         sys.exit(1)
 
-    validator = ActivityValidator(act_path, strict=args.strict, fix=args.fix)
+    validator = ActivityValidator(act_path, strict=args.strict, fix=args.fix, online=args.online)
     report = validator.run()
 
     if args.json:

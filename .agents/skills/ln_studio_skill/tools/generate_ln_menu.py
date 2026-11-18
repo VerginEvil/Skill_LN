@@ -156,7 +156,7 @@ def generate_menus(
 
         lbl_dir = target_root / pkg / "label"
         lbl_path = lbl_dir / f"{code}.lbl"
-        lbl_xml = generate_label_xml(code, desc, ver, app_code)
+        lbl_xml = generate_label_xml(code, desc, ver, app_code, context=2)
         generated.append({
             "type": "label",
             "name": code,

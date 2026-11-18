@@ -91,13 +91,11 @@ pub fn inject_script(xml_content: &str, script_code: &str) -> Result<String, Dom
         if let Some(source_idx) = xml_content.find("</Source>") {
             let mut result = String::with_capacity(xml_content.len() + cdata_block.len() + 16);
             result.push_str(&xml_content[..source_idx]);
-            result.push_str("  ");
             result.push_str(&cdata_block);
-            result.push('\n');
             result.push_str(&xml_content[source_idx..]);
             Ok(result)
         } else if let Some(module_idx) = xml_content.rfind("</DR_Module>") {
-            let source_wrapper = format!("  <Source>\n    {}\n  </Source>\n", cdata_block);
+            let source_wrapper = format!("<Source>{}</Source>", cdata_block);
             let mut result = String::with_capacity(xml_content.len() + source_wrapper.len() + 16);
             result.push_str(&xml_content[..module_idx]);
             result.push_str(&source_wrapper);
@@ -109,12 +107,9 @@ pub fn inject_script(xml_content: &str, script_code: &str) -> Result<String, Dom
                 || xml_content.contains("<DR_Controller")
                 || xml_content.contains("<DR_Session")
             {
-                format!(
-                    "  <DR_Module>\n    <Source>\n      {}\n    </Source>\n  </DR_Module>\n",
-                    cdata_block
-                )
+                format!("<DR_Module><Source>{}</Source></DR_Module>", cdata_block)
             } else {
-                format!("  <Source>\n    {}\n  </Source>\n", cdata_block)
+                format!("<Source>{}</Source>", cdata_block)
             };
             let mut result = String::with_capacity(xml_content.len() + wrapper.len() + 16);
             result.push_str(&xml_content[..root_close_idx]);

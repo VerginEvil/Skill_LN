@@ -107,6 +107,11 @@ def is_project_scm_enabled(activity_path: Path) -> Tuple[bool, str]:
             if val is not None:
                 val_clean = str(val).strip().lower()
                 if val_clean in ("no", "false", "0"):
+                    label_uuid = (bucket.get_property("Label") or bucket.get_property("activityUUID") or "").strip()
+                    task_name = (bucket.get_property("TaskName") or bucket.get_property("taskName") or "").strip()
+                    dev_repo = (bucket.get_property("DevelopmentTimeRepositoryAddress") or bucket.get_property("TaskContext") or "").strip()
+                    if label_uuid and (task_name or dev_repo.endswith("_dev")):
+                        return True, f"Activity-based Cloud SCM enabled (labelUUID/taskName present despite ApplicationUsesSCM={val})"
                     return False, f"ApplicationUsesSCM={val} in {props_file.name}"
                 elif val_clean in ("yes", "true", "1"):
                     return True, f"ApplicationUsesSCM={val} in {props_file.name}"

@@ -3,9 +3,10 @@ use std::fs;
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 
+use ln_eclipse_compat::admin::normalize_admin_path;
 use ln_eclipse_compat::AdminFile;
 use ln_jca::{BdeExecutionMode, BdeParams, HttpClient, JcaBdeManager};
-use crate::explorer::get_bde_type_info;
+use crate::explorer::{browse_components, get_bde_type_info, get_component};
 use crate::scm_engine::{
     build_activity_context_xml, checkin_component, find_component_file,
     is_extension_component, put_component, resolve_activity_scm_metadata,
@@ -74,11 +75,23 @@ pub struct DeployTestResult {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PrepareEndActivityVscItem {
+    pub component: String,
+    #[serde(rename = "type")]
+    pub comp_type: String,
+    pub passed: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PrepareEndActivityResult {
     pub activity: String,
     pub project: String,
     pub activity_folder: String,
     pub server_valid: bool,
+    pub vsc_passed: bool,
+    pub vsc_results: Vec<PrepareEndActivityVscItem>,
     pub metadata_synced: bool,
     pub components_count: usize,
     pub components: Vec<String>,
@@ -95,6 +108,43 @@ pub struct DiagnoseResult {
     pub compiler_diagnostics: Vec<CompileDiagnostic>,
     pub linter_diagnostics: Vec<String>,
     pub raw_compiler_xml: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncActivityRefreshedItem {
+    pub comp_type: String,
+    pub name: String,
+    pub path: String,
+    pub version_id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncActivitySkippedItem {
+    pub comp_type: String,
+    pub name: String,
+    pub path: String,
+    pub reason: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncActivityErrorItem {
+    pub comp_type: String,
+    pub name: String,
+    pub path: String,
+    pub error: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncActivityResult {
+    pub activity: String,
+    pub project: String,
+    pub activity_folder: String,
+    pub refreshed: Vec<SyncActivityRefreshedItem>,
+    pub skipped_local: Vec<SyncActivitySkippedItem>,
+    pub skipped_server: Vec<SyncActivitySkippedItem>,
+    pub errors: Vec<SyncActivityErrorItem>,
+    pub refreshed_count: usize,
+    pub skipped_count: usize,
 }
 
 /// Parses compiler diagnostics from server Compile XML response into structured line,
@@ -366,6 +416,21 @@ pub async fn create_tables(
 
 /// Executes Verification of Source Code (VSC) on the LN Server via `VSC.executeVSC` in SHOW mode (1).
 /// Parses `<vscResult verificationCode="...">` and updates `m_isVSCHappy` in activity's `.admin`.
+fn derive_package_combination(project_name: &str, app_release: Option<&str>) -> String {
+    if let Some(rel) = app_release {
+        let trimmed = rel.trim();
+        if !trimmed.is_empty() && !trimmed.starts_with("B61") {
+            return trimmed.to_string();
+        }
+    }
+    let pname = project_name.trim();
+    if pname.len() > 3 && pname[..3].eq_ignore_ascii_case("ext") {
+        pname[3..].to_string()
+    } else {
+        pname.to_string()
+    }
+}
+
 pub async fn execute_vsc(
     client: &HttpClient,
     comp_type: &str,
@@ -375,9 +440,11 @@ pub async fn execute_vsc(
 ) -> Result<VscResult, ScmError> {
     let dev_cp = format!("{project_name}_dev");
 
+    let mut eff_cp = dev_cp.clone();
     let context_xml = if let Some(act_dir) = activity_dir {
         let meta = resolve_activity_scm_metadata(act_dir);
         let cp = if !meta.task_context.is_empty() { &meta.task_context } else { &dev_cp };
+        eff_cp = cp.to_string();
         Some(build_activity_context_xml(
             &meta.task_name,
             &meta.base_vrc,
@@ -390,25 +457,57 @@ pub async fn execute_vsc(
         None
     };
 
+    let app_release = activity_dir
+        .map(resolve_activity_scm_metadata)
+        .filter(|m| !m.base_vrc.is_empty())
+        .map(|m| m.base_vrc);
+    let pkg_comb = derive_package_combination(project_name, app_release.as_deref());
+    let pkg_comb_xml = if !pkg_comb.is_empty() {
+        format!("  <packageCombination>{pkg_comb}</packageCombination>\n")
+    } else {
+        String::new()
+    };
+
     let req_xml = format!(
         "<VSC>\n\
          \x20\x20<componentName>{comp_name}</componentName>\n\
          \x20\x20<componentType>{}</componentType>\n\
+         {pkg_comb_xml}\
          </VSC>",
         comp_type.to_lowercase()
     );
 
-    let mgr = JcaBdeManager::new(client, "");
+    let mgr = JcaBdeManager::new(client, &eff_cp);
     let params = BdeParams {
         bde_name: "VSC".to_string(),
         method_name: "executeVSC".to_string(),
         mode: Some(BdeExecutionMode::Show),
         request_xml: Some(req_xml),
-        context_xml,
+        context_xml: context_xml.clone(),
         ..Default::default()
     };
 
-    let resp_xml = mgr.execute(&params).await?;
+    let resp_xml = match mgr.execute(&params).await {
+        Ok(res) => res,
+        Err(_) => {
+            let bde_name = get_bde_type_info(&comp_type.to_lowercase())
+                .map(|i| i.bde)
+                .unwrap_or("DR_Table");
+            let (pkg, mod_code, _) = ln_model::path_resolver::split_component_name(comp_name);
+            let legacy_req = format!(
+                "<{bde_name}>\n  <executeVSCRequest>\n    <name>{comp_name}</name>\n    <package>{pkg}</package>\n    <module>{mod_code}</module>\n  </executeVSCRequest>\n</{bde_name}>"
+            );
+            let fb_params = BdeParams {
+                bde_name: bde_name.to_string(),
+                method_name: "executeVSC".to_string(),
+                mode: Some(BdeExecutionMode::Bde),
+                request_xml: Some(legacy_req),
+                context_xml,
+                ..Default::default()
+            };
+            mgr.execute(&fb_params).await?
+        }
+    };
 
     let mut warnings = Vec::new();
     let mut ver_code = String::new();
@@ -618,6 +717,7 @@ pub async fn prepare_end_activity(
     client: &HttpClient,
     activity_dir: &Path,
     project_name: &str,
+    skip_vsc: bool,
 ) -> Result<PrepareEndActivityResult, ScmError> {
     let meta = resolve_activity_scm_metadata(activity_dir);
     let task_id = if !meta.task_name.is_empty() { meta.task_name } else { "Activity".to_string() };
@@ -697,7 +797,7 @@ pub async fn prepare_end_activity(
     let has_settings = activity_dir.join(".settings").join("properties.index").exists();
     let metadata_ok = has_proj && has_admin && (has_settings || !meta.base_vrc.is_empty());
 
-    // 4. Discover modified components in .admin
+    // 4. Discover modified components in .admin and run executeVSC unless skip_vsc
     let admin_path = activity_dir.join(".admin");
     let mut comp_paths = Vec::new();
     if let Ok(admin) = AdminFile::load_from_path(&admin_path) {
@@ -706,6 +806,51 @@ pub async fn prepare_end_activity(
         }
     }
 
+    let mut vsc_passed = true;
+    let mut vsc_results = Vec::new();
+    if !skip_vsc {
+        for rel in &comp_paths {
+            let p = activity_dir.join(rel);
+            if crate::scm_engine::is_extension_component(&rel) {
+                continue;
+            }
+            let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
+            if ext == "lbl" {
+                continue;
+            }
+            if let Some(ct) = map_tde_extension_to_type(&ext) {
+                let stem = p.file_stem().and_then(|s| s.to_str()).unwrap_or("");
+                if !stem.is_empty() {
+                    match execute_vsc(client, ct, stem, project_name, Some(activity_dir)).await {
+                        Ok(vres) => {
+                            if !vres.passed {
+                                vsc_passed = false;
+                            }
+                            vsc_results.push(PrepareEndActivityVscItem {
+                                component: stem.to_string(),
+                                comp_type: ct.to_string(),
+                                passed: vres.passed,
+                                error: None,
+                            });
+                        }
+                        Err(e) => {
+                            vsc_passed = false;
+                            vsc_results.push(PrepareEndActivityVscItem {
+                                component: stem.to_string(),
+                                comp_type: ct.to_string(),
+                                passed: false,
+                                error: Some(e.to_string()),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let overall_server_valid = server_valid && vsc_passed;
+    let ready = overall_server_valid && metadata_ok;
+
     let summary = format!(
         "=== Infor LN Studio Pre-Commit Activity Summary ===\n\
          Activity:   {task_id}\n\
@@ -713,22 +858,29 @@ pub async fn prepare_end_activity(
          Components: {} modified components\n\
          Server VSC: {}\n\
          Workspace:  {}\n\
-         Status:     READY FOR HUMAN DELIVERY APPROVAL IN LN STUDIO\n\
+         Status:     {}\n\
          ===================================================",
         comp_paths.len(),
-        if server_valid { "PASSED" } else { "CHECK_REQUIRED" },
-        if metadata_ok { "100% SYNCHRONIZED" } else { "METADATA_INCOMPLETE" }
+        if overall_server_valid { "PASSED" } else { "CHECK_REQUIRED" },
+        if metadata_ok { "100% SYNCHRONIZED" } else { "METADATA_INCOMPLETE" },
+        if ready {
+            "READY FOR HUMAN DELIVERY APPROVAL IN LN STUDIO"
+        } else {
+            "CHECK_REQUIRED - SEE VALIDATION RESULTS ABOVE"
+        }
     );
 
     Ok(PrepareEndActivityResult {
         activity: task_id,
         project: project_name.to_string(),
         activity_folder: activity_dir.to_string_lossy().to_string(),
-        server_valid,
+        server_valid: overall_server_valid,
+        vsc_passed,
+        vsc_results,
         metadata_synced: metadata_ok,
         components_count: comp_paths.len(),
         components: comp_paths,
-        ready_for_human_review: server_valid && metadata_ok,
+        ready_for_human_review: ready,
         human_action_required: "Please open Infor LN Studio (Eclipse), review changes, and click 'End Activity'.".to_string(),
         commit_summary: summary,
     })
@@ -764,5 +916,245 @@ pub async fn diagnose(
         compiler_diagnostics: comp_res.diagnostics,
         linter_diagnostics: linter_diags,
         raw_compiler_xml: comp_res.raw_xml,
+    })
+}
+
+fn map_tde_extension_to_type(ext: &str) -> Option<&'static str> {
+    match ext {
+        "tbl" => Some("table"),
+        "ses" => Some("session"),
+        "lib" => Some("library"),
+        "rpt" => Some("report"),
+        "fnc" => Some("function"),
+        "dmn" => Some("domain"),
+        "mnu" => Some("menu"),
+        "msg" => Some("message"),
+        "qst" | "que" => Some("question"),
+        "lbl" => Some("label"),
+        "add" => Some("additional"),
+        "bus" => Some("businessobject"),
+        _ => None,
+    }
+}
+
+fn collect_local_tde_components(
+    root: &Path,
+    dir: &Path,
+    out: &mut Vec<(String, String, String)>,
+) {
+    let Ok(rd) = fs::read_dir(dir) else { return };
+    let mut entries: Vec<_> = rd.filter_map(|e| e.ok()).collect();
+    entries.sort_by_key(|e| e.path());
+    for entry in entries {
+        let p = entry.path();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if p.is_dir() {
+            if matches!(name_str.as_ref(), ".metadata" | ".settings" | ".reference" | ".git") {
+                continue;
+            }
+            collect_local_tde_components(root, &p, out);
+            continue;
+        }
+        if is_extension_component(&p.to_string_lossy()) {
+            continue;
+        }
+        let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
+        let Some(ctype) = map_tde_extension_to_type(&ext) else { continue };
+        let Some(stem) = p.file_stem().and_then(|s| s.to_str()) else { continue };
+        if let Ok(rel) = p.strip_prefix(root) {
+            let norm = normalize_admin_path(&rel.to_string_lossy());
+            out.push((ctype.to_string(), stem.to_string(), norm));
+        }
+    }
+}
+
+/// Refreshes server-committed components after partial or full End Activity while preserving
+/// locally `CheckedOut` or `Dirty` files untouched.
+pub async fn sync_activity(
+    client: &HttpClient,
+    activity_dir: &Path,
+    project_name: &str,
+) -> Result<SyncActivityResult, ScmError> {
+    let meta = resolve_activity_scm_metadata(activity_dir);
+    let task_id = if meta.task_name.is_empty() {
+        activity_dir
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("activity")
+            .split(' ')
+            .next()
+            .unwrap_or("activity")
+            .to_string()
+    } else {
+        meta.task_name.clone()
+    };
+    let label_uuid = if meta.label_uuid.is_empty() {
+        task_id.clone()
+    } else {
+        meta.label_uuid.clone()
+    };
+    let dev_cp = if meta.task_context.is_empty() {
+        format!("{project_name}_dev")
+    } else {
+        meta.task_context.clone()
+    };
+    let base_vrc = if meta.base_vrc.is_empty() {
+        "B61O_a_ext".to_string()
+    } else {
+        meta.base_vrc.clone()
+    };
+
+    let context_xml = build_activity_context_xml(
+        &task_id,
+        &base_vrc,
+        &dev_cp,
+        Some(label_uuid.as_str()),
+        "",
+        if meta.task_documentation.is_empty() {
+            None
+        } else {
+            Some(meta.task_documentation.as_str())
+        },
+    );
+
+    let admin_path = activity_dir.join(".admin");
+    let admin = AdminFile::load_from_path(&admin_path).unwrap_or_default();
+
+    let mut local_items = Vec::new();
+    collect_local_tde_components(activity_dir, activity_dir, &mut local_items);
+
+    let mut server_index = HashMap::new();
+    let mut queried_pairs = std::collections::HashSet::new();
+    let mut failed_pairs = std::collections::HashSet::new();
+    let mut refreshed = Vec::new();
+    let mut skipped_local = Vec::new();
+    let mut skipped_server = Vec::new();
+    let mut errors = Vec::new();
+
+    for (ctype, cname, _) in &local_items {
+        let pkg = if cname.len() >= 2 { &cname[..2] } else { "" };
+        let pair = (ctype.clone(), pkg.to_string());
+        if !queried_pairs.insert(pair.clone()) {
+            continue;
+        }
+        match browse_components(
+            client,
+            pkg,
+            ctype,
+            "",
+            &dev_cp,
+            Some(context_xml.as_str()),
+        )
+        .await
+        {
+            Ok(items) => {
+                for item in items {
+                    server_index.insert((ctype.clone(), item.name.to_ascii_lowercase()), item);
+                }
+            }
+            Err(e) => {
+                failed_pairs.insert(pair);
+                errors.push(SyncActivityErrorItem {
+                    comp_type: ctype.clone(),
+                    name: format!("{pkg}*"),
+                    path: String::new(),
+                    error: format!("GetBrowseList failed: {e}"),
+                });
+            }
+        }
+    }
+
+    for (ctype, cname, rel) in local_items {
+        if let Some(entry) = admin.get(&rel) {
+            if entry.is_dirty || entry.is_checked_out {
+                skipped_local.push(SyncActivitySkippedItem {
+                    comp_type: ctype,
+                    name: cname,
+                    path: rel,
+                    reason: "locally CheckedOut or Dirty".to_string(),
+                });
+                continue;
+            }
+        }
+
+        let pkg = if cname.len() >= 2 { &cname[..2] } else { "" };
+        if failed_pairs.contains(&(ctype.clone(), pkg.to_string())) {
+            continue;
+        }
+
+        let Some(srv) = server_index.get(&(ctype.clone(), cname.to_ascii_lowercase())) else {
+            skipped_server.push(SyncActivitySkippedItem {
+                comp_type: ctype,
+                name: cname,
+                path: rel,
+                reason: "not found in server browse list".to_string(),
+            });
+            continue;
+        };
+
+        let srv_co = srv.is_checked_out.trim().to_ascii_lowercase();
+        let srv_par = srv.is_checked_out_parallel.trim().to_ascii_lowercase();
+        if srv_co != "no" || srv_par != "no" {
+            skipped_server.push(SyncActivitySkippedItem {
+                comp_type: ctype,
+                name: cname,
+                path: rel,
+                reason: format!(
+                    "checked out on server (isCheckedOut={srv_co}, isCheckedOutParallel={srv_par})"
+                ),
+            });
+            continue;
+        }
+
+        match get_component(
+            client,
+            &ctype,
+            &cname,
+            activity_dir,
+            true,
+            &dev_cp,
+            None,
+            Some(label_uuid.as_str()),
+            Some(base_vrc.as_str()),
+            None,
+        )
+        .await
+        {
+            Ok(out_path) => {
+                let norm_out = out_path
+                    .strip_prefix(activity_dir)
+                    .map(|p| normalize_admin_path(&p.to_string_lossy()))
+                    .unwrap_or(rel);
+                refreshed.push(SyncActivityRefreshedItem {
+                    comp_type: ctype,
+                    name: cname,
+                    path: norm_out,
+                    version_id: srv.version_id.clone(),
+                });
+            }
+            Err(e) => {
+                errors.push(SyncActivityErrorItem {
+                    comp_type: ctype,
+                    name: cname,
+                    path: rel,
+                    error: e.to_string(),
+                });
+            }
+        }
+    }
+
+    let refreshed_count = refreshed.len();
+    let skipped_count = skipped_local.len() + skipped_server.len();
+    Ok(SyncActivityResult {
+        activity: task_id,
+        project: project_name.to_string(),
+        activity_folder: activity_dir.to_string_lossy().to_string(),
+        refreshed,
+        skipped_local,
+        skipped_server,
+        errors,
+        refreshed_count,
+        skipped_count,
     })
 }

@@ -14,7 +14,7 @@ import uuid
 import argparse
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple, Union
+from typing import Dict, Any, List, Optional, Set, Tuple, Union
 
 _SKILL_ROOT = Path(__file__).resolve().parent.parent
 _TOOLS_DIR = Path(__file__).resolve().parent
@@ -22,7 +22,12 @@ if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
 from ln_schema_parser import parse_schema_file
-from generate_ln_table import generate_label_xml, get_current_iso_time
+from generate_ln_table import (
+    compact_tde_xml,
+    ensure_label_context_variant,
+    generate_label_xml,
+    get_current_iso_time,
+)
 from ln_workspace_manager import resolve_activity, load_config, detect_current_activity
 from scm_guardrails import assert_file_writable, ReadOnlyComponentError
 
@@ -74,16 +79,31 @@ STANDARD_COMMANDS = [
 ]
 
 
+def strip_session_pkg_for_field_label(
+    label_code: Optional[str],
+    default_label: str,
+    session_pkg: str = "",
+) -> str:
+    """Strips one leading session package prefix for <FormField><fieldLabel> (preserving tc/unprefixed codes)."""
+    if not label_code:
+        return default_label
+    pkg = (session_pkg or "").lower()
+    if pkg and label_code.lower().startswith(pkg):
+        return label_code[len(pkg):]
+    return label_code
+
+
 def generate_form_field_xml(
     field_spec: Dict[str, Any],
     table_code: str,
     sequence: int,
-    group_id: int = 2
+    group_id: int = 2,
+    session_pkg: str = "",
 ) -> str:
     """Generates standard <FormField> XML for dynamic form."""
     fname = field_spec["name"]
     full_name = f"{table_code}.{fname}"
-    f_lbl = field_spec.get("label_code", full_name)
+    f_lbl = strip_session_pkg_for_field_label(field_spec.get("label_code"), full_name, session_pkg=session_pkg)
     u_id = str(uuid.uuid4())
     is_mand = "true" if field_spec.get("mandatory") else "false"
     f_len = field_spec.get("facets", {}).get("maxLength", "20")
@@ -311,9 +331,10 @@ def generate_session_xml(
 
     # Form & Fields Layout (only if table fields are available)
     fields_list = table_spec.get("fields", []) if table_spec else []
+    ses_pkg = scode[:2].lower() if len(scode) >= 2 else ""
     fields_xml = ""
     for seq, f in enumerate(fields_list, start=1):
-        fields_xml += generate_form_field_xml(f, tcode, sequence=seq, group_id=2)
+        fields_xml += generate_form_field_xml(f, tcode, sequence=seq, group_id=2, session_pkg=ses_pkg)
 
     form_groups_xml = (
         '<FormGroup>'
@@ -439,6 +460,50 @@ def generate_session_xml(
     return "".join(parts)
 
 
+def _probe_server_labels(
+    pkg: str,
+    probe_labels_fn=None,
+    workspace_name: Optional[str] = None,
+) -> Tuple[Dict[str, bool], Set[str]]:
+    """Probes package and 'tc' labels via callback or StudioComponent.GetBrowseList(includeProjectLock='yes')."""
+    pkg_labels: Dict[str, bool] = {}
+    tc_labels: Set[str] = set()
+
+    if probe_labels_fn is None and workspace_name:
+        try:
+            from ln_component_builder import get_server_client
+            from ln_component_explorer import browse_components
+            client, _ = get_server_client(workspace_name=workspace_name, notify=False, auto_auth=False)
+
+            def _default_probe(p: str):
+                rows = browse_components(client, package=p, comp_type="label", name_filter="%")
+                out = []
+                for r in rows:
+                    locked = bool(r.get("locked") or r.get("lockActivity") or r.get("projectLock"))
+                    out.append({"name": r.get("name", ""), "locked": locked, "lockActivity": r.get("lockActivity", "")})
+                return out
+
+            probe_labels_fn = _default_probe
+        except Exception:
+            probe_labels_fn = None
+
+    if probe_labels_fn is not None:
+        for row in probe_labels_fn(pkg) or []:
+            if isinstance(row, dict):
+                n = (row.get("name") or "").lower()
+                if n:
+                    pkg_labels[n] = bool(row.get("locked") or row.get("lockActivity"))
+            elif isinstance(row, str) and row:
+                pkg_labels[row.lower()] = False
+        if pkg != "tc":
+            for row in probe_labels_fn("tc") or []:
+                n = (row.get("name") if isinstance(row, dict) else str(row)).lower()
+                if n:
+                    tc_labels.add(n)
+
+    return pkg_labels, tc_labels
+
+
 def generate_session(
     schema_file: Optional[Union[str, Path, Dict[str, Any]]] = None,
     table_code: Optional[str] = None,
@@ -447,7 +512,9 @@ def generate_session(
     workspace_name: Optional[str] = None,
     activity_path: Optional[str] = None,
     output_dir: Optional[str] = None,
-    dry_run: bool = False
+    dry_run: bool = False,
+    probe_labels_fn=None,
+    online: bool = False,
 ) -> List[Dict[str, str]]:
     """
     Generates session .ses and label .lbl files for declared sessions.
@@ -548,10 +615,10 @@ def generate_session(
             "content": ses_xml
         })
 
-        # Session description label
+        # Session description label (context 2 = Session/Table description)
         lbl_dir = target_root / pkg / "label"
         lbl_path = lbl_dir / f"{scode}.lbl"
-        lbl_xml = generate_label_xml(scode, sdesc, ver, app_code)
+        lbl_xml = generate_label_xml(scode, sdesc, ver, app_code, context=2)
         generated.append({
             "type": "label",
             "name": scode,
@@ -559,17 +626,72 @@ def generate_session(
             "content": lbl_xml
         })
 
-        # Form Commands labels
+        # Form Commands labels (context 10 = Form Commands)
         for cmd in ses.get("form_commands", []):
             cmd_lbl = cmd.get("label_code", f"{scode}.{cmd['name']}")
             cmd_desc = cmd.get("description", cmd['name'])
             c_lbl_path = lbl_dir / f"{cmd_lbl}.lbl"
+            if c_lbl_path.exists():
+                existing_txt = c_lbl_path.read_text(encoding="utf-8", errors="replace")
+                if "<context>10</context>" not in existing_txt:
+                    if not dry_run:
+                        assert_file_writable(c_lbl_path, target_root)
+                    updated_lbl, _ = ensure_label_context_variant(existing_txt, context=10, description=cmd_desc)
+                    lbl_content = updated_lbl
+                else:
+                    continue
+            else:
+                lbl_content = generate_label_xml(cmd_lbl, cmd_desc, ver, app_code, context=10)
             generated.append({
                 "type": "label",
                 "name": cmd_lbl,
                 "path": str(c_lbl_path),
-                "content": generate_label_xml(cmd_lbl, cmd_desc, ver, app_code)
+                "content": lbl_content
             })
+
+        # Probe server labels and handle cross-package field labels (e.g. wh.* in tx)
+        fields_to_check = (tbl_info.get("fields", []) if tbl_info else []) or ses.get("fields", [])
+        server_pkg_labels, server_tc_labels = _probe_server_labels(
+            pkg,
+            probe_labels_fn=probe_labels_fn,
+            workspace_name=workspace_name if online else None,
+        )
+        ref_lbl_dir = target_root.parent / ".reference" / "label"
+        seen_field_lbls = {item["name"].lower() for item in generated if item["type"] == "label"}
+        for fld in fields_to_check:
+            raw_lbl = (fld.get("label_code") or "").strip()
+            if not raw_lbl:
+                continue
+            raw_lower = raw_lbl.lower()
+            # Inherited tc labels stay in tc unless explicitly cloned/prefixed with pkg
+            if (raw_lower in server_tc_labels or (raw_lower.startswith("tc") and not raw_lower.startswith(pkg))) and pkg != "tc":
+                continue
+
+            full_lbl = raw_lower if raw_lower.startswith(pkg) else f"{pkg}{raw_lower}"
+            is_cross_pkg = (not raw_lower.startswith(pkg)) and ("." in raw_lower)
+
+            if full_lbl in server_pkg_labels:
+                if server_pkg_labels[full_lbl]:
+                    print(f"[WARN] Label '{full_lbl}' is locked in another activity; skipping local generation.", file=sys.stderr)
+                continue
+
+            should_create = is_cross_pkg or (probe_labels_fn is not None or online)
+            if not should_create:
+                continue
+            if full_lbl in seen_field_lbls:
+                continue
+            f_lbl_path = lbl_dir / f"{full_lbl}.lbl"
+            if f_lbl_path.exists() or (ref_lbl_dir / f"{full_lbl}.lbl").exists():
+                continue
+
+            f_desc = fld.get("description") or fld.get("name") or full_lbl
+            generated.append({
+                "type": "label",
+                "name": full_lbl,
+                "path": str(f_lbl_path),
+                "content": generate_label_xml(full_lbl, f_desc, ver, app_code, context=1),
+            })
+            seen_field_lbls.add(full_lbl)
 
     # Write files if not dry-run, enforcing Read-Only check first
     if not dry_run:

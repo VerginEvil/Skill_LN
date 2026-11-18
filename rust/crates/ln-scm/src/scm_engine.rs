@@ -259,23 +259,30 @@ pub fn resolve_activity_scm_metadata(activity_dir: &Path) -> ScmMetadata {
 
     // 1. Try reading binary PropertyBucket from .metadata or workspace root
     let folder_name = activity_dir.file_name().and_then(|n| n.to_str()).unwrap_or("");
+    let mut raw_scm_no = false;
     let mut parent = activity_dir.parent();
     while let Some(p) = parent {
-        let meta_idx = p
+        let proj_dir = p
             .join(".metadata")
             .join(".plugins")
             .join("org.eclipse.core.resources")
             .join(".projects")
-            .join(folder_name)
-            .join("properties.index");
+            .join(folder_name);
+        let meta_idx_primary = proj_dir.join(".indexes").join("properties.index");
+        let meta_idx_legacy = proj_dir.join("properties.index");
+        let meta_idx = if meta_idx_primary.exists() {
+            meta_idx_primary
+        } else {
+            meta_idx_legacy
+        };
         if meta_idx.exists() {
             if let Ok(bucket) = PropertyBucket::load_from_path(&meta_idx) {
                 for (_res, map) in &bucket.entries {
                     for ((_qual, name), val) in map {
                         match name.as_str() {
-                            "Label" => meta.label_uuid = val.clone(),
+                            "Label" | "activityUUID" => meta.label_uuid = val.clone(),
                             "ApplicationRelease" | "baseVRC" => meta.base_vrc = val.clone(),
-                            "TaskName" => meta.task_name = val.clone(),
+                            "TaskName" | "taskName" => meta.task_name = val.clone(),
                             "TaskDescription" => meta.task_description = val.clone(),
                             "TaskDocumentation" => meta.task_documentation = val.clone(),
                             "DevelopmentTimeRepositoryAddress" => {
@@ -291,8 +298,9 @@ pub fn resolve_activity_scm_metadata(activity_dir: &Path) -> ScmMetadata {
                             }
                             "DevelopmentEnvironment" => meta.development_environment = val.clone(),
                             "ApplicationUsesSCM" | "ApplicationUseSCM" => {
-                                if val.eq_ignore_ascii_case("no") || val.eq_ignore_ascii_case("false") {
-                                    meta.scm_enabled = false;
+                                let v_low = val.trim().to_ascii_lowercase();
+                                if v_low == "no" || v_low == "false" || v_low == "0" {
+                                    raw_scm_no = true;
                                 }
                             }
                             _ => {}
@@ -322,8 +330,9 @@ pub fn resolve_activity_scm_metadata(activity_dir: &Path) -> ScmMetadata {
                         "connectionPoint" | "TaskContext" => if meta.task_context.is_empty() { meta.task_context = v.to_string(); },
                         "DevelopmentTimeRepositoryAddress" => if meta.development_time_repository_address.is_empty() { meta.development_time_repository_address = v.to_string(); },
                         "ApplicationUsesSCM" | "ApplicationUseSCM" => {
-                            if v.eq_ignore_ascii_case("no") || v.eq_ignore_ascii_case("false") {
-                                meta.scm_enabled = false;
+                            let v_low = v.to_ascii_lowercase();
+                            if v_low == "no" || v_low == "false" || v_low == "0" {
+                                raw_scm_no = true;
                             }
                         }
                         _ => {}
@@ -331,6 +340,12 @@ pub fn resolve_activity_scm_metadata(activity_dir: &Path) -> ScmMetadata {
                 }
             }
         }
+    }
+
+    if raw_scm_no {
+        let has_cloud_scm = !meta.label_uuid.is_empty()
+            && (!meta.task_name.is_empty() || meta.development_time_repository_address.ends_with("_dev"));
+        meta.scm_enabled = has_cloud_scm;
     }
 
     // 3. Fallback to folder name parsing "<task> [<project>]"
@@ -715,7 +730,8 @@ pub async fn checkout_component(
 
     // Write verified server content to target file and clear OS Read-Only attribute
     let _ = set_file_readonly(&target_file, false);
-    fs::write(&target_file, &resp_xml)?;
+    let compacted_xml = ln_model::compact_tde_xml(&resp_xml);
+    fs::write(&target_file, &compacted_xml)?;
     let _ = set_file_readonly(&target_file, false);
 
     // Update .admin SCM cache
@@ -829,8 +845,65 @@ pub async fn uncheckout_component(
     Ok(receipt)
 }
 
+fn is_missing_on_server_error(err: &ScmError) -> bool {
+    let msg = err.to_string().to_lowercase();
+    msg.contains("not found")
+        || msg.contains("does not exist")
+        || msg.contains("unknownobject")
+        || msg.contains("has not been checked out")
+        || msg.contains("not checked out")
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn ensure_dr_create_and_checkout(
+    mgr: &JcaBdeManager<'_>,
+    bde_name: &str,
+    comp_type: &str,
+    comp_name: &str,
+    content_xml: &str,
+    eff_base_vrc: &str,
+    task_id: &str,
+    label_uuid: &str,
+    context_xml: &str,
+) -> Result<(), ScmError> {
+    let compacted = ln_model::compact_tde_xml(content_xml);
+    let create_params = BdeParams {
+        bde_name: bde_name.to_string(),
+        method_name: "DR_Create".to_string(),
+        mode: Some(BdeExecutionMode::Bde),
+        request_xml: Some(compacted),
+        context_xml: Some(context_xml.to_string()),
+        ..Default::default()
+    };
+    if let Err(e) = mgr.execute(&create_params).await {
+        if !e.to_string().to_lowercase().contains("already exist") {
+            return Err(e.into());
+        }
+    }
+
+    let cko_payload = build_checkout_payload(
+        bde_name,
+        comp_name,
+        comp_type,
+        eff_base_vrc,
+        task_id,
+        Some(label_uuid),
+    );
+    let cko_params = BdeParams {
+        bde_name: bde_name.to_string(),
+        method_name: "CheckOut".to_string(),
+        mode: Some(BdeExecutionMode::Bde),
+        request_xml: Some(cko_payload),
+        context_xml: Some(context_xml.to_string()),
+        ..Default::default()
+    };
+    let _ = mgr.execute(&cko_params).await?;
+    Ok(())
+}
+
 /// Uploads modified component XML to server Activity workarea via `DR_*.Put`
 /// with Pre-Put Script Merge & Non-Empty Source Guardrail (`ln-model`), updating `.admin` via `after_put`.
+/// For unregistered new components, transparently runs `DR_Create -> CheckOut -> Put`.
 pub async fn put_component(
     client: &HttpClient,
     comp_type: &str,
@@ -861,7 +934,7 @@ pub async fn put_component(
     let dev_cp = dev_connection.unwrap_or(if !meta.task_context.is_empty() { &meta.task_context } else { &default_dev_cp });
 
     // Pre-Put Script Merge & Non-Empty Source Guardrail
-    let content = pre_put_merge_and_guard(&target_file, comp_name, comp_type, activity_dir)?;
+    let content = ln_model::compact_tde_xml(&pre_put_merge_and_guard(&target_file, comp_name, comp_type, activity_dir)?);
 
     let context_xml = build_activity_context_xml(
         &task_id,
@@ -872,17 +945,38 @@ pub async fn put_component(
         None,
     );
 
-    let mgr = JcaBdeManager::new(client, "");
+    let mgr = JcaBdeManager::new(client, dev_cp);
     let params = BdeParams {
         bde_name: bde_name.to_string(),
         method_name: "Put".to_string(),
         mode: Some(BdeExecutionMode::Bde),
-        request_xml: Some(content),
-        context_xml: Some(context_xml),
+        request_xml: Some(content.clone()),
+        context_xml: Some(context_xml.clone()),
         ..Default::default()
     };
 
-    let resp_xml = mgr.execute(&params).await?;
+    let resp_xml = match mgr.execute(&params).await {
+        Ok(r) => r,
+        Err(e) => {
+            let scm_e: ScmError = e.into();
+            if !is_missing_on_server_error(&scm_e) {
+                return Err(scm_e);
+            }
+            ensure_dr_create_and_checkout(
+                &mgr,
+                bde_name,
+                comp_type,
+                comp_name,
+                &content,
+                eff_base_vrc,
+                &task_id,
+                &label_uuid,
+                &context_xml,
+            )
+            .await?;
+            mgr.execute(&params).await?
+        }
+    };
 
     let receipt = parse_scm_receipt(
         &resp_xml,
@@ -934,7 +1028,7 @@ pub async fn checkin_component(
 
     // Pre-Put Script Merge & Non-Empty Source Guardrail
     let content = pre_put_merge_and_guard(&target_file, comp_name, comp_type, activity_dir)?;
-    let req_xml = build_checkin_payload(&content, comment)?;
+    let req_xml = ln_model::compact_tde_xml(&build_checkin_payload(&content, comment)?);
 
     let (scm_enabled, reason) = is_project_scm_enabled(activity_dir);
     if !scm_enabled {
@@ -974,17 +1068,38 @@ pub async fn checkin_component(
         Some(comment),
     );
 
-    let mgr = JcaBdeManager::new(client, "");
+    let mgr = JcaBdeManager::new(client, dev_cp);
     let params = BdeParams {
         bde_name: bde_name.to_string(),
         method_name: "CheckIn".to_string(),
         mode: Some(BdeExecutionMode::Bde),
         request_xml: Some(req_xml),
-        context_xml: Some(context_xml),
+        context_xml: Some(context_xml.clone()),
         ..Default::default()
     };
 
-    let resp_xml = mgr.execute(&params).await?;
+    let resp_xml = match mgr.execute(&params).await {
+        Ok(r) => r,
+        Err(e) => {
+            let scm_e: ScmError = e.into();
+            if !is_missing_on_server_error(&scm_e) {
+                return Err(scm_e);
+            }
+            ensure_dr_create_and_checkout(
+                &mgr,
+                bde_name,
+                comp_type,
+                comp_name,
+                &content,
+                eff_base_vrc,
+                &task_id,
+                &label_uuid,
+                &context_xml,
+            )
+            .await?;
+            mgr.execute(&params).await?
+        }
+    };
 
     let receipt = parse_scm_receipt(
         &resp_xml,
@@ -1311,4 +1426,113 @@ fn scan_all_managed_components(root: &Path, current: &Path, map: &mut HashMap<St
             }
         }
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncAdminResult {
+    pub activity: String,
+    pub total_disk_components: usize,
+    pub total_registered: usize,
+    pub added: Vec<String>,
+    pub removed: Vec<String>,
+}
+
+/// Scans activity folder, enforces Single-XML TDE layout, preserves existing `.admin` flags,
+/// registers untracked non-extension files with `after_create`, and prunes removed entries.
+pub fn sync_admin(activity_dir: &Path) -> Result<SyncAdminResult, ScmError> {
+    let mut disk_files: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+
+    fn walk_sync(root: &Path, dir: &Path, disk_files: &mut std::collections::BTreeSet<String>) -> Result<(), ScmError> {
+        let entries = fs::read_dir(dir)?;
+        for entry in entries.flatten() {
+            let p = entry.path();
+            if p.is_dir() {
+                let dname = p.file_name().and_then(|s| s.to_str()).unwrap_or("");
+                if dname.starts_with('.') {
+                    continue;
+                }
+                if matches!(
+                    dname.to_ascii_lowercase().as_str(),
+                    "tables" | "sessions" | "domains" | "reports" | "labels" | "menus"
+                    | "libraries" | "functions" | "messages" | "questions" | "additionals"
+                    | "businessobjects" | "additional_files"
+                ) {
+                    return Err(ScmError::Other(format!(
+                        "Single-XML TDE layout violation in activity '{}': legacy plural directory '{}' detected",
+                        root.display(),
+                        dname
+                    )));
+                }
+                walk_sync(root, &p, disk_files)?;
+            } else if p.is_file() {
+                let rel = p
+                    .strip_prefix(root)
+                    .unwrap_or(&p)
+                    .to_string_lossy()
+                    .replace('\\', "/");
+                if ln_eclipse_compat::admin::is_managed_extension(&rel) {
+                    let depth = rel.split('/').count();
+                    let is_label = rel.ends_with(".lbl");
+                    if depth < 3 && !(is_label && depth == 3) {
+                        // Also allow <pkg>/label/<file>.lbl (depth 3); flag depth < 3
+                        return Err(ScmError::Other(format!(
+                            "Single-XML TDE layout violation in activity '{}': component '{}' is missing <pkg>/<type>/ folder nesting",
+                            root.display(),
+                            rel
+                        )));
+                    }
+                    let stem = p.file_stem().and_then(|s| s.to_str()).unwrap_or("");
+                    if is_extension_component(stem) || rel.contains("/library/ess/") || rel.contains("/library/est/") {
+                        continue;
+                    }
+                    disk_files.insert(ln_eclipse_compat::admin::normalize_admin_path(&rel));
+                }
+            }
+        }
+        Ok(())
+    }
+
+    walk_sync(activity_dir, activity_dir, &mut disk_files)?;
+
+    let admin_path = activity_dir.join(".admin");
+    let mut admin = if admin_path.exists() {
+        AdminFile::load_from_path(&admin_path).unwrap_or_default()
+    } else {
+        AdminFile::new()
+    };
+
+    let existing_keys: std::collections::HashSet<String> = admin.entries.keys().cloned().collect();
+    let mut added = Vec::new();
+    for rel in &disk_files {
+        if !existing_keys.contains(rel) {
+            admin.after_create(rel);
+            added.push(rel.clone());
+        }
+    }
+
+    let mut removed = Vec::new();
+    for key in existing_keys {
+        if ln_eclipse_compat::admin::is_managed_extension(&key) && !disk_files.contains(&key) {
+            let fname = Path::new(&key).file_stem().and_then(|s| s.to_str()).unwrap_or("");
+            if !is_extension_component(fname) {
+                admin.remove(&key);
+                removed.push(key);
+            }
+        }
+    }
+
+    admin.save_to_path(&admin_path)?;
+    let act_name = activity_dir
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or("activity")
+        .to_string();
+
+    Ok(SyncAdminResult {
+        activity: act_name,
+        total_disk_components: disk_files.len(),
+        total_registered: admin.entries.len(),
+        added,
+        removed,
+    })
 }

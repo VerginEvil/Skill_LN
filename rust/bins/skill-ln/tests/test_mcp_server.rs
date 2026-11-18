@@ -46,7 +46,7 @@ async fn test_mcp_initialize_and_ping() {
 #[test]
 fn test_mcp_tools_list_schema_and_count() {
     let tools = list_registered_tools();
-    assert_eq!(tools.len(), 25, "Must expose exactly 25 MCP tools");
+    assert_eq!(tools.len(), 26, "Must expose exactly 26 MCP tools");
 
     let expected_tools = [
         "ln_list_environments",
@@ -69,6 +69,7 @@ fn test_mcp_tools_list_schema_and_count() {
         "ln_validate_activity",
         "ln_deploy_test",
         "ln_prepare_end_activity",
+        "ln_sync_activity",
         "ln_end_activity",
         "ln_project_activity",
         "ln_code_intelligence",
@@ -142,6 +143,16 @@ async fn test_mcp_execute_tools_parity_and_envelope() {
     assert_eq!(res["isError"], false);
     let text = res["content"][0]["text"].as_str().unwrap();
     assert!(text.contains("compiled"));
+
+    // 7. ln_sync_activity
+    let res_sync = execute_tool("ln_sync_activity", &json!({
+        "activity": "act1",
+        "project": "EXTce01107",
+        "mock": true
+    })).await;
+    assert_eq!(res_sync["isError"], false, "ln_sync_activity failed: {:?}", res_sync);
+    let sync_text = res_sync["content"][0]["text"].as_str().unwrap();
+    assert!(sync_text.contains("refreshed_count"));
 }
 
 #[tokio::test]
@@ -485,6 +496,6 @@ fn test_mcp_stdio_child_process_roundtrip() {
         .collect();
     assert_eq!(lines.len(), 3, "Expected 3 responses, got: {}", stdout_str);
     assert_eq!(lines[0]["result"]["serverInfo"]["name"], "infor-ln-studio-mcp");
-    assert_eq!(lines[1]["result"]["tools"].as_array().unwrap().len(), 25);
+    assert_eq!(lines[1]["result"]["tools"].as_array().unwrap().len(), 26);
     assert_eq!(lines[2]["result"]["isError"], false);
 }

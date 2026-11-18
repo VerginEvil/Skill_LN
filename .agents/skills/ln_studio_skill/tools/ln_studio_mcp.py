@@ -54,7 +54,7 @@ from ln_scm_engine import (
 )
 from ln_build_pipeline import (
     deploy_test, prepare_end_activity, compile_component, convert_to_runtime,
-    create_tables, execute_vsc
+    create_tables, execute_vsc, sync_activity
 )
 from generate_ln_table import generate_all_components
 from generate_ln_session import generate_session
@@ -347,7 +347,10 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
             "properties": {
                 "activity": {"type": "string", "description": "Activity directory or name"},
                 "workspace": {"type": "string", "description": "Workspace name"},
-                "strict": {"type": "boolean", "description": "Treat warnings as errors"}
+                "strict": {"type": "boolean", "description": "Treat warnings as errors"},
+                "fix": {"type": "boolean", "description": "Perform safe non-destructive repairs (compact XML, missing labels, admin sync)"},
+                "auto_fix": {"type": "boolean", "description": "Alias for fix"},
+                "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"}
             },
             "required": ["activity"]
         }
@@ -378,6 +381,21 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
     {
         "name": "ln_prepare_end_activity",
         "description": "Pre-commit readiness verifier. Validates all activity components, clean working tree, and generates handoff report.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "activity": {"type": "string", "description": "Target activity directory"},
+                "project": {"type": "string", "description": "Software Project name"},
+                "workspace": {"type": "string", "description": "Workspace name"},
+                "skip_vsc": {"type": "boolean", "description": "Skip per-component VSC.executeVSC verification"},
+                "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+            },
+            "required": ["activity"]
+        }
+    },
+    {
+        "name": "ln_sync_activity",
+        "description": "Post-End-Activity VRC sync. Refreshes server-committed components (Read-Only + compact XML + admin_after_get) while preserving locally CheckedOut/Dirty files.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -650,10 +668,10 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "ln_explore_components":
             comp_type = arguments["type"]
             flt = arguments.get("filter", "*")
-            project = arguments.get("project", "")
+            pkg = arguments.get("package", "")
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            comps = browse_components(client, component_type=comp_type, name_filter=flt, project=project)
+            comps = browse_components(client, package=pkg, comp_type=comp_type, name_filter=flt)
             env = _make_envelope(name, {"type": comp_type, "components": comps}, f"Found {len(comps)} components")
             return {
                 "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
@@ -935,8 +953,10 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
 
         elif name == "ln_validate_activity":
             act_dir = Path(arguments["activity"])
-            strict = arguments.get("strict", False)
-            report = validate_activity(act_dir, strict=strict)
+            strict = bool(arguments.get("strict", False))
+            fix = bool(arguments.get("fix", arguments.get("auto_fix", False)))
+            online = bool(arguments.get("online", False))
+            report = validate_activity(act_dir, strict=strict, fix=fix, online=online)
             is_valid = len(report.errors) == 0
             summary = {
                 "files_scanned": report.files_scanned,
@@ -982,11 +1002,39 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         elif name == "ln_prepare_end_activity":
             act_dir = Path(arguments["activity"])
             proj = arguments.get("project", "EXTce01107")
+            skip_vsc = bool(arguments.get("skip_vsc", False))
             mock = arguments.get("mock", False)
             client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
-            res = prepare_end_activity(client, activity_dir=act_dir, project_name=proj)
+            res = prepare_end_activity(client, activity_dir=act_dir, project_name=proj, skip_vsc=skip_vsc)
             ok = bool(res.get("ready_for_human_review", False))
             env = _make_envelope(name, res, "Ready for human review" if ok else "Not ready for review", status="success" if ok else "error")
+            return {
+                "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
+                "isError": not ok
+            }
+
+        elif name == "ln_sync_activity":
+            import re as _re
+            act_dir = Path(arguments["activity"])
+            proj = arguments.get("project")
+            if not proj:
+                m = _re.search(r"\[([A-Za-z0-9_]+)\]$", act_dir.name)
+                if m:
+                    proj = m.group(1)
+                else:
+                    from ln_scm_engine import resolve_activity_scm_metadata
+                    meta = resolve_activity_scm_metadata(act_dir)
+                    proj = (meta.get("taskContext") or "").replace("_dev", "") or "EXTce01107"
+            mock = arguments.get("mock", False)
+            client = _resolve_client(workspace_name=arguments.get("workspace"), mock=mock)
+            res = sync_activity(client, activity_dir=act_dir, project_name=proj)
+            ok = len(res.get("errors", [])) == 0
+            env = _make_envelope(
+                name,
+                res,
+                f"Synced activity '{res.get('activity', '')}' (refreshed={res.get('refreshed_count', 0)}, skipped={res.get('skipped_count', 0)})",
+                status="success" if ok else "error",
+            )
             return {
                 "content": [{"type": "text", "text": json.dumps(env, indent=2)}],
                 "isError": not ok

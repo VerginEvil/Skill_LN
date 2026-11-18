@@ -44,7 +44,7 @@ Open dedicated reference files only when branching into that specific workflow:
 | Workflow Branch | Reference Document |
 |---|---|
 | **CLI Command Lookup (50+ subcommands)** | [CLI Reference Guide](references/CLI_REFERENCE.md) |
-| **Stdio MCP Tools (4 consolidated / 21 detailed)** | [MCP Tools Reference](references/MCP_TOOLS_REFERENCE.md) |
+| **Stdio MCP Tools (4 consolidated / 22 detailed)** | [MCP Tools Reference](references/MCP_TOOLS_REFERENCE.md) |
 | **Multi-Component `schema.yaml` Authoring** | [Authoring Schema Guide](references/AUTHORING_SCHEMA_GUIDE.md) |
 | **Single-XML TDE XML Schema (12 types)** | [Component XML Schema](references/COMPONENT_XML_SCHEMA.md) |
 | **DAL 2 Object & Property Hook Details** | [DAL 2 Hooks Guide](references/DAL2_HOOKS_GUIDE.md) |

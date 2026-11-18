@@ -84,6 +84,8 @@ pub enum Commands {
     ProjectInfo {
         #[arg(long)]
         project: String,
+        #[arg(long)]
+        workspace: Option<String>,
     },
 
     #[command(about = "Browse activities under a software project")]
@@ -287,6 +289,22 @@ pub enum Commands {
         project: Option<String>,
         #[arg(long)]
         workspace: Option<String>,
+        #[arg(long)]
+        skip_vsc: bool,
+        #[arg(long)]
+        json: bool,
+    },
+
+    #[command(name = "sync-activity", about = "Post-End-Activity VRC sync preserving locally CheckedOut/Dirty components")]
+    SyncActivity {
+        #[arg(long)]
+        activity: Option<String>,
+        #[arg(long)]
+        project: Option<String>,
+        #[arg(long)]
+        workspace: Option<String>,
+        #[arg(long)]
+        json: bool,
     },
 
     // === 1.4 Code Intelligence, Revision History & Diff ===
@@ -550,6 +568,8 @@ pub enum Commands {
         strict: bool,
         #[arg(long)]
         fix: bool,
+        #[arg(long)]
+        online: bool,
         #[arg(long)]
         json: bool,
     },

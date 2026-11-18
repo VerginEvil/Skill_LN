@@ -1,6 +1,6 @@
 # Infor LN Studio MCP Tools Reference (`skill-ln mcp-stdio`)
 
-Reference catalog for the native Rust Stdio Model Context Protocol (MCP) server (`skill-ln mcp-stdio`, 25 total tools: 4 consolidated high-efficiency + 21 detailed backward-compatible).
+Reference catalog for the native Rust Stdio Model Context Protocol (MCP) server (`skill-ln mcp-stdio`, 26 total tools: 4 consolidated high-efficiency + 22 detailed backward-compatible).
 
 ---
 
@@ -17,7 +17,7 @@ Designed for low-context token consumption while providing full project, code in
 
 ---
 
-## 2. Detailed Backward-Compatible Suite (21 Tools)
+## 2. Detailed Backward-Compatible Suite (22 Tools)
 
 Legacy granular tools supported across all MCP clients:
 
@@ -42,7 +42,8 @@ Legacy granular tools supported across all MCP clients:
 | `ln_clone_component` | `source_type`, `source_name`, `target_name`, `activity_name` | **Renaming**: Clones standard/custom component into renamed custom activity component. |
 | `ln_validate_activity` | `activity_path`, `strict_mode`, `auto_fix` | **Read-only / Safe Fix**: 4-layer activity validation (`.admin`, XML schema, cross-refs, 4GL). |
 | `ln_deploy_test` | `comp_type`, `comp_name`, `activity_name`, `mode` | **Cloud Testing**: Composite pipeline: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn. |
-| `ln_prepare_end_activity`| `activity_name`, `project_name` | **ADR 0007 Human Gate**: Pre-commit verification gate before handing delivery off to engineer. |
+| `ln_prepare_end_activity`| `activity`, `project`, `workspace`, `skip_vsc` | **ADR 0007 Human Gate**: Pre-commit verification gate (`ValidateDevelopmentActivity` + `VSC.executeVSC`) before handing delivery off to engineer. |
+| `ln_sync_activity` | `activity`, `project`, `workspace` | **VRC Sync**: Refreshes server-committed components (Read-Only + compact XML + `.admin` transition) preserving local Dirty/CheckedOut edits. |
 | `ln_end_activity` | `task_id`, `project_name` | **Hard-blocked Pre-Commit Gate**: Raises `PreCommitBoundaryError` (human final delivery only). |
 
 ---

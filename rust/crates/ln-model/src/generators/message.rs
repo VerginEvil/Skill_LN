@@ -56,5 +56,5 @@ pub fn generate_message_xml(
         "</DR_Message>",
     ];
 
-    lines.join("\n") + "\n"
+    crate::generators::label::compact_tde_xml(&lines.join("\n"))
 }

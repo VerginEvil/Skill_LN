@@ -122,7 +122,7 @@ async fn test_component_explorer_and_clone_mock() {
     let client = HttpClient::new(&base_url, "mock_token");
 
     // 1. browse_components
-    let items = browse_components(&client, "tc", "table", "tcibd*", "ProjectServer").await.unwrap();
+    let items = browse_components(&client, "tc", "table", "tcibd*", "ProjectServer", None).await.unwrap();
     assert_eq!(items.len(), 1);
     assert_eq!(items[0].name, "tcibd001");
     assert_eq!(items[0].comp_type, "table");
@@ -228,4 +228,11 @@ async fn test_component_explorer_and_clone_mock() {
     assert!(ext_err.is_err());
     let err_msg = format!("{}", ext_err.unwrap_err());
     assert!(err_msg.contains("Extension Modeler Rule (ADR 0006)"));
+
+    // 7. browse_components translates * -> % and forwards context_xml
+    let ctx = "<ActivityID><activityUUID>uuid-act-1111</activityUUID></ActivityID>";
+    let browsed = browse_components(&client, "tc", "table", "tcibd*", "ProjectServer", Some(ctx))
+        .await
+        .unwrap();
+    assert!(!browsed.is_empty());
 }

@@ -53,5 +53,5 @@ pub fn generate_additional_xml(
         "</DR_AdditionalFile>",
     ];
 
-    lines.join("\n") + "\n"
+    crate::generators::label::compact_tde_xml(&lines.join("\n"))
 }

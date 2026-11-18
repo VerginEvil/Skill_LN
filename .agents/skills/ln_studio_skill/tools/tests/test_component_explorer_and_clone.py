@@ -516,6 +516,25 @@ class TestComponentExplorerAndClone(unittest.TestCase):
         self.assertTrue(cln_file.exists())
         self.assertEqual(cln_file.read_text(encoding="utf-8"), sample_script)
 
+    def test_browse_components_translates_star_to_percent_and_passes_context(self):
+        self.transport.register_response(
+            "StudioComponent",
+            "GetBrowseList",
+            "<DataArea><Component><name>txinr1110m000</name><type>session</type></Component></DataArea>",
+        )
+        ctx_xml = "<ActivityID><activityUUID>uuid-1</activityUUID></ActivityID>"
+        rows = browse_components(
+            self.client,
+            package="tx",
+            comp_type="session",
+            name_filter="txinr*",
+            context_xml=ctx_xml,
+        )
+        self.assertEqual(len(rows), 1)
+        last_call = self.transport.call_history[-1]
+        self.assertIn("LIKE 'txinr%'", last_call["filter_expression"])
+        self.assertEqual(last_call["context_xml"], ctx_xml)
+
 
 if __name__ == "__main__":
     unittest.main()

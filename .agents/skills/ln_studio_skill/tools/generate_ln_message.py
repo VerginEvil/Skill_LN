@@ -47,7 +47,8 @@ def generate_message_xml(spec: Dict[str, Any], application: str) -> str:
         f'  <application>{application}</application>',
         '</DR_Message>',
     ]
-    return "\n".join(xml_lines) + "\n"
+    from generate_ln_table import compact_tde_xml
+    return compact_tde_xml("\n".join(xml_lines))
 
 
 def generate_messages(

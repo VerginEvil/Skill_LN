@@ -327,6 +327,21 @@ class TestRemoteBuildAndDeployTest(unittest.TestCase):
         self.assertIn("<projectName>EXTce01107</projectName>", val_call["request"])
         self.assertIn("<taskName>task_build_01</taskName>", val_call["request"])
         self.assertIn("<CMLabel><CMLabel><ModifiedComponent>", val_call["request"])
+        vsc_calls = [c for c in self.transport.call_history if c["method"] == "executeVSC"]
+        self.assertTrue(len(vsc_calls) >= 1, "prepare_end_activity must run executeVSC by default")
+        self.assertIn("<packageCombination>ce01107</packageCombination>", vsc_calls[-1]["request"])
+
+        # With skip_vsc=True, no additional executeVSC calls are made
+        prev_vsc_count = len(vsc_calls)
+        report_skip = prepare_end_activity(
+            client=self.client,
+            activity_dir=self.act_dir,
+            project_name="EXTce01107",
+            skip_vsc=True,
+        )
+        self.assertTrue(report_skip["server_valid"])
+        vsc_calls_after = [c for c in self.transport.call_history if c["method"] == "executeVSC"]
+        self.assertEqual(len(vsc_calls_after), prev_vsc_count)
 
 
 class TestBuildCliIntegration(unittest.TestCase):
@@ -358,6 +373,92 @@ class TestBuildCliIntegration(unittest.TestCase):
         self.assertIn("commit_summary", json.loads(out))
 
         temp_dir.cleanup()
+
+    def test_sync_activity_refreshes_committed_and_preserves_dirty(self):
+        import os
+        import stat
+        from ln_build_pipeline import sync_activity
+        from ln_server_client import MockJcaTransport, LNStudioServerClient
+        from admin_sync import init_admin_file, list_admin_components, admin_after_create, admin_after_get
+
+        with tempfile.TemporaryDirectory() as td:
+            act_dir = Path(td) / "dev_act1 [EXTce01107]"
+            act_dir.mkdir(parents=True, exist_ok=True)
+            (act_dir / ".project").write_text("<projectDescription/>", encoding="utf-8")
+            settings = act_dir / ".settings"
+            settings.mkdir(parents=True, exist_ok=True)
+            (settings / "properties.index").write_text(
+                "version=1\nsoftwareProject=EXTce01107\ntaskId=dev_act1\nactivityUUID=uuid-sync-01\nbaseVRC=B61O_a_ext\n",
+                encoding="utf-8",
+            )
+            init_admin_file(act_dir / ".admin")
+
+            # 1. Server-committed label (local non-dirty, non-checked-out) -> should be refreshed & Read-Only
+            lbl_path = act_dir / "tx" / "label" / "txwh.clot.lbl"
+            lbl_path.parent.mkdir(parents=True, exist_ok=True)
+            lbl_path.write_text("<DR_Label><name>txwh.clot</name><versionID>OLD</versionID></DR_Label>", encoding="utf-8")
+            admin_after_get(act_dir, "tx/label/txwh.clot.lbl")
+
+            # 2. Locally Dirty / CheckedOut session -> must NEVER be overwritten
+            ses_path = act_dir / "tx" / "session" / "wh" / "txwh1100m000.ses"
+            ses_path.parent.mkdir(parents=True, exist_ok=True)
+            ses_path.write_text("<DR_Controller><name>txwh1100m000</name><localEdit>1</localEdit></DR_Controller>", encoding="utf-8")
+            admin_after_create(act_dir, "tx/session/wh/txwh1100m000.ses")
+
+            # 3. Server-locked parallel label (locally non-dirty) -> must be skipped
+            par_path = act_dir / "tx" / "label" / "txwh.par1.lbl"
+            par_path.write_text("<DR_Label><name>txwh.par1</name><versionID>OLD_PAR</versionID></DR_Label>", encoding="utf-8")
+            admin_after_get(act_dir, "tx/label/txwh.par1.lbl")
+
+            transport = MockJcaTransport()
+            client = LNStudioServerClient(transport=transport)
+
+            def on_browse(*args, **kwargs):
+                return (
+                    "<DataArea>"
+                    "<DR_Label><name>txwh.clot</name><versionID>B61O_a_ext.9</versionID>"
+                    "<isCheckedOut>no</isCheckedOut><isCheckedOutParallel>no</isCheckedOutParallel></DR_Label>"
+                    "<DR_Label><name>txwh.par1</name><versionID>B61O_a_ext.2</versionID>"
+                    "<isCheckedOut>no</isCheckedOut><isCheckedOutParallel>yes</isCheckedOutParallel></DR_Label>"
+                    "</DataArea>"
+                )
+
+            def on_get_source(*args, **kwargs):
+                return (
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                    "<DR_Label>\n  <name>txwh.clot</name>\n  <versionID>B61O_a_ext.9</versionID>\n</DR_Label>\n"
+                )
+
+            transport.register_handler("StudioComponent", "GetBrowseList", on_browse)
+            transport.register_handler("StudioComponent", "GetActivitySource", on_get_source)
+
+            summary = sync_activity(client, act_dir, "EXTce01107")
+            self.assertEqual(summary["refreshed_count"], 1)
+            self.assertEqual(summary["refreshed"][0]["name"], "txwh.clot")
+
+            # Refreshed file is compacted single-line and Read-Only
+            new_lbl = lbl_path.read_text(encoding="utf-8")
+            self.assertIn("B61O_a_ext.9", new_lbl)
+            self.assertNotIn(">\n", new_lbl)
+            self.assertFalse(bool(os.stat(lbl_path).st_mode & stat.S_IWRITE), "Refreshed file must be Read-Only")
+
+            # Local dirty file was preserved untouched
+            self.assertIn("<localEdit>1</localEdit>", ses_path.read_text(encoding="utf-8"))
+            self.assertTrue(any(s["name"] == "txwh1100m000" for s in summary["skipped_local"]))
+
+            # Server parallel-locked file was preserved untouched
+            self.assertIn("OLD_PAR", par_path.read_text(encoding="utf-8"))
+            self.assertTrue(any(s["name"] == "txwh.par1" for s in summary["skipped_server"]))
+
+            # .admin transitioned refreshed label cleanly via admin_after_get
+            adm = {e["path"]: e for e in list_admin_components(act_dir)}
+            lbl_entry = adm["tx/label/txwh.clot.lbl"]
+            self.assertFalse(lbl_entry["isCheckedOut"])
+            self.assertFalse(lbl_entry["isDirty"])
+
+            # Verify GetBrowseList received context_xml
+            browse_calls = [c for c in transport.call_history if c["method"] == "GetBrowseList"]
+            self.assertTrue(any(c.get("context_xml") for c in browse_calls))
 
 
 if __name__ == "__main__":

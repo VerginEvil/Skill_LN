@@ -76,16 +76,17 @@ Comprehensive catalog of subcommands provided by the native Rust `skill-ln` bina
 | Command | Options / Arguments | Description |
 |---|---|---|
 | `check-script` | `<script_or_xml_file> [--strict] [--json]` | Offline static 4GL syntax, block balance, and hook check |
-| `validate` | `[<activity_path>] [--strict] [--fix] [--json]` | 4-layer activity validation (`.admin`, XML, cross-ref, 4GL) |
+| `validate` | `[<activity_path>] [--strict] [--fix] [--online] [--json]` | 4-layer activity validation (`.admin`, XML single-line, cross-ref / optional server probe, 4GL) |
 | `sync-admin` | `--activity "<act>"` | Synchronize 12-extension SCM `.admin` registration cache |
 | `diagnose` | `--activity "<act>" [--errors-only]` | Decode Eclipse binary problem markers (`.markers`) |
 | `build` | `--activity "<act>" [--ui-bridge]` | Trigger JCA remote compile or workbench UI build |
 | `deploy-test` | `--type <t> --name <n> --activity <a> [--mode compile-only\|schema-crdd]` | Push local component changes to server Activity VRC for testing |
-| `prepare-end-activity`| `--activity <a> [--project <p>]` | Pre-commit verification gate before human handoff |
+| `prepare-end-activity`| `--activity <a> [--project <p>] [--skip-vsc] [--json]` | Pre-commit verification gate (`ValidateDevelopmentActivity` + `VSC.executeVSC`) before human handoff |
+| `sync-activity` | `[--activity <a>] [--project <p>] [--workspace <w>] [--json]` | Post-End-Activity VRC sync: refreshes server-committed components (Read-Only + compact XML + `admin_after_get`) preserving local Dirty/CheckedOut files |
 | `end-activity` | `--task <act> --project <p>` | Hard-blocked pre-commit delivery gate (raises error) |
 | `inject` | `--source <f.dal> --target <f.tbl>` | Inject 4GL script into Single-XML `<expression>` |
 | `extract` | `--source <f.tbl> --output <f.dal>` | Extract 4GL script from Single-XML `<expression>` |
-| `mcp-stdio` | _(no arguments)_ | Run native JSON-RPC 2.0 Stdio MCP server (25 tools) |
+| `mcp-stdio` | _(no arguments)_ | Run native JSON-RPC 2.0 Stdio MCP server (26 tools) |
 | `mcp-setup` | `[--client claude\|cursor\|antigravity\|generic] [--apply]` | Register Stdio MCP Server (`skill-ln mcp-stdio`) in client configuration |
 | `verify-studio-build` | `--studio-home <path>` | Verify Studio Build 0640 plugin JARs vs pure-Rust crate coverage |
 | `audit-4gl` | `<file> [--mode dal2\|uedll\|general] [--cloud] [--json]` | Run offline 4GL/DAL/Extension static code audit |
@@ -99,10 +100,10 @@ Comprehensive catalog of subcommands provided by the native Rust `skill-ln` bina
 ### 2.1 Check Token Status & Trigger Silent Refresh
 ```bash
 # Non-interactive check with silent refresh (no browser opened)
-skill-ln login --workspace SCS_TST --status
+skill-ln login --workspace <ENV_WORKSPACE> --status
 
 # Output status as JSON
-skill-ln login --workspace SCS_TST --status --json
+skill-ln login --workspace <ENV_WORKSPACE> --status --json
 ```
 
 ### 2.2 Fetch Extension Component & Export 4GL Script
@@ -121,8 +122,11 @@ skill-ln daemon --restart
 skill-ln daemon --stop
 ```
 
-### 2.4 Activity Validation with Non-Destructive Auto-Fix
+### 2.4 Activity Validation & Post-End-Activity VRC Sync
 ```bash
-# Validates .admin, XML schema, label references, and 4GL expressions; auto-generates missing labels
-skill-ln validate "C:\workspace\SCS_TST\dev_act [EXT01]" --fix
+# Validates .admin, Single-Line TDE XML, cross-refs, and 4GL; auto-generates missing labels
+skill-ln validate "C:\workspace\<ENV_WORKSPACE>\dev_act [EXT01]" --fix
+
+# Refresh server-committed components after partial/full End Activity without overwriting local Dirty/CheckedOut edits
+skill-ln sync-activity --activity "C:\workspace\<ENV_WORKSPACE>\dev_act [EXT01]"
 ```

@@ -72,5 +72,5 @@ pub fn generate_question_xml(
         "</DR_Question>",
     ];
 
-    lines.join("\n") + "\n"
+    crate::generators::label::compact_tde_xml(&lines.join("\n"))
 }

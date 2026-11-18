@@ -608,6 +608,85 @@ class TestScmCliIntegration(unittest.TestCase):
 
         temp_dir.cleanup()
 
+    def test_activity_cloud_scm_enabled_when_application_uses_scm_no_but_label_uuid_present(self):
+        from properties_index import PropertyBucket
+        from scm_guardrails import is_project_scm_enabled
+
+        with tempfile.TemporaryDirectory() as td:
+            ws = Path(td)
+            act = ws / "dev_act [EXTdemo]"
+            act.mkdir(parents=True, exist_ok=True)
+            idx = (
+                ws / ".metadata" / ".plugins" / "org.eclipse.core.resources"
+                / ".projects" / act.name / ".indexes" / "properties.index"
+            )
+            bucket = PropertyBucket()
+            bucket.set_property("ApplicationUsesSCM", "no")
+            bucket.set_property("Label", "uuid-cloud-act-001")
+            bucket.set_property("TaskName", "dev_act")
+            bucket.set_property("DevelopmentTimeRepositoryAddress", "EXTdemo_dev")
+            bucket.save(idx)
+
+            enabled, reason = is_project_scm_enabled(act)
+            self.assertTrue(enabled, f"Expected Cloud SCM enabled despite ApplicationUsesSCM=no, got: {reason}")
+
+            payload = build_checkout_payload("DR_Label", "txinr.addr", "label", "B61O_a_ext", "dev_act", "uuid-cloud-act-001")
+            self.assertIn("<name>txinr.addr</name>", payload)
+
+    def test_put_and_checkin_auto_dr_create_and_checkout_for_new_component(self):
+        from admin_sync import init_admin_file, admin_after_create
+        from generate_ln_table import generate_label_xml
+        from ln_server_client import MockJcaTransport, LNStudioServerClient
+
+        with tempfile.TemporaryDirectory() as td:
+            act_dir = Path(td) / "dev_test [EXTce01107]"
+            act_dir.mkdir(parents=True, exist_ok=True)
+            (act_dir / ".project").write_text("<projectDescription/>", encoding="utf-8")
+            init_admin_file(act_dir / ".admin")
+            lbl_file = act_dir / "tx" / "label" / "txwh.clot.lbl"
+            lbl_file.parent.mkdir(parents=True, exist_ok=True)
+            lbl_xml = generate_label_xml("txwh.clot", "Lot", "B61O_a_ext", "EXTce01107", context=1)
+            lbl_file.write_text(lbl_xml, encoding="utf-8")
+            admin_after_create(act_dir, "tx/label/txwh.clot.lbl")
+
+            from ln_server_client import MockJcaTransport, LNStudioServerClient, BdeExecutionError
+
+            transport = MockJcaTransport()
+            client = LNStudioServerClient(transport=transport)
+            created_on_server = {"done": False, "checked_out": False}
+
+            def on_create(*args, **kwargs):
+                created_on_server["done"] = True
+                return "<DR_Label><status>created</status></DR_Label>"
+
+            def on_checkout(*args, **kwargs):
+                created_on_server["checked_out"] = True
+                return lbl_xml
+
+            def on_put_or_checkin(method_name):
+                def _cb(*args, **kwargs):
+                    if not created_on_server["done"]:
+                        raise BdeExecutionError("Label not found", bde="DR_Label", method=method_name)
+                    if not created_on_server["checked_out"]:
+                        raise BdeExecutionError("Label has not been checked out", bde="DR_Label", method=method_name)
+                    return f"<DR_Label><status>{method_name.lower()}_ok</status></DR_Label>"
+                return _cb
+
+            transport.register_handler("DR_Label", "DR_Create", on_create)
+            transport.register_handler("DR_Label", "CheckOut", on_checkout)
+            transport.register_handler("DR_Label", "Put", on_put_or_checkin("Put"))
+            transport.register_handler("DR_Label", "CheckIn", on_put_or_checkin("CheckIn"))
+            put_res = put_component(client, "label", "txwh.clot", act_dir, "EXTce01107")
+            self.assertEqual(put_res["status"], "SUCCESS")
+            self.assertTrue(created_on_server["done"])
+            self.assertTrue(created_on_server["checked_out"])
+
+            created_on_server["done"] = False
+            created_on_server["checked_out"] = False
+            cki_res = checkin_component(client, "label", "txwh.clot", act_dir, "EXTce01107", "Add lot label")
+            self.assertEqual(cki_res["status"], "SUCCESS")
+            self.assertTrue(created_on_server["done"])
+            self.assertTrue(created_on_server["checked_out"])
 
 
 if __name__ == "__main__":

@@ -193,7 +193,13 @@ impl<'a> JcaBdeManager<'a> {
                     None,
                     &params.controlling_attributes,
                 );
-                let env_xml = self.build_request_envelope(&params.method_name, &ctrl_xml, Some(req_xml));
+                let trimmed_show = req_xml.trim_start();
+                let show_body = if trimmed_show.starts_with("<?xml") {
+                    trimmed_show.find("?>").map(|idx| trimmed_show[idx + 2..].trim_start()).unwrap_or(trimmed_show)
+                } else {
+                    trimmed_show
+                };
+                let env_xml = self.build_request_envelope(&params.method_name, &ctrl_xml, Some(show_body));
                 let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &resolved_conid, &env_xml).await?;
                 Ok(extract_first_child_of_data_area(&resp_xml).unwrap_or(resp_xml))
             }
@@ -208,24 +214,30 @@ impl<'a> JcaBdeManager<'a> {
                     None,
                     &params.controlling_attributes,
                 );
-                let env_xml = if params.method_name == "DR_Create" && req_xml.starts_with("<DR_") {
+                let trimmed_req = req_xml.trim_start();
+                let body_req = if trimmed_req.starts_with("<?xml") {
+                    trimmed_req.find("?>").map(|idx| trimmed_req[idx + 2..].trim_start()).unwrap_or(trimmed_req)
+                } else {
+                    trimmed_req
+                };
+                let env_xml = if params.method_name == "DR_Create" && body_req.starts_with("<DR_") {
                     // Send raw component root XML element directly (no <DR_CreateRequest> wrapper)
-                    if !ctrl_xml.is_empty() && ctrl_xml != "<ControlArea></ControlArea>" && !req_xml.contains("<ControlArea>") {
-                        if let Some(first_gt) = req_xml.find('>') {
-                            let mut s = String::with_capacity(req_xml.len() + ctrl_xml.len() + 2);
-                            s.push_str(&req_xml[..=first_gt]);
+                    if !ctrl_xml.is_empty() && ctrl_xml != "<ControlArea></ControlArea>" && !body_req.contains("<ControlArea>") {
+                        if let Some(first_gt) = body_req.find('>') {
+                            let mut s = String::with_capacity(body_req.len() + ctrl_xml.len() + 2);
+                            s.push_str(&body_req[..=first_gt]);
                             s.push('\n');
                             s.push_str(&ctrl_xml);
-                            s.push_str(&req_xml[first_gt + 1..]);
+                            s.push_str(&body_req[first_gt + 1..]);
                             s
                         } else {
-                            req_xml.to_string()
+                            body_req.to_string()
                         }
                     } else {
-                        req_xml.to_string()
+                        body_req.to_string()
                     }
                 } else {
-                    self.build_request_envelope(&params.method_name, &ctrl_xml, if req_xml.is_empty() { None } else { Some(req_xml) })
+                    self.build_request_envelope(&params.method_name, &ctrl_xml, if body_req.is_empty() { None } else { Some(body_req) })
                 };
                 let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &resolved_conid, &env_xml).await?;
                 Ok(extract_first_child_of_data_area(&resp_xml).unwrap_or(resp_xml))

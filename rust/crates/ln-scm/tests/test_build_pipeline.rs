@@ -235,8 +235,8 @@ async fn test_prepare_end_activity_and_diagnose() {
     fs::create_dir_all(comp_file.parent().unwrap()).unwrap();
     fs::write(&comp_file, "<DR_Table><name>ttadv999</name><expression>table tttadv999</expression></DR_Table>").unwrap();
 
-    // Run prepare_end_activity
-    let prep_res = prepare_end_activity(&client, act_dir, "PROJ_1").await.unwrap();
+    // Run prepare_end_activity (includes VSC execution unless skip_vsc=true)
+    let prep_res = prepare_end_activity(&client, act_dir, "PROJ_1", false).await.unwrap();
     assert_eq!(prep_res.activity, "TASK1");
     assert_eq!(prep_res.project, "PROJ_1");
     assert!(prep_res.server_valid);
@@ -249,4 +249,100 @@ async fn test_prepare_end_activity_and_diagnose() {
     let diag = diagnose(&client, "table", "ttadv999", "PROJ_1", Some(act_dir)).await.unwrap();
     assert_eq!(diag.component, "ttadv999");
     assert!(diag.compiler_success);
+}
+
+#[tokio::test]
+async fn test_sync_activity_refreshes_committed_and_preserves_dirty() {
+    use ln_scm::scm_engine::is_file_readonly;
+
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let addr = listener.local_addr().unwrap();
+    let base_url = format!("http://127.0.0.1:{}/TENANT/LN/webservice", addr.port());
+
+    let browse_saw_ctx = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let b_ctx = browse_saw_ctx.clone();
+
+    tokio::spawn(async move {
+        while let Ok((mut socket, _)) = listener.accept().await {
+            let mut buf = [0u8; 16384];
+            let n = socket.read(&mut buf).await.unwrap_or(0);
+            let req = String::from_utf8_lossy(&buf[..n]).to_string();
+            let req_line = req.lines().next().unwrap_or("");
+
+            let body = if req_line.contains("method=connect") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>0</conid></ConnectResponse>".to_string()
+            } else if req_line.contains("method=share") {
+                "<ConnectResponse><SessionID>s</SessionID><conid>1</conid></ConnectResponse>".to_string()
+            } else if req.contains("bdename=StudioComponent") && req.contains("bdemethod=GetBrowseList") {
+                if req.contains("uuid-sync-99") || req.contains("ActivityID") {
+                    b_ctx.store(true, std::sync::atomic::Ordering::SeqCst);
+                }
+                "<DataArea>\
+                    <DR_Label><name>txwh.clot</name><versionID>B61O_a_ext.9</versionID><isCheckedOut>no</isCheckedOut><isCheckedOutParallel>no</isCheckedOutParallel></DR_Label>\
+                    <DR_Label><name>txwh.par1</name><versionID>B61O_a_ext.2</versionID><isCheckedOut>no</isCheckedOut><isCheckedOutParallel>yes</isCheckedOutParallel></DR_Label>\
+                </DataArea>".to_string()
+            } else if req.contains("bdename=StudioComponent") && req.contains("bdemethod=GetActivitySource") {
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DR_Label>\n  <name>txwh.clot</name>\n  <versionID>B61O_a_ext.9</versionID>\n</DR_Label>\n".to_string()
+            } else {
+                "<ok/>".to_string()
+            };
+
+            let resp = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/xml\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(),
+                body
+            );
+            let _ = socket.write_all(resp.as_bytes()).await;
+        }
+    });
+
+    let client = HttpClient::new(&base_url, "test_token");
+    let td = tempdir().unwrap();
+    let act_dir = td.path().join("dev_sync [EXTce01107]");
+    fs::create_dir_all(&act_dir).unwrap();
+    fs::write(act_dir.join(".project"), "<projectDescription><name>dev_sync [EXTce01107]</name></projectDescription>").unwrap();
+    let settings = act_dir.join(".settings");
+    fs::create_dir_all(&settings).unwrap();
+    fs::write(settings.join("properties.index"), "activityUUID=uuid-sync-99\nsoftwareProject=EXTce01107\nTaskName=dev_sync\n").unwrap();
+
+    let mut admin = AdminFile::new();
+
+    // 1. Committed label on server (clean locally)
+    let lbl_path = act_dir.join("tx").join("label").join("txwh.clot.lbl");
+    fs::create_dir_all(lbl_path.parent().unwrap()).unwrap();
+    fs::write(&lbl_path, "<DR_Label><name>txwh.clot</name><versionID>OLD</versionID></DR_Label>").unwrap();
+    admin.after_get("tx/label/txwh.clot.lbl");
+
+    // 2. Parallel-locked label on server
+    let par_path = act_dir.join("tx").join("label").join("txwh.par1.lbl");
+    fs::write(&par_path, "<DR_Label><name>txwh.par1</name><versionID>OLD_PAR</versionID></DR_Label>").unwrap();
+    admin.after_get("tx/label/txwh.par1.lbl");
+
+    // 3. Locally Dirty session
+    let ses_path = act_dir.join("tx").join("session").join("wh").join("txwh1100m000.ses");
+    fs::create_dir_all(ses_path.parent().unwrap()).unwrap();
+    fs::write(&ses_path, "<DR_Controller><name>txwh1100m000</name><localEdit>1</localEdit></DR_Controller>").unwrap();
+    admin.after_create("tx/session/wh/txwh1100m000.ses");
+
+    admin.save_to_path(&act_dir.join(".admin")).unwrap();
+
+    let summary = sync_activity(&client, &act_dir, "EXTce01107").await.unwrap();
+    assert_eq!(summary.refreshed.len(), 1);
+    assert_eq!(summary.refreshed[0].name, "txwh.clot");
+    assert!(browse_saw_ctx.load(std::sync::atomic::Ordering::SeqCst));
+
+    let new_lbl = fs::read_to_string(&lbl_path).unwrap();
+    assert!(new_lbl.contains("B61O_a_ext.9"));
+    assert!(!new_lbl.contains(">\n"));
+    assert!(is_file_readonly(&lbl_path));
+
+    assert!(fs::read_to_string(&ses_path).unwrap().contains("<localEdit>1</localEdit>"));
+    assert!(summary.skipped_local.iter().any(|s| s.name == "txwh1100m000"));
+    assert!(fs::read_to_string(&par_path).unwrap().contains("OLD_PAR"));
+    assert!(summary.skipped_server.iter().any(|s| s.name == "txwh.par1"));
+
+    let reloaded = AdminFile::load_from_path(&act_dir.join(".admin")).unwrap();
+    let e = reloaded.get("tx/label/txwh.clot.lbl").unwrap();
+    assert!(!e.is_checked_out);
+    assert!(!e.is_dirty);
 }

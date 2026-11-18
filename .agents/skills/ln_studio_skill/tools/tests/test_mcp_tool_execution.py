@@ -428,6 +428,18 @@ class TestMcpToolExecution(unittest.TestCase):
         data = self._assert_envelope(res, "ln_adhoc_compile")
         self.assertTrue(data["result"]["success"])
 
+    # 25. ln_sync_activity
+    @patch("ln_studio_mcp.sync_activity")
+    def test_ln_sync_activity(self, mock_sync):
+        mock_sync.return_value = {"refreshed_count": 2, "skipped_count": 1, "refreshed": [], "skipped_local": [], "skipped_server": []}
+        res = execute_tool("ln_sync_activity", {
+            "activity": str(self.act_dir),
+            "project": "EXTce01107",
+            "mock": True
+        })
+        data = self._assert_envelope(res, "ln_sync_activity")
+        self.assertEqual(data["result"]["refreshed_count"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()

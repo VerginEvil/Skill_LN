@@ -554,10 +554,12 @@ def browse_components(
     comp_type: str = "",
     name_filter: str = "",
     connection_point: str = "ProjectServer",
+    context_xml: Optional[str] = None,
 ) -> List[Dict[str, str]]:
     """
     Browses server components using StudioComponent.GetBrowseList BDE in BROWSELIST mode
     with Controlling Attributes, selection fields, and filter.
+    Translates glob '*' wildcards to SQL '%' for BDE LIKE queries.
     """
     ctype = comp_type.lower() if comp_type else "table"
     info = BDE_TYPE_MAP.get(ctype, {})
@@ -579,7 +581,8 @@ def browse_components(
         f"{bde_name}.Version.isCheckedOut",
         f"{bde_name}.Version.isCheckedOutParallel",
     ]
-    filter_expr = f"{bde_name}.name LIKE '{name_filter}'" if name_filter else None
+    sql_filter = name_filter.replace("*", "%") if name_filter else ""
+    filter_expr = f"{bde_name}.name LIKE '{sql_filter}'" if sql_filter else None
 
     try:
         resp_xml = client.do_bde_call(
@@ -587,6 +590,7 @@ def browse_components(
             "GetBrowseList",
             "",
             connection_point=connection_point,
+            context_xml=context_xml,
             mode="BROWSELIST",
             controlling_attributes=ctrl_attrs,
             selection_fields=selection,
@@ -598,10 +602,16 @@ def browse_components(
             req_parts.append(f"<package>{package}</package>")
         if comp_type:
             req_parts.append(f"<type>{comp_type}</type>")
-        if name_filter:
-            req_parts.append(f"<filter>{name_filter}</filter>")
+        if sql_filter:
+            req_parts.append(f"<filter>{sql_filter}</filter>")
         req_parts.append("</GetBrowseListRequest></StudioComponent>")
-        resp_xml = client.do_bde_call("StudioComponent", "GetBrowseList", "".join(req_parts), connection_point=connection_point)
+        resp_xml = client.do_bde_call(
+            "StudioComponent",
+            "GetBrowseList",
+            "".join(req_parts),
+            connection_point=connection_point,
+            context_xml=context_xml,
+        )
 
     root = ET.fromstring(resp_xml)
     components = []
@@ -628,6 +638,7 @@ def browse_components(
         desc = elem.findtext("description") or elem.findtext("Description") or elem.attrib.get("description") or ""
         ver_id = elem.findtext("versionID") or elem.attrib.get("versionID") or ""
         checked_out = elem.findtext(".//isCheckedOut") or elem.attrib.get("isCheckedOut") or "no"
+        checked_out_parallel = elem.findtext(".//isCheckedOutParallel") or elem.attrib.get("isCheckedOutParallel") or "no"
         expired = elem.findtext(".//isExpired") or elem.attrib.get("isExpired") or "no"
 
         if name:
@@ -639,6 +650,7 @@ def browse_components(
                 "description": desc,
                 "versionID": ver_id,
                 "isCheckedOut": checked_out,
+                "isCheckedOutParallel": checked_out_parallel,
                 "isExpired": expired,
             })
     return components
@@ -811,7 +823,8 @@ def get_component(
         except Exception:
             pass
 
-    target_file.write_text(resp_xml, encoding="utf-8")
+    from generate_ln_table import compact_tde_xml
+    target_file.write_text(compact_tde_xml(resp_xml), encoding="utf-8")
 
     if read_only or is_extension_component(target_file):
         try:
@@ -1037,7 +1050,9 @@ def clone_component(
 
     if target_file.exists():
         os.chmod(target_file, stat.S_IWRITE | stat.S_IREAD)
-    target_file.write_text(renamed_xml, encoding="utf-8")
+    from generate_ln_table import compact_tde_xml
+    compacted_xml = compact_tde_xml(renamed_xml)
+    target_file.write_text(compacted_xml, encoding="utf-8")
     os.chmod(target_file, stat.S_IWRITE | stat.S_IREAD)
 
     # 4. Register in .admin cache via after_create
@@ -1052,7 +1067,7 @@ def clone_component(
         client.do_bde_call(
             bde_name,
             "DR_Create",
-            renamed_xml,
+            compacted_xml,
             connection_point=eff_cp,
             context_xml=context_xml,
             mode="BDE",

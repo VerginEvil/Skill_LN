@@ -734,7 +734,8 @@ def checkout_component(
         except Exception:
             pass
 
-    target_file.write_text(resp_xml, encoding="utf-8")
+    from generate_ln_table import compact_tde_xml
+    target_file.write_text(compact_tde_xml(resp_xml), encoding="utf-8")
     try:
         os.chmod(target_file, stat.S_IWRITE | stat.S_IREAD)
     except Exception:
@@ -900,6 +901,59 @@ def uncheckout_component(
     return receipt
 
 
+def _is_missing_on_server_error(err: Exception) -> bool:
+    msg = str(err).lower()
+    return any(
+        needle in msg
+        for needle in ("not found", "does not exist", "unknownobject", "has not been checked out", "not checked out")
+    )
+
+
+def _ensure_dr_create_and_checkout(
+    client: LNStudioServerClient,
+    bde_name: str,
+    comp_type: str,
+    comp_name: str,
+    content_xml: str,
+    eff_base_vrc: str,
+    task_id: str,
+    label_uuid: str,
+    dev_cp: str,
+    context_xml: str,
+) -> None:
+    """Registers a new component on the server via DR_Create and checks it out into the current activity."""
+    from generate_ln_table import compact_tde_xml
+    compacted = compact_tde_xml(content_xml)
+    try:
+        client.do_bde_call(
+            bde_name=bde_name,
+            method_name="DR_Create",
+            request_xml=compacted,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+            mode="BDE",
+        )
+    except Exception as create_err:
+        if "already exist" not in str(create_err).lower():
+            raise
+
+    cko_payload = build_checkout_payload(
+        bde_name=bde_name,
+        comp_name=comp_name,
+        comp_type=comp_type,
+        base_vrc=eff_base_vrc,
+        activity_name=task_id,
+        task_label=label_uuid,
+    )
+    client.do_bde_call(
+        bde_name=bde_name,
+        method_name="CheckOut",
+        request_xml=cko_payload,
+        connection_point=dev_cp,
+        context_xml=context_xml,
+    )
+
+
 def put_component(
     client: LNStudioServerClient,
     comp_type: str,
@@ -912,6 +966,7 @@ def put_component(
     """
     Uploads modified component XML to the server Activity workarea via DR_*.Put
     with Pre-Put Script Merge & Non-Empty Source Guardrail, and updates .admin via after_put.
+    For new/unregistered components, transparently runs DR_Create -> CheckOut -> Put.
     Returns VerificationReceipt.
     """
     info = BDE_TYPE_MAP.get(comp_type.lower())
@@ -930,7 +985,8 @@ def put_component(
         raise FileNotFoundError(f"Component file not found for '{comp_name}' in {activity_dir}")
 
     # Pre-Put Script Merge & Non-Empty Source Guardrail
-    content = pre_put_script_merge_and_validate(activity_dir, target_file, comp_name, comp_type)
+    from generate_ln_table import compact_tde_xml
+    content = compact_tde_xml(pre_put_script_merge_and_validate(activity_dir, target_file, comp_name, comp_type))
 
     context_xml = build_activity_context_xml(
         activity_name=task_id,
@@ -939,13 +995,36 @@ def put_component(
         activity_guid=label_uuid,
     )
 
-    resp_xml = client.do_bde_call(
-        bde_name=bde_name,
-        method_name="Put",
-        request_xml=content,
-        connection_point=dev_cp,
-        context_xml=context_xml,
-    )
+    try:
+        resp_xml = client.do_bde_call(
+            bde_name=bde_name,
+            method_name="Put",
+            request_xml=content,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+        )
+    except Exception as e:
+        if not _is_missing_on_server_error(e):
+            raise
+        _ensure_dr_create_and_checkout(
+            client=client,
+            bde_name=bde_name,
+            comp_type=comp_type,
+            comp_name=comp_name,
+            content_xml=content,
+            eff_base_vrc=eff_base_vrc,
+            task_id=task_id,
+            label_uuid=label_uuid,
+            dev_cp=dev_cp,
+            context_xml=context_xml,
+        )
+        resp_xml = client.do_bde_call(
+            bde_name=bde_name,
+            method_name="Put",
+            request_xml=content,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+        )
 
     receipt = parse_scm_receipt(
         response_xml=resp_xml,
@@ -1007,8 +1086,9 @@ def checkin_component(
         raise FileNotFoundError(f"Component file not found for '{comp_name}' in {activity_dir}")
 
     # Pre-Put Script Merge & Non-Empty Source Guardrail
+    from generate_ln_table import compact_tde_xml
     content = pre_put_script_merge_and_validate(activity_dir, target_file, comp_name, comp_type)
-    req_xml = build_checkin_payload(content, comment)
+    req_xml = compact_tde_xml(build_checkin_payload(content, comment))
 
     scm_enabled, reason = is_project_scm_enabled(activity_dir)
     if not scm_enabled:
@@ -1059,13 +1139,36 @@ def checkin_component(
         documentation=task_doc,
     )
 
-    resp_xml = client.do_bde_call(
-        bde_name=bde_name,
-        method_name="CheckIn",
-        request_xml=req_xml,
-        connection_point=dev_cp,
-        context_xml=context_xml,
-    )
+    try:
+        resp_xml = client.do_bde_call(
+            bde_name=bde_name,
+            method_name="CheckIn",
+            request_xml=req_xml,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+        )
+    except Exception as e:
+        if not _is_missing_on_server_error(e):
+            raise
+        _ensure_dr_create_and_checkout(
+            client=client,
+            bde_name=bde_name,
+            comp_type=comp_type,
+            comp_name=comp_name,
+            content_xml=content,
+            eff_base_vrc=eff_base_vrc,
+            task_id=task_id,
+            label_uuid=label_uuid,
+            dev_cp=dev_cp,
+            context_xml=context_xml,
+        )
+        resp_xml = client.do_bde_call(
+            bde_name=bde_name,
+            method_name="CheckIn",
+            request_xml=req_xml,
+            connection_point=dev_cp,
+            context_xml=context_xml,
+        )
 
     # Verify server response receipt BEFORE updating local file permissions or .admin
     receipt = parse_scm_receipt(

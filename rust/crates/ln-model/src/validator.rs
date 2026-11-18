@@ -10,6 +10,7 @@ use thiserror::Error;
 use ln_eclipse_compat::AdminFile;
 use ln_linter::{audit_content, Severity as LinterSeverity};
 use crate::dom_surgery::extract_script;
+use crate::generators::label::{compact_tde_xml, generate_label_xml_with_context, has_multiline_outside_script};
 
 pub const MANAGED_EXTENSIONS: &[&str] = &[
     ".tbl", ".ses", ".dmn", ".lib", ".mnu", ".lbl", ".rpt", ".msg", ".qst", ".fnc", ".add", ".bus", ".rptdsrc"
@@ -168,12 +169,18 @@ pub struct ActivityValidator {
     sessions: HashMap<String, SessionMeta>,
     domains: HashMap<String, PathBuf>,
     labels: HashSet<String>,
+    reference_labels: HashSet<String>,
+    server_labels: HashSet<String>,
+    online: bool,
     libraries: HashMap<String, PathBuf>,
     menus: HashMap<String, MenuMeta>,
     reports: HashMap<String, ReportMeta>,
     functions: HashMap<String, PathBuf>,
     admin_loaded: bool,
     created_or_untracked: HashSet<String>,
+    multiline_files: Vec<PathBuf>,
+    command_labels: HashSet<String>,
+    desc_labels: HashSet<String>,
 }
 
 impl ActivityValidator {
@@ -190,13 +197,24 @@ impl ActivityValidator {
             sessions: HashMap::new(),
             domains: HashMap::new(),
             labels: HashSet::new(),
+            reference_labels: HashSet::new(),
+            server_labels: HashSet::new(),
+            online: false,
             libraries: HashMap::new(),
             menus: HashMap::new(),
             reports: HashMap::new(),
             functions: HashMap::new(),
             admin_loaded: false,
             created_or_untracked: HashSet::new(),
+            multiline_files: Vec::new(),
+            command_labels: HashSet::new(),
+            desc_labels: HashSet::new(),
         }
+    }
+
+    pub fn set_online_labels(&mut self, labels: HashSet<String>) {
+        self.online = true;
+        self.server_labels = labels;
     }
 
     pub fn run(&mut self) -> &ValidationReport {
@@ -288,6 +306,22 @@ impl ActivityValidator {
                     self.functions.insert(code, path);
                 }
                 _ => {}
+            }
+        }
+
+        if let Some(ws_dir) = self.activity_path.parent() {
+            let ref_lbl_dir = ws_dir.join(".reference").join("label");
+            if ref_lbl_dir.is_dir() {
+                if let Ok(entries) = fs::read_dir(&ref_lbl_dir) {
+                    for entry in entries.flatten() {
+                        let p = entry.path();
+                        if p.is_file() && p.extension().and_then(|e| e.to_str()).map(|s| s.eq_ignore_ascii_case("lbl")).unwrap_or(false) {
+                            if let Some(stem) = p.file_stem().and_then(|s| s.to_str()) {
+                                self.reference_labels.insert(stem.to_ascii_lowercase());
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -795,67 +829,182 @@ impl ActivityValidator {
                 );
             }
         }
+
+        // 4. Single-line TDE XML check (Eclipse CMComponentProperties ClassCastException prevention)
+        self.multiline_files.clear();
+        let managed_ext_set: HashSet<&str> = MANAGED_EXTENSIONS.iter().copied().collect();
+        for p in walk_managed_files(&self.activity_path, &managed_ext_set) {
+            if is_extension_component(&p) {
+                continue;
+            }
+            if let Ok(raw_txt) = fs::read_to_string(&p) {
+                if raw_txt.contains('<') && has_multiline_outside_script(&raw_txt) {
+                    let p_str = p.to_string_lossy().to_string();
+                    self.multiline_files.push(p);
+                    self.report.add(
+                        &p_str,
+                        1,
+                        1,
+                        ValidationSeverity::Error,
+                        "Component XML must be single-line (no inter-tag whitespace/newlines outside CDATA/expression) for Eclipse CMComponentProperties compatibility.",
+                        2,
+                    );
+                }
+            }
+        }
+    }
+
+    fn owner_pkg_for_path(&self, comp_path: &Path, comp_code: &str) -> String {
+        if let Ok(rel) = comp_path.strip_prefix(&self.activity_path) {
+            if let Some(first) = rel.components().next() {
+                let first_str = first.as_os_str().to_string_lossy().to_ascii_lowercase();
+                if self.packages.contains(&first_str) {
+                    return first_str;
+                }
+            }
+        }
+        if comp_code.len() >= 2 {
+            comp_code[..2].to_ascii_lowercase()
+        } else {
+            String::new()
+        }
     }
 
     // ----------------------------------------------------
     // Layer 3: Cross-Object Reference Integrity
     // ----------------------------------------------------
     fn validate_layer3_cross_references(&mut self) {
-        let mut referenced_labels: Vec<(String, String)> = Vec::new(); // (label_code, file_path)
+        use std::sync::OnceLock;
+        static ATTR_DREF_RE: OnceLock<Regex> = OnceLock::new();
+        static ELEM_DREF_RE: OnceLock<Regex> = OnceLock::new();
+        static FLBL_RE: OnceLock<Regex> = OnceLock::new();
+        static CMD_LBL_ATTR_RE: OnceLock<Regex> = OnceLock::new();
+        static CMD_BLOCK_RE: OnceLock<Regex> = OnceLock::new();
+        static IDX_BLOCK_RE: OnceLock<Regex> = OnceLock::new();
+
+        // (label_code, file_path, is_field_label, owner_pkg)
+        let mut referenced_labels: HashSet<(String, String, bool, String)> = HashSet::new();
+        let attr_dref_re = ATTR_DREF_RE.get_or_init(|| Regex::new(r#"descriptionReference="([^"]+)""#).unwrap());
+        let elem_dref_re = ELEM_DREF_RE.get_or_init(|| Regex::new(r"<descriptionReference>([^<]+)</descriptionReference>").unwrap());
+        let flbl_re = FLBL_RE.get_or_init(|| Regex::new(r"<fieldLabel>([^<]+)</fieldLabel>").unwrap());
+        let cmd_lbl_attr_re = CMD_LBL_ATTR_RE.get_or_init(|| Regex::new(r#"<FormCommand[^>]*descriptionReference="([^"]+)""#).unwrap());
+        let cmd_block_re = CMD_BLOCK_RE.get_or_init(|| Regex::new(r"(?s)<FormCommand\b[^>]*>.*?</FormCommand>").unwrap());
+        let idx_block_re = IDX_BLOCK_RE.get_or_init(|| Regex::new(r"(?s)<Index\b[^>]*>.*?</Index>").unwrap());
 
         // 1. Collect referenced labels from tables
-        for (_code, tdata) in &self.tables {
+        for (code, tdata) in &self.tables {
             let p_str = tdata.path.to_string_lossy().to_string();
+            let opkg = self.owner_pkg_for_path(&tdata.path, code);
             if !tdata.description_reference.is_empty() {
-                referenced_labels.push((tdata.description_reference.clone(), p_str.clone()));
+                self.desc_labels.insert(tdata.description_reference.to_ascii_lowercase());
+                referenced_labels.insert((tdata.description_reference.clone(), p_str.clone(), false, opkg.clone()));
             }
-            let dref_re = Regex::new(r#"descriptionReference="([^"]+)""#).unwrap();
-            for cap in dref_re.captures_iter(&tdata.raw_xml) {
-                referenced_labels.push((cap.get(1).unwrap().as_str().to_string(), p_str.clone()));
+            for cap in attr_dref_re.captures_iter(&tdata.raw_xml) {
+                referenced_labels.insert((cap.get(1).unwrap().as_str().to_string(), p_str.clone(), false, opkg.clone()));
+            }
+            for cap in elem_dref_re.captures_iter(&tdata.raw_xml) {
+                referenced_labels.insert((cap.get(1).unwrap().as_str().to_string(), p_str.clone(), false, opkg.clone()));
+            }
+            for m in idx_block_re.find_iter(&tdata.raw_xml) {
+                if let Some(cap) = elem_dref_re.captures(m.as_str()) {
+                    self.desc_labels.insert(cap.get(1).unwrap().as_str().to_ascii_lowercase());
+                }
             }
         }
 
         // 2. Collect referenced labels from sessions
-        for (_code, sdata) in &self.sessions {
+        for (code, sdata) in &self.sessions {
             let p_str = sdata.path.to_string_lossy().to_string();
+            let opkg = self.owner_pkg_for_path(&sdata.path, code);
             if !sdata.description_reference.is_empty() {
-                referenced_labels.push((sdata.description_reference.clone(), p_str.clone()));
+                self.desc_labels.insert(sdata.description_reference.to_ascii_lowercase());
+                referenced_labels.insert((sdata.description_reference.clone(), p_str.clone(), false, opkg.clone()));
             }
-            let flbl_re = Regex::new(r"<fieldLabel>([^<]+)</fieldLabel>").unwrap();
             for cap in flbl_re.captures_iter(&sdata.raw_xml) {
-                referenced_labels.push((cap.get(1).unwrap().as_str().to_string(), p_str.clone()));
+                referenced_labels.insert((cap.get(1).unwrap().as_str().to_string(), p_str.clone(), true, opkg.clone()));
             }
-            let cmd_lbl_re = Regex::new(r#"<FormCommand[^>]*descriptionReference="([^"]+)""#).unwrap();
-            for cap in cmd_lbl_re.captures_iter(&sdata.raw_xml) {
-                referenced_labels.push((cap.get(1).unwrap().as_str().to_string(), p_str.clone()));
+            for cap in cmd_lbl_attr_re.captures_iter(&sdata.raw_xml) {
+                let lbl = cap.get(1).unwrap().as_str().to_string();
+                self.command_labels.insert(lbl.to_ascii_lowercase());
+                referenced_labels.insert((lbl, p_str.clone(), false, opkg.clone()));
+            }
+            for m in cmd_block_re.find_iter(&sdata.raw_xml) {
+                if let Some(cap) = elem_dref_re.captures(m.as_str()) {
+                    let lbl = cap.get(1).unwrap().as_str().to_string();
+                    self.command_labels.insert(lbl.to_ascii_lowercase());
+                    referenced_labels.insert((lbl, p_str.clone(), false, opkg.clone()));
+                }
             }
         }
 
         // 3. Collect referenced labels from reports
-        for (_code, rdata) in &self.reports {
+        for (code, rdata) in &self.reports {
             let p_str = rdata.path.to_string_lossy().to_string();
+            let opkg = self.owner_pkg_for_path(&rdata.path, code);
             for lbl in &rdata.referenced_labels {
-                referenced_labels.push((lbl.clone(), p_str.clone()));
+                referenced_labels.insert((lbl.clone(), p_str.clone(), false, opkg.clone()));
             }
         }
 
-        // Validate labels against catalog (skip server-resident labels when activity has no .lbl files
-        // and the referencing component is an already checked-in server component unless --strict).
-        for (lbl_code, ref_path) in referenced_labels {
-            let is_local = self.packages.iter().any(|pkg| lbl_code.to_ascii_lowercase().starts_with(pkg));
-            if is_local {
-                if self.labels.is_empty() && !self.strict && self.admin_loaded && !self.created_or_untracked.contains(&ref_path) {
+        let catalog: HashSet<String> = self
+            .labels
+            .iter()
+            .chain(self.reference_labels.iter())
+            .chain(self.server_labels.iter())
+            .cloned()
+            .collect();
+
+        // Validate labels against catalog (skip server-resident labels when referencing component
+        // is an already checked-in server component unless --strict or --online).
+        for (lbl_code, ref_path, is_field_label, opkg) in referenced_labels {
+            if !self.strict && !self.online && self.admin_loaded && !self.created_or_untracked.contains(&ref_path) {
+                continue;
+            }
+            let lbl_lower = lbl_code.to_ascii_lowercase();
+            if is_field_label {
+                if lbl_lower.starts_with("tc") && opkg != "tc" {
+                    if self.online {
+                        let prefixed = format!("{opkg}{lbl_lower}");
+                        if !catalog.contains(&lbl_lower) && !catalog.contains(&prefixed) {
+                            self.report.add(
+                                &ref_path, 1, 1,
+                                ValidationSeverity::Error,
+                                &format!("Referenced label '{}' not found in server 'tc' or activity label catalog.", lbl_code),
+                                3,
+                            );
+                        }
+                    }
                     continue;
                 }
-                let lbl_base = lbl_code.to_ascii_lowercase();
-                let found = self.labels.contains(&lbl_base)
-                    || self.labels.iter().any(|l| l == &lbl_base || l.ends_with(&lbl_base) || lbl_base.ends_with(l));
 
+                let prefixed = if opkg.is_empty() { lbl_lower.clone() } else { format!("{opkg}{lbl_lower}") };
+                let found = catalog.contains(&prefixed) || catalog.contains(&lbl_lower);
                 if !found {
                     self.report.add(
                         &ref_path, 1, 1,
                         ValidationSeverity::Error,
-                        &format!("Referenced label '{}' not found in activity label catalog.", lbl_code),
+                        &format!("Referenced label '{}' (from fieldLabel '{}') not found in activity label catalog.", prefixed, lbl_code),
+                        3,
+                    );
+                }
+            } else {
+                let is_local = self.packages.iter().any(|pkg| lbl_lower.starts_with(pkg));
+                if is_local {
+                    let found = catalog.contains(&lbl_lower)
+                        || catalog.iter().any(|l| l == &lbl_lower || l.ends_with(&lbl_lower) || lbl_lower.ends_with(l));
+                    if !found {
+                        self.report.add(
+                            &ref_path, 1, 1,
+                            ValidationSeverity::Error,
+                            &format!("Referenced label '{}' not found in activity label catalog.", lbl_code),
+                            3,
+                        );
+                    }
+                } else if self.online && !catalog.contains(&lbl_lower) {
+                    self.report.add(
+                        &ref_path, 1, 1,
+                        ValidationSeverity::Error,
+                        &format!("Referenced label '{}' not found in activity or server label catalog.", lbl_code),
                         3,
                     );
                 }
@@ -997,15 +1146,45 @@ impl ActivityValidator {
     // ----------------------------------------------------
     // Safe Fixes Execution
     // ----------------------------------------------------
+    fn default_app_and_version(&self) -> (String, String) {
+        let folder = self.activity_path.file_name().and_then(|s| s.to_str()).unwrap_or("");
+        let app = if let (Some(s), Some(e)) = (folder.find('['), folder.find(']')) {
+            if e > s + 1 {
+                folder[s + 1..e].to_string()
+            } else {
+                "EXTce01108".to_string()
+            }
+        } else {
+            "EXTce01108".to_string()
+        };
+        (app, "B61O_a_ext".to_string())
+    }
+
     fn execute_safe_fixes(&mut self) {
+        // 0. Compact writable pretty-printed component XMLs
+        for p in self.multiline_files.clone() {
+            if p.is_file() {
+                let is_ro = fs::metadata(&p).map(|m| m.permissions().readonly()).unwrap_or(true);
+                if !is_ro {
+                    if let Ok(raw_txt) = fs::read_to_string(&p) {
+                        let compacted = compact_tde_xml(&raw_txt);
+                        if compacted != raw_txt && fs::write(&p, &compacted).is_ok() {
+                            let fname = p.file_name().and_then(|s| s.to_str()).unwrap_or("file");
+                            self.report.repaired_items.push(format!("Compacted single-line XML: {}", fname));
+                        }
+                    }
+                }
+            }
+        }
+
         // 1. Fix missing labels
         let missing_labels: Vec<String> = self
             .report
             .diagnostics
             .iter()
             .filter_map(|d| {
-                if d.layer == 3 && d.message.contains("Referenced label '") && d.message.contains("' not found in activity label catalog.") {
-                    let start = d.message.find("Referenced label '")? + "Referenced label '".len();
+                if d.layer == 3 && d.message.starts_with("Referenced label '") && d.message.contains("not found in activity label catalog.") {
+                    let start = "Referenced label '".len();
                     let end = d.message[start..].find('\'')? + start;
                     Some(d.message[start..end].to_ascii_lowercase())
                 } else {
@@ -1013,6 +1192,8 @@ impl ActivityValidator {
                 }
             })
             .collect();
+
+        let (app_code, ver_id) = self.default_app_and_version();
 
         for lbl_code in missing_labels {
             let pkg = self.packages.iter().find(|p| lbl_code.starts_with(p.as_str())).cloned();
@@ -1022,17 +1203,21 @@ impl ActivityValidator {
                 let lbl_file = lbl_dir.join(format!("{}.lbl", lbl_code));
 
                 if !lbl_file.is_file() {
-                    let xml_content = format!(
-                        r#"<?xml version="1.0" encoding="UTF-8"?>
-<DR_Label xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
-  <name>{}</name>
-  <language>2</language>
-  <description>{}</description>
-  <helpText>{}</helpText>
-  <length>30</length>
-</DR_Label>
-"#,
-                        lbl_code, lbl_code, lbl_code
+                    let lbl_ctx = if self.command_labels.contains(&lbl_code) {
+                        10
+                    } else if self.desc_labels.contains(&lbl_code) {
+                        2
+                    } else {
+                        1
+                    };
+                    let xml_content = generate_label_xml_with_context(
+                        &lbl_code,
+                        &lbl_code,
+                        &ver_id,
+                        &app_code,
+                        Some(30),
+                        None,
+                        lbl_ctx,
                     );
                     if fs::write(&lbl_file, xml_content).is_ok() {
                         self.report.repaired_items.push(format!("Auto-generated missing label: {}.lbl", lbl_code));

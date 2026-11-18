@@ -71,7 +71,7 @@ from ln_scm_engine import (
 )
 from ln_build_pipeline import (
     parse_compile_diagnostics, compile_component, convert_to_runtime,
-    create_tables, execute_vsc, deploy_test, prepare_end_activity
+    create_tables, execute_vsc, deploy_test, prepare_end_activity, sync_activity
 )
 from generate_ln_message import generate_messages
 from generate_ln_question import generate_questions
@@ -251,6 +251,22 @@ def cmd_login(args):
         return
 
     ws = args.workspace
+    if not ws and not args.env_name and not args.ionapi:
+        from ln_workspace_manager import get_workspace_root
+        ws_root = get_workspace_root()
+        envs = list_configured_environments(ws_root)
+        ws = resolve_workspace_for_command(
+            workspace_name=None,
+            activity_hint=getattr(args, "activity", None),
+            ws_root=ws_root,
+            envs=envs,
+        )
+        if not ws and len(envs) > 1:
+            raise ValueError(
+                f"Ambiguous workspace: could not infer --workspace from CWD or --activity. "
+                f"Available workspaces: {list(envs.keys())}. Pass --workspace <name>."
+            )
+
     env_name, config = resolve_ionapi_config(
         workspace_name=ws,
         env_name=args.env_name,
@@ -258,13 +274,18 @@ def cmd_login(args):
     )
 
     if getattr(args, "status", False) or getattr(args, "check_only", False):
-        from ln_env_manager import OAuth2TokenManager
+        from ln_env_manager import OAuth2TokenManager, sync_connectivity_prefs
+        from ln_workspace_manager import get_workspace_root
         token_mgr = OAuth2TokenManager()
         st = token_mgr.check_token_status(env_name)
         if st["status"] == "needs_refresh":
             try:
                 token_mgr.ensure_authenticated_token(env_name, config, auto_login=False)
                 st = token_mgr.check_token_status(env_name)
+                if ws:
+                    conn_prefs = get_workspace_root() / ws / ".metadata" / ".plugins" / "org.eclipse.core.runtime" / ".settings" / "com.infor.erpln.jca.connectivity.prefs"
+                    if conn_prefs.is_file() and config:
+                        sync_connectivity_prefs(conn_prefs, ws, config)
             except Exception:
                 pass
 
@@ -282,6 +303,54 @@ def cmd_login(args):
         ping_after=not getattr(args, "no_ping", False),
         timeout=getattr(args, "timeout", 180.0),
     )
+
+
+def resolve_workspace_for_command(
+    workspace_name: Optional[str] = None,
+    activity_hint: Optional[str] = None,
+    ws_root: Optional[Path] = None,
+    envs: Optional[Dict[str, Any]] = None,
+) -> Optional[str]:
+    """Infers workspace from explicit arg, activity path, CWD, config, or single-workspace root."""
+    if workspace_name:
+        return workspace_name
+
+    from ln_workspace_manager import get_workspace_root, detect_current_activity
+    eff_root = ws_root or get_workspace_root()
+    eff_envs = envs if envs is not None else list_configured_environments(eff_root)
+
+    def _infer_from_path(cand: Path) -> Optional[str]:
+        cur = cand.resolve()
+        for p in [cur, *cur.parents]:
+            if (p / ".metadata").is_dir() and p.name in eff_envs:
+                return p.name
+            if eff_envs and p.name in eff_envs and (p / ".metadata").exists():
+                return p.name
+        return None
+
+    if activity_hint:
+        p = Path(activity_hint)
+        if p.exists():
+            found = _infer_from_path(p)
+            if found:
+                return found
+
+    cwd_found = _infer_from_path(Path.cwd())
+    if cwd_found:
+        return cwd_found
+
+    detected = detect_current_activity()
+    if detected and detected.get("workspace") in eff_envs:
+        return detected["workspace"]
+
+    cfg = load_config()
+    if cfg.get("default_workspace") in eff_envs:
+        return cfg["default_workspace"]
+
+    if len(eff_envs) == 1:
+        return next(iter(eff_envs.keys()))
+
+    return None
 
 
 def get_server_client(
@@ -353,13 +422,18 @@ def get_server_client(
     from ln_workspace_manager import get_workspace_root
     ws_root = get_workspace_root()
     envs = list_configured_environments(ws_root)
-    ws = workspace_name
-    if not ws:
-        cfg = load_config()
-        ws = cfg.get("default_workspace") or (list(envs.keys())[0] if envs else None)
+    ws = resolve_workspace_for_command(
+        workspace_name=workspace_name,
+        activity_hint=target_activity,
+        ws_root=ws_root,
+        envs=envs,
+    )
 
     if not ws or ws not in envs:
-        raise ValueError(f"Could not resolve workspace '{ws}'. Available: {list(envs.keys())}")
+        raise ValueError(
+            f"Could not resolve workspace '{ws}' (ambiguous or missing --workspace). "
+            f"Available: {list(envs.keys())}"
+        )
 
     env_info = envs[ws]
     cloud_env = env_info["cloud_env"] or ws
@@ -506,11 +580,28 @@ def cmd_explorer(args):
         target_type=getattr(args, "type", "all"),
         notify=not getattr(args, "json", False),
     )
+    dev_cp = "ProjectServer"
+    ctx_xml = None
+    act_det = detect_current_activity(args.workspace)
+    if act_det:
+        from ln_scm_engine import resolve_activity_scm_metadata, build_activity_context_xml
+        meta = resolve_activity_scm_metadata(Path(act_det["path"]))
+        if meta.get("taskContext"):
+            dev_cp = meta["taskContext"]
+        if meta.get("labelUUID") or meta.get("baseVRC"):
+            ctx_xml = build_activity_context_xml(
+                activity_name=meta.get("taskName") or act_det.get("name", ""),
+                base_vrc=meta.get("baseVRC") or "B61O_a_ext",
+                connection_point=dev_cp,
+                activity_guid=meta.get("labelUUID") or "",
+            )
     comps = browse_components(
         client=client,
         package=getattr(args, "package", "") or "",
         comp_type=getattr(args, "type", "") or "",
         name_filter=getattr(args, "filter", "") or "",
+        connection_point=dev_cp,
+        context_xml=ctx_xml,
     )
     if getattr(args, "json", False):
         print(json.dumps({"components": comps}, indent=2))
@@ -1115,7 +1206,12 @@ def cmd_validate(args):
         print(f"[ERROR] Activity path does not exist: {act_path}", file=sys.stderr)
         sys.exit(1)
 
-    validator = ActivityValidator(act_path, strict=args.strict, fix=args.fix)
+    validator = ActivityValidator(
+        act_path,
+        strict=args.strict,
+        fix=args.fix,
+        online=getattr(args, "online", False),
+    )
     report = validator.run()
 
     if args.json:
@@ -1235,7 +1331,11 @@ def cmd_build(args):
 
 def cmd_deploy_test(args):
     """Handles 'deploy-test' subcommand."""
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+    )
     if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
         act_dir = Path(args.activity).resolve()
     else:
@@ -1275,7 +1375,11 @@ def cmd_deploy_test(args):
 
 def cmd_prepare_end_activity(args):
     """Handles 'prepare-end-activity' subcommand."""
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+    )
     if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
         act_dir = Path(args.activity).resolve()
     else:
@@ -1292,6 +1396,7 @@ def cmd_prepare_end_activity(args):
         client=client,
         activity_dir=act_dir,
         project_name=project_name or "EXTce01107",
+        skip_vsc=getattr(args, "skip_vsc", False),
     )
     if getattr(args, "json", False):
         print(json.dumps(res, indent=2))
@@ -1300,10 +1405,51 @@ def cmd_prepare_end_activity(args):
         print(f"\n[NEXT STEP] {res['human_action_required']}")
 
 
+def cmd_sync_activity(args):
+    """Handles 'sync-activity' subcommand (Post-End-Activity VRC sync)."""
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+    )
+    if args.activity and (Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity):
+        act_dir = Path(args.activity).resolve()
+    else:
+        act_info = resolve_activity(activity_name=args.activity, workspace_name=args.workspace)
+        act_dir = Path(act_info["path"])
+
+    project_name = getattr(args, "project", None) or env_info.get("dev_point", "").replace("_dev", "")
+    if not project_name:
+        m = re.search(r"\[([A-Za-z0-9_]+)\]$", act_dir.name)
+        if m:
+            project_name = m.group(1)
+
+    res = sync_activity(
+        client=client,
+        activity_dir=act_dir,
+        project_name=project_name or "EXTce01107",
+    )
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"=== Sync Activity '{res['activity']}' ({res['project']}) ===")
+        print(f"  Refreshed: {res['refreshed_count']}, Skipped: {res['skipped_count']}, Errors: {len(res['errors'])}")
+        for r in res["refreshed"]:
+            print(f"  [REFRESHED] {r['type']} {r['name']} -> {r['path']} ({r.get('versionID', '')})")
+        for s in res["skipped_local"] + res["skipped_server"]:
+            print(f"  [SKIPPED]   {s['type']} {s['name']}: {s['reason']}")
+        for e in res["errors"]:
+            print(f"  [ERROR]     {e['type']} {e['name']}: {e['error']}")
+
+
 def cmd_compile_source(args):
     """Handles 'compile-source' subcommand (Ad-Hoc Server Compile)."""
     from ln_code_intelligence import compile_source_adhoc
-    client, env_info = get_server_client(workspace_name=args.workspace, mock=getattr(args, "mock", False))
+    client, env_info = get_server_client(
+        workspace_name=args.workspace,
+        mock=getattr(args, "mock", False),
+        target_activity=getattr(args, "activity", None),
+    )
     act_dir = None
     if getattr(args, "activity", None):
         if Path(args.activity).is_dir() or "/" in args.activity or "\\" in args.activity:
@@ -2004,6 +2150,7 @@ def main():
     sp_val.add_argument("path", nargs="?", help="Path to activity folder")
     sp_val.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     sp_val.add_argument("--fix", action="store_true", help="Perform safe non-destructive repairs (missing labels, admin sync)")
+    sp_val.add_argument("--online", action="store_true", help="Probe server catalog via StudioComponent.GetBrowseList for unresolved labels")
     sp_val.add_argument("--json", action="store_true", help="Output results in JSON format")
 
     # sync-admin
@@ -2223,8 +2370,17 @@ def main():
     sp_prepend.add_argument("--activity", help="Target activity name or directory path")
     sp_prepend.add_argument("--project", help="Software Project name")
     sp_prepend.add_argument("--workspace", help="Target workspace folder name")
+    sp_prepend.add_argument("--skip-vsc", action="store_true", help="Skip per-component VSC.executeVSC verification")
     sp_prepend.add_argument("--json", action="store_true", help="Output results in JSON format")
     sp_prepend.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
+
+    # sync-activity
+    sp_syncact = subparsers.add_parser("sync-activity", help="Refresh server-committed components after End Activity while preserving local Dirty/CheckedOut files")
+    sp_syncact.add_argument("--activity", help="Target activity name or directory path")
+    sp_syncact.add_argument("--project", help="Software Project name")
+    sp_syncact.add_argument("--workspace", help="Target workspace folder name")
+    sp_syncact.add_argument("--json", action="store_true", help="Output results in JSON format")
+    sp_syncact.add_argument("--mock", action="store_true", help="Run with mock transport for testing")
 
     # message
     sp_msg = subparsers.add_parser("message", help="Generate Infor LN Message (.msg) component")
@@ -2474,6 +2630,7 @@ def main():
         "end-activity": cmd_end_activity,
         "deploy-test": cmd_deploy_test,
         "prepare-end-activity": cmd_prepare_end_activity,
+        "sync-activity": cmd_sync_activity,
         "compile-source": cmd_compile_source,
         "search-server": cmd_search_server,
         "call-hierarchy": cmd_call_hierarchy,

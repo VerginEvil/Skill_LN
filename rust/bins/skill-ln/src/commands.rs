@@ -187,6 +187,10 @@ pub(crate) fn create_single_xml_component(
     Ok((full, rel_str, xml))
 }
 
+pub(crate) fn resolve_ws_override_path(workspace: Option<&str>) -> Option<PathBuf> {
+    workspace.map(|w| WorkspaceContext::resolve_workspace_arg(w).unwrap_or_else(|| PathBuf::from(w)))
+}
+
 pub(crate) async fn resolve_ctx_and_client(
     workspace: Option<&Path>,
     activity: Option<&Path>,
@@ -361,13 +365,69 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                 return Ok(());
             }
 
-            let ws = workspace.as_deref().unwrap_or("SCS_TST");
+            let ws_override = resolve_ws_override_path(workspace.as_deref());
+            let discovered_ctx = WorkspaceContext::discover(ws_override.as_deref(), None).ok();
+            let ws_owned = if let Some(w) = workspace {
+                w
+            } else if let Some(ref ctx) = discovered_ctx {
+                ctx.env_name.clone()
+            } else if let Some(ref ip) = ionapi {
+                Path::new(ip)
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or("default")
+                    .to_string()
+            } else {
+                // Trigger exact error message (AmbiguousWorkspace / WorkspaceNotFound)
+                let ctx = WorkspaceContext::discover(None, None)?;
+                ctx.env_name
+            };
+            let ws = ws_owned.as_str();
             let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
             let tok_dir = home.join(".ln_studio").join("tokens");
             let tok_mgr = ln_auth::OAuth2TokenManager::new(Some(tok_dir.clone()));
 
+            async fn try_silent_refresh(
+                ws: &str,
+                tok_mgr: &ln_auth::OAuth2TokenManager,
+                ionapi: &Option<String>,
+                discovered_ctx: &Option<WorkspaceContext>,
+            ) -> Option<ln_auth::TokenData> {
+                let cached = tok_mgr.load_token(ws)?;
+                let rt = cached.refresh_token?;
+                let cfg = if let Some(ip) = ionapi {
+                    ln_auth::IonapiConfig::load_from_path(Path::new(ip)).ok()
+                } else {
+                    None
+                }
+                .or_else(|| discovered_ctx.as_ref().and_then(|c| c.find_ionapi_config()))
+                .or_else(|| WorkspaceContext::load_ionapi_from_cloudenv(ws, None))?;
+
+                let new_tok = tok_mgr.refresh_access_token(&cfg, &rt).await.ok()?;
+                let _ = tok_mgr.save_token(ws, new_tok.clone());
+                if let Some(ctx) = discovered_ctx {
+                    let prefs_path = ctx
+                        .workspace_dir
+                        .join(".metadata")
+                        .join(".plugins")
+                        .join("org.eclipse.core.runtime")
+                        .join(".settings")
+                        .join("com.infor.erpln.jca.connectivity.prefs");
+                    if prefs_path.exists() {
+                        let _ = ln_auth::sync_connectivity_prefs(&prefs_path, ws, &cfg, None);
+                    }
+                }
+                Some(new_tok)
+            }
+
             if status || check_only {
-                let st = tok_mgr.check_token_status(ws);
+                let mut st = tok_mgr.check_token_status(ws);
+                if matches!(st, ln_auth::TokenStatus::NeedsRefresh { .. } | ln_auth::TokenStatus::Expired { .. }) {
+                    if try_silent_refresh(ws, &tok_mgr, &ionapi, &discovered_ctx).await.is_some() {
+                        st = tok_mgr.check_token_status(ws);
+                    }
+                }
                 let is_valid = matches!(st, ln_auth::TokenStatus::Valid { .. });
                 let exp = match st {
                     ln_auth::TokenStatus::Valid { expires_in, .. } => expires_in,
@@ -383,7 +443,7 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                 };
 
                 if is_json {
-                    println!("{}", json!({ "status": st_name, "valid": is_valid, "expires_in": exp }));
+                    println!("{}", json!({ "workspace": ws, "status": st_name, "valid": is_valid, "expires_in": exp }));
                 } else {
                     println!("Auth Status for '{}':", ws);
                     println!("  Valid: {}", is_valid);
@@ -423,7 +483,12 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                 return Err(banner.into());
             }
 
-            let rep = ln_auth::check_auth_status(ws, Some(tok_dir), None);
+            let mut rep = ln_auth::check_auth_status(ws, Some(tok_dir.clone()), None);
+            if rep.access_token.is_none() && (rep.status == "needs_refresh" || rep.status == "expired") {
+                if try_silent_refresh(ws, &tok_mgr, &ionapi, &discovered_ctx).await.is_some() {
+                    rep = ln_auth::check_auth_status(ws, Some(tok_dir), None);
+                }
+            }
             if rep.access_token.is_some() {
                 if is_json {
                     println!("{}", json!({ "workspace": ws, "status": rep.status, "expires_in": rep.expires_in }));
@@ -436,7 +501,11 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
         }
 
         Commands::Connect { ionapi, workspace, manual_auth: _ } => {
-            let ws = workspace.clone().unwrap_or_else(|| "SCS_TST".to_string());
+            let ws = if let Some(ref w) = workspace {
+                w.clone()
+            } else {
+                WorkspaceContext::discover(None, None)?.env_name
+            };
             let path = PathBuf::from(&ionapi);
             if !path.exists() {
                 return Err(format!(".ionapi file not found at: {}", ionapi).into());
@@ -544,8 +613,9 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             res?;
         }
 
-        Commands::ProjectInfo { project } => {
-            let (_ctx, client) = resolve_ctx_and_client(None, None).await?;
+        Commands::ProjectInfo { project, workspace } => {
+            let ws_path = resolve_ws_override_path(workspace.as_deref());
+            let (_ctx, client) = resolve_ctx_and_client(ws_path.as_deref(), None).await?;
             let res: Result<(), DynErr> = async {
                 let det = get_software_project_details(&client, &project, None).await?;
                 println!("=== Software Project Details ===");
@@ -695,12 +765,15 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
         }
 
         Commands::Explorer { comp_type, filter, project, workspace } => {
-            let ws_p = workspace.as_deref().map(Path::new);
-            let (ctx, client) = resolve_ctx_and_client(ws_p, None).await?;
-            let (_, proj_name, dev_cp) = resolve_activity_path(&ctx, None, project.as_deref());
+            let ws_p = resolve_ws_override_path(workspace.as_deref());
+            let (ctx, client) = resolve_ctx_and_client(ws_p.as_deref(), None).await?;
+            let (act_opt, proj_name, dev_cp) = resolve_activity_path(&ctx, None, project.as_deref());
+            let ctx_xml = act_opt
+                .as_deref()
+                .and_then(|d| ln_scm::activity::resolve_activity_context(d).0);
             let filt = filter.as_deref().unwrap_or("");
             let pkg: String = filt.chars().take(2).take_while(|c| c.is_ascii_alphabetic()).collect();
-            let res = browse_components(&client, &pkg, &comp_type, filt, &dev_cp).await;
+            let res = browse_components(&client, &pkg, &comp_type, filt, &dev_cp, ctx_xml.as_deref()).await;
             let _ = client.disconnect_all().await;
             let items = res?;
             println!("=== Component Explorer ({}) in '{}' [count={}] ===", comp_type, proj_name, items.len());
@@ -710,15 +783,33 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
         }
 
         Commands::GetComponent { comp_type, name, inspect, export_script, activity, project, workspace } => {
-            let ws_p = workspace.as_deref().map(Path::new);
+            let ws_p = resolve_ws_override_path(workspace.as_deref());
             let act_p = activity.as_deref().map(Path::new);
-            let (ctx, client) = resolve_ctx_and_client(ws_p, act_p).await?;
+            let (ctx, client) = resolve_ctx_and_client(ws_p.as_deref(), act_p).await?;
             let (act_opt, proj_name, dev_cp) = resolve_activity_path(&ctx, activity.as_deref(), project.as_deref());
             let dd_cache = ctx.workspace_dir.join(".ln_dd_cache.json");
 
             let res: Result<(), DynErr> = async {
                 if inspect {
-                    let info = inspect_component(&client, &comp_type, &name, &dev_cp, Some(&dd_cache), None, None).await?;
+                    let (act_ctx, _) = act_opt
+                        .as_deref()
+                        .map(ln_scm::activity::resolve_activity_context)
+                        .unwrap_or((None, dev_cp.clone()));
+                    let base_vrc = act_opt
+                        .as_deref()
+                        .and_then(|d| ActivityDotProject::from_activity_dir(d).ok())
+                        .map(|m| m.application_release)
+                        .filter(|s| !s.is_empty());
+                    let info = inspect_component(
+                        &client,
+                        &comp_type,
+                        &name,
+                        &dev_cp,
+                        Some(&dd_cache),
+                        act_ctx.as_deref(),
+                        base_vrc.as_deref(),
+                    )
+                    .await?;
                     println!("=== Inspected Component {}:{} ({}) ===", info.comp_type, info.name, info.description);
                     println!("  Package/Module: {}/{} | Fields: {} | Script Bytes: {}", info.package, info.module, info.fields.len(), info.script.len());
                     if let Some(out) = export_script {
@@ -889,15 +980,48 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             ).into());
         }
 
-        Commands::PrepareEndActivity { activity, project, workspace } => {
+        Commands::PrepareEndActivity { activity, project, workspace, skip_vsc, json } => {
             let act_path = PathBuf::from(&activity);
-            let (ctx, client) = resolve_ctx_and_client(workspace.as_deref().map(Path::new), Some(&act_path)).await?;
+            let ws_p = resolve_ws_override_path(workspace.as_deref());
+            let (ctx, client) = resolve_ctx_and_client(ws_p.as_deref(), Some(&act_path)).await?;
             let (act_opt, proj_name, _) = resolve_activity_path(&ctx, Some(&activity), project.as_deref());
             let dir = act_opt.unwrap_or(act_path);
-            let res = prepare_end_activity(&client, &dir, &proj_name).await;
+            let res = prepare_end_activity(&client, &dir, &proj_name, skip_vsc).await;
             let _ = client.disconnect_all().await;
             let prep = res?;
-            println!("{}", prep.commit_summary);
+            if json {
+                println!("{}", serde_json::to_string_pretty(&prep)?);
+            } else {
+                println!("{}", prep.commit_summary);
+            }
+        }
+
+        Commands::SyncActivity { activity, project, workspace, json } => {
+            let act_hint = activity.as_deref().map(PathBuf::from);
+            let ws_p = resolve_ws_override_path(workspace.as_deref());
+            let (ctx, client) = resolve_ctx_and_client(ws_p.as_deref(), act_hint.as_deref()).await?;
+            let (act_opt, proj_name, _) = resolve_activity_path(&ctx, activity.as_deref(), project.as_deref());
+            let dir = act_opt.or(act_hint).ok_or_else(|| {
+                "Could not infer activity directory; pass --activity <path_or_name>".to_string()
+            })?;
+            let res = ln_scm::build::sync_activity(&client, &dir, &proj_name).await;
+            let _ = client.disconnect_all().await;
+            let s = res?;
+            if json {
+                println!("{}", serde_json::to_string_pretty(&s)?);
+            } else {
+                println!("=== Sync Activity '{}' ({}) ===", s.activity, s.project);
+                println!("  Refreshed: {}, Skipped: {}, Errors: {}", s.refreshed_count, s.skipped_count, s.errors.len());
+                for r in &s.refreshed {
+                    println!("  [REFRESHED] {} {} -> {} ({})", r.comp_type, r.name, r.path, r.version_id);
+                }
+                for sk in s.skipped_local.iter().chain(s.skipped_server.iter()) {
+                    println!("  [SKIPPED]   {} {}: {}", sk.comp_type, sk.name, sk.reason);
+                }
+                for e in &s.errors {
+                    println!("  [ERROR]     {} {}: {}", e.comp_type, e.name, e.error);
+                }
+            }
         }
 
         Commands::CompileSource { package, source_file, code, flags } => {
@@ -1201,9 +1325,54 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             }
         }
 
-        Commands::Validate { activity_path, strict, fix, json: is_json } => {
+        Commands::Validate { activity_path, strict, fix, online, json: is_json } => {
             let act = activity_path.unwrap_or_else(|| ".".to_string());
-            let report = ln_model::validate_activity(Path::new(&act), strict, fix);
+            let act_p = Path::new(&act);
+            let mut validator = ln_model::validator::ActivityValidator::new(act_p.to_path_buf(), strict, fix);
+            if online {
+                match resolve_ctx_and_client(None, Some(act_p)).await {
+                    Ok((_ctx, client)) => {
+                        let (act_ctx, act_cp) = ln_scm::activity::resolve_activity_context(act_p);
+                        let mut probed: std::collections::HashSet<String> = std::collections::HashSet::new();
+                        let mut pkgs: Vec<String> = Vec::new();
+                        if let Ok(entries) = std::fs::read_dir(act_p) {
+                            for e in entries.flatten() {
+                                if e.path().is_dir() {
+                                    if let Some(name) = e.file_name().to_str() {
+                                        if !name.starts_with('.') {
+                                            pkgs.push(name.to_ascii_lowercase());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if !pkgs.iter().any(|p| p == "tc") {
+                            pkgs.push("tc".to_string());
+                        }
+                        for pkg in pkgs {
+                            match browse_components(&client, &pkg, "label", "%", &act_cp, act_ctx.as_deref()).await {
+                                Ok(rows) => {
+                                    for r in rows {
+                                        if !r.name.is_empty() {
+                                            probed.insert(r.name.to_ascii_lowercase());
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    eprintln!("[WARNING] --online label probe failed for package '{}': {}", pkg, e);
+                                }
+                            }
+                        }
+                        let _ = client.disconnect_all().await;
+                        validator.set_online_labels(probed);
+                    }
+                    Err(e) => {
+                        eprintln!("[WARNING] --online client initialization failed: {}", e);
+                    }
+                }
+            }
+            validator.run();
+            let report = validator.report;
             if is_json {
                 println!("{}", serde_json::to_string_pretty(&report)?);
             } else {
@@ -1221,38 +1390,15 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
 
         Commands::SyncAdmin { activity } => {
             let act_path = PathBuf::from(&activity);
-            let admin_path = act_path.join(".admin");
-            let mut admin = if admin_path.exists() {
-                ln_eclipse_compat::admin::AdminFile::load_from_path(&admin_path)?
-            } else {
-                ln_eclipse_compat::admin::AdminFile::new()
-            };
-
-            let mut count = 0;
-            fn scan_dir(
-                dir: &Path,
-                base: &Path,
-                admin: &mut ln_eclipse_compat::admin::AdminFile,
-                count: &mut usize,
-            ) {
-                if let Ok(entries) = std::fs::read_dir(dir) {
-                    for e in entries.flatten() {
-                        let p = e.path();
-                        if p.is_dir() {
-                            scan_dir(&p, base, admin, count);
-                        } else if p.is_file() {
-                            let rel = p.strip_prefix(base).unwrap_or(&p).to_string_lossy().to_string();
-                            if ln_eclipse_compat::admin::is_managed_extension(&rel) {
-                                admin.insert(ln_eclipse_compat::admin::AdministrationComponent::new(&rel));
-                                *count += 1;
-                            }
-                        }
-                    }
-                }
-            }
-            scan_dir(&act_path, &act_path, &mut admin, &mut count);
-            admin.save_to_path(&admin_path)?;
-            println!("[SUCCESS] Synchronized .admin for '{}' (registered {} components).", activity, count);
+            let res = ln_scm::scm_engine::sync_admin(&act_path)?;
+            println!(
+                "[SUCCESS] Synchronized .admin for '{}' (disk={}, registered={}, added={}, removed={}).",
+                res.activity,
+                res.total_disk_components,
+                res.total_registered,
+                res.added.len(),
+                res.removed.len()
+            );
         }
 
         Commands::Diagnose { activity, errors_only } => {
@@ -1289,7 +1435,7 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                         return Err(format!("Compile failed for {}:{} ({} errors)", c.comp_type, c.name, comp_res.errors.len()).into());
                     }
                 }
-                let prep = prepare_end_activity(&client, &dir, &proj_name).await?;
+                let prep = prepare_end_activity(&client, &dir, &proj_name, false).await?;
                 println!(
                     "[SUCCESS] JCA build completed for '{}' (compiled={}, segregated_extensions={}, server_vsc={}).",
                     prep.activity, compiled_count, extensions.len(), prep.server_valid

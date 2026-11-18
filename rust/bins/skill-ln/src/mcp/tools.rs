@@ -299,7 +299,10 @@ pub fn list_registered_tools() -> Vec<Value> {
                 "properties": {
                     "activity": {"type": "string", "description": "Activity directory or name"},
                     "workspace": {"type": "string", "description": "Workspace name"},
-                    "strict": {"type": "boolean", "description": "Treat warnings as errors"}
+                    "strict": {"type": "boolean", "description": "Treat warnings as errors"},
+                    "fix": {"type": "boolean", "description": "Perform safe non-destructive repairs (compact XML, missing labels, admin sync)"},
+                    "auto_fix": {"type": "boolean", "description": "Alias for fix"},
+                    "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"}
                 },
                 "required": ["activity"]
             }
@@ -330,6 +333,21 @@ pub fn list_registered_tools() -> Vec<Value> {
         json!({
             "name": "ln_prepare_end_activity",
             "description": "Pre-commit readiness verifier. Validates all activity components, clean working tree, and generates handoff report.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "activity": {"type": "string", "description": "Target activity directory"},
+                    "project": {"type": "string", "description": "Software Project name"},
+                    "workspace": {"type": "string", "description": "Workspace name"},
+                    "skip_vsc": {"type": "boolean", "description": "Skip per-component VSC.executeVSC verification"},
+                    "mock": {"type": "boolean", "description": "Use mock transport for testing"}
+                },
+                "required": ["activity"]
+            }
+        }),
+        json!({
+            "name": "ln_sync_activity",
+            "description": "Post-End-Activity VRC sync. Refreshes server-committed components (Read-Only + compact XML + admin.after_get) while preserving locally CheckedOut/Dirty files.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -601,9 +619,6 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
                     }
                 }
             }
-            if envs.is_empty() {
-                envs.push("SCS_TST".to_string());
-            }
             mcp_ok(
                 name,
                 json!({ "workspaces": envs }),
@@ -628,13 +643,42 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
                 };
             }
 
-            let ws = arg_str(arguments, "workspace").unwrap_or("SCS_TST");
+            let ws_owned = match arg_str(arguments, "workspace") {
+                Some(w) => w.to_string(),
+                None => match WorkspaceContext::discover(None, None) {
+                    Ok(ctx) => ctx.env_name,
+                    Err(e) => {
+                        if let Some(ip) = arg_str(arguments, "ionapi_file") {
+                            Path::new(ip).file_stem().and_then(|s| s.to_str()).unwrap_or("default").to_string()
+                        } else {
+                            return mcp_err(name, &e.to_string());
+                        }
+                    }
+                },
+            };
+            let ws = ws_owned.as_str();
             let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
             let tok_dir = home.join(".ln_studio").join("tokens");
             let tok_mgr = ln_auth::OAuth2TokenManager::new(Some(tok_dir.clone()));
 
             if arguments.get("check_only").and_then(|v| v.as_bool()).unwrap_or(false) {
-                let st = tok_mgr.check_token_status(ws);
+                let mut st = tok_mgr.check_token_status(ws);
+                if matches!(st, ln_auth::TokenStatus::NeedsRefresh { .. } | ln_auth::TokenStatus::Expired { .. }) {
+                    if let Some(cached) = tok_mgr.load_token(ws) {
+                        if let Some(rt) = cached.refresh_token {
+                            let cfg = arg_str(arguments, "ionapi_file")
+                                .and_then(|p| ln_auth::IonapiConfig::load_from_path(Path::new(p)).ok())
+                                .or_else(|| WorkspaceContext::discover(Some(Path::new(ws)), None).ok().and_then(|c| c.find_ionapi_config()))
+                                .or_else(|| WorkspaceContext::load_ionapi_from_cloudenv(ws, None));
+                            if let Some(c) = cfg {
+                                if let Ok(new_tok) = tok_mgr.refresh_access_token(&c, &rt).await {
+                                    let _ = tok_mgr.save_token(ws, new_tok);
+                                    st = tok_mgr.check_token_status(ws);
+                                }
+                            }
+                        }
+                    }
+                }
                 let is_valid = matches!(st, ln_auth::TokenStatus::Valid { .. });
                 let exp = match st {
                     ln_auth::TokenStatus::Valid { expires_in, .. }
@@ -710,7 +754,14 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
         }
 
         "ln_connect" => {
-            let ws = arg_str(arguments, "workspace").unwrap_or("SCS_TST");
+            let ws_owned = match arg_str(arguments, "workspace") {
+                Some(w) => w.to_string(),
+                None => match WorkspaceContext::discover(None, None) {
+                    Ok(ctx) => ctx.env_name,
+                    Err(e) => return mcp_err(name, &e.to_string()),
+                },
+            };
+            let ws = ws_owned.as_str();
             let ionapi = arg_str(arguments, "ionapi_file").unwrap_or("");
             if is_mock(arguments) {
                 return mcp_ok(
@@ -848,10 +899,13 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
                 Ok(v) => v,
                 Err(e) => return mcp_err(name, &e),
             };
-            let (_, proj_name, dev_cp) = resolve_activity_path(&ctx, arg_str(arguments, "activity"), arg_str(arguments, "project"));
+            let (act_opt, proj_name, dev_cp) = resolve_activity_path(&ctx, arg_str(arguments, "activity"), arg_str(arguments, "project"));
+            let ctx_xml = act_opt
+                .as_deref()
+                .and_then(|d| ln_scm::activity::resolve_activity_context(d).0);
             let filt = arg_str(arguments, "filter").unwrap_or("");
             let pkg: String = filt.chars().take(2).take_while(|c| c.is_ascii_alphabetic()).collect();
-            let res = browse_components(&client, &pkg, ctype, filt, &dev_cp).await;
+            let res = browse_components(&client, &pkg, ctype, filt, &dev_cp, ctx_xml.as_deref()).await;
             let _ = client.disconnect_all().await;
             match res {
                 Ok(comps) => {
@@ -1221,11 +1275,51 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
         "ln_validate_activity" => {
             let act = arg_str(arguments, "activity").unwrap_or(".");
             let strict = arguments.get("strict").and_then(|v| v.as_bool()).unwrap_or(false);
+            let fix = arguments
+                .get("fix")
+                .or_else(|| arguments.get("auto_fix"))
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
+            let online = arguments.get("online").and_then(|v| v.as_bool()).unwrap_or(false);
             let act_path = Path::new(act);
             if !act_path.exists() {
                 return mcp_err(name, &format!("Activity path does not exist: {act}"));
             }
-            let report = ln_model::validate_activity(act_path, strict, false);
+            let mut validator = ln_model::validator::ActivityValidator::new(act_path.to_path_buf(), strict, fix);
+            if online {
+                if let Ok((_ctx, client)) = mcp_resolve_ctx_and_client(arguments).await {
+                    let (act_ctx, act_cp) = ln_scm::activity::resolve_activity_context(act_path);
+                    let mut probed: std::collections::HashSet<String> = std::collections::HashSet::new();
+                    let mut pkgs: Vec<String> = Vec::new();
+                    if let Ok(entries) = std::fs::read_dir(act_path) {
+                        for e in entries.flatten() {
+                            if e.path().is_dir() {
+                                if let Some(fname) = e.file_name().to_str() {
+                                    if !fname.starts_with('.') {
+                                        pkgs.push(fname.to_ascii_lowercase());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if !pkgs.iter().any(|p| p == "tc") {
+                        pkgs.push("tc".to_string());
+                    }
+                    for pkg in pkgs {
+                        if let Ok(rows) = ln_scm::explorer::browse_components(&client, &pkg, "label", "%", &act_cp, act_ctx.as_deref()).await {
+                            for r in rows {
+                                if !r.name.is_empty() {
+                                    probed.insert(r.name.to_ascii_lowercase());
+                                }
+                            }
+                        }
+                    }
+                    let _ = client.disconnect_all().await;
+                    validator.set_online_labels(probed);
+                }
+            }
+            validator.run();
+            let report = validator.report;
             let err_count = report
                 .diagnostics
                 .iter()
@@ -1294,11 +1388,39 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
             };
             let (act_opt, proj_name, _) = resolve_activity_path(&ctx, Some(act_str), arg_str(arguments, "project"));
             let dir = act_opt.unwrap_or_else(|| PathBuf::from(act_str));
-            let res = prepare_end_activity(&client, &dir, &proj_name).await;
+            let skip_vsc = arguments.get("skip_vsc").and_then(|v| v.as_bool()).unwrap_or(false);
+            let res = prepare_end_activity(&client, &dir, &proj_name, skip_vsc).await;
             let _ = client.disconnect_all().await;
             match res {
                 Ok(prep) => mcp_ok(name, json!(prep), "Activity ready for end-activity handoff"),
                 Err(e) => mcp_err(name, &format!("prepare_end_activity failed: {e}")),
+            }
+        }
+
+        "ln_sync_activity" => {
+            if is_mock(arguments) {
+                return mcp_ok(
+                    name,
+                    json!({ "refreshed_count": 0, "skipped_count": 0, "refreshed": [], "skipped_local": [], "skipped_server": [], "errors": [] }),
+                    "Synced activity in mock mode",
+                );
+            }
+            let act_str = arg_str(arguments, "activity").unwrap_or(".");
+            let (ctx, client) = match mcp_resolve_ctx_and_client(arguments).await {
+                Ok(v) => v,
+                Err(e) => return mcp_err(name, &e),
+            };
+            let (act_opt, proj_name, _) = resolve_activity_path(&ctx, Some(act_str), arg_str(arguments, "project"));
+            let dir = act_opt.unwrap_or_else(|| PathBuf::from(act_str));
+            let res = ln_scm::build::sync_activity(&client, &dir, &proj_name).await;
+            let _ = client.disconnect_all().await;
+            match res {
+                Ok(sync_res) => mcp_ok(
+                    name,
+                    serde_json::to_value(&sync_res).unwrap_or_default(),
+                    &format!("Synced activity '{}' (refreshed={}, skipped={})", sync_res.activity, sync_res.refreshed_count, sync_res.skipped_count),
+                ),
+                Err(e) => mcp_err(name, &format!("sync_activity failed: {e}")),
             }
         }
 

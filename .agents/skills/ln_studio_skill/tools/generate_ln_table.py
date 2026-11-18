@@ -8,6 +8,7 @@ specifications from validated schemas, enforcing SCM Read-Only protection and wo
 """
 
 import os
+import re
 import sys
 import argparse
 from datetime import datetime, timezone
@@ -24,6 +25,90 @@ from ln_workspace_manager import resolve_activity, load_config, detect_current_a
 from scm_guardrails import assert_file_writable, ReadOnlyComponentError
 
 
+from xml.sax.saxutils import escape as _xml_escape, unescape as _xml_unescape
+
+XML_DECL_STANDARD = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+_CDATA_RE = re.compile(r"<!\[CDATA\[.*?\]\]>", re.S)
+_PRESERVED_TAG_RE = re.compile(
+    r"(<expression\b[^>]*>.*?</expression>|<content\b[^>]*>.*?</content>|<documentation\b[^>]*>.*?</documentation>)",
+    re.S,
+)
+_INTERTAG_NEWLINE_RE = re.compile(r">\s*[\r\n]+\s*<")
+
+
+def has_multiline_outside_script(xml: str) -> bool:
+    """Returns True if XML contains inter-tag newlines outside CDATA, <expression>, <content>, or <documentation> blocks."""
+    stripped = _CDATA_RE.sub("<__X__/>", xml)
+    stripped = _PRESERVED_TAG_RE.sub("<__X__/>", stripped)
+    return bool(_INTERTAG_NEWLINE_RE.search(stripped))
+
+
+def compact_tde_xml(xml: str) -> str:
+    """Compacts TDE component XML to single-line with standalone='no' header, preserving CDATA/<expression>/<content>."""
+    if not xml or "<" not in xml:
+        return xml
+    xml = xml.lstrip("\ufeff")
+    tokens = []
+
+    def _stash(match: re.Match) -> str:
+        idx = len(tokens)
+        tokens.append(match.group(0))
+        return f"<__LN_CDATA_TOKEN_{idx}__/>"
+
+    # Mask CDATA first so </expression> inside 4GL string literals cannot terminate <expression> prematurely
+    masked = _CDATA_RE.sub(_stash, xml)
+    masked = _PRESERVED_TAG_RE.sub(_stash, masked)
+    # Strip existing XML declaration(s)
+    body = re.sub(r"^\s*<\?xml[^?]*\?>\s*", "", masked, flags=re.S)
+    body = re.sub(r">\s+<", "><", body).strip()
+    compacted = f"{XML_DECL_STANDARD}{body}"
+    for idx in range(len(tokens) - 1, -1, -1):
+        compacted = compacted.replace(f"<__LN_CDATA_TOKEN_{idx}__/>", tokens[idx])
+    return compacted
+
+
+def ensure_label_context_variant(
+    xml_content: str,
+    context: int,
+    description: Optional[str] = None,
+) -> Tuple[str, bool]:
+    """Ensures a <DR_Label> XML contains a <LabelVariant> with the requested <context>."""
+    cleaned_for_check = re.sub(r"<!--.*?-->", "", xml_content, flags=re.S)
+    variant_ctx_re = re.compile(
+        rf"<LabelVariant\b[^>]*>(?:(?!</LabelVariant>).)*?<context>\s*{int(context)}\s*</context>(?:(?!</LabelVariant>).)*?</LabelVariant>",
+        re.S,
+    )
+    if variant_ctx_re.search(cleaned_for_check):
+        compacted = compact_tde_xml(xml_content)
+        return compacted, compacted != xml_content
+
+    desc_match = re.search(r"<description>([^<]*)</description>", cleaned_for_check)
+    raw_desc = description if description is not None else (_xml_unescape(desc_match.group(1)) if desc_match else "Label")
+    kw_match = re.search(r"<LabelVariant\b[^>]*>.*?<keyword>([^<]*)</keyword>", cleaned_for_check, flags=re.S)
+    raw_keyword = _xml_unescape(kw_match.group(1)) if kw_match else raw_desc[:14].upper().strip()
+    len_match = re.search(r"<length>(\d+)</length>", cleaned_for_check)
+    lbl_len = len_match.group(1) if len_match else str(max(len(raw_desc), 1))
+
+    variant = (
+        f"<LabelVariant><keyword>{_xml_escape(raw_keyword)}</keyword><isActive>1</isActive>"
+        f"<description>{_xml_escape(raw_desc)}</description><height>1</height>"
+        f"<length>{lbl_len}</length><context>{int(context)}</context>"
+        f"<language>2</language></LabelVariant>"
+    )
+
+    if "</LabelVariant>" in xml_content:
+        idx = xml_content.rfind("</LabelVariant>") + len("</LabelVariant>")
+        updated = xml_content[:idx] + variant + xml_content[idx:]
+    elif "<application>" in xml_content:
+        updated = xml_content.replace("<application>", variant + "<application>", 1)
+    elif "</DR_Label>" in xml_content:
+        updated = xml_content.replace("</DR_Label>", variant + "</DR_Label>", 1)
+    else:
+        return xml_content, False
+
+    return compact_tde_xml(updated), True
+
+
 def get_current_iso_time() -> str:
     """Returns current UTC ISO-8601 timestamp."""
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -35,20 +120,26 @@ def generate_label_xml(
     version_id: str,
     application: str,
     length: Optional[int] = None,
-    created_time: Optional[str] = None
+    created_time: Optional[str] = None,
+    context: int = 1,
 ) -> str:
-    """Generates standard <DR_Label> XML."""
+    """Generates standard <DR_Label> XML with parameterized <context> (1=field, 2=session/table, 10=FormCommand)."""
     c_time = created_time or "1970-01-01T00:00:00Z"
     lbl_len = length if length is not None else max(len(description), 1)
     keyword = description[:14].upper().strip()
+    esc_desc = _xml_escape(description)
+    esc_ver = _xml_escape(version_id)
+    esc_name = _xml_escape(name)
+    esc_kw = _xml_escape(keyword)
+    esc_app = _xml_escape(application)
 
     xml = (
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
         f'<DR_Label>'
-        f'<description>{description}</description>'
-        f'<versionID>{version_id}</versionID>'
+        f'<description>{esc_desc}</description>'
+        f'<versionID>{esc_ver}</versionID>'
         f'<type>label</type>'
-        f'<name>{name}</name>'
+        f'<name>{esc_name}</name>'
         f'<Version>'
         f'<ObjectID/><classID/><checkInLabel/><documentation/>'
         f'<isExpired>no</isExpired>'
@@ -59,17 +150,17 @@ def generate_label_xml(
         f'<creationDateTime>{c_time}</creationDateTime>'
         f'<createdBy/>'
         f'</Version>'
-        f'<Attachment><type>techdoc</type><name>{name}</name></Attachment>'
+        f'<Attachment><type>techdoc</type><name>{esc_name}</name></Attachment>'
         f'<LabelVariant>'
-        f'<keyword>{keyword}</keyword>'
+        f'<keyword>{esc_kw}</keyword>'
         f'<isActive>1</isActive>'
-        f'<description>{description}</description>'
+        f'<description>{esc_desc}</description>'
         f'<height>1</height>'
         f'<length>{lbl_len}</length>'
-        f'<context>3</context>'
+        f'<context>{int(context)}</context>'
         f'<language>2</language>'
         f'</LabelVariant>'
-        f'<application>{application}</application>'
+        f'<application>{esc_app}</application>'
         f'</DR_Label>'
     )
     return xml
@@ -452,16 +543,16 @@ def generate_all_components(
 
         lbl_dir = target_root / pkg / "label"
 
-        # Table description label
+        # Table description label (context 2 = Session/Table description)
         lbl_tbl_path = lbl_dir / f"{tcode}.lbl"
         generated_files.append({
             "type": "label",
             "name": tcode,
             "path": str(lbl_tbl_path),
-            "content": generate_label_xml(tcode, desc, tbl_ver, tbl_app)
+            "content": generate_label_xml(tcode, desc, tbl_ver, tbl_app, context=2)
         })
 
-        # Field description labels (convention: <pkg><table_code>.<column>)
+        # Field description labels (convention: <pkg><table_code>.<column>, context 1 = General/Field)
         for f in tbl["fields"]:
             f_lbl_code = f["label_code"]
             f_lbl_path = lbl_dir / f"{f_lbl_code}.lbl"
@@ -469,7 +560,7 @@ def generate_all_components(
                 "type": "label",
                 "name": f_lbl_code,
                 "path": str(f_lbl_path),
-                "content": generate_label_xml(f_lbl_code, f["description"], tbl_ver, tbl_app)
+                "content": generate_label_xml(f_lbl_code, f["description"], tbl_ver, tbl_app, context=1)
             })
 
         # Index description labels
@@ -480,7 +571,7 @@ def generate_all_components(
                 "type": "label",
                 "name": i_lbl_code,
                 "path": str(i_lbl_path),
-                "content": generate_label_xml(i_lbl_code, ind["description"], tbl_ver, tbl_app)
+                "content": generate_label_xml(i_lbl_code, ind["description"], tbl_ver, tbl_app, context=2)
             })
 
     # 2. Generate Domains

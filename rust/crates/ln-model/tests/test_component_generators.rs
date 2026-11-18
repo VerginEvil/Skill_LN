@@ -274,7 +274,7 @@ fn test_generate_report_xml() {
     assert!(xml.contains("<name>txcmg04010100</name>"));
     assert!(xml.contains("<printExpression>btno</printExpression>"));
     assert!(xml.contains("<expression><![CDATA[detail.1: before.layout:]]></expression>"));
-    assert!(xml.ends_with("</DR_Report>\n"));
+    assert!(xml.ends_with("</DR_Report>"));
 }
 
 #[test]
@@ -295,7 +295,7 @@ fn test_generate_message_xml() {
     assert!(xml.contains("<name>txcmg0001</name>"));
     assert!(xml.contains("<severity>3</severity>"));
     assert!(xml.contains("<text>Batch cannot be processed without approval.</text>"));
-    assert!(xml.ends_with("</DR_Message>\n"));
+    assert!(xml.ends_with("</DR_Message>"));
 }
 
 #[test]
@@ -318,7 +318,7 @@ fn test_generate_question_xml() {
     assert!(xml.contains("<name>txcmg0002</name>"));
     assert!(xml.contains("<domain>tcyesno</domain>"));
     assert!(xml.contains("<defaultAnswer>yes</defaultAnswer>"));
-    assert!(xml.ends_with("</DR_Question>\n"));
+    assert!(xml.ends_with("</DR_Question>"));
 }
 
 #[test]
@@ -336,7 +336,7 @@ fn test_generate_function_xml() {
     assert!(xml.contains("<type>function</type>"));
     assert!(xml.contains("<name>txcmgf001</name>"));
     assert!(xml.contains("<expression><![CDATA[function extern long calc() { return(42); }]]></expression>"));
-    assert!(xml.ends_with("</DR_Module>\n"));
+    assert!(xml.ends_with("</DR_Module>"));
 }
 
 #[test]
@@ -358,7 +358,7 @@ fn test_generate_additional_xml() {
     assert!(xml.contains("<name>txcmgcfg</name>"));
     assert!(xml.contains("<keyword1>billing</keyword1>"));
     assert!(xml.contains("<content><![CDATA[{\"mode\": \"auto\"}]]></content>"));
-    assert!(xml.ends_with("</DR_AdditionalFile>\n"));
+    assert!(xml.ends_with("</DR_AdditionalFile>"));
 }
 
 #[test]
@@ -379,4 +379,87 @@ fn test_generate_business_object_xml() {
     assert!(xml.contains("<typeOfBusinessObject>document</typeOfBusinessObject>"));
     assert!(xml.contains("<lowerCaseBusinessObjectName>txcmgbus01</lowerCaseBusinessObjectName>"));
     assert!(xml.ends_with("</DR_BusinessObject>"));
+}
+
+#[test]
+fn test_compact_tde_xml_preserves_cdata_and_label_contexts() {
+    let pretty = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<DR_Report>\r\n  <name>txinr04100100</name>\r\n  <Source>\r\n    <expression><![CDATA[\ndetail.1:\n  if a > 0 then\n    | keep <tag>\n  endif\n]]></expression>\r\n  </Source>\r\n</DR_Report>\r\n";
+    let compacted = compact_tde_xml(pretty);
+    assert!(compacted.starts_with(r#"<?xml version="1.0" encoding="UTF-8" standalone="no"?>"#));
+    assert!(!has_multiline_outside_script(&compacted));
+    assert!(compacted.contains("detail.1:\n  if a > 0 then\n    | keep <tag>\n  endif"));
+    assert!(compacted.ends_with("</DR_Report>"));
+
+    let lbl_cmd = generate_label_xml_with_context(
+        "txinr.export.csv",
+        "Export CSV",
+        "B61O_a_ext",
+        "EXTce01108",
+        None,
+        None,
+        10,
+    );
+    assert!(lbl_cmd.contains("<context>10</context>"));
+}
+
+#[test]
+fn test_session_field_label_prefix_stripping_and_command_full_name() {
+    let spec = SessionSpec {
+        code: "txinr1110m000".to_string(),
+        description: Some("Gov Licenses".to_string()),
+        version_id: Some("B61O_a_ext".to_string()),
+        application: Some("EXTce01108".to_string()),
+        window_type: 2,
+        sub_type: 1,
+        table: Some("txinr110".to_string()),
+        table_description: Some("Gov Licenses".to_string()),
+        satellites: vec![],
+        form_commands: vec![FormCommandSpec {
+            name: "export.csv".to_string(),
+            function: Some("export.csv".to_string()),
+            label_code: Some("txinr.export.csv".to_string()),
+            description: Some("Export CSV".to_string()),
+            position: None,
+            sequence: None,
+        }],
+        fields: vec![
+            SessionFormFieldSpec {
+                name: "dsca".to_string(),
+                description: Some("Desc".to_string()),
+                label_code: Some("txinr.dsca".to_string()),
+                native_datatype: Some(6),
+                length: Some(30),
+                mandatory: None,
+                zoom_program: None,
+                zoom_return_field: None,
+            },
+            SessionFormFieldSpec {
+                name: "cwar".to_string(),
+                description: Some("Warehouse".to_string()),
+                label_code: Some("txwh.cwar".to_string()),
+                native_datatype: Some(6),
+                length: Some(6),
+                mandatory: None,
+                zoom_program: None,
+                zoom_return_field: None,
+            },
+            SessionFormFieldSpec {
+                name: "item".to_string(),
+                description: Some("Item".to_string()),
+                label_code: Some("tcibd001.item".to_string()),
+                native_datatype: Some(6),
+                length: Some(47),
+                mandatory: None,
+                zoom_program: None,
+                zoom_return_field: None,
+            },
+        ],
+        script: None,
+    };
+
+    let xml = generate_session_xml(&spec, "EXTce01108", "B61O_a_ext", None, None);
+    assert!(xml.contains("<fieldLabel>inr.dsca</fieldLabel>"), "xml={xml}");
+    assert!(xml.contains("<fieldLabel>wh.cwar</fieldLabel>"), "xml={xml}");
+    assert!(xml.contains("<fieldLabel>tcibd001.item</fieldLabel>"), "xml={xml}");
+    assert!(xml.contains("<descriptionReference>txinr.export.csv</descriptionReference>"), "xml={xml}");
 }

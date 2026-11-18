@@ -265,7 +265,7 @@ pub fn compile_schema_to_tde(
         let mut fields = Vec::new();
         for f in &raw_t.fields {
             let fname = f.name.to_lowercase();
-            let flabel = f.label_code.clone().unwrap_or_else(|| format!("{tcode}.{fname}"));
+            let flabel = f.label_code.clone().unwrap_or_else(|| format!("{eff_pkg}{tcode}.{fname}"));
             let fdesc = f.description.clone().unwrap_or_else(|| fname.clone());
             let dt = f.native_datatype.unwrap_or_else(|| {
                 if let Some(ref d) = f.domain {
@@ -301,7 +301,13 @@ pub fn compile_schema_to_tde(
                 other => format!("{other:?}"),
             };
             let idx_desc = ind.description.clone().unwrap_or_else(|| idx_id.clone());
-            let idx_label = ind.label_code.clone().unwrap_or_else(|| format!("{tcode}.{idx_id}"));
+            let idx_label = ind.label_code.clone().unwrap_or_else(|| {
+                if let Ok(num) = idx_id.parse::<usize>() {
+                    format!("{tcode}{num:03}")
+                } else {
+                    format!("{tcode}.{idx_id}")
+                }
+            });
 
             let mut cols = Vec::new();
             for c in &ind.columns {
@@ -371,8 +377,8 @@ pub fn compile_schema_to_tde(
             content: tbl_xml,
         });
 
-        // Table Label
-        let tbl_lbl_xml = generate_label_xml(&tcode, &desc, t_ver, t_app, None, created_time);
+        // Table Label (context 2 = Session/Table description)
+        let tbl_lbl_xml = generate_label_xml_with_context(&tcode, &desc, t_ver, t_app, None, created_time, 2);
         let tbl_lbl_rel = format!("{eff_pkg}/label/{tcode}.lbl");
         let tbl_lbl_abs = output_root.join(&tbl_lbl_rel);
         generated_files.push(GeneratedFile {
@@ -383,11 +389,11 @@ pub fn compile_schema_to_tde(
             content: tbl_lbl_xml,
         });
 
-        // Field Labels
+        // Field Labels (context 1 = Field/General)
         for f in &fields {
             let lbl_code = f.label_code.as_ref().unwrap();
             let lbl_desc = f.description.as_deref().unwrap_or(lbl_code);
-            let lbl_xml = generate_label_xml(lbl_code, lbl_desc, t_ver, t_app, f.display_length, created_time);
+            let lbl_xml = generate_label_xml_with_context(lbl_code, lbl_desc, t_ver, t_app, f.display_length, created_time, 1);
             let lbl_rel = format!("{eff_pkg}/label/{lbl_code}.lbl");
             let lbl_abs = output_root.join(&lbl_rel);
             generated_files.push(GeneratedFile {
@@ -399,11 +405,11 @@ pub fn compile_schema_to_tde(
             });
         }
 
-        // Index Labels
+        // Index Labels (context 2)
         for ind in &indices {
             let lbl_code = ind.label_code.as_ref().unwrap();
             let lbl_desc = ind.description.as_deref().unwrap_or(lbl_code);
-            let lbl_xml = generate_label_xml(lbl_code, lbl_desc, t_ver, t_app, None, created_time);
+            let lbl_xml = generate_label_xml_with_context(lbl_code, lbl_desc, t_ver, t_app, None, created_time, 2);
             let lbl_rel = format!("{eff_pkg}/label/{lbl_code}.lbl");
             let lbl_abs = output_root.join(&lbl_rel);
             generated_files.push(GeneratedFile {
@@ -562,8 +568,8 @@ pub fn compile_schema_to_tde(
             content: ses_xml,
         });
 
-        // Session Label
-        let ses_lbl_xml = generate_label_xml(&scode, &desc, s_ver, s_app, None, created_time);
+        // Session Label (context 2)
+        let ses_lbl_xml = generate_label_xml_with_context(&scode, &desc, s_ver, s_app, None, created_time, 2);
         let ses_lbl_rel = format!("{pkg}/label/{scode}.lbl");
         let ses_lbl_abs = output_root.join(&ses_lbl_rel);
         generated_files.push(GeneratedFile {
@@ -574,20 +580,49 @@ pub fn compile_schema_to_tde(
             content: ses_lbl_xml,
         });
 
-        // Form Command Labels
+        // Form Command Labels (context 10)
         for cmd in &raw_s.form_commands {
             let cmd_lbl = cmd.label_code.clone().unwrap_or_else(|| format!("{scode}.{}", cmd.name));
             let cmd_desc = cmd.description.as_deref().unwrap_or(&cmd.name);
-            let cmd_lbl_xml = generate_label_xml(&cmd_lbl, cmd_desc, s_ver, s_app, None, created_time);
             let cmd_lbl_rel = format!("{pkg}/label/{cmd_lbl}.lbl");
             let cmd_lbl_abs = output_root.join(&cmd_lbl_rel);
-            generated_files.push(GeneratedFile {
-                component_type: "label".to_string(),
-                name: cmd_lbl,
-                relative_path: cmd_lbl_rel,
-                absolute_path: cmd_lbl_abs,
-                content: cmd_lbl_xml,
-            });
+
+            if let Some(existing_gen) = generated_files.iter_mut().find(|g| g.relative_path == cmd_lbl_rel) {
+                let (merged, _) = ensure_label_context_variant(&existing_gen.content, 10, Some(cmd_desc));
+                existing_gen.content = merged;
+            } else if cmd_lbl_abs.is_file() {
+                if let Ok(meta) = std::fs::metadata(&cmd_lbl_abs) {
+                    if meta.permissions().readonly() {
+                        let existing_disk = std::fs::read_to_string(&cmd_lbl_abs).unwrap_or_default();
+                        let (merged, changed) = ensure_label_context_variant(&existing_disk, 10, Some(cmd_desc));
+                        if changed && merged != existing_disk {
+                            return Err(CompileError::ValidationError(format!(
+                                "ReadOnlyComponentError: Label '{}' is Read-Only and lacks <context>10</context>; check it out before modifying.",
+                                cmd_lbl
+                            )));
+                        }
+                        continue;
+                    }
+                }
+                let existing_disk = std::fs::read_to_string(&cmd_lbl_abs)?;
+                let (merged, _) = ensure_label_context_variant(&existing_disk, 10, Some(cmd_desc));
+                generated_files.push(GeneratedFile {
+                    component_type: "label".to_string(),
+                    name: cmd_lbl,
+                    relative_path: cmd_lbl_rel,
+                    absolute_path: cmd_lbl_abs,
+                    content: merged,
+                });
+            } else {
+                let cmd_lbl_xml = generate_label_xml_with_context(&cmd_lbl, cmd_desc, s_ver, s_app, None, created_time, 10);
+                generated_files.push(GeneratedFile {
+                    component_type: "label".to_string(),
+                    name: cmd_lbl,
+                    relative_path: cmd_lbl_rel,
+                    absolute_path: cmd_lbl_abs,
+                    content: cmd_lbl_xml,
+                });
+            }
         }
     }
 
@@ -631,8 +666,8 @@ pub fn compile_schema_to_tde(
             content: mnu_xml,
         });
 
-        // Menu Label
-        let mnu_lbl_xml = generate_label_xml(&mcode, &desc, m_ver, m_app, None, created_time);
+        // Menu Label (context 2)
+        let mnu_lbl_xml = generate_label_xml_with_context(&mcode, &desc, m_ver, m_app, None, created_time, 2);
         let mnu_lbl_rel = format!("{pkg}/label/{mcode}.lbl");
         let mnu_lbl_abs = output_root.join(&mnu_lbl_rel);
         generated_files.push(GeneratedFile {
@@ -782,9 +817,19 @@ pub fn compile_schema_to_tde(
         });
     }
 
-    // Write all files to disk (ensuring directory structure & blocking legacy plural folders)
+    // Write all files to disk (ensuring directory structure, Read-Only guard, & blocking legacy plural folders)
     for f in &generated_files {
         validate_no_legacy_plural(&f.absolute_path)?;
+        if f.absolute_path.is_file() {
+            if let Ok(meta) = std::fs::metadata(&f.absolute_path) {
+                if meta.permissions().readonly() {
+                    return Err(CompileError::ValidationError(format!(
+                        "ReadOnlyComponentError: Cannot overwrite Read-Only file '{}'; check it out first.",
+                        f.relative_path
+                    )));
+                }
+            }
+        }
         if let Some(parent) = f.absolute_path.parent() {
             std::fs::create_dir_all(parent)?;
         }

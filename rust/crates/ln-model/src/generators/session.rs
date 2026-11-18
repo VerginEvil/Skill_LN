@@ -123,18 +123,38 @@ fn default_sub_type() -> usize {
     1
 }
 
-pub fn generate_form_field_xml(
+pub fn strip_session_pkg_for_field_label(
+    label_code: Option<&str>,
+    default_label: &str,
+    session_pkg: &str,
+) -> String {
+    match label_code {
+        Some(lbl) if !lbl.is_empty() => {
+            let pkg_l = session_pkg.to_ascii_lowercase();
+            let lbl_l = lbl.to_ascii_lowercase();
+            if !pkg_l.is_empty() && lbl_l.starts_with(&pkg_l) {
+                lbl[pkg_l.len()..].to_string()
+            } else {
+                lbl.to_string()
+            }
+        }
+        _ => default_label.to_string(),
+    }
+}
+
+pub fn generate_form_field_xml_with_pkg(
     f: &SessionFormFieldSpec,
     table_code: &str,
     seq: usize,
     group_id: usize,
+    session_pkg: &str,
 ) -> String {
     let full_name = if table_code.is_empty() {
         f.name.clone()
     } else {
         format!("{table_code}.{}", f.name)
     };
-    let f_lbl = f.label_code.clone().unwrap_or_else(|| full_name.clone());
+    let f_lbl = strip_session_pkg_for_field_label(f.label_code.as_deref(), &full_name, session_pkg);
     let is_mand = if f.mandatory.unwrap_or(false) { "true" } else { "false" };
     let f_len = f.length.unwrap_or(20);
     let f_dt = f.native_datatype.unwrap_or(6);
@@ -150,6 +170,15 @@ pub fn generate_form_field_xml(
         "<FormField><uuid>{u_id}</uuid><textDirection>10</textDirection><fieldAlignment>5</fieldAlignment><indexZoomSession>0</indexZoomSession><iconName/><additionalProperties2>0</additionalProperties2><additionalProperties1>1</additionalProperties1><autoEnableDisable>false</autoEnableDisable><behindEnumConstant>0</behindEnumConstant><hyperlink>false</hyperlink><searchDescription/><constantValueForYes>0</constantValueForYes><viewField>false</viewField><displayHeight>1</displayHeight><columnID>1</columnID><endXPosition>50</endXPosition><parentField>0</parentField><labelHeightOverview>1</labelHeightOverview><labelLengthOverview>999</labelLengthOverview><labelHeightDetail>1</labelHeightDetail><labelLengthDetail>{desc_len}</labelLengthDetail><labelPosition>1</labelPosition><dependentOnParentField>false</dependentOnParentField><xPositionLabel>1</xPositionLabel><followUpField>0</followUpField><labelAlignment>2</labelAlignment><windowsControl>0</windowsControl><fieldBelowGrid>false</fieldBelowGrid><overviewSession>true</overviewSession><detailsSession>true</detailsSession><childFieldsBehind>false</childFieldsBehind><followUp>false</followUp><nextField>0</nextField><groupID>{group_id}</groupID><synchronizedField>false</synchronizedField><defaultValue/><inputReferenceExpression>1</inputReferenceExpression><fieldLabel>{f_lbl}</fieldLabel><languageUnitExpression/><mandatoryInput>{is_mand}</mandatoryInput><sequenceMode>{}</sequenceMode><fieldLength>{f_len}</fieldLength><echoField>true</echoField><message/><defaultExpression>false</defaultExpression><zoomReturnField>{zoom_ret}</zoomReturnField><zoomProgram>{zoom_prog}</zoomProgram><zoomType>{zoom_type}</zoomType><startPositionString>1</startPositionString><linkInputDigitsBefore>true</linkInputDigitsBefore><inputDigitsBefore>{f_len}</inputDigitsBefore><linkDisplayDigitsBefore>true</linkDisplayDigitsBefore><displayDigitsBefore>{f_len}</displayDigitsBefore><minimumInputLength>0</minimumInputLength><displayFormatLinked>{format_linked}</displayFormatLinked><displayFormat>{disp_format}</displayFormat><fieldType>2</fieldType><domain/><element>1</element><fieldName>{full_name}</fieldName><rowScreenPosition>1</rowScreenPosition><columnScreenPosition>44</columnScreenPosition><sequenceNumber>{seq}</sequenceNumber></FormField>",
         seq * 10
     )
+}
+
+pub fn generate_form_field_xml(
+    f: &SessionFormFieldSpec,
+    table_code: &str,
+    seq: usize,
+    group_id: usize,
+) -> String {
+    generate_form_field_xml_with_pkg(f, table_code, seq, group_id, "")
 }
 
 /// Generates standard Infor LN Studio 10.8 `<DR_Controller>` XML.
@@ -229,8 +258,9 @@ pub fn generate_session_xml(
     // Form & Form Fields Layout
     let mut fields_xml = String::new();
     let t_code = spec.table.as_deref().unwrap_or("");
+    let ses_pkg = if code.len() >= 2 { &code[..2] } else { "" };
     for (seq, f) in spec.fields.iter().enumerate() {
-        fields_xml.push_str(&generate_form_field_xml(f, t_code, seq + 1, 2));
+        fields_xml.push_str(&generate_form_field_xml_with_pkg(f, t_code, seq + 1, 2, ses_pkg));
     }
 
     let form_groups_xml = "<FormGroup><selectionGroup>false</selectionGroup><parentTable/><miscellaneous>0</miscellaneous><nextToOtherGroup>false</nextToOtherGroup><checkBoxesOnly>false</checkBoxesOnly><formFormat>13</formFormat><subGroupOnNewPage>false</subGroupOnNewPage><nrSubGroups>1</nrSubGroups><firstChildGroup>2</firstChildGroup><virtualGroup>true</virtualGroup><groupAlignment>1</groupAlignment><firstField>0</firstField><nextGroup>0</nextGroup><previousGroup>0</previousGroup><parentGroup>0</parentGroup><overviewSession>true</overviewSession><detailsSession>true</detailsSession><showGroupBox>false</showGroupBox><groupHeader/><level>0</level><repeating>false</repeating><groupID>1</groupID></FormGroup><FormGroup><selectionGroup>false</selectionGroup><parentTable/><miscellaneous>0</miscellaneous><nextToOtherGroup>false</nextToOtherGroup><checkBoxesOnly>false</checkBoxesOnly><formFormat>13</formFormat><subGroupOnNewPage>false</subGroupOnNewPage><nrSubGroups>1</nrSubGroups><firstChildGroup>0</firstChildGroup><virtualGroup>false</virtualGroup><groupAlignment>-2</groupAlignment><firstField>10</firstField><nextGroup>3</nextGroup><previousGroup>0</previousGroup><parentGroup>1</parentGroup><overviewSession>true</overviewSession><detailsSession>true</detailsSession><showGroupBox>false</showGroupBox><groupHeader/><level>1</level><repeating>true</repeating><groupID>2</groupID></FormGroup><FormGroup><selectionGroup>false</selectionGroup><parentTable/><miscellaneous>0</miscellaneous><nextToOtherGroup>false</nextToOtherGroup><checkBoxesOnly>false</checkBoxesOnly><formFormat>13</formFormat><subGroupOnNewPage>false</subGroupOnNewPage><nrSubGroups>1</nrSubGroups><firstChildGroup>0</firstChildGroup><virtualGroup>false</virtualGroup><groupAlignment>-3</groupAlignment><firstField>20</firstField><nextGroup>0</nextGroup><previousGroup>2</previousGroup><parentGroup>1</parentGroup><overviewSession>true</overviewSession><detailsSession>true</detailsSession><showGroupBox>false</showGroupBox><groupHeader/><level>1</level><repeating>false</repeating><groupID>3</groupID></FormGroup>";
