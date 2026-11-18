@@ -1,7 +1,7 @@
 # LN Studio Syntax & Code Completion Reference Catalog
 
 > Canonical reference extracted from LN Studio 10.8 (build 0640).
-> **Source Installation**: `D:\LN Studio\April-2026\InforLNStudio_10_8_0_build0640-x86_64`
+> **Source Installation**: `$LN_STUDIO_HOME` (`Infor LN Studio 10.8 Build 0640`)
 
 ## Summary
 

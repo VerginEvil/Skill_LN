@@ -49,8 +49,6 @@ PROHIBITED_XML_PATTERNS = (
 )
 
 STANDARD_STUDIO_SEARCH_PATHS = [
-    r"D:\LN Studio\April-2026\InforLNStudio_10_8_0_build0640-x86_64",
-    r"D:\LN Studio\InforLNStudio_10_8_0_build0640-x86_64",
     r"C:\Infor\LN Studio\InforLNStudio_10_8_0_build0640-x86_64",
     r"C:\LN Studio\InforLNStudio_10_8_0_build0640-x86_64",
 ]
@@ -119,11 +117,20 @@ def resolve_ln_studio_home(explicit_path: Optional[Union[str, Path]] = None) -> 
             except Exception:
                 pass
 
+    # Check optional gitignored local overlay via ln_workspace_manager
+    try:
+        from ln_workspace_manager import discover_studio_from_repos_overlay
+        ov = discover_studio_from_repos_overlay()
+        if ov:
+            candidates.append(ov)
+    except Exception:
+        pass
+
     for std_p in STANDARD_STUDIO_SEARCH_PATHS:
         candidates.append(Path(std_p))
 
-    # Glob search under D:\LN Studio or C:\Infor
-    for base_glob in (r"D:\LN Studio\**\InforLNStudio*", r"C:\Infor\**\InforLNStudio*"):
+    # Glob search under standard local drive installation folders
+    for base_glob in (r"C:\Infor\**\InforLNStudio*", r"C:\LN Studio\**\InforLNStudio*"):
         try:
             for g in glob.glob(base_glob, recursive=True):
                 candidates.append(Path(g))
@@ -420,8 +427,15 @@ class HeadlessJavaJcaTransport(JcaTransport):
         if jdk_path:
             self.jdk_path = Path(jdk_path)
         else:
+            import shutil as _shutil
             env_jdk = os.environ.get("JAVA_HOME", "").strip()
-            self.jdk_path = Path(env_jdk) if env_jdk else Path(r"D:\LN Studio\jdk-11.0.16.1")
+            java_bin = _shutil.which("java")
+            if env_jdk:
+                self.jdk_path = Path(env_jdk)
+            elif java_bin:
+                self.jdk_path = Path(java_bin).resolve().parent.parent
+            else:
+                self.jdk_path = Path(r"C:\Infor\jdk-11")
 
         self.jar_info = resolve_ln_studio_jars(studio_path=studio_path)
         self.studio_path = Path(self.jar_info["studio_home"]) if self.jar_info.get("studio_home") else None

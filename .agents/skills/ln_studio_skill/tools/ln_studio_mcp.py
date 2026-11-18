@@ -95,7 +95,7 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "workspace": {"type": "string", "description": "Target customer workspace or CloudEnvironment name (e.g. SCS_TST)"},
+                "workspace": {"type": "string", "description": "Target customer workspace or CloudEnvironment name (e.g. PRD_ENV)"},
                 "ionapi_file": {"type": "string", "description": "Optional path to .ionapi credential file"},
                 "register_protocol_only": {"type": "boolean", "description": "Only register Windows oob:// protocol handler without logging in"},
                 "check_only": {"type": "boolean", "description": "Check current token validity and status without initiating browser login"}

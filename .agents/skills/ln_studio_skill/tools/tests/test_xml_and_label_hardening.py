@@ -320,6 +320,9 @@ class TestXmlAndLabelHardening(unittest.TestCase):
         self.assertTrue(changed)
         self.assertIn("Open &amp; &lt;Export&gt;", merged)
         self.assertIn("<context>10</context>", merged)
+        import xml.etree.ElementTree as ET
+        parsed_lbl = ET.fromstring(merged)
+        self.assertEqual(parsed_lbl.tag, "DR_Label")
 
         table_with_cdata = (
             '\ufeff<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -332,6 +335,8 @@ class TestXmlAndLabelHardening(unittest.TestCase):
         self.assertTrue(comp.startswith('<?xml version="1.0" encoding="UTF-8" standalone="no"?>'))
         self.assertIn('string s = "</expression>"\n  s = "ok"', comp)
         self.assertFalse(has_multiline_outside_script(comp))
+        parsed_tbl = ET.fromstring(comp)
+        self.assertIn('"</expression>"', parsed_tbl.findtext("./expression") or "")
 
 
 if __name__ == "__main__":

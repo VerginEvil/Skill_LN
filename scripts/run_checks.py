@@ -166,14 +166,26 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
         if line_count > max_lines:
             errors.append(f"{sname}/SKILL.md: {line_count} lines exceeds maximum budget of {max_lines} lines.")
 
-        # 3. Relative path / link resolution
-        for m in link_re.finditer(content):
-            raw = m.group(2).strip()
-            if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+        # 3. Relative path / link resolution (SKILL.md + ln_studio_skill/references/*.md)
+        targets = [skill_file]
+        if sname == "ln_studio_skill":
+            refs_dir = skill_dir / "references"
+            if refs_dir.is_dir():
+                targets.extend(sorted(refs_dir.glob("*.md")))
+
+        for md_file in targets:
+            try:
+                md_text = md_file.read_text(encoding="utf-8")
+            except OSError:
                 continue
-            broken = _resolve_and_validate_path(skill_file, raw)
-            if broken:
-                errors.append(f"{sname}/SKILL.md: broken markdown link -> {broken}")
+            rel_label = f"{sname}/{md_file.relative_to(skill_dir).as_posix()}"
+            for m in link_re.finditer(md_text):
+                raw = m.group(2).strip()
+                if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+                    continue
+                broken = _resolve_and_validate_path(md_file, raw)
+                if broken:
+                    errors.append(f"{rel_label}: broken markdown link -> {broken}")
 
         content_no_fences = re.sub(r"```[\s\S]*?```", "", content)
         for m in inline_code_re.finditer(content_no_fences):
@@ -191,6 +203,128 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
         return False
 
     print(f"[PASS] Skill markdown lint clean (ln_studio_skill, erp-ln-progguide <= {max_lines} lines).")
+    return True
+
+
+def check_hygiene(repo_root: Optional[Path] = None) -> bool:
+    """Scans tracked code and skill/rule docs for local paths, internal URLs, and customer identifiers."""
+    root = repo_root or REPO_ROOT
+    print("\n=== [3b/5] Checking Tracked Hygiene & Leak Guardrail ===")
+
+    proc = subprocess.run(
+        ["git", "ls-files"],
+        cwd=str(root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        print("[WARN] git ls-files unavailable; skipped hygiene scan.")
+        return True
+
+    # Collect private names dynamically from gitignored overlay if present (without hardcoding them in tracked files)
+    private_tokens: List[str] = []
+    local_overlay = root / ".agents" / "rules" / "repos.local.md"
+    if local_overlay.is_file():
+        overlay_text = local_overlay.read_text(encoding="utf-8", errors="ignore")
+        for m in re.finditer(r"`([A-Za-z0-9][A-Za-z0-9_-]*(?:_TST|_TRN|_REIN|-Customization|_Custimuzation))`", overlay_text):
+            tok = m.group(1)
+            if tok not in ("PRD_ENV", "DEV_ENV", "TRN_ENV", "ENV_WORKSPACE") and tok not in private_tokens:
+                private_tokens.append(tok)
+
+    patterns = [
+        ("workstation_path", re.compile(r"(?i)(?:[a-z]:[/\\]{1,2}users[/\\]{1,2}(?!<)[a-z0-9._-]+|d:[/\\]{1,2}ln studio|/home/(?!<)[a-z0-9._-]+/)")),
+        ("internal_ip_url", re.compile(r"https?://(?:192\.168|10\.\d+)\.\d+\.\d+")),
+    ]
+    if private_tokens:
+        escaped = "|".join(re.escape(t) for t in private_tokens)
+        patterns.append(("private_overlay_token", re.compile(rf"\b(?:{escaped})\b")))
+
+    def _in_scope(rel_path: str) -> bool:
+        if rel_path in ("scripts/run_checks.py", ".agents/rules/repos.example.md"):
+            return False
+        if rel_path.endswith(".md") and (
+            rel_path in ("README.md",)
+            or rel_path.startswith((".agents/rules/", ".agents/skills/ln_studio_skill/", ".agents/skills/erp-ln-progguide/"))
+            and "/references/guide/" not in rel_path
+            and "/references/public_interfaces/" not in rel_path
+            and "/references/extensions/" not in rel_path
+            and "/references/afs/" not in rel_path
+            and "/references/best_practices/" not in rel_path
+        ):
+            return True
+        if rel_path.startswith(".agents/skills/ln_studio_skill/tools/") and rel_path.endswith(".py") and "/tests/" not in rel_path:
+            return True
+        if rel_path.startswith("rust/") and "/src/" in rel_path and rel_path.endswith(".rs"):
+            return True
+        return False
+
+    violations: List[str] = []
+    scanned = 0
+    for rel in proc.stdout.splitlines():
+        if not _in_scope(rel):
+            continue
+        fp = root / rel
+        if not fp.is_file():
+            continue
+        scanned += 1
+        txt = fp.read_text(encoding="utf-8", errors="ignore")
+        for label, rx in patterns:
+            m = rx.search(txt)
+            if m:
+                violations.append(f"{rel}: [{label}] matched {m.group(0)!r}")
+
+    if violations:
+        for v in violations:
+            print(f"  [ERROR] {v}")
+        print(f"[FAIL] Hygiene scan failed with {len(violations)} violation(s).")
+        return False
+
+    print(f"[PASS] Hygiene scan clean ({scanned} tracked file(s) scanned).")
+    return True
+
+
+def check_parity(repo_root: Optional[Path] = None) -> bool:
+    """Verifies Python <-> Rust Stdio MCP tool parity and documentation alignment."""
+    root = repo_root or REPO_ROOT
+    print("\n=== [3c/5] Checking Python <-> Rust MCP & Doc Parity ===")
+    errors: List[str] = []
+
+    try:
+        import ln_studio_mcp
+        py_tools = {t["name"] for t in getattr(ln_studio_mcp, "TOOLS_REGISTRY", [])}
+    except Exception as e:
+        print(f"[FAIL] Could not import ln_studio_mcp.TOOLS_REGISTRY: {e}")
+        return False
+
+    tools_rs = root / "rust" / "bins" / "skill-ln" / "src" / "mcp" / "tools.rs"
+    if not tools_rs.is_file():
+        print(f"[FAIL] Missing Rust MCP registry: {tools_rs}")
+        return False
+
+    rs_text = tools_rs.read_text(encoding="utf-8")
+    rs_tools = set(re.findall(r'"name":\s*"(ln_[a-z0-9_]+)"', rs_text))
+
+    only_py = sorted(py_tools - rs_tools)
+    only_rs = sorted(rs_tools - py_tools)
+    if only_py:
+        errors.append(f"MCP tools only in Python ln_studio_mcp.py: {only_py}")
+    if only_rs:
+        errors.append(f"MCP tools only in Rust tools.rs: {only_rs}")
+
+    mcp_ref = root / ".agents" / "skills" / "ln_studio_skill" / "references" / "MCP_TOOLS_REFERENCE.md"
+    if mcp_ref.is_file():
+        ref_text = mcp_ref.read_text(encoding="utf-8")
+        missing_in_ref = sorted(t for t in (py_tools & rs_tools) if f"`{t}`" not in ref_text)
+        if missing_in_ref:
+            errors.append(f"MCP_TOOLS_REFERENCE.md missing documented tool(s): {missing_in_ref}")
+
+    if errors:
+        for err in errors:
+            print(f"  [ERROR] {err}")
+        print(f"[FAIL] Python <-> Rust MCP parity check failed with {len(errors)} violation(s).")
+        return False
+
+    print(f"[PASS] Python <-> Rust MCP parity verified ({len(py_tools)} tools documented & registered).")
     return True
 
 
@@ -289,6 +423,16 @@ def run_unit_tests() -> bool:
                     return False
         else:
             print("[WARN] skill-ln.exe binary not found in target dirs; skipped process smoke check.")
+
+        # Check whether installed skill-ln on PATH is stale compared to Rust sources
+        import shutil
+        installed_bin = shutil.which("skill-ln")
+        if installed_bin:
+            installed_mtime = Path(installed_bin).stat().st_mtime
+            newest_rs = max((p.stat().st_mtime for p in rust_dir.rglob("*.rs")), default=0.0)
+            if newest_rs > installed_mtime:
+                print(f"[WARN] Installed binary '{installed_bin}' is older than Rust source files.")
+                print("       Run 'python scripts/run_checks.py --install-bin' (or copy target/release/skill-ln.exe) to refresh PATH.")
 
     print("[PASS] Full test suite across all skills passed cleanly.")
     return True
@@ -392,7 +536,23 @@ def main() -> int:
     parser.add_argument("--skill-lint-only", action="store_true", help="Run only skill markdown lint gate (ADR 0018)")
     parser.add_argument("--skip-tests", action="store_true", help="Skip running unit tests")
     parser.add_argument("--sync-skill", action="store_true", help="Synchronize verified repository skill files to global skills directory")
+    parser.add_argument("--install-bin", action="store_true", help="Build release skill-ln binary and install to ~/.cargo/bin/")
     args = parser.parse_args()
+
+    if args.install_bin:
+        import shutil
+        rust_dir = REPO_ROOT / "rust"
+        rc = subprocess.run(["cargo", "build", "--release", "--bin", "skill-ln"], cwd=str(rust_dir)).returncode
+        if rc != 0:
+            return rc
+        rel_exe = Path("C:/Temp/skill_ln_target/release/skill-ln.exe")
+        if not rel_exe.exists():
+            rel_exe = rust_dir / "target" / "release" / "skill-ln.exe"
+        dest_dir = Path.home() / ".cargo" / "bin"
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(rel_exe, dest_dir / rel_exe.name)
+        print(f"[SUCCESS] Installed {rel_exe.name} to: {dest_dir / rel_exe.name}")
+        return 0
 
     if args.install_hook:
         install_pre_commit_hook()
@@ -411,11 +571,13 @@ def main() -> int:
     syntax_ok = check_syntax()
     layout_ok = check_layout()
     markdown_ok = check_skill_markdown()
+    hygiene_ok = check_hygiene()
+    parity_ok = check_parity()
     tests_ok = True
     if not args.skip_tests:
         tests_ok = run_unit_tests()
 
-    if syntax_ok and layout_ok and markdown_ok and tests_ok:
+    if syntax_ok and layout_ok and markdown_ok and hygiene_ok and parity_ok and tests_ok:
         if args.sync_skill:
             sync_global_skill()
         else:

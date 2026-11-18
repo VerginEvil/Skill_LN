@@ -1,52 +1,39 @@
 ---
 name: ln_studio_skill
-description: Infor LN Studio automation engine for managing Eclipse workspaces, remote SCM check-out/check-in, declarative component XML generation (tables, sessions, domains, menus), deploy-test verification, and Extension Modeler guide-and-paste delivery. Use when managing LN Studio activities, generating component XMLs from schemas, interacting with Infor LN servers via JCA/MCP, running activity validation, or inspecting server revision diffs. Do NOT use for general 4GL/DAL coding rules, SQL query optimization, or bshell runtime API lookups (use erp-ln-progguide instead).
+description: Infor LN Studio automation engine (`skill-ln` CLI/MCP and Python tools). Trigger when managing Eclipse workspaces or activities, fetching or checking out/in components via JCA SCM, generating 12-type Single-Line TDE XMLs from schemas, validating labels/cross-references, running deploy-test or post-End-Activity VRC sync (`sync-activity`), inspecting server revision diffs, or delivering Extension Modeler (`tx*`) hooks via guide-and-paste. Route 4GL/DAL coding rules and bshell API lookups to `erp-ln-progguide`.
 ---
 
 # Infor LN Studio Assistant Skill
 
-Automation engine for Infor LN Studio (Eclipse RCP, Activity-Based SCM) and declarative component generation.
+Headless automation engine for Infor LN Studio (Eclipse RCP 10.8 Build 0640, Activity-Based Cloud SCM) backed by the native Rust `skill-ln` binary and Python tools (`tools/`).
 
-## Non-Negotiable Guardrails
+## Non-Negotiable Invariants & Guardrails
 
-- `Pre-Fetch-Auth-Gate`: Verify OAuth2 tokens (`login --status`) and emit a user alert before fetching, downloading, or inspecting remote components.
-- `Read-Only-SCM-Guardrail`: Checked-in components have OS Read-Only flags set. Never remove flags manually; always check out via `checkout-component`.
-- `Pre-Commit-Boundary`: Automate up to `deploy-test` and `prepare-end-activity`. `end-activity` is hard-blocked to require human delivery approval.
-- `Guide-and-Paste`: Extension Modeler components (`tx*`) cannot be checked out or edited in Studio. Author locally, verify offline, and deliver hook-by-hook for LN UI (`ttext1500m000`).
+- **`Pre-Fetch-Auth-Gate`**: Run `skill-ln login --status` before any remote call; when renewal fails, stop and surface the OAuth2 URL to the user (`--workspace` is inferred from CWD or `--activity`).
+- **`Read-Only-SCM-Guardrail`**: Check out server components via `checkout-component` before editing; keep OS Read-Only flags intact on untouched, reference (`.reference/`), and `tx*` extension files.
+- **`Single-Line TDE XML`**: Start all 12 TDE component XMLs with `<?xml version="1.0" encoding="UTF-8" standalone="no"?>` with zero inter-tag newlines outside `<![CDATA[...]]>`, `<expression>`, `<content>`, and `<documentation>`.
+- **`Label Context & FieldLabel Parity`**: Use `<LabelVariant><context>` `1` (field), `2` (session/table/index/menu), `10` (FormCommand). `<FormField><fieldLabel>` strips one leading session package prefix on package-local/cloned labels, while inherited `tc` labels and `<FormCommand><descriptionReference>` stay full.
+- **`Pre-Commit-Boundary`**: Automate through `deploy-test`, `validate`, and `prepare-end-activity`; `end-activity` is hard-blocked so human developers approve delivery inside LN Studio UI. After partial/full `End Activity`, run `sync-activity` to refresh committed server files without overwriting local `CheckedOut`/`Dirty` edits.
+- **`Guide-and-Paste`**: Treat `tx*` Extension Modeler components (`ess`, `est`, `esb`, `esm`, `esr`) as Read-Only in Studio SCM; author locally, audit with `skill-ln audit-4gl`, and extract `#context_on` blocks (`EXT003`) for `ttext1500m000`.
 
-## Core Procedural Workflows
+## Workflows & Completion Gates
 
-1. **`Pre-Fetch-Auth-Gate`: Environment Auth & Remote Inspection/Fetch**:
-   - Verify token: `skill-ln login --workspace <ws> --status`
-   - Inspect components: `skill-ln explorer --type <t> [--filter <pat>]`
-   - Fetch component/script: `skill-ln get-component --type <t> --name <n> [--export-script <path>]`
+1. **Auth & Inspection** -> `skill-ln login --status`, `explorer`, `get-component` (Read-Only / `--export-script`). *Done when*: token is valid and target artifacts exist in workspace or `.reference/`.
+2. **Generate / Edit / SCM** -> `component --spec schema.yaml` / `new-extension` / `checkout-component` -> edit. *Done when*: `Put`/`CheckIn` (auto-running `DR_Create -> CheckOut` for new objects) returns `SUCCESS`.
+3. **Validate & Test** -> `validate <act> --strict [--fix] [--online]` and `deploy-test`. *Done when*: Layer 1–4 validation reports **0 errors** (single-line XML, `.admin`, labels/cross-refs, 4GL syntax) and `deploy-test` (`compile-only` or `schema-crdd`) compiles cleanly.
+4. **Handoff & Post-Commit Sync** -> `prepare-end-activity --activity <a>` (runs `ValidateDevelopmentActivity` + `VSC.executeVSC`) -> user finishes `End Activity` in UI -> `sync-activity`. *Done when*: `prepare-end-activity` reports ready (or `sync-activity` refreshes committed VRCs with 0 errors).
 
-2. **`Read-Only-SCM-Guardrail` & `Pre-Commit-Boundary`: SCM & Deploy-Test**:
-   - Check out: `skill-ln checkout-component --type <t> --name <n> --activity <a>`
-   - Test changes: `skill-ln deploy-test --type <t> --name <n> --activity <a> [--mode compile-only|schema-crdd]`
-   - Verify activity: `skill-ln prepare-end-activity --activity <a>`
-
-3. **`Single-XML TDE Layout`: Declarative Component Generation & Fix**:
-   - Scaffold from schema: `skill-ln component --spec schema.yaml [--output-dir <path>]`
-   - Synchronize & repair: `skill-ln validate <activity_path> --fix`
-   - Synchronize SCM cache: `skill-ln sync-admin --activity <act>`
-
-4. **`Guide-and-Paste` & Stdio MCP Server**:
-   - Scaffold extension: `skill-ln new-extension --type <table|session> --target <comp>`
-   - Verify offline: `skill-ln check-script <ext_file> --strict`
-   - Start MCP server: `skill-ln mcp-stdio` (or register via `skill-ln mcp-setup --client <c> --apply`)
-   - Deliver hook blocks cleanly for pasting into `ttext1500m000` while preserving non-context boilerplate (`EXT003`).
+Run `skill-ln --help` for full subcommand options.
 
 ## Branching Reference Pointers
 
-Open dedicated reference files only when branching into that specific workflow:
+Open a reference file only when its branch applies:
 
-| Workflow Branch | Reference Document |
+| Workflow Branch | Authoritative Reference |
 |---|---|
-| **CLI Command Lookup (50+ subcommands)** | [CLI Reference Guide](references/CLI_REFERENCE.md) |
-| **Stdio MCP Tools (4 consolidated / 22 detailed)** | [MCP Tools Reference](references/MCP_TOOLS_REFERENCE.md) |
-| **Multi-Component `schema.yaml` Authoring** | [Authoring Schema Guide](references/AUTHORING_SCHEMA_GUIDE.md) |
-| **Single-XML TDE XML Schema (12 types)** | [Component XML Schema](references/COMPONENT_XML_SCHEMA.md) |
-| **DAL 2 Object & Property Hook Details** | [DAL 2 Hooks Guide](references/DAL2_HOOKS_GUIDE.md) |
-| **UI Session 4GL Script Details** | [UI Script Guide](references/UI_SCRIPT_GUIDE.md) |
-| **4GL Coding Recipes & Cookbooks** | [Programmer's Guide Skill](../erp-ln-progguide/SKILL.md) |
+| **CLI Options & Recipes (62 subcommands)** | [CLI Reference Guide](references/CLI_REFERENCE.md) |
+| **Stdio MCP Tools (26 tools: 4 consolidated + 22 detailed)** | [MCP Tools Reference](references/MCP_TOOLS_REFERENCE.md) |
+| **Multi-Component `schema.yaml` Spec** | [Authoring Schema Guide](references/AUTHORING_SCHEMA_GUIDE.md) |
+| **Single-XML TDE Facets (12 component types)** | [Component XML Schema](references/COMPONENT_XML_SCHEMA.md) |
+| **DAL 2 & UI Session 4GL Details** | [DAL 2 Hooks Guide](references/DAL2_HOOKS_GUIDE.md), [UI Script Guide](references/UI_SCRIPT_GUIDE.md) |
+| **4GL Coding Rules & Bshell APIs** | [Programmer's Guide Skill](../erp-ln-progguide/SKILL.md) |

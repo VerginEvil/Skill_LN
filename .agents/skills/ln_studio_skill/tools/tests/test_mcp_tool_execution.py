@@ -89,7 +89,7 @@ class TestMcpToolExecution(unittest.TestCase):
         self.assertEqual(len(data["result"]["activities"]), 1)
 
     # 5. ln_explore_components
-    @patch("ln_studio_mcp.browse_components")
+    @patch("ln_studio_mcp.browse_components", autospec=True)
     def test_ln_explore_components(self, mock_browse):
         mock_browse.return_value = [{"name": "ttadv300"}]
         res = execute_tool("ln_explore_components", {"type": "table", "mock": True})
@@ -269,7 +269,7 @@ class TestMcpToolExecution(unittest.TestCase):
         self.assertIn("cloned_path", data["result"])
 
     # 17. ln_validate_activity
-    @patch("ln_studio_mcp.validate_activity")
+    @patch("ln_studio_mcp.validate_activity", autospec=True)
     def test_ln_validate_activity(self, mock_val):
         report = MagicMock()
         report.files_scanned = 5
@@ -282,7 +282,7 @@ class TestMcpToolExecution(unittest.TestCase):
         self.assertTrue(data["result"]["valid"])
 
     # 18. ln_deploy_test
-    @patch("ln_studio_mcp.deploy_test")
+    @patch("ln_studio_mcp.deploy_test", autospec=True)
     def test_ln_deploy_test(self, mock_dt):
         mock_dt.return_value = {"success": True, "compile": "OK"}
         res = execute_tool("ln_deploy_test", {
@@ -295,7 +295,7 @@ class TestMcpToolExecution(unittest.TestCase):
         self.assertTrue(data["result"]["success"])
 
     # 19. ln_prepare_end_activity
-    @patch("ln_studio_mcp.prepare_end_activity")
+    @patch("ln_studio_mcp.prepare_end_activity", autospec=True)
     def test_ln_prepare_end_activity(self, mock_prep):
         mock_prep.return_value = {"ready_for_human_review": True}
         res = execute_tool("ln_prepare_end_activity", {
@@ -429,7 +429,7 @@ class TestMcpToolExecution(unittest.TestCase):
         self.assertTrue(data["result"]["success"])
 
     # 25. ln_sync_activity
-    @patch("ln_studio_mcp.sync_activity")
+    @patch("ln_studio_mcp.sync_activity", autospec=True)
     def test_ln_sync_activity(self, mock_sync):
         mock_sync.return_value = {"refreshed_count": 2, "skipped_count": 1, "refreshed": [], "skipped_local": [], "skipped_server": []}
         res = execute_tool("ln_sync_activity", {

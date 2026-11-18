@@ -5,11 +5,11 @@
 # Infor LN Studio Automation Toolset & Assistant Skill (`ln_studio_skill`)
 
 [![Infor LN](https://img.shields.io/badge/Infor%20LN-10.8%20Build%200640-0052CC?style=flat)](https://www.infor.com)
-[![MCP Server](https://img.shields.io/badge/MCP-16%20Tools-FF6F00?style=flat)](#5-stage-lifecycle-matrix)
-[![Headless JCA](https://img.shields.io/badge/Headless%20JCA-JDK%2011-4CAF50?style=flat)](#headless-jca-architecture)
+[![MCP Server](https://img.shields.io/badge/MCP-26%20Tools-FF6F00?style=flat)](#5-stage-lifecycle-matrix)
+[![Rust Binary](https://img.shields.io/badge/CLI-skill--ln%20Rust-DEA584?style=flat)](#overview--modern-architecture)
 [![Generators](https://img.shields.io/badge/Generators-12%20Components-9C27B0?style=flat)](#12-component-archetype-matrix)
 
-> **Self-contained, production-grade intelligence, headless JCA connectivity, declarative 12-component modeling, pre-commit SCM engine, and native Model Context Protocol (MCP) server for Infor LN Studio 10.8 (Build 0640, April 2026 tree, Eclipse RCP).**
+> **Self-contained, production-grade intelligence, headless HTTP/JCA connectivity, declarative 12-component modeling, Single-Line TDE XML & label parity, pre-commit SCM automation, and native Model Context Protocol (MCP) servers (`skill-ln mcp-stdio` in Rust + Python fallback) for Infor LN Studio 10.8 (Build 0640, April 2026 tree, Eclipse RCP).**
 
 ---
 
@@ -18,7 +18,7 @@
 - [Overview & Modern Architecture](#overview--modern-architecture)
 - [Headless JCA Architecture](#headless-jca-architecture)
 - [AI Agent Configuration Matrix (Claude Desktop, Cursor, Antigravity)](#ai-agent-configuration-matrix)
-- [5-Stage Lifecycle Matrix (16 MCP Tools & 37 CLI Subcommands)](#5-stage-lifecycle-matrix)
+- [5-Stage Lifecycle Matrix (26 MCP Tools & 62 CLI Subcommands)](#5-stage-lifecycle-matrix)
 - [12-Component Archetype Matrix & Declarative Modeling](#12-component-archetype-matrix)
 - [Enterprise Safety Guardrails & Callouts](#enterprise-safety-guardrails)
   - [Extension Modeler Cloud UI Boundary (ADR 0006)](#extension-modeler-boundary)
@@ -33,15 +33,15 @@
 
 Historically, developing applications and extensions in Infor LN Studio required repetitive manual clicks across heavy Eclipse RCP wizards, modal dialogs, and fragile UI keystrokes. 
 
-`ln_studio_skill` transforms Infor LN Studio into a **headless-capable, automated developer and AI agent ecosystem**:
+`ln_studio_skill` transforms Infor LN Studio into a **headless-capable, automated developer and AI agent ecosystem** powered by a pure-Rust single binary (`skill-ln`) with Python orchestration parity (`tools/`):
 
-1. **Headless JCA 1.6 Connectivity & BYOJ (`ln_server_client.py`)**: Direct BDE XML communication over HTTPS via auto-discovered local Eclipse JARs (`JCAAdapter4ERPln-10.8.10.jar` + `lnstudio_commoncore.jar` from `LN_STUDIO_HOME`, zero proprietary JARs tracked in Git) and JDK 11 (~150MB RAM footprint for Python CLI + Headless JVM Daemon).
-2. **3-Tier Automated OAuth2 Token Lifecycle (`ln_env_manager.py`)**: Persistent per-workspace token cache at `~/.ln_studio/tokens/<workspace>.json` with a 5-minute safety buffer, silent refresh via `refresh_token` or Service Account (`saak`/`sask`), and interactive browser login (`webbrowser.open`) + `--manual-auth` paste fallback for headless/SSH/WSL environments.
-3. **Remote Server Explorers & Workspace Reference Sync (`ln_component_explorer.py`)**: Browse remote Applications, Software Projects, Activities, and Components across all 12 types, or pull Read-Only reference copies (`sync-reference`) into `.reference/<type>/` while automatically indexing `.tbl` and `.dmn` XMLs into `.ln_dd_cache.json`.
-4. **Complete 12-Component Ecore Generators & Report Cloning**: Declarative generation for Tables (`.tbl`), Sessions (`.ses`), Domains (`.dmn`), Libraries (`.lib`), Menus (`.mnu`), Labels (`.lbl`), Messages (`.msg`), Questions (`.qst`/`.que`), Include Functions (`.fnc`/`.fun`), and Additional Files (`.add`), plus baseline report/component cloning (`clone-component --source-type report`).
-5. **Pre-Commit SCM Engine & Split `deploy-test` (`ln_scm_engine.py`, `ln_build_pipeline.py`)**: Safe `--mode compile-only` (default: `Put -> Compile -> VSC -> CheckIn`) and `--mode schema-crdd` (`Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn` with `--dry-run` pre-check and active LN UI session lock warning).
-6. **Strict Human-in-the-Loop Commit Gate ([ADR 0007](../../../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))**: Hard-blocks `End Activity` / `CloseTask` / `FinalizeActivity` in CLI, MCP, and at the Java protocol level inside `LNStudioJcaBridge.java`.
-7. **Native Stdio MCP Server (`ln_studio_mcp.py`)**: Exposes all capabilities via JSON-RPC 2.0 stdio with 16 tools, ready for Claude Desktop, Cursor, Antigravity, and AI Agents.
+1. **Pure-Rust Single Binary (`skill-ln`) & Headless JCA Bridge**: Direct BDE XML communication over HTTPS via native Rust (`ln-jca` / `ln-scm` / `ln-model`) or BYOJ Java bridge (`LNStudioJcaBridge.java`, zero proprietary JARs tracked in Git). Supports workspace auto-inference from `--activity` or CWD with fast fail when ambiguous ([ADR 0021](../../../docs/adr/0021-native-rust-skill-ln-single-binary-architecture.md)).
+2. **3-Tier Automated OAuth2 Token Lifecycle (`ln-auth`, `ln_env_manager.py`)**: Persistent per-workspace token cache at `~/.ln_studio/tokens/<workspace>.json` with a 5-minute safety buffer, silent `refresh_token` renewal in `login --status` / `ln_login`, `cloudenv.prefs` fallback, `connectivity.prefs` sync, Service Account (`saak`/`sask`), and interactive browser / `--manual-auth` fallback.
+3. **Remote Server Explorers & Workspace Reference Sync (`ln_component_explorer.py`, `explorer.rs`)**: Browse remote Applications, Software Projects, Activities, and Components across all 12 types with activity `context_xml` and `*` -> `%` filters, inspect components in-memory, or pull Read-Only copies into `.reference/<type>/` (`sync-reference`) indexing `.tbl`/`.dmn` into `.ln_dd_cache.json`.
+4. **Complete 12-Component Single-Line TDE XML Modeling & Label Parity ([ADR 0023](../../../docs/adr/0023-label-xml-parity-cloud-scm-and-vrc-sync-hardening.md))**: Declarative generation for `.tbl`, `.ses`, `.dmn`, `.lib`, `.mnu`, `.lbl`, `.rpt`, `.msg`, `.qst`/`.que`, `.fnc`/`.fun`, `.add`, and `.bus` with `standalone="no"` Single-Line TDE XML, CDATA-safe compaction, `<LabelVariant><context>` (`1`/`2`/`10`), session `<fieldLabel>` prefix stripping, and cross-package label probing.
+5. **Pre-Commit SCM Engine, `deploy-test`, `prepare-end-activity` & `sync-activity`**: Recognizes Activity-Based Cloud SCM (`.indexes/properties.index`), automatically runs `DR_Create -> CheckOut -> Put/CheckIn` for new components, executes `VSC.executeVSC` (`<packageCombination>` + `ValidateDevelopmentActivity`), supports `--mode compile-only|schema-crdd`, and refreshes server-committed VRC components post-commit via `sync-activity` without overwriting local `CheckedOut`/`Dirty` edits.
+6. **Strict Human-in-the-Loop Commit Gate ([ADR 0007](../../../docs/adr/0007-headless-jca-connectivity-scm-and-mcp-server.md))**: Hard-blocks `End Activity` / `CloseTask` / `FinalizeActivity` in CLI, MCP, and Java protocol layers.
+7. **26-Tool Stdio MCP Server (`skill-ln mcp-stdio` & `ln_studio_mcp.py`)**: Exposes 4 consolidated high-efficiency tools (`ln_project_activity`, `ln_code_intelligence`, `ln_version_diff`, `ln_adhoc_compile`) + 22 granular tools via JSON-RPC 2.0 stdio.
 
 ---
 
@@ -54,9 +54,9 @@ flowchart TD
         DEV["Developer Terminal\n(CLI Commands)"]
     end
 
-    subgraph EntryLayers["Orchestration Layer (Single Testing Seam)"]
-        MCP["Native Stdio MCP Server\n(ln_studio_mcp.py - 16 Tools)"]
-        CLI["Master Orchestrator CLI\n(ln_component_builder.py - 37 Subcommands)"]
+    subgraph EntryLayers["Orchestration Layer (Rust Primary + Python Parity)"]
+        MCP["Native Stdio MCP Server\n(skill-ln mcp-stdio / ln_studio_mcp.py - 26 Tools)"]
+        CLI["Master Orchestrator CLI\n(skill-ln / ln_component_builder.py - 62 Subcmds)"]
     end
 
     subgraph CoreEngines["ln_studio_skill Core Engines"]
@@ -121,7 +121,24 @@ flowchart TD
 
 Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. Choose your environment below and copy the snippet into your client configuration:
 
-### 1. Claude Desktop (`%APPDATA%\Claude\claude_desktop_config.json`)
+### 1. Native Rust MCP Registration (Recommended)
+```bash
+skill-ln mcp-setup --client claude --apply   # or cursor | antigravity | generic
+```
+
+### 2. Claude Desktop (`%APPDATA%\Claude\claude_desktop_config.json`)
+```json
+{
+  "mcpServers": {
+    "infor-ln-studio": {
+      "command": "skill-ln",
+      "args": ["mcp-stdio"]
+    }
+  }
+}
+```
+
+### 3. Python Fallback (`.cursor/mcp.json` / Generic Stdio)
 ```json
 {
   "mcpServers": {
@@ -131,25 +148,6 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
         "<repo_root>/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
       ],
       "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "LN_STUDIO_HOME": "C:/Infor/LNStudio",
-        "JAVA_HOME": "C:/Program Files/Eclipse Adoptium/jdk-11.0.22.7-hotspot"
-      }
-    }
-  }
-}
-```
-
-### 2. Cursor IDE (`.cursor/mcp.json`)
-```json
-{
-  "mcpServers": {
-    "infor-ln-studio": {
-      "command": "python",
-      "args": [
-        "${workspaceFolder}/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
-      ],
-      "env": {
         "PYTHONIOENCODING": "utf-8"
       }
     }
@@ -157,53 +155,28 @@ Connect your AI Coding Agent directly to Infor LN Studio via native Stdio MCP. C
 }
 ```
 
-### 3. Google Antigravity (`antigravity.json`)
-```json
-{
-  "mcpServers": {
-    "infor-ln-studio": {
-      "command": "python",
-      "args": [
-        "${workspaceRoot}/.agents/skills/ln_studio_skill/tools/ln_studio_mcp.py"
-      ]
-    }
-  }
-}
-```
-
-### 4. Gemini CLI / Generic Stdio MCP
-```bash
-# Automated setup for supported clients:
-python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target claude-desktop
-python .agents/skills/ln_studio_skill/tools/ln_component_builder.py mcp-setup --target cursor
-```
-
 ---
 
 ## 5-Stage Lifecycle Matrix
 
-All 16 MCP tools and 37 CLI subcommands are mapped into 5 logical lifecycle phases matching enterprise Infor LN development:
+All 26 MCP tools (4 consolidated high-efficiency + 22 granular tools; see [MCP Tools Reference](references/MCP_TOOLS_REFERENCE.md)) and 62 `skill-ln` CLI subcommands (see [CLI Reference](references/CLI_REFERENCE.md)) map across 5 lifecycle phases:
 
-| Stage / Lifecycle | MCP Tool Name | Master CLI Equivalent | Description & Safety Guardrail |
+| Stage / Lifecycle | MCP Tool Name | CLI Subcommand (`skill-ln`) | Description & Safety Guardrail |
 |---|---|---|---|
 | **1. Environment & Auth** | `ln_list_environments` | `environments`, `workspace` | List workspaces, tenant IDs, and gateway connectivity |
-| | `ln_connect` | `connect --ionapi <file>` | Import `.ionapi`, authenticate OAuth2, and sync preferences |
-| **2. Remote Exploration** | `ln_explore_projects` | `project --list` | Browse remote Applications, Software Projects, and VRCs |
-| | `ln_explore_activities` | `activity --list` | Query open activities, tasks, and modified components |
-| | `ln_explore_components` | `explorer --type <type>` | Query server components across all 12 types with wildcard filters |
-| | `ln_create_activity` | `activity --create <id>` | Create remote Activity and bootstrap local workspace metadata |
-| | `ln_clean_activity` | `clean-activity` | Recover stuck locks or workareas on server |
-| **3. Modeling & Cloning** | `ln_create_component` | `table`, `session`, `domain`, ... | Declaratively generate any of the 12 LN Studio components |
+| | `ln_login` | `login --status` | Verify OAuth2 token, trigger silent refresh, or launch SSO |
+| | `ln_connect` | `connect --ionapi <file>` | Import `.ionapi`, authenticate OAuth2, sync `cloudenv`/`connectivity.prefs` |
+| **2. Remote Exploration** | `ln_explore_projects`, `ln_project_activity` | `project`, `project-info`, `activity`, `new-activity`, `open-activity` | Browse projects, create/open activities, clean locks |
+| | `ln_explore_components` | `explorer --type <type>` | Query server components across 12 types with `context_xml` & wildcards |
+| **3. Modeling & Cloning** | `ln_create_component` | `table`, `session`, `component`, ... | Generate Single-Line TDE XML for all 12 component archetypes |
 | | `ln_clone_component` | `clone-component` | Clone server component into renamed custom activity component |
-| | `ln_get_component` | `get-component` | Fetch server component (in-memory inspect or read-only download) |
-| | `ln_sync_reference` | `sync-reference` | Pull read-only server references & auto-index `.ln_dd_cache.json` |
-| **4. SCM & Cloud Testing** | `ln_checkout_component`| `checkout-component` | Check out component on server (**Hard-blocks `tx*` extensions**) |
-| | `ln_uncheckout_component`| `uncheckout-component` | Revert server lock and restore local read-only copy |
-| | `ln_checkin_component` | `checkin-component` | Check in component with comment for live testing in LN UI |
-| | `ln_deploy_test` | `deploy-test` | Automated composite deployment (`Put` -> `Compile` -> `CheckIn`) |
-| **5. Verification & Gate** | `ln_validate_activity` | `validate`, `diagnose` | 4-layer static verification (`.admin`, XML facets, refs, 4GL) |
-| | `ln_prepare_end_activity`| `prepare-end-activity` | Pre-commit readiness verifier and human commit handoff report |
-| | `ln_end_activity` | `end-activity` | **Hard-Blocked Safety Gate**: Enforces human review in LN Studio |
+| | `ln_get_component`, `ln_sync_reference` | `get-component`, `sync-reference` | Fetch components Read-Only, export scripts, or sync `.reference/` + DD cache |
+| **4. SCM & Cloud Testing** | `ln_checkout_component`, `ln_uncheckout_component` | `checkout-component`, `uncheckout-component` | Check out/revert on server (**Hard-blocks `tx*` extensions**) |
+| | `ln_checkin_component`, `ln_deploy_test` | `checkin-component`, `deploy-test` | Auto `DR_Create -> CheckOut` for new objects; `Put -> Compile -> VSC -> CheckIn` |
+| | `ln_version_diff`, `ln_code_intelligence`, `ln_adhoc_compile` | `revisions`, `diff-component`, `compile-source`, `search-server` | Server revision diffs, call hierarchy, ad-hoc bic6.2 compilation |
+| **5. Verification & Gate** | `ln_validate_activity` | `validate [--strict] [--fix] [--online]` | 4-layer validation (`.admin`, Single-Line XML, labels/`.reference/`, 4GL) |
+| | `ln_prepare_end_activity`, `ln_sync_activity` | `prepare-end-activity [--skip-vsc]`, `sync-activity` | Server `ValidateDevelopmentActivity` + `VSC`; post-End-Activity VRC refresh |
+| | `ln_end_activity` | `end-activity` | **Hard-Blocked Safety Gate**: Enforces human review in LN Studio UI |
 
 ---
 
@@ -354,26 +327,27 @@ python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test 
 python .agents/skills/ln_studio_skill/tools/ln_component_builder.py deploy-test --type table --name txcmg011 --activity ACT_DEV_001 --mode schema-crdd --comment "Deploy schema"
 
 # -------------------------------------------------------------
-# 5. Verification & Pre-Commit Gates
+# 5. Verification, Pre-Commit Gates & Post-Commit VRC Sync
 # -------------------------------------------------------------
-python .agents/skills/ln_studio_skill/tools/ln_component_builder.py validate ACT_DEV_001 --strict --fix
-python .agents/skills/ln_studio_skill/tools/ln_component_builder.py prepare-end-activity --activity ACT_DEV_001
+skill-ln validate ACT_DEV_001 --strict --fix --online
+skill-ln prepare-end-activity --activity ACT_DEV_001
+skill-ln sync-activity --activity ACT_DEV_001
 ```
 
 ---
 
 ## Automated Test Suite
 
-Run the full unit test suite across all tools:
+Run the unified repository checks (Python syntax, layout compliance, markdown lint, **363 Python tests**, **174 Rust tests**, and `skill-ln.exe` smoke test):
+
+```bash
+python scripts/run_checks.py --sync-skill
+```
+
+Or run `ln_studio_skill` Python tests individually:
 
 ```bash
 python -m unittest discover -s .agents/skills/ln_studio_skill/tools/tests -p "test_*.py"
-```
-
-Validate documentation integrity & links:
-
-```bash
-python .agents/skills/ln_studio_skill/tools/validate_skill.py --skill-dir .agents/skills/ln_studio_skill
 ```
 
 ---
@@ -382,23 +356,23 @@ python .agents/skills/ln_studio_skill/tools/validate_skill.py --skill-dir .agent
 
 ```text
 ln_studio_skill/
-├── SKILL.md                          # AI agent skill definition & instructions
+├── SKILL.md                          # AI agent skill definition (<= 80 lines)
 ├── README.md                         # Dedicated toolset & MCP documentation
-├── references/                       # Distilled LN Studio Application Development Guide
+├── references/                       # CLI, MCP, Schema, XML, DAL2 & UI Script guides
 └── tools/
-    ├── ln_component_builder.py       # Master CLI orchestrator (37 subcommands)
-    ├── ln_studio_mcp.py              # Native Stdio MCP Server (16 tools)
-    ├── ln_env_manager.py             # .ionapi & OAuth2 credentials lifecycle manager
-    ├── ln_server_client.py           # Headless JCA server client & Java bridge
+    ├── ln_component_builder.py       # Python Master CLI (57 subcommands)
+    ├── ln_studio_mcp.py              # Python Stdio MCP Server (26 tools)
+    ├── ln_env_manager.py             # .ionapi, cloudenv/connectivity.prefs & OAuth2 refresh
+    ├── ln_server_client.py           # Headless JCA client & MockJcaTransport
     ├── ln_project_activity_manager.py# Software Projects & Activity Explorer manager
     ├── ln_component_explorer.py      # 12-component explorer, get, inspect, clone
-    ├── ln_scm_engine.py              # Pre-Commit SCM Engine (Check-Out, Put, CheckIn)
-    ├── ln_build_pipeline.py          # Remote build, CRDD, CreateTables, deploy-test
+    ├── ln_scm_engine.py              # Pre-Commit SCM Engine (DR_Create, CheckOut, Put, CheckIn)
+    ├── ln_build_pipeline.py          # Remote build, VSC, CRDD, deploy-test, sync-activity
     ├── ln_extension_manager.py       # Extension Modeler local project workflow (ADR 0006)
-    ├── validate_ln_activity.py       # 4-Layer static activity validator & safe --fix
+    ├── validate_ln_activity.py       # 4-Layer static/online activity validator & safe --fix
     ├── check_4gl_script.py           # Offline 4GL script syntax inspector
-    ├── scm_guardrails.py             # SCM Read-Only & Extension protection rules
+    ├── scm_guardrails.py             # Read-Only, Extension & Activity Cloud SCM guardrails
     ├── admin_sync.py                 # 12-extension .admin SCM cache synchronizer
-    ├── generate_ln_*.py              # 12-Component declarative Ecore generators
-    └── tests/                        # Automated unit tests
+    ├── generate_ln_*.py              # 12-Component Single-Line TDE XML generators
+    └── tests/                        # 323 Python unit tests
 ```

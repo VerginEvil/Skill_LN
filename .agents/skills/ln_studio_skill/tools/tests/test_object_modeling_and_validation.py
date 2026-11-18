@@ -97,8 +97,17 @@ class TestWorkspaceAndAdminSync(unittest.TestCase):
     """Ticket 01: Pinned Studio Path & 12-Extension .admin Sync."""
 
     def test_pinned_studio_path_default(self):
-        p = get_studio_installation_path()
-        self.assertEqual(str(p), r"D:\LN Studio\April-2026\InforLNStudio_10_8_0_build0640-x86_64")
+        with tempfile.TemporaryDirectory() as td:
+            old = os.environ.get("LN_STUDIO_PATH")
+            os.environ["LN_STUDIO_PATH"] = td
+            try:
+                p = get_studio_installation_path()
+                self.assertEqual(p, Path(td).resolve())
+            finally:
+                if old is None:
+                    os.environ.pop("LN_STUDIO_PATH", None)
+                else:
+                    os.environ["LN_STUDIO_PATH"] = old
 
     def test_managed_extensions_contains_all_12_types(self):
         expected = {

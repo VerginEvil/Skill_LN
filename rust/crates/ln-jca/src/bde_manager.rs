@@ -193,12 +193,7 @@ impl<'a> JcaBdeManager<'a> {
                     None,
                     &params.controlling_attributes,
                 );
-                let trimmed_show = req_xml.trim_start();
-                let show_body = if trimmed_show.starts_with("<?xml") {
-                    trimmed_show.find("?>").map(|idx| trimmed_show[idx + 2..].trim_start()).unwrap_or(trimmed_show)
-                } else {
-                    trimmed_show
-                };
+                let show_body = strip_xml_declaration(req_xml);
                 let env_xml = self.build_request_envelope(&params.method_name, &ctrl_xml, Some(show_body));
                 let resp_xml = self.client.bde_call(&params.bde_name, &params.method_name, &resolved_conid, &env_xml).await?;
                 Ok(extract_first_child_of_data_area(&resp_xml).unwrap_or(resp_xml))
@@ -214,12 +209,7 @@ impl<'a> JcaBdeManager<'a> {
                     None,
                     &params.controlling_attributes,
                 );
-                let trimmed_req = req_xml.trim_start();
-                let body_req = if trimmed_req.starts_with("<?xml") {
-                    trimmed_req.find("?>").map(|idx| trimmed_req[idx + 2..].trim_start()).unwrap_or(trimmed_req)
-                } else {
-                    trimmed_req
-                };
+                let body_req = strip_xml_declaration(req_xml);
                 let env_xml = if params.method_name == "DR_Create" && body_req.starts_with("<DR_") {
                     // Send raw component root XML element directly (no <DR_CreateRequest> wrapper)
                     if !ctrl_xml.is_empty() && ctrl_xml != "<ControlArea></ControlArea>" && !body_req.contains("<ControlArea>") {
@@ -313,6 +303,15 @@ impl<'a> JcaBdeManager<'a> {
     }
 }
 
+pub fn strip_xml_declaration(xml: &str) -> &str {
+    let trimmed = xml.trim_start_matches('\u{feff}').trim_start();
+    if trimmed.starts_with("<?xml") {
+        trimmed.find("?>").map(|idx| trimmed[idx + 2..].trim_start()).unwrap_or(trimmed)
+    } else {
+        trimmed
+    }
+}
+
 pub fn extract_first_child_of_data_area(xml: &str) -> Option<String> {
     let da_content = extract_tag(xml, "DataArea")?;
     let trimmed = da_content.trim();
@@ -320,4 +319,20 @@ pub fn extract_first_child_of_data_area(xml: &str) -> Option<String> {
         return Some("<Success/>".to_string());
     }
     Some(trimmed.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn strip_xml_decl_before_envelope_for_put_checkin_and_show() {
+        let client = HttpClient::new("http://127.0.0.1:9999/LN", "tok");
+        let mgr = JcaBdeManager::new(&client, "ProjectServer");
+        let raw = "\u{feff}<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><DR_Label><name>txwh.clot</name></DR_Label>";
+        let body = strip_xml_declaration(raw);
+        let env = mgr.build_request_envelope("Put", "<ControlArea/>", Some(body));
+        assert!(!env.contains("<DataArea><?xml"), "Nested <?xml?> must never appear inside <DataArea>: {env}");
+        assert!(env.contains("<DataArea><DR_Label><name>txwh.clot</name></DR_Label></DataArea>"));
+    }
 }

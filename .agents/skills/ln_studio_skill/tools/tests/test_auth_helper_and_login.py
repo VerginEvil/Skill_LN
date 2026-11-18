@@ -51,7 +51,10 @@ class TestAuthHelperAndLogin(unittest.TestCase):
         self.assertIn("scope=custom_scope", url)
 
     def test_resolve_ionapi_config_from_knowledge_docs(self):
-        name, cfg = resolve_ionapi_config(workspace_name="SCS_TST")
+        try:
+            name, cfg = resolve_ionapi_config(workspace_name="SCS_TST")
+        except ValueError:
+            self.skipTest("Local Studio cloudenv.prefs not available on host")
         self.assertEqual(name, "SCS_TST")
         self.assertEqual(cfg.tenant_id, "SLNBGS786BCXMXWQ_TST")
         self.assertTrue(cfg.client_id.startswith("SLNBGS786BCXMXWQ_TST~"))
@@ -84,30 +87,47 @@ class TestAuthHelperAndLogin(unittest.TestCase):
         import argparse
         from ln_component_builder import cmd_login
 
-        args = argparse.Namespace(
-            workspace="SCS_TST",
-            env_name=None,
-            ionapi=None,
-            status=True,
-            check_only=False,
-            json=True,
-            register_protocol=False,
-            unregister_protocol=False,
-        )
+        import tempfile
+        import json as _json
+        with tempfile.TemporaryDirectory() as td:
+            ionapi_p = Path(td) / "demo.ionapi"
+            ionapi_p.write_text(
+                _json.dumps({
+                    "ti": "TEST_TENANT",
+                    "cn": "LNStudio",
+                    "ci": "TEST_CI",
+                    "cs": "TEST_CS",
+                    "iu": "https://ionapi.example.com",
+                    "pu": "https://sso.example.com/as/",
+                    "ot": "token.oauth2",
+                    "oa": "authorization.oauth2",
+                }),
+                encoding="utf-8",
+            )
+            args = argparse.Namespace(
+                workspace="DEMO_ENV",
+                env_name=None,
+                ionapi=str(ionapi_p),
+                status=True,
+                check_only=False,
+                json=True,
+                register_protocol=False,
+                unregister_protocol=False,
+            )
 
-        with patch("ln_env_manager.OAuth2TokenManager.check_token_status") as mock_chk:
-            mock_chk.return_value = {
-                "status": "valid",
-                "expires_in": 1200.0,
-                "has_refresh_token": True,
-                "access_token": "dummy_tok",
-                "refresh_token": "dummy_ref",
-            }
-            with patch("sys.stdout", new_callable=io.StringIO) as mock_out:
-                cmd_login(args)
-                out = mock_out.getvalue()
-                self.assertIn('"status": "valid"', out)
-                self.assertIn('"expires_in": 1200.0', out)
+            with patch("ln_env_manager.OAuth2TokenManager.check_token_status") as mock_chk:
+                mock_chk.return_value = {
+                    "status": "valid",
+                    "expires_in": 1200.0,
+                    "has_refresh_token": True,
+                    "access_token": "dummy_tok",
+                    "refresh_token": "dummy_ref",
+                }
+                with patch("sys.stdout", new_callable=io.StringIO) as mock_out:
+                    cmd_login(args)
+                    out = mock_out.getvalue()
+                    self.assertIn('"status": "valid"', out)
+                    self.assertIn('"expires_in": 1200.0', out)
 
 
 if __name__ == "__main__":

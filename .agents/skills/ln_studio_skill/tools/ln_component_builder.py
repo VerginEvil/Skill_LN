@@ -2214,7 +2214,7 @@ def main():
 
     # login
     sp_login = subparsers.add_parser("login", help="Authenticate with Infor CloudSuite SSO and acquire active OAuth2 tokens")
-    sp_login.add_argument("--workspace", help="Target customer workspace or CloudEnvironment name (e.g. SCS_TST)")
+    sp_login.add_argument("--workspace", help="Target customer workspace or CloudEnvironment name (e.g. PRD_ENV)")
     sp_login.add_argument("--ionapi", help="Path to .ionapi credentials file (auto-discovered from workspace if omitted)")
     sp_login.add_argument("--env-name", help="Custom CloudEnvironment name")
     sp_login.add_argument("--status", action="store_true", help="Check OAuth2 token status and perform silent refresh if needed without launching browser")

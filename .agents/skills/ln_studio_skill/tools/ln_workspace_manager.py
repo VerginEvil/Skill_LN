@@ -16,9 +16,26 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 
-PINNED_STUDIO_PATH = r"D:\LN Studio\April-2026\InforLNStudio_10_8_0_build0640-x86_64"
+PINNED_STUDIO_PATH = os.environ.get("LN_STUDIO_HOME") or os.environ.get("LN_STUDIO_PATH") or ""
 CONFIG_FILE_NAME = ".ln_studio_config.json"
 ACTIVITY_PATTERN = re.compile(r"^(.+?)\s+\[([A-Za-z0-9_]+)\]$")
+
+
+def discover_studio_from_repos_overlay() -> Optional[Path]:
+    """Reads optional Studio path hints from gitignored .agents/rules/repos.local.md if present."""
+    for base in Path(__file__).resolve().parents:
+        overlay = base / ".agents" / "rules" / "repos.local.md"
+        if overlay.is_file():
+            try:
+                txt = overlay.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                return None
+            for m in re.finditer(r"`([^`]*InforLNStudio[^`]*)`", txt):
+                cand = Path(m.group(1))
+                if cand.exists():
+                    return cand
+            return None
+    return None
 
 
 def get_skill_root() -> Path:
@@ -65,7 +82,10 @@ def get_studio_installation_path(override_path: Optional[str] = None) -> Path:
     env_studio = os.environ.get("LN_STUDIO_PATH")
     if env_studio:
         return Path(env_studio).resolve()
-    return Path(PINNED_STUDIO_PATH).resolve()
+    overlay_path = discover_studio_from_repos_overlay()
+    if overlay_path:
+        return overlay_path
+    return Path(PINNED_STUDIO_PATH) if PINNED_STUDIO_PATH else Path(r"C:\Infor\LN Studio").resolve()
 
 
 def get_workspace_root(override_root: Optional[str] = None) -> Optional[Path]:
@@ -82,10 +102,13 @@ def get_workspace_root(override_root: Optional[str] = None) -> Optional[Path]:
     if "workspace_root" in cfg:
         return Path(cfg["workspace_root"]).resolve()
 
-    # Known standard location if it exists on host
-    standard_loc = Path(r"C:\Users\nutdo\OneDrive\Documents\workspace_lnstudio")
-    if standard_loc.exists() and standard_loc.is_dir():
-        return standard_loc
+    # Known standard locations if present on host
+    for standard_loc in (
+        Path.home() / "OneDrive" / "Documents" / "workspace_lnstudio",
+        Path.home() / "Documents" / "workspace_lnstudio",
+    ):
+        if standard_loc.exists() and standard_loc.is_dir():
+            return standard_loc
 
     return None
 
