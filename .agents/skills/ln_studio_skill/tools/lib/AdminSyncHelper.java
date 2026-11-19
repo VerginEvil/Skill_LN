@@ -296,7 +296,10 @@ public class AdminSyncHelper {
                         continue;
                     }
                     Object comp = entry.getValue();
-                    setField(comp, "m_path", normPath);
+                    String existingMPath = (String) getField(comp, "m_path");
+                    if (existingMPath == null || existingMPath.isEmpty() || existingMPath.startsWith(":")) {
+                        setField(comp, "m_path", normPath);
+                    }
                     cleanMap.put(normPath, comp);
                 }
                 saveAdmin(adminFile, cleanMap);

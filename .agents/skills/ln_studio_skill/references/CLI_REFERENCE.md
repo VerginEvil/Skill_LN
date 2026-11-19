@@ -76,8 +76,8 @@ Comprehensive catalog of subcommands provided by the native Rust `skill-ln` bina
 | Command | Options / Arguments | Description |
 |---|---|---|
 | `check-script` | `<script_or_xml_file> [--strict] [--json]` | Offline static 4GL syntax, block balance, and hook check |
-| `validate` | `[<activity_path>] [--strict] [--fix] [--online] [--json]` | 4-layer activity validation (`.admin`, XML single-line, cross-ref / optional server probe, 4GL) |
-| `sync-admin` | `--activity "<act>"` | Synchronize 12-extension SCM `.admin` registration cache |
+| `validate` | `[<activity_path>] [--filter <glob>] [--files <p>] [--strict] [--fix] [--online] [--json]` | 4-layer activity validation (`.admin`, XML single-line, cross-ref, `.ses` UI/parity, 4GL; scoped when `--filter`/`--files` given) |
+| `sync-admin` | `--activity "<act>" [--prune]` | Non-destructive `.admin` merge + `.admin.bak` backup (deletes missing entries only with `--prune`) |
 | `diagnose` | `--activity "<act>" [--errors-only]` | Decode Eclipse binary problem markers (`.markers`) |
 | `build` | `--activity "<act>" [--ui-bridge]` | Trigger JCA remote compile or workbench UI build |
 | `deploy-test` | `--type <t> --name <n> --activity <a> [--mode compile-only\|schema-crdd]` | Push local component changes to server Activity VRC for testing |
@@ -89,7 +89,8 @@ Comprehensive catalog of subcommands provided by the native Rust `skill-ln` bina
 | `mcp-stdio` | _(no arguments)_ | Run native JSON-RPC 2.0 Stdio MCP server (26 tools) |
 | `mcp-setup` | `[--client claude\|cursor\|antigravity\|generic] [--apply]` | Register Stdio MCP Server (`skill-ln mcp-stdio`) in client configuration |
 | `verify-studio-build` | `--studio-home <path>` | Verify Studio Build 0640 plugin JARs vs pure-Rust crate coverage |
-| `audit-4gl` | `<file> [--mode dal2\|uedll\|general] [--cloud] [--json]` | Run offline 4GL/DAL/Extension static code audit |
+| `audit-4gl` | `<file> [--mode auto\|general\|dal2\|uedll] [--cloud] [--dd-cache <p>] [--dd-dir <dir>] [--json]` | Run offline 4GL/DAL/Extension static code audit |
+| `import-dd-txt` | `<dir> [--out .ln_dd_cache.json] [--json]` | Parse `ttadv4420m000` `*.txt` & `*-cdf.txt` reports into `.ln_dd_cache.json` |
 | `fn-search` | `<term> [--cloud-only]` | Search bshell API function index |
 | `doc-search` | `<query> [--limit N]` | Full-text search across ERP LN documentation |
 

@@ -290,30 +290,83 @@ fn test_sync_admin_preserves_flags_uses_after_create_and_skips_extensions() {
     std::fs::write(&new_lbl, "<DR_Label><name>txwh.clot</name></DR_Label>").unwrap();
     std::fs::write(&ext_lib, "<DR_Module><name>txesswhwmd4300</name></DR_Module>").unwrap();
 
-    // Pre-existing .admin entry for session with CheckedOut + Dirty + EverCheckedIn, plus a deleted stale file
+    // Pre-existing .admin entry for session with CheckedOut + Dirty + EverCheckedIn + activity folder m_path prefix, plus a missing file
     let admin_path = act.join(".admin");
     let mut admin = AdminFile::new();
     admin.after_checkout("tx/session/inr/txinr1110m000.ses");
-    admin.get_mut("tx/session/inr/txinr1110m000.ses").unwrap().is_dirty = true;
+    {
+        let e = admin.get_mut("tx/session/inr/txinr1110m000.ses").unwrap();
+        e.is_dirty = true;
+        e.path = "dev_act [EXTce01108]/tx/session/inr/txinr1110m000.ses".to_string();
+    }
     admin.after_create("tx/label/deleted.lbl");
     admin.save_to_path(&admin_path).unwrap();
 
+    // Default sync_admin preserves missing entries (no prune) and preserves m_path prefix + flags
     let res = ln_scm::scm_engine::sync_admin(act).unwrap();
     assert_eq!(res.added, vec!["tx/label/txwh.clot.lbl"]);
-    assert_eq!(res.removed, vec!["tx/label/deleted.lbl"]);
+    assert!(res.removed.is_empty(), "Default sync_admin must not prune missing entries");
+    assert!(act.join(".admin.bak").exists(), "Expected .admin.bak backup");
 
     let reloaded = AdminFile::load_from_path(&admin_path).unwrap();
     let ses_entry = reloaded.get("tx/session/inr/txinr1110m000.ses").unwrap();
     assert!(ses_entry.is_checked_out, "Existing CheckedOut flag must be preserved");
     assert!(ses_entry.is_dirty, "Existing Dirty flag must be preserved");
+    assert_eq!(
+        ses_entry.path,
+        "dev_act [EXTce01108]/tx/session/inr/txinr1110m000.ses",
+        "Activity folder m_path prefix must be preserved"
+    );
+    assert!(reloaded.get("tx/label/deleted.lbl").is_some(), "Missing entry must be kept without --prune");
 
     let lbl_entry = reloaded.get("tx/label/txwh.clot.lbl").unwrap();
-    assert!(lbl_entry.is_created, "New disk file must use after_create");
+    assert!(lbl_entry.is_created, "New writable disk file must use after_create");
     assert!(lbl_entry.is_checked_out);
     assert!(lbl_entry.is_dirty);
 
-    assert!(reloaded.get("tx/library/ess/txesswhwmd4300.lib").is_none(), "Extension must be skipped");
-    assert!(reloaded.get("tx/label/deleted.lbl").is_none(), "Deleted file must be pruned");
+    // Prune mode removes deleted.lbl
+    let res_prune = ln_scm::scm_engine::sync_admin_with_options(act, true).unwrap();
+    assert_eq!(res_prune.removed, vec!["tx/label/deleted.lbl"]);
+    let reloaded_pruned = AdminFile::load_from_path(&admin_path).unwrap();
+    assert!(reloaded_pruned.get("tx/library/ess/txesswhwmd4300.lib").is_none(), "Extension must be skipped");
+    assert!(reloaded_pruned.get("tx/label/deleted.lbl").is_none(), "Deleted file must be pruned with prune=true");
+}
+
+#[test]
+fn test_sync_admin_fails_fast_on_corrupt_admin_and_respects_readonly_new_files() {
+    let tmp = tempdir().unwrap();
+    let act = tmp.path();
+    let lbl = act.join("tx").join("label").join("txro.lbl");
+    std::fs::create_dir_all(lbl.parent().unwrap()).unwrap();
+    std::fs::write(&lbl, "<DR_Label><name>txro</name></DR_Label>").unwrap();
+
+    // 1. Corrupt .admin must fail fast without overwriting
+    let admin_path = act.join(".admin");
+    std::fs::write(&admin_path, b"CORRUPT_ADMIN_BYTES").unwrap();
+    let err = ln_scm::scm_engine::sync_admin(act).unwrap_err();
+    assert!(
+        err.to_string().to_lowercase().contains("admin") || err.to_string().to_lowercase().contains("corrupt") || err.to_string().to_lowercase().contains("malformed") || err.to_string().to_lowercase().contains("magic"),
+        "Unexpected error message: {err}"
+    );
+    assert_eq!(std::fs::read(&admin_path).unwrap(), b"CORRUPT_ADMIN_BYTES");
+
+    // 2. Read-only untracked file gets after_get (isCheckedout=false), not after_create
+    std::fs::remove_file(&admin_path).unwrap();
+    let mut perms = std::fs::metadata(&lbl).unwrap().permissions();
+    perms.set_readonly(true);
+    std::fs::set_permissions(&lbl, perms).unwrap();
+
+    let res = ln_scm::scm_engine::sync_admin(act).unwrap();
+    assert_eq!(res.added, vec!["tx/label/txro.lbl"]);
+    let admin = AdminFile::load_from_path(&admin_path).unwrap();
+    let ro_entry = admin.get("tx/label/txro.lbl").unwrap();
+    assert!(!ro_entry.is_checked_out, "Read-Only untracked file must not be marked checked out");
+    assert!(!ro_entry.is_created);
+
+    // Cleanup readonly for tempdir removal
+    let mut perms_rw = std::fs::metadata(&lbl).unwrap().permissions();
+    perms_rw.set_readonly(false);
+    std::fs::set_permissions(&lbl, perms_rw).unwrap();
 }
 
 #[tokio::test]

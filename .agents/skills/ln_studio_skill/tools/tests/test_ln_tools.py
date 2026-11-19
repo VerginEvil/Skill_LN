@@ -332,6 +332,33 @@ class TestLNAdminSync(unittest.TestCase):
             self.assertNotIn("tx/table/cmg/txcmg011.4gl", comps)
             self.assertEqual(comps["tx/table/cmg/txcmg011.tbl"]["m_path"], "tx/table/cmg/txcmg011.tbl")
 
+    def test_scan_and_sync_activity_safe_merge_backup_and_fail_fast(self):
+        """Asserts scan_and_sync_activity creates .admin.bak, fails fast on corrupt .admin, and gates deletion behind prune=True."""
+        with tempfile.TemporaryDirectory() as td:
+            tpath = Path(td)
+            lbl_dir = tpath / "tx" / "label"
+            lbl_dir.mkdir(parents=True)
+            (lbl_dir / "txnew.lbl").write_text("<DR_Label><name>txnew</name></DR_Label>", encoding="utf-8")
+
+            # Corrupt .admin must raise and leave bytes intact
+            admin_file = tpath / ".admin"
+            admin_file.write_bytes(b"CORRUPT_ADMIN")
+            with self.assertRaises(Exception):
+                scan_and_sync_activity(tpath)
+            self.assertEqual(admin_file.read_bytes(), b"CORRUPT_ADMIN")
+
+            # Valid .admin with stale entry kept when prune=False and removed when prune=True
+            admin_file.unlink()
+            init_admin_file(admin_file)
+            add_component(tpath, "tx/label/stale.lbl")
+            res = scan_and_sync_activity(tpath)
+            self.assertEqual(res["added"], ["tx/label/txnew.lbl"])
+            self.assertEqual(res["removed"], [])
+            self.assertTrue((tpath / ".admin.bak").exists())
+
+            res_prune = scan_and_sync_activity(tpath, prune=True)
+            self.assertEqual(res_prune["removed"], ["tx/label/stale.lbl"])
+
 
 class TestLNErrorReader(unittest.TestCase):
     """Tests for ln_studio_skill/tools/ln_error_reader.py."""

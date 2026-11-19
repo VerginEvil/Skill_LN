@@ -191,6 +191,124 @@ pub(crate) fn resolve_ws_override_path(workspace: Option<&str>) -> Option<PathBu
     workspace.map(|w| WorkspaceContext::resolve_workspace_arg(w).unwrap_or_else(|| PathBuf::from(w)))
 }
 
+fn token_cache_dir_for_home(home_override: Option<&Path>) -> PathBuf {
+    home_override
+        .map(PathBuf::from)
+        .or_else(dirs::home_dir)
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".ln_studio")
+        .join("tokens")
+}
+
+pub fn resolve_login_token_key_with_home(
+    workspace: Option<&str>,
+    ionapi: Option<&str>,
+    home_override: Option<&Path>,
+) -> Result<String, DynErr> {
+    let ws_override = resolve_ws_override_path(workspace);
+    let discovered_ctx = WorkspaceContext::discover(ws_override.as_deref(), None).ok();
+    let tok_dir = token_cache_dir_for_home(home_override);
+    if let Some(ref ctx) = discovered_ctx {
+        let tok_mgr = ln_auth::OAuth2TokenManager::new(Some(tok_dir));
+        if matches!(tok_mgr.check_token_status(&ctx.env_name), ln_auth::TokenStatus::Missing) {
+            if let Some(ws_folder) = ctx.workspace_dir.file_name().and_then(|s| s.to_str()) {
+                if ws_folder != ctx.env_name
+                    && !matches!(tok_mgr.check_token_status(ws_folder), ln_auth::TokenStatus::Missing)
+                {
+                    return Ok(ws_folder.to_string());
+                }
+            }
+        }
+        return Ok(ctx.env_name.clone());
+    }
+    if let Some(w) = workspace {
+        let p = Path::new(w);
+        if p.exists() || w.contains('\\') || w.contains('/') {
+            if let Some(stem) = p.file_name().and_then(|s| s.to_str()).filter(|s| !s.is_empty()) {
+                return Ok(stem.to_string());
+            }
+        }
+        return Ok(w.to_string());
+    }
+    if let Some(ip) = ionapi {
+        let stem = Path::new(ip)
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .filter(|s| !s.is_empty())
+            .unwrap_or("default");
+        return Ok(stem.to_string());
+    }
+    let ctx = WorkspaceContext::discover(None, None)?;
+    Ok(ctx.env_name)
+}
+
+pub fn resolve_login_token_key(workspace: Option<&str>, ionapi: Option<&str>) -> Result<String, DynErr> {
+    resolve_login_token_key_with_home(workspace, ionapi, None)
+}
+
+async fn try_silent_refresh_token(
+    ws: &str,
+    tok_mgr: &ln_auth::OAuth2TokenManager,
+    ionapi: &Option<String>,
+    discovered_ctx: &Option<WorkspaceContext>,
+    home_override: Option<&Path>,
+) -> Option<ln_auth::TokenData> {
+    let cached = tok_mgr.load_token(ws)?;
+    let rt = cached.refresh_token?;
+    let cfg = if let Some(ip) = ionapi {
+        ln_auth::IonapiConfig::load_from_path(Path::new(ip)).ok()
+    } else {
+        None
+    }
+    .or_else(|| discovered_ctx.as_ref().and_then(|c| c.find_ionapi_config()))
+    .or_else(|| WorkspaceContext::load_ionapi_from_cloudenv_with_home(ws, None, home_override))
+    .or_else(|| {
+        discovered_ctx
+            .as_ref()
+            .and_then(|c| WorkspaceContext::load_ionapi_from_cloudenv_with_home(&c.env_name, None, home_override))
+    })?;
+
+    let new_tok = tok_mgr.refresh_access_token(&cfg, &rt).await.ok()?;
+    let _ = tok_mgr.save_token(ws, new_tok.clone());
+    if let Some(ctx) = discovered_ctx {
+        let prefs_path = ctx
+            .workspace_dir
+            .join(".metadata")
+            .join(".plugins")
+            .join("org.eclipse.core.runtime")
+            .join(".settings")
+            .join("com.infor.erpln.jca.connectivity.prefs");
+        if prefs_path.exists() {
+            let _ = ln_auth::sync_connectivity_prefs(&prefs_path, ws, &cfg, None);
+        }
+    }
+    Some(new_tok)
+}
+
+/// Shared status & silent-refresh resolution used by `environments` and `login --status`.
+pub async fn check_and_refresh_env_auth(
+    workspace: Option<&str>,
+    ionapi: Option<&str>,
+    home_override: Option<&Path>,
+) -> Result<(String, Option<WorkspaceContext>, ln_auth::AuthStatusReport), DynErr> {
+    let ws_override = resolve_ws_override_path(workspace);
+    let discovered_ctx = WorkspaceContext::discover(ws_override.as_deref(), None).ok();
+    let ws_owned = resolve_login_token_key_with_home(workspace, ionapi, home_override)?;
+    let tok_dir = token_cache_dir_for_home(home_override);
+    let tok_mgr = ln_auth::OAuth2TokenManager::new(Some(tok_dir.clone()));
+    let mut rep = ln_auth::check_auth_status(&ws_owned, Some(tok_dir.clone()), None);
+    if matches!(rep.status.as_str(), "needs_refresh" | "expired") {
+        let ionapi_opt = ionapi.map(ToString::to_string);
+        if try_silent_refresh_token(&ws_owned, &tok_mgr, &ionapi_opt, &discovered_ctx, home_override)
+            .await
+            .is_some()
+        {
+            rep = ln_auth::check_auth_status(&ws_owned, Some(tok_dir), None);
+        }
+    }
+    Ok((ws_owned, discovered_ctx, rep))
+}
+
 pub(crate) async fn resolve_ctx_and_client(
     workspace: Option<&Path>,
     activity: Option<&Path>,
@@ -325,7 +443,8 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                 .join(".metadata/.plugins/org.eclipse.core.runtime/.settings");
             let conn_file = settings_dir.join("com.infor.erpln.jca.connectivity.prefs");
             let conns = ln_auth::read_connectivity_prefs(&conn_file).unwrap_or_default();
-            let auth_rep = ln_auth::check_auth_status(&ctx.env_name, None, None);
+            let (_token_key, _ctx, auth_rep) =
+                check_and_refresh_env_auth(Some(ctx.workspace_dir.to_string_lossy().as_ref()), None, None).await?;
 
             println!("=== Configured Environments ===");
             println!("  Environment: {}", ctx.env_name);
@@ -367,85 +486,23 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
 
             let ws_override = resolve_ws_override_path(workspace.as_deref());
             let discovered_ctx = WorkspaceContext::discover(ws_override.as_deref(), None).ok();
-            let ws_owned = if let Some(w) = workspace {
-                w
-            } else if let Some(ref ctx) = discovered_ctx {
-                ctx.env_name.clone()
-            } else if let Some(ref ip) = ionapi {
-                Path::new(ip)
-                    .file_stem()
-                    .and_then(|s| s.to_str())
-                    .filter(|s| !s.is_empty())
-                    .unwrap_or("default")
-                    .to_string()
-            } else {
-                // Trigger exact error message (AmbiguousWorkspace / WorkspaceNotFound)
-                let ctx = WorkspaceContext::discover(None, None)?;
-                ctx.env_name
-            };
+            let ws_owned = resolve_login_token_key(workspace.as_deref(), ionapi.as_deref())?;
             let ws = ws_owned.as_str();
             let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
             let tok_dir = home.join(".ln_studio").join("tokens");
             let tok_mgr = ln_auth::OAuth2TokenManager::new(Some(tok_dir.clone()));
 
-            async fn try_silent_refresh(
-                ws: &str,
-                tok_mgr: &ln_auth::OAuth2TokenManager,
-                ionapi: &Option<String>,
-                discovered_ctx: &Option<WorkspaceContext>,
-            ) -> Option<ln_auth::TokenData> {
-                let cached = tok_mgr.load_token(ws)?;
-                let rt = cached.refresh_token?;
-                let cfg = if let Some(ip) = ionapi {
-                    ln_auth::IonapiConfig::load_from_path(Path::new(ip)).ok()
-                } else {
-                    None
-                }
-                .or_else(|| discovered_ctx.as_ref().and_then(|c| c.find_ionapi_config()))
-                .or_else(|| WorkspaceContext::load_ionapi_from_cloudenv(ws, None))?;
-
-                let new_tok = tok_mgr.refresh_access_token(&cfg, &rt).await.ok()?;
-                let _ = tok_mgr.save_token(ws, new_tok.clone());
-                if let Some(ctx) = discovered_ctx {
-                    let prefs_path = ctx
-                        .workspace_dir
-                        .join(".metadata")
-                        .join(".plugins")
-                        .join("org.eclipse.core.runtime")
-                        .join(".settings")
-                        .join("com.infor.erpln.jca.connectivity.prefs");
-                    if prefs_path.exists() {
-                        let _ = ln_auth::sync_connectivity_prefs(&prefs_path, ws, &cfg, None);
-                    }
-                }
-                Some(new_tok)
-            }
-
             if status || check_only {
-                let mut st = tok_mgr.check_token_status(ws);
-                if matches!(st, ln_auth::TokenStatus::NeedsRefresh { .. } | ln_auth::TokenStatus::Expired { .. }) {
-                    if try_silent_refresh(ws, &tok_mgr, &ionapi, &discovered_ctx).await.is_some() {
-                        st = tok_mgr.check_token_status(ws);
-                    }
-                }
-                let is_valid = matches!(st, ln_auth::TokenStatus::Valid { .. });
-                let exp = match st {
-                    ln_auth::TokenStatus::Valid { expires_in, .. } => expires_in,
-                    ln_auth::TokenStatus::NeedsRefresh { expires_in, .. } => expires_in,
-                    ln_auth::TokenStatus::Expired { expires_in } => expires_in,
-                    ln_auth::TokenStatus::Missing => 0.0,
-                };
-                let st_name = match st {
-                    ln_auth::TokenStatus::Valid { .. } => "valid",
-                    ln_auth::TokenStatus::NeedsRefresh { .. } => "needs_refresh",
-                    ln_auth::TokenStatus::Expired { .. } => "expired",
-                    ln_auth::TokenStatus::Missing => "missing",
-                };
+                let (resolved_ws, _ctx, rep) =
+                    check_and_refresh_env_auth(workspace.as_deref(), ionapi.as_deref(), None).await?;
+                let is_valid = rep.status == "valid";
+                let exp = rep.expires_in.unwrap_or(0.0);
+                let st_name = rep.status.as_str();
 
                 if is_json {
-                    println!("{}", json!({ "workspace": ws, "status": st_name, "valid": is_valid, "expires_in": exp }));
+                    println!("{}", json!({ "workspace": resolved_ws, "status": st_name, "valid": is_valid, "expires_in": exp }));
                 } else {
-                    println!("Auth Status for '{}':", ws);
+                    println!("Auth Status for '{}':", resolved_ws);
                     println!("  Valid: {}", is_valid);
                     println!("  Expires in: {}s", exp);
                     println!("  Status: {}", st_name);
@@ -485,7 +542,7 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
 
             let mut rep = ln_auth::check_auth_status(ws, Some(tok_dir.clone()), None);
             if rep.access_token.is_none() && (rep.status == "needs_refresh" || rep.status == "expired") {
-                if try_silent_refresh(ws, &tok_mgr, &ionapi, &discovered_ctx).await.is_some() {
+                if try_silent_refresh_token(ws, &tok_mgr, &ionapi, &discovered_ctx, None).await.is_some() {
                     rep = ln_auth::check_auth_status(ws, Some(tok_dir), None);
                 }
             }
@@ -1295,10 +1352,17 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
         }
 
         Commands::Inject { source, target } => {
+            let target_p = Path::new(&target);
+            if target_p.exists() && std::fs::metadata(target_p)?.permissions().readonly() {
+                return Err(format!(
+                    "ReadOnlyComponentError: Target component '{}' is Read-Only (check out in LN Studio SCM before injecting).",
+                    target
+                ).into());
+            }
             let script = std::fs::read_to_string(&source)?;
-            let xml = std::fs::read_to_string(&target)?;
+            let xml = std::fs::read_to_string(target_p)?;
             let updated = ln_model::inject_script(&xml, &script)?;
-            std::fs::write(&target, updated)?;
+            std::fs::write(target_p, updated)?;
             println!("[SUCCESS] Injected 4GL script from '{}' into '{}'.", source, target);
         }
 
@@ -1325,10 +1389,13 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             }
         }
 
-        Commands::Validate { activity_path, strict, fix, online, json: is_json } => {
+        Commands::Validate { activity_path, strict, fix, online, filter, files, json: is_json } => {
             let act = activity_path.unwrap_or_else(|| ".".to_string());
             let act_p = Path::new(&act);
             let mut validator = ln_model::validator::ActivityValidator::new(act_p.to_path_buf(), strict, fix);
+            if !filter.is_empty() || !files.is_empty() {
+                validator.set_scope(filter, files.into_iter().map(PathBuf::from).collect());
+            }
             if online {
                 match resolve_ctx_and_client(None, Some(act_p)).await {
                     Ok((_ctx, client)) => {
@@ -1388,9 +1455,9 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             }
         }
 
-        Commands::SyncAdmin { activity } => {
+        Commands::SyncAdmin { activity, prune } => {
             let act_path = PathBuf::from(&activity);
-            let res = ln_scm::scm_engine::sync_admin(&act_path)?;
+            let res = ln_scm::scm_engine::sync_admin_with_options(&act_path, prune)?;
             println!(
                 "[SUCCESS] Synchronized .admin for '{}' (disk={}, registered={}, added={}, removed={}).",
                 res.activity,
@@ -1525,9 +1592,25 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
             crate::mcp::run_stdio_server().await?;
         }
 
-        Commands::Audit4gl { path, rule, json: is_json, dd_cache: _ } => {
+        Commands::Audit4gl { path, mode, cloud, rule, json: is_json, dd_cache, dd_dir } => {
             let p = PathBuf::from(&path);
-            let diags = ln_linter::Auditor4GL::new().audit_path(&p, rule.as_deref())?;
+            let effective_mode = mode.as_deref().or_else(|| {
+                rule.as_deref().filter(|r| matches!(r.to_ascii_lowercase().as_str(), "auto" | "general" | "dal2" | "uedll"))
+            });
+            let mut auditor = ln_linter::Auditor4GL::new().with_cloud_mode(cloud);
+            if let Some(ref cache_p) = dd_cache {
+                auditor = auditor.with_dd_cache(ln_linter::DataDictionaryCache::from_path(cache_p));
+            }
+            if let Some(ref dir_p) = dd_dir {
+                auditor = auditor.with_dd_dir(dir_p);
+            }
+            let mut diags = auditor.audit_path(&p, effective_mode)?;
+            if let Some(ref r) = rule {
+                if !matches!(r.to_ascii_lowercase().as_str(), "auto" | "general" | "dal2" | "uedll") {
+                    let r_up = r.to_ascii_uppercase();
+                    diags.retain(|d| d.code == r_up);
+                }
+            }
 
             if is_json {
                 println!("{}", serde_json::to_string_pretty(&diags)?);
@@ -1537,6 +1620,36 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
                 for d in &diags {
                     println!("    [{:?}] {}:{}: {} ({})", d.severity, d.file, d.line, d.message, d.code);
                 }
+            }
+        }
+
+        Commands::ImportDdTxt { dir, out, json: is_json } => {
+            let dd_dir = PathBuf::from(&dir);
+            let out_path = out
+                .map(PathBuf::from)
+                .unwrap_or_else(|| dd_dir.parent().unwrap_or(Path::new(".")).join(".ln_dd_cache.json"));
+            let mut cache = ln_linter::DataDictionaryCache::from_path(&out_path);
+            let imported = cache.ingest_dd_txt_dir(&dd_dir)?;
+            cache.save_to_path(&out_path)?;
+            if is_json {
+                println!(
+                    "{}",
+                    json!({
+                        "status": "success",
+                        "imported_files": imported,
+                        "tables": cache.tables.len(),
+                        "domains": cache.domains.len(),
+                        "out": out_path.to_string_lossy(),
+                    })
+                );
+            } else {
+                println!(
+                    "[SUCCESS] Imported {} DD file(s) -> '{}' (tables={}, domains={}).",
+                    imported,
+                    out_path.display(),
+                    cache.tables.len(),
+                    cache.domains.len()
+                );
             }
         }
 
@@ -1553,7 +1666,10 @@ pub async fn execute_command(cmd: Commands) -> Result<(), DynErr> {
         }
 
         Commands::DocSearch { query, limit, json: is_json } => {
-            let (results, _) = ln_kb::search_docs(&query, None, None, limit);
+            let (results, body_or_warn) = ln_kb::search_docs(&query, None, None, limit);
+            if results.is_empty() && body_or_warn.starts_with("[WARN]") {
+                eprintln!("{body_or_warn}");
+            }
             if is_json {
                 println!("{}", serde_json::to_string_pretty(&results)?);
             } else {

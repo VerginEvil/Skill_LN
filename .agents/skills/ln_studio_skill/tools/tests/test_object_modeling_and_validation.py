@@ -461,6 +461,76 @@ class TestFourLayerValidatorAndFix(unittest.TestCase):
         self.assertIn("[ADVISORY]", output)
         self.assertIn("Error 205", output)
 
+    def test_scoped_validate_ses_warnings_and_ln108_session_generator(self):
+        """Asserts validate --filter/--files isolates unrelated legacy errors, emits .ses UI/parity warnings, and session generator uses LN 10.8 tags."""
+        from generate_ln_session import generate_session_xml
+        from generate_ln_table import generate_label_xml
+        from admin_sync import init_admin_file
+
+        # 1. Session generator uses LN 10.8 integer FormCommand tags & sequential rowScreenPosition
+        ses_xml = generate_session_xml(
+            {
+                "code": "txinr1110m000",
+                "description": "Test Session",
+                "table": "txinr110",
+                "form_commands": [{"name": "exec.run", "function": "run.proc"}],
+            },
+            {
+                "description": "Test Table",
+                "fields": [
+                    {"name": "item", "length": 16, "native_datatype": 6},
+                    {"name": "cwar", "length": 6, "native_datatype": 6},
+                ],
+                "indices": [1],
+            },
+            "EXTce01108",
+        )
+        self.assertIn("<type>1</type>", ses_xml)
+        self.assertIn("<activationType>5</activationType>", ses_xml)
+        self.assertIn("<rowScreenPosition>1</rowScreenPosition>", ses_xml)
+        self.assertIn("<rowScreenPosition>2</rowScreenPosition>", ses_xml)
+
+        # 2. Scoped validation & .ses UI/parity warnings
+        with tempfile.TemporaryDirectory() as td:
+            act_dir = Path(td) / "dev_act [EXTce01108]"
+            ses_inr = act_dir / "tx" / "session" / "inr"
+            ses_cmg = act_dir / "tx" / "session" / "cmg"
+            lbl_dir = act_dir / "tx" / "label"
+            ses_inr.mkdir(parents=True)
+            ses_cmg.mkdir(parents=True)
+            lbl_dir.mkdir(parents=True)
+            (act_dir / ".project").write_text("<projectDescription/>", encoding="utf-8")
+            init_admin_file(act_dir / ".admin")
+            (lbl_dir / "txinr1110m000.lbl").write_text(generate_label_xml("txinr1110m000", "INR", "B61O_a_ext", "EXTce01108"), encoding="utf-8")
+            (lbl_dir / "txinr.cmd.lbl").write_text(generate_label_xml("txinr.cmd", "Cmd", "B61O_a_ext", "EXTce01108", context=10), encoding="utf-8")
+            (lbl_dir / "txinr.f1.lbl").write_text(generate_label_xml("txinr.f1", "F1", "B61O_a_ext", "EXTce01108", context=1), encoding="utf-8")
+
+            (ses_cmg / "txcmg9990m000.ses").write_text(
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?><DR_Controller><name>txcmg9990m000</name><descriptionReference>txcmg.missing_lbl</descriptionReference></DR_Controller>',
+                encoding="utf-8",
+            )
+            (ses_inr / "txinr1110m000.ses").write_text(
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?><DR_Controller><name>txinr1110m000</name><descriptionReference>txinr1110m000</descriptionReference>'
+                '<FormCommand><name>exec.run</name><descriptionReference>txinr.cmd</descriptionReference><type>1</type><activationType>5</activationType><activationName>missing.cmd.fn</activationName><showAsButton>false</showAsButton></FormCommand>'
+                '<Form><PhysicalFormLayout>'
+                '<FormField><fieldName>form.unbound1</fieldName><fieldLabel>inr.f1</fieldLabel><groupID>2</groupID><rowScreenPosition>1</rowScreenPosition><columnScreenPosition>44</columnScreenPosition></FormField>'
+                '<FormField><fieldName>form.unbound2</fieldName><fieldLabel>inr.f1</fieldLabel><groupID>2</groupID><rowScreenPosition>1</rowScreenPosition><columnScreenPosition>44</columnScreenPosition></FormField>'
+                '</PhysicalFormLayout></Form>'
+                '<DR_Module><name>txinr1110m000</name><Source><expression>declaration:\n\textern domain tcitem form.unbound1\n</expression><sourceType>1</sourceType></Source></DR_Module>'
+                '</DR_Controller>',
+                encoding="utf-8",
+            )
+
+            v = ActivityValidator(act_dir, filter_patterns=["txinr*"])
+            rep = v.run()
+            self.assertEqual(len(rep.errors), 0, f"Scoped validate must isolate txcmg error: {[str(e) for e in rep.errors]}")
+            warn_msgs = [w.message for w in rep.warnings]
+            self.assertTrue(any("showAsButton" in m for m in warn_msgs), f"Missing showAsButton warning: {warn_msgs}")
+            self.assertTrue(any("overlap" in m for m in warn_msgs), f"Missing overlap warning: {warn_msgs}")
+            self.assertTrue(any("form.unbound2" in m and "extern" in m for m in warn_msgs), f"Missing unbound2 warning: {warn_msgs}")
+            self.assertFalse(any("form.unbound1" in m and "extern" in m for m in warn_msgs), f"Unexpected unbound1 extern warning: {warn_msgs}")
+            self.assertTrue(any("missing.cmd.fn" in m for m in warn_msgs), f"Missing activationName warning: {warn_msgs}")
+
 
 if __name__ == "__main__":
     unittest.main()

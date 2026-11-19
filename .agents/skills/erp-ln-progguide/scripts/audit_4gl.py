@@ -436,6 +436,242 @@ class DataDictionaryCache:
         except Exception:
             return None
 
+    @staticmethod
+    def _map_dd_txt_datatype(raw_dt: str) -> str:
+        dt = re.sub(r"\s+", " ", raw_dt.strip().lower())
+        if dt.startswith("utc"):
+            return "14"
+        if dt == "date":
+            return "9"
+        if dt.startswith("double"):
+            return "2"
+        if dt in ("long", "integer"):
+            return "3"
+        if dt in ("numeric", "float"):
+            return "5"
+        if dt.startswith("enum"):
+            return "7"
+        if dt == "byte":
+            return "1"
+        if dt in ("string", "multibyte", "multibyte string", "text"):
+            return "6"
+        return raw_dt.strip()
+
+    def _merge_table_entry(
+        self,
+        tbl_name: str,
+        fields_map: Dict[str, Dict[str, Any]],
+        indices_map: Dict[str, List[str]],
+        description: str = "",
+    ) -> None:
+        t_key = tbl_name.lower().strip()
+        existing = self.tables.get(t_key)
+        if not existing:
+            self.tables[t_key] = {
+                "name": t_key,
+                "description": description,
+                "fields": fields_map,
+                "indices": indices_map,
+            }
+            return
+
+        if description and not existing.get("description"):
+            existing["description"] = description
+
+        existing_fields = existing.setdefault("fields", {})
+        if isinstance(existing_fields, dict):
+            for f_key, f_meta in fields_map.items():
+                if f_key not in existing_fields:
+                    existing_fields[f_key] = f_meta
+                else:
+                    cur = existing_fields[f_key]
+                    for k, v in f_meta.items():
+                        if v not in (None, "", []):
+                            if k not in cur or cur[k] in (None, ""):
+                                cur[k] = v
+
+        if indices_map:
+            existing_indices = existing.get("indices")
+            if isinstance(existing_indices, dict):
+                for idx_k, cols in indices_map.items():
+                    if idx_k not in existing_indices or not existing_indices[idx_k]:
+                        existing_indices[idx_k] = cols
+            elif not existing_indices:
+                existing["indices"] = indices_map
+
+    def _merge_domain_if_missing(self, dmn_name: str, datatype: str, length: str = "") -> None:
+        d_key = dmn_name.lower().strip()
+        if not d_key or d_key == "not applicab":
+            return
+        if d_key not in self.domains:
+            entry: Dict[str, Any] = {"name": d_key, "datatype": datatype}
+            if length:
+                entry["length"] = length
+            self.domains[d_key] = entry
+        elif datatype and not self.domains[d_key].get("datatype"):
+            self.domains[d_key]["datatype"] = datatype
+
+    def ingest_dd_txt_content(self, text: str, source_name: str = "") -> Optional[Dict[str, Any]]:
+        """
+        Parse an Infor LN `ttadv4420m000` Table Definition `.txt` dump or `*-cdf.txt`
+        Customer Defined Fields report and merge non-destructively into the cache.
+        """
+        lines = text.splitlines()
+        is_cdf = "customer defined fields" in text.lower() or source_name.lower().endswith("-cdf.txt")
+
+        if is_cdf:
+            tbl_name = ""
+            tbl_desc = ""
+            fields_map: Dict[str, Dict[str, Any]] = {}
+            re_cdf_tbl = re.compile(r"^\s*Table\s*:\s*([a-z]{5}\d{3})\b\s*(.*)$", re.IGNORECASE)
+            re_cdf_row = re.compile(
+                r"^\s*([a-z][a-z0-9_]*)\s*\[\s*\d+\s*\]\s+.*?\s+(Yes|No)\s+(Yes|No)\s+(Yes|No)\s+(Yes|No)\s+"
+                r"(String|Date|UTC\s*Date(?:/Time|/)?|Numeric|Double|Long|Integer|Enumerate|Text|Multibyte(?:\s+String)?|Boolean)\s+"
+                r"([a-z]{2})\s+([a-z0-9_.]+)\s+(Yes|No)\s+(Yes|No)\s+(Yes|No)\b",
+                re.IGNORECASE,
+            )
+            for line in lines:
+                m_t = re_cdf_tbl.match(line)
+                if m_t:
+                    tbl_name = m_t.group(1).lower()
+                    tbl_desc = m_t.group(2).strip()
+                    continue
+                m_r = re_cdf_row.match(line)
+                if m_r:
+                    raw_field = m_r.group(1).lower()
+                    f_name = raw_field if raw_field.startswith("cdf_") else f"cdf_{raw_field}"
+                    dt_code = self._map_dd_txt_datatype(m_r.group(6))
+                    dmn = f"{m_r.group(7).lower()}{m_r.group(8).lower()}"
+                    fields_map[f_name] = {
+                        "name": f_name,
+                        "domain": dmn,
+                        "datatype": dt_code,
+                        "mandatory": False,
+                    }
+                    self._merge_domain_if_missing(dmn, dt_code)
+            if not tbl_name or not fields_map:
+                return None
+            self._merge_table_entry(tbl_name, fields_map, {}, tbl_desc)
+            return {"type": "cdf", "table": tbl_name, "fields": len(fields_map)}
+
+        # Standard Table Definition dump (ttadv4420m000)
+        tbl_name = ""
+        tbl_desc = ""
+        fields_map = {}
+        combined_children: Dict[str, List[str]] = {}
+        indices_map: Dict[str, List[str]] = {}
+        current_combined: Optional[str] = None
+        in_index_section = False
+
+        re_tbl_hdr = re.compile(
+            r"^\s*Table\s*:\s*([a-z]{2})\s+([a-z]{3})\s+(\d{3})\b\s*(.*)$",
+            re.IGNORECASE,
+        )
+        re_field_row = re.compile(
+            r"^\s*\d+\s+([a-z][a-z0-9_]*)\s+(.*?)\s+([a-z]{2}[a-z0-9_.]+)\s+"
+            r"(UTC\s*Date(?:/Time|/)?|Multibyte(?:\s+String)?|Integer|String|Enumerate|Double|Long|Text|Date|Byte|Numeric|Float|Boolean)\s+"
+            r"(?:\d+\s+)?(\d+)\s+(Yes|No)\s+(Yes|No)\b",
+            re.IGNORECASE,
+        )
+        re_combined_row = re.compile(r"^\s*\d+\s+(cmb[a-z0-9_]*)\s+Not\s+applicab", re.IGNORECASE)
+        re_child_row = re.compile(r"^\s+([a-z][a-z0-9_]*)\s+Child\s+Field\b", re.IGNORECASE)
+        re_idx_row = re.compile(r"^\s*(\d+)\s+(.+?)\s+(Yes|No)\s+(Yes|No)\s*$", re.IGNORECASE)
+
+        for line in lines:
+            if not tbl_name:
+                m_t = re_tbl_hdr.match(line)
+                if m_t:
+                    tbl_name = f"{m_t.group(1)}{m_t.group(2)}{m_t.group(3)}".lower()
+                    desc_raw = re.sub(r"\s+Update\s+Reference\s+Message.*$", "", m_t.group(4), flags=re.IGNORECASE)
+                    tbl_desc = desc_raw.strip()
+                    continue
+
+            if re.match(r"^\s*Index\s+Description\s+Index\s+Parts\b", line, re.IGNORECASE):
+                in_index_section = True
+                current_combined = None
+                continue
+
+            if in_index_section:
+                m_idx = re_idx_row.match(line)
+                if m_idx:
+                    idx_num = m_idx.group(1)
+                    mid_tokens = m_idx.group(2).strip().split()
+                    parts_rev: List[str] = []
+                    known_names = set(fields_map.keys()) | set(combined_children.keys())
+                    for tok in reversed(mid_tokens):
+                        tok_low = tok.lower()
+                        if tok_low in known_names:
+                            parts_rev.append(tok_low)
+                        else:
+                            break
+                    expanded: List[str] = []
+                    for part in reversed(parts_rev):
+                        if part in combined_children:
+                            expanded.extend(combined_children[part])
+                        else:
+                            expanded.append(part)
+                    if expanded:
+                        indices_map[idx_num] = expanded
+                continue
+
+            m_child = re_child_row.match(line)
+            if m_child and current_combined:
+                combined_children.setdefault(current_combined, []).append(m_child.group(1).lower())
+                continue
+
+            m_cmb = re_combined_row.match(line)
+            if m_cmb:
+                current_combined = m_cmb.group(1).lower()
+                combined_children.setdefault(current_combined, [])
+                continue
+
+            m_fld = re_field_row.match(line)
+            if m_fld:
+                current_combined = None
+                f_name = m_fld.group(1).lower()
+                f_desc = m_fld.group(2).strip()
+                dmn = m_fld.group(3).lower()
+                dt_code = self._map_dd_txt_datatype(m_fld.group(4))
+                phys_len = m_fld.group(5)
+                mand = m_fld.group(6).lower() == "yes"
+                fields_map[f_name] = {
+                    "name": f_name,
+                    "domain": dmn,
+                    "datatype": dt_code,
+                    "maxLength": phys_len,
+                    "mandatory": mand,
+                    "description": f_desc,
+                }
+                self._merge_domain_if_missing(dmn, dt_code, phys_len)
+
+        if not tbl_name or not fields_map:
+            return None
+        self._merge_table_entry(tbl_name, fields_map, indices_map, tbl_desc)
+        return {"type": "table", "table": tbl_name, "fields": len(fields_map), "indices": len(indices_map)}
+
+    def ingest_dd_txt_dir(self, dd_dir: Path) -> Dict[str, int]:
+        """Parse all `*.txt` and `*-cdf.txt` Data Dictionary dumps in `dd_dir`."""
+        target_dir = Path(dd_dir)
+        tables_count = 0
+        cdf_count = 0
+        if not target_dir.exists() or not target_dir.is_dir():
+            return {"tables_imported": 0, "cdf_imported": 0}
+
+        # Process base table dumps first, then *-cdf.txt so CDF fields merge onto base tables
+        txt_files = sorted(target_dir.glob("*.txt"), key=lambda p: (1 if p.name.lower().endswith("-cdf.txt") else 0, p.name.lower()))
+        for txt_path in txt_files:
+            try:
+                content = txt_path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            res = self.ingest_dd_txt_content(content, source_name=txt_path.name)
+            if res:
+                if res.get("type") == "cdf":
+                    cdf_count += 1
+                else:
+                    tables_count += 1
+        return {"tables_imported": tables_count, "cdf_imported": cdf_count}
+
 
 # ============================================================================
 # Lightweight Pure-Python Tokenizer & Recursive-Descent AST Parser (SYN001 & CAV003)
@@ -1107,6 +1343,7 @@ class Auditor4GL:
         strict: bool = False,
         main_table: Optional[str] = None,
         dd_cache: Optional[Union[DataDictionaryCache, Dict[str, Any], Path, str]] = None,
+        dd_dir: Optional[Union[Path, str]] = None,
         auto_fetch_dd: bool = False,
         auto_fetch_callback: Optional[Callable[[str, str], Optional[str]]] = None,
     ):
@@ -1118,6 +1355,7 @@ class Auditor4GL:
         self.min_severity_level = SEVERITY_LEVELS.get(min_severity.upper(), 0)
         self.strict = strict
         self.main_table = main_table.lower().strip() if main_table else None
+        self.dd_dir = Path(dd_dir) if dd_dir else None
         self.auto_fetch_dd = auto_fetch_dd
         self.auto_fetch_callback = auto_fetch_callback
 
@@ -1229,22 +1467,29 @@ class Auditor4GL:
 
     def _resolve_dd_cache(self, file_path: str) -> DataDictionaryCache:
         """Locate or initialize the active DataDictionaryCache for the target file."""
-        if self.dd_cache is not None:
-            return self.dd_cache
+        cache: Optional[DataDictionaryCache] = self.dd_cache
 
-        search_dirs: List[Path] = []
-        if file_path and file_path != "<stdin>":
-            p = Path(file_path).resolve()
-            search_dirs.extend([p.parent] + list(p.parents[:5]))
-        search_dirs.append(Path.cwd())
+        if cache is None:
+            search_dirs: List[Path] = []
+            if file_path and file_path != "<stdin>":
+                p = Path(file_path).resolve()
+                search_dirs.extend([p.parent] + list(p.parents[:5]))
+            search_dirs.append(Path.cwd())
 
-        for d in search_dirs:
-            candidate = d / ".ln_dd_cache.json"
-            if candidate.exists():
-                return DataDictionaryCache(cache_path=candidate)
+            for d in search_dirs:
+                candidate = d / ".ln_dd_cache.json"
+                if candidate.exists():
+                    cache = DataDictionaryCache(cache_path=candidate)
+                    break
 
-        default_path = (Path(file_path).resolve().parent if file_path and file_path != "<stdin>" else Path.cwd()) / ".ln_dd_cache.json"
-        return DataDictionaryCache(cache_path=default_path)
+            if cache is None:
+                default_path = (Path(file_path).resolve().parent if file_path and file_path != "<stdin>" else Path.cwd()) / ".ln_dd_cache.json"
+                cache = DataDictionaryCache(cache_path=default_path)
+
+        if self.dd_dir is not None and self.dd_dir.exists():
+            cache.ingest_dd_txt_dir(self.dd_dir)
+
+        return cache
 
     @staticmethod
 
@@ -1260,11 +1505,11 @@ class Auditor4GL:
 
                 dt = str(meta.get("datatype") or "").lower()
 
-                if dt in ("string", "multibyte string", "1", "2") or "str" in dt:
+                if dt in ("string", "multibyte string", "multibyte", "text", "6") or "str" in dt:
 
                     return True
 
-                if dt in ("long", "double", "float", "date", "utc", "enum", "boolean", "3", "4", "5", "6", "7", "8", "9"):
+                if dt in ("byte", "long", "double", "float", "numeric", "date", "utc", "enum", "boolean", "1", "2", "3", "4", "5", "7", "8", "9", "14"):
 
                     return False
 
@@ -1385,6 +1630,7 @@ class Auditor4GL:
         auto_fetch_dd: Optional[bool] = None,
     ) -> List[Diagnostic]:
         """Perform comprehensive semantic, schema, and AST static verification on 4GL script content."""
+        explicit_mode = mode.lower().strip() if (mode and mode != "auto") else None
         if not mode or mode == "auto":
             mode = self.detect_archetype(file_path, content)
 
@@ -1448,17 +1694,22 @@ class Auditor4GL:
 
         # Extension Modeler state
         path_lower = file_path.lower()
+        norm_path = path_lower.replace("\\", "/")
         stem = Path(file_path).stem.lower() if file_path and file_path != "<stdin>" else ""
         content_lower = content.lower()
-        is_extension = (
-            "#context_on" in content_lower
-            or "#context_off" in content_lower
-            or path_lower.endswith(".cln")
-            or "_ext.4gl" in path_lower
-            or "/est/" in path_lower.replace("\\", "/")
-            or "/ess/" in path_lower.replace("\\", "/")
+        has_context_directives = "#context_on" in content_lower or "#context_off" in content_lower
+        has_ext_markers = (
+            "_ext.4gl" in path_lower
+            or "/est/" in norm_path
+            or "/ess/" in norm_path
             or "table_extension" in path_lower
             or "session_extension" in path_lower
+            or "bic_tableext" in content_lower
+            or "bic_sessionext" in content_lower
+        )
+        is_extension = has_context_directives or (
+            explicit_mode not in ("general", "session", "library", "table", "report")
+            and has_ext_markers
         )
         is_session_ext = is_extension and (
             re.search(r"[a-z]{5}\d{3,4}[ms]\d{3}", path_lower) is not None
@@ -2771,6 +3022,10 @@ class Auditor4GL:
                         )
                     )
 
+        self._audit_runtime_traps_and_sql(
+            file_path, lines, cleaned_lines, active_dd_cache, diagnostics
+        )
+
         # Filter by severity
         filtered: List[Diagnostic] = []
         for d in diagnostics:
@@ -2778,6 +3033,265 @@ class Auditor4GL:
                 filtered.append(d)
 
         return filtered
+
+    def _audit_runtime_traps_and_sql(
+        self,
+        file_path: str,
+        lines: List[str],
+        cleaned_lines: List[str],
+        active_dd: Optional[DataDictionaryCache],
+        diagnostics: List[Diagnostic],
+    ) -> None:
+        """Audit DAL007, STR002, CAV004, DMN004, and SQL009-SQL011 hygiene rules."""
+        # 1. Collect local double variables and utc.to.local() targets
+        double_vars: Set[str] = set()
+        local_utc_vars: Set[str] = set()
+        re_dbl_decl = re.compile(r"^\s*(?:static\s+|extern\s+)?double\s+([a-zA-Z0-9_.,\s]+)", re.IGNORECASE)
+        re_dbl_param = re.compile(r"\bdouble\s+([a-zA-Z0-9_.]+)", re.IGNORECASE)
+        re_utc_local = re.compile(r"^\s*([a-zA-Z0-9_.]+)\s*=\s*utc\.to\.local\s*\(", re.IGNORECASE)
+
+        for cl in cleaned_lines:
+            m_dd = re_dbl_decl.match(cl)
+            if m_dd and "(" not in cl.split("double", 1)[1]:
+                for part in m_dd.group(1).split(","):
+                    v = part.strip().split("(")[0].strip().lower()
+                    if v:
+                        double_vars.add(v)
+            for m_dp in re_dbl_param.finditer(cl):
+                double_vars.add(m_dp.group(1).lower())
+            m_ul = re_utc_local.match(cl)
+            if m_ul:
+                local_utc_vars.add(m_ul.group(1).lower())
+
+        full_code = "\n".join(cleaned_lines).lower()
+        has_utf8_bom = bool(
+            re.search(r"chr\$\s*\(\s*239\s*\)", full_code)
+            and (re.search(r"chr\$\s*\(\s*187\s*\)", full_code) or re.search(r"chr\$\s*\(\s*191\s*\)", full_code))
+        )
+        has_export_ctx = any(tok in full_code for tok in ("sprintf$", "seq.puts", "seq.write", ".csv"))
+
+        re_dal_at_code = re.compile(r'dal\.set\.error\.message\s*\(\s*"@([^"\s]+)"', re.IGNORECASE)
+        re_seq_open_wt = re.compile(r'seq\.open\s*\([^)]*,\s*"wt"\s*\)', re.IGNORECASE)
+        re_utc_to_date = re.compile(r"\butc\.to\.date\s*\(\s*([^,)]+)", re.IGNORECASE)
+        re_cmp = re.compile(r"\b([a-zA-Z0-9_.]+)\s*(==|<>|!=|=)\s*([a-zA-Z0-9_.]+)\b")
+
+        in_sql = False
+        sql_paren_depth = 0
+        sql_stage = ""
+        sql_start_line = 0
+        sql_select_parts: List[str] = []
+        sql_from_parts: List[str] = []
+        sql_where_lines: List[Tuple[int, str]] = []
+
+        def flush_sql_block() -> None:
+            if not sql_start_line:
+                return
+            sel_text = " ".join(sql_select_parts).strip()
+            sel_body = re.sub(r"^\s*select\s+(?:distinct\s+)?", "", sel_text, flags=re.IGNORECASE)
+            unbound: List[str] = []
+            for item in sel_body.split(","):
+                it = item.strip()
+                if re.match(r"^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$", it, re.IGNORECASE):
+                    unbound.append(it)
+            if unbound:
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        sql_start_line,
+                        1,
+                        "WARNING",
+                        "SQL010",
+                        f"Unbound SQL select column(s) ({', '.join(unbound)}); bind into scalar ':l.*' host variables instead of mutating table buffers.",
+                        lines[sql_start_line - 1] if sql_start_line - 1 < len(lines) else "",
+                    )
+                )
+
+            where_full = " ".join(w for _, w in sql_where_lines)
+            has_index_pred = False
+            for w_lno, w_txt in sql_where_lines:
+                if re.search(r"\b_index\d+\s*=\s*\{", w_txt, re.IGNORECASE):
+                    has_index_pred = True
+                    diagnostics.append(
+                        Diagnostic(
+                            file_path,
+                            w_lno,
+                            1,
+                            "WARNING",
+                            "SQL009",
+                            "Legacy '_indexN = {...}' SQL predicate detected; prefer explicit leading column predicates for clarity and index stability.",
+                            lines[w_lno - 1] if w_lno - 1 < len(lines) else "",
+                        )
+                    )
+
+            if active_dd and sql_where_lines and not has_index_pred:
+                from_text = " ".join(sql_from_parts)
+                m_from = re.search(r"\bfrom\s+([a-z]{5}\d{3})(?:\s+(?!for\b|where\b|order\b|group\b|as\b|selectdo\b|selectempty\b|selecteos\b|endselect\b)([a-z][a-z0-9_]*))?", from_text, re.IGNORECASE)
+                if m_from:
+                    tbl_name = m_from.group(1).lower()
+                    alias_name = (m_from.group(2) or tbl_name).lower()
+                    tbl_meta = active_dd.tables.get(tbl_name)
+                    raw_indices = tbl_meta.get("indices") if isinstance(tbl_meta, dict) else None
+                    idx_lists: List[List[str]] = []
+                    if isinstance(raw_indices, dict):
+                        for cols in raw_indices.values():
+                            if isinstance(cols, list) and cols:
+                                idx_lists.append([str(c).lower() for c in cols])
+                    elif isinstance(raw_indices, list):
+                        for entry in raw_indices:
+                            if isinstance(entry, dict) and entry.get("columns"):
+                                idx_lists.append([str(c).lower() for c in entry["columns"]])
+
+                    if idx_lists:
+                        refs = {tbl_name, alias_name}
+                        constrained: Set[str] = set()
+                        for m_c in re.finditer(r"\b([a-z][a-z0-9_]*)\.([a-z0-9_]+)\s*(?:=|in\b|inrange\b|between\b)", where_full, re.IGNORECASE):
+                            if m_c.group(1).lower() in refs:
+                                constrained.add(m_c.group(2).lower())
+                        if constrained and not any(idx[0] in constrained for idx in idx_lists):
+                            first_where_line = sql_where_lines[0][0]
+                            leaders = ", ".join(sorted({idx[0] for idx in idx_lists}))
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    first_where_line,
+                                    1,
+                                    "WARNING",
+                                    "SQL011",
+                                    f"SQL WHERE clause on '{tbl_name}' does not constrain any leading index column ({leaders}); verify index selectivity to prevent full table scans.",
+                                    lines[first_where_line - 1] if first_where_line - 1 < len(lines) else "",
+                                )
+                            )
+
+        for idx, cl in enumerate(cleaned_lines):
+            line_no = idx + 1
+            raw_line = lines[idx] if idx < len(lines) else ""
+            raw_no_comment = raw_line.split("|", 1)[0]
+            cl_stripped = cl.strip()
+            cl_low = cl_stripped.lower()
+
+            # DAL007: dal.set.error.message("@<code>")
+            m_dal_at = re_dal_at_code.search(raw_no_comment)
+            if m_dal_at and any(ch.isdigit() for ch in m_dal_at.group(1)):
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        line_no,
+                        m_dal_at.start() + 1,
+                        "ERROR",
+                        "DAL007",
+                        f"dal.set.error.message(\"@{m_dal_at.group(1)}\") prints literal text '{m_dal_at.group(1)}' instead of looking up message code; remove '@' prefix when passing a message code.",
+                        raw_line,
+                    )
+                )
+
+            # STR002: seq.open(..., "wt") with UTF-8 BOM
+            if has_utf8_bom and re_seq_open_wt.search(raw_no_comment):
+                diagnostics.append(
+                    Diagnostic(
+                        file_path,
+                        line_no,
+                        1,
+                        "ERROR",
+                        "STR002",
+                        "seq.open(..., \"wt\") combined with raw UTF-8 BOM bytes risks encoding/CR-LF corruption; use binary mode \"wb\" when writing explicit UTF-8 BOM.",
+                        raw_line,
+                    )
+                )
+
+            # DMN004: utc.to.date() without utc.to.local() in export formatting context
+            if has_export_ctx:
+                m_utd = re_utc_to_date.search(cl)
+                if m_utd:
+                    arg0 = m_utd.group(1).strip().lower()
+                    if "utc.to.local" not in arg0 and arg0 not in local_utc_vars:
+                        diagnostics.append(
+                            Diagnostic(
+                                file_path,
+                                line_no,
+                                m_utd.start() + 1,
+                                "WARNING",
+                                "DMN004",
+                                "utc.to.date() returns UTC rather than user local time; wrap with utc.to.local() (or use num.to.date()) for user-facing file exports.",
+                                raw_line,
+                            )
+                        )
+
+            # SQL state machine
+            if not in_sql:
+                if re.match(r"^\s*select\b", cl_low) and not cl_low.startswith("selectdo") and not cl_low.startswith("selectempty") and not cl_low.startswith("selecteos"):
+                    in_sql = True
+                    sql_paren_depth = cl_low.count("(") - cl_low.count(")")
+                    sql_stage = "select"
+                    sql_start_line = line_no
+                    sql_select_parts = [cl_stripped]
+                    sql_from_parts = []
+                    sql_where_lines = []
+                    if re.search(r"\bfrom\b", cl_low):
+                        sql_stage = "from"
+                        sql_from_parts.append(cl_stripped)
+                    if re.search(r"\bwhere\b", cl_low):
+                        sql_stage = "where"
+                        sql_where_lines.append((line_no, cl_stripped))
+                    if re.search(r"\b(selectdo|selectempty|selecteos|endselect)\b", cl_low):
+                        flush_sql_block()
+                        in_sql = False
+                # CAV004: Direct = / <> / != on double vars or DD Double columns (outside SQL)
+                if not in_sql and "double.cmp" not in cl_low:
+                    for m_c in re_cmp.finditer(cl):
+                        lhs, op, rhs = m_c.group(1).lower(), m_c.group(2), m_c.group(3).lower()
+                        prefix = cl[: m_c.start()].lower()
+                        is_cmp_op = op in ("<>", "!=", "==") or (
+                            op == "=" and re.search(r"\b(?:if|elseif|while|until|return)\b|\(", prefix) is not None
+                        )
+                        if not is_cmp_op:
+                            continue
+                        def _is_dbl(tok: str) -> bool:
+                            if tok in double_vars:
+                                return True
+                            if active_dd and "." in tok:
+                                parts = tok.split(".", 1)
+                                fld = active_dd.get_field(parts[0], parts[1])
+                                if fld:
+                                    dt = str(fld.get("datatype") or "").lower()
+                                    if dt in ("2", "double"):
+                                        return True
+                            return False
+                        if _is_dbl(lhs) or _is_dbl(rhs):
+                            diagnostics.append(
+                                Diagnostic(
+                                    file_path,
+                                    line_no,
+                                    m_c.start() + 1,
+                                    "ERROR",
+                                    "CAV004",
+                                    f"Direct '{op}' comparison on double value ('{m_c.group(1)} {op} {m_c.group(3)}'); use 'double.cmp(..., epsilon) {op} 0' to avoid floating-point precision errors.",
+                                    raw_line,
+                                )
+                            )
+            else:
+                sql_paren_depth += cl_low.count("(") - cl_low.count(")")
+                if sql_paren_depth <= 0 and re.match(r"^\s*(?:selectdo|selectempty|selecteos|endselect)\b", cl_low):
+                    flush_sql_block()
+                    in_sql = False
+                    sql_start_line = 0
+                elif sql_paren_depth <= 0 and re.match(r"^\s*(?:order\s+by|group\s+by|as\s+set)\b", cl_low):
+                    sql_stage = "tail"
+                elif sql_paren_depth <= 0 and re.match(r"^\s*where\b", cl_low):
+                    sql_stage = "where"
+                    sql_where_lines.append((line_no, cl_stripped))
+                elif sql_paren_depth <= 0 and re.match(r"^\s*from\b", cl_low):
+                    sql_stage = "from"
+                    sql_from_parts.append(cl_stripped)
+                else:
+                    if sql_stage == "select":
+                        sql_select_parts.append(cl_stripped)
+                    elif sql_stage == "from":
+                        sql_from_parts.append(cl_stripped)
+                    elif sql_stage == "where":
+                        sql_where_lines.append((line_no, cl_stripped))
+
+        if in_sql and sql_start_line:
+            flush_sql_block()
 
     def audit_path(self, target: Path, mode: Optional[str] = None) -> List[Diagnostic]:
         """Audit single file or recursively audit directory."""
@@ -2861,6 +3375,11 @@ def main() -> int:
         help="Path to .ln_dd_cache.json for TBL002 and DMN001 schema validation",
     )
     parser.add_argument(
+        "--dd-dir",
+        default=None,
+        help="Directory of ttadv4420m000 Table Definitions (*.txt / *-cdf.txt) to ingest on the fly",
+    )
+    parser.add_argument(
         "--auto-fetch-dd",
         action="store_true",
         help="Automatically pull missing .tbl / .dmn definitions read-only from the server and update .ln_dd_cache.json",
@@ -2899,6 +3418,7 @@ def main() -> int:
         strict=args.strict,
         main_table=args.main_table,
         dd_cache=Path(args.dd_cache) if args.dd_cache else None,
+        dd_dir=Path(args.dd_dir) if args.dd_dir else None,
         auto_fetch_dd=args.auto_fetch_dd,
     )
 

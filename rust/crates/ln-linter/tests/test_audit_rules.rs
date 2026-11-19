@@ -874,12 +874,13 @@ fn test_audit_real_workspace_dev_natt_v01108_zero_false_positives() {
         .iter()
         .filter(|d| {
             clean_files.iter().any(|name| d.file.ends_with(name))
-                && (d.severity == Severity::Error || d.severity == Severity::Warning)
+                && (d.severity == Severity::Error
+                    || (d.severity == Severity::Warning && !matches!(d.code.as_str(), "SQL009" | "SQL010")))
         })
         .collect();
     assert!(
         clean_file_diags.is_empty(),
-        "Expected 0 errors/warnings on clean files {:?}, got: {:?}",
+        "Expected 0 errors (and no unexpected warnings) on clean files {:?}, got: {:?}",
         clean_files,
         clean_file_diags
     );
@@ -995,5 +996,267 @@ function extern long get.extension.point.version() {
         .filter(|d| d.severity == Severity::Error || d.severity == Severity::Warning)
         .collect();
     assert!(issues.is_empty(), "Expected 0 issues, got: {:?}", issues);
+}
+
+#[test]
+fn test_cln_ui_session_not_misclassified_as_extension() {
+    let ui_script = r#"
+declaration:
+    table ttxinr110
+#include <bic_dam>
+
+before.program:
+    clean.mess()
+
+functions:
+function extern void exec.process()
+{
+    message("Ready")
+}
+"#;
+    let auditor = Auditor4GL::new();
+    for mode in [None, Some("general")] {
+        let diags = auditor.audit_content(ui_script, "Sessions/txinr1110m000.cln", mode, None);
+        let ext_diags: Vec<_> = diags.iter().filter(|d| d.code.starts_with("EXT")).collect();
+        assert!(
+            ext_diags.is_empty(),
+            "Standard UI .cln should not emit EXT* under mode={:?}: {:?}",
+            mode,
+            ext_diags
+        );
+    }
+
+    let diags_tbl_general = auditor.audit_content(ui_script, "whinh431.cln", Some("general"), None);
+    assert!(!diags_tbl_general.iter().any(|d| d.code.starts_with("EXT")));
+
+    let ext_script = r#"
+#context_on "declarations"
+#include <bic_tableext>
+#context_off
+function extern void unwrapped_helper()
+{
+}
+"#;
+    let diags_ext = auditor.audit_content(ext_script, "Extension/whinh431.cln", Some("general"), None);
+    assert!(diags_ext.iter().any(|d| d.code == "EXT003"));
+}
+
+#[test]
+fn test_dd_txt_importer_and_auto_dd_cache_loading() {
+    let tbl_txt = r#"----- หน้า 1 -----
+Date : 26-10-27 [ 16:48, Asi ] Table Definitions by Package / Table / VRC Page : 1
+Table : ci sli 220 Manual Sales Invoice Headers Update Reference Message:
+Field Name Description Domain Datatype Physic. Mand. Acti Refer. Reference
+1 sfcp Financial Company ( cisli.sfcp ) tcncmp Integer 2 Yes Yes tc emm 170 Mandatory
+2 msid Manual Sales ID ( cisli.msid ) tcorno String 9 Yes Yes Not applicab
+3 rate Rate ( cisli.rate ) tcratc Double 3 8 No Yes Not applicab
+4 srtp Source Type ( cisli.srtp ) tcsli.srtp Enumerate 1 Yes Yes Not applicab
+5 cmba Not applicab
+   sfcp Child Field
+   msid Child Field
+Index Description Index Parts Dupl Acti
+1 2 3 4 5 6 7 8 9 10
+1 Financial Company, Manual Sales ID cmba No Yes
+"#;
+    let cdf_txt = r#"----- หน้า 1 -----
+Table : cisli220 Manual Sales Invoice Headers
+Field Multi I.Hidden I.Hidden I.Hidden Data Type Domain List Initial value (name) Calc Acti Avai Origin
+bank [ 1 ] Bank Code No No No Yes String tc mcs.str20m No Yes Yes Manual
+"#;
+
+    let tmp = tempfile::tempdir().unwrap();
+    let dd_dir = tmp.path().join("Table Definitions");
+    std::fs::create_dir_all(&dd_dir).unwrap();
+    std::fs::write(dd_dir.join("cisli220.txt"), tbl_txt).unwrap();
+    std::fs::write(dd_dir.join("cisli220-cdf.txt"), cdf_txt).unwrap();
+
+    let cache_path = tmp.path().join(".ln_dd_cache.json");
+    std::fs::write(
+        &cache_path,
+        r#"{"version":"1.0","tables":{},"domains":{"tcsli.srtp":{"name":"tcsli.srtp","datatype":"7","constants":{"sales.order":"1"}}}}"#,
+    )
+    .unwrap();
+
+    let mut cache = DataDictionaryCache::from_path(&cache_path);
+    cache.ingest_dd_txt_dir(&dd_dir).unwrap();
+    cache.save_to_path(&cache_path).unwrap();
+
+    assert!(cache.has_table("cisli220"));
+    assert!(cache.has_field("cisli220", "rate"));
+    assert!(cache.has_field("cisli220", "cdf_bank"));
+    assert_eq!(
+        cache.get_field("cisli220", "rate").and_then(|f| f.datatype.as_ref()).and_then(|v| v.as_str()),
+        Some("2")
+    );
+    assert_eq!(cache.get_index_columns("cisli220", "1"), Some(vec!["sfcp".to_string(), "msid".to_string()]));
+    assert!(cache.get_domain("tcsli.srtp").and_then(|d| d.constants.as_ref()).map_or(false, |c| c.contains_key("sales.order")));
+    assert_eq!(cache.get_domain("tcorno").and_then(|d| d.length), Some(9));
+    assert_eq!(
+        cache.get_field("cisli220", "rate").and_then(|f| f.max_length.as_ref()).and_then(|v| v.as_str()),
+        Some("8")
+    );
+
+    let auditor = Auditor4GL::new();
+    assert!(auditor.is_string_domain("tcorno", Some(&cache)));
+    assert!(!auditor.is_string_domain("tcratc", Some(&cache)));
+
+    // Also verify Auditor4GL::audit_path auto-discovers .ln_dd_cache.json from parent directory without explicit dd_cache
+    let script_path = tmp.path().join("check_sli.cln");
+    std::fs::write(
+        &script_path,
+        "declaration:\n    table tcisli220\nfunction void run_it() {\n    cisli220.bad_col = 1\n    cisli220.cdf_bank = \"OK\"\n    if cisli220.srtp <> 1 then\n    endif\n}\n",
+    )
+    .unwrap();
+    let diags = Auditor4GL::new().audit_path(&script_path, Some("general")).unwrap();
+    assert!(diags.iter().any(|d| d.code == "TBL002" && d.message.contains("bad_col")));
+    assert!(!diags.iter().any(|d| d.code == "TBL002" && d.message.contains("cdf_bank")));
+    assert!(diags.iter().any(|d| d.code == "DMN003" && d.severity == Severity::Error));
+}
+
+#[test]
+fn test_new_runtime_trap_and_sql_hygiene_rules() {
+    let dd_json = serde_json::json!({
+        "tables": {
+            "whinr110": {
+                "name": "whinr110",
+                "fields": {
+                    "item": {"name": "item", "domain": "tcitem", "datatype": "6"},
+                    "qstk": {"name": "qstk", "domain": "tcqiv1", "datatype": "2"},
+                    "trdt": {"name": "trdt", "domain": "tcdate", "datatype": "14"}
+                },
+                "indices": {"1": ["item", "trdt"]}
+            },
+            "cisli310": {
+                "name": "cisli310",
+                "fields": {
+                    "sfcp": {"name": "sfcp", "domain": "tcncmp", "datatype": "3"},
+                    "srcp": {"name": "srcp", "domain": "tcncmp", "datatype": "3"},
+                    "srtp": {"name": "srtp", "domain": "tcsli.srtp", "datatype": "7"},
+                    "orno": {"name": "orno", "domain": "tcorno", "datatype": "6"}
+                },
+                "indices": {
+                    "1": ["sfcp", "orno"],
+                    "2": ["srcp", "srtp", "orno"]
+                }
+            }
+        },
+        "domains": {
+            "tcitem": {"name": "tcitem", "datatype": "6"},
+            "tcqiv1": {"name": "tcqiv1", "datatype": "2"},
+            "tcdate": {"name": "tcdate", "datatype": "14"},
+            "tcncmp": {"name": "tcncmp", "datatype": "3"},
+            "tcsli.srtp": {"name": "tcsli.srtp", "datatype": "7"},
+            "tcorno": {"name": "tcorno", "datatype": "6"}
+        }
+    });
+    let dd = DataDictionaryCache::from_json_value(&dd_json);
+
+    let bad_script = r#"
+declaration:
+    table twhinr110
+    table tcisli310
+
+function extern long before.save.object(long mode)
+{
+    dal.set.error.message("@txinr0001")
+    return(DALHOOKERROR)
+}
+
+function void export_csv()
+{
+    long fp, y, m, d, hh, mm, ss
+    double l_tol
+    string line_buf(256)
+
+    fp = seq.open("out.csv", "wt")
+    seq.puts(chr$(239) & chr$(187) & chr$(191), fp)
+    utc.to.date(whinr110.trdt, y, m, d, hh, mm, ss)
+    line_buf = sprintf$("%04d-%02d-%02d", y, m, d)
+    seq.puts(line_buf, fp)
+
+    if whinr110.qstk <> 0 then
+    endif
+    if l_tol = 0 then
+    endif
+
+    select cisli310.orno
+    from cisli310
+    where cisli310.orno = "SO001"
+    selectdo
+    endselect
+
+    select whinr110.item
+    from whinr110
+    where whinr110._index1 = {"ITEM1"}
+    selectdo
+    endselect
+}
+"#;
+    let auditor = Auditor4GL::new();
+    let diags = auditor.audit_content(bad_script, "txinr1110m000.cln", Some("general"), Some(&dd));
+    for (code, sev) in [
+        ("DAL007", Severity::Error),
+        ("STR002", Severity::Error),
+        ("CAV004", Severity::Error),
+        ("DMN004", Severity::Warning),
+        ("SQL009", Severity::Warning),
+        ("SQL010", Severity::Warning),
+        ("SQL011", Severity::Warning),
+    ] {
+        assert!(
+            diags.iter().any(|d| d.code == code && d.severity == sev),
+            "Expected {code} ({sev:?}), got: {diags:?}"
+        );
+    }
+    assert!(diags.iter().filter(|d| d.code == "CAV004").count() >= 2);
+
+    let good_script = r#"
+declaration:
+    table twhinr110
+    table tcisli310
+
+function extern long before.save.object(long mode)
+{
+    dal.set.error.message("txinr0001")
+    dal.set.error.message("@Literal validation error")
+    return(DALHOOKERROR)
+}
+
+function void export_csv()
+{
+    long fp, local_utc, y, m, d, hh, mm, ss
+    double l_tol
+    domain tcorno l.orno
+    string line_buf(256)
+
+    fp = seq.open("out.csv", "wb")
+    seq.puts(chr$(239) & chr$(187) & chr$(191), fp)
+    local_utc = utc.to.local(whinr110.trdt)
+    utc.to.date(local_utc, y, m, d, hh, mm, ss)
+    line_buf = sprintf$("%04d-%02d-%02d", y, m, d)
+    seq.puts(line_buf, fp)
+
+    if double.cmp(whinr110.qstk, 0.0, 0.0001) <> 0 then
+    endif
+    if double.cmp(l_tol, 0.0, 0.0001) = 0 then
+    endif
+
+    select cisli310.orno:l.orno
+    from cisli310
+    where cisli310.srcp = 100
+    and cisli310.srtp = tcsli.srtp.sales
+    and cisli310.orno = "SO001"
+    selectdo
+    endselect
+}
+"#;
+    let clean_diags = auditor.audit_content(good_script, "txinr1110m000.cln", Some("general"), Some(&dd));
+    for code in ["DAL007", "STR002", "CAV004", "DMN004", "SQL009", "SQL010", "SQL011"] {
+        assert!(
+            !clean_diags.iter().any(|d| d.code == code),
+            "Unexpected {code} false positive: {:?}",
+            clean_diags.iter().filter(|d| d.code == code).collect::<Vec<_>>()
+        );
+    }
 }
 

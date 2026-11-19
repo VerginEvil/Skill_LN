@@ -110,14 +110,36 @@ struct TableMeta {
 }
 
 #[derive(Debug, Clone, Default)]
+struct FormCommandMeta {
+    name: String,
+    cmd_type: String,
+    activation_type: String,
+    activation_name: String,
+    show_as_button: String,
+}
+
+#[derive(Debug, Clone, Default)]
+struct FormFieldPos {
+    field_name: String,
+    group_id: String,
+    row: String,
+    col: String,
+}
+
+#[derive(Debug, Clone, Default)]
 struct SessionMeta {
     path: PathBuf,
     session_code: String,
     description_reference: String,
     controller_table: String,
+    controller_tables: HashSet<String>,
     form_fields: HashSet<String>,
+    form_field_names: Vec<String>,
+    form_field_positions: Vec<FormFieldPos>,
     commands: HashSet<String>,
+    form_commands_meta: Vec<FormCommandMeta>,
     groups: HashMap<String, FormGroupInfo>,
+    embedded_script: Option<String>,
     raw_xml: String,
 }
 
@@ -181,6 +203,8 @@ pub struct ActivityValidator {
     multiline_files: Vec<PathBuf>,
     command_labels: HashSet<String>,
     desc_labels: HashSet<String>,
+    filter_patterns: Vec<String>,
+    target_files: Vec<PathBuf>,
 }
 
 impl ActivityValidator {
@@ -209,12 +233,84 @@ impl ActivityValidator {
             multiline_files: Vec::new(),
             command_labels: HashSet::new(),
             desc_labels: HashSet::new(),
+            filter_patterns: Vec::new(),
+            target_files: Vec::new(),
         }
     }
 
     pub fn set_online_labels(&mut self, labels: HashSet<String>) {
         self.online = true;
         self.server_labels = labels;
+    }
+
+    pub fn set_scope(&mut self, filters: Vec<String>, files: Vec<PathBuf>) {
+        self.filter_patterns = filters.into_iter().filter(|f| !f.trim().is_empty()).collect();
+        self.target_files = files;
+    }
+
+    fn has_scope(&self) -> bool {
+        !self.filter_patterns.is_empty() || !self.target_files.is_empty()
+    }
+
+    fn path_matches_scope(&self, candidate: &Path) -> bool {
+        if !self.has_scope() {
+            return true;
+        }
+        let abs_cand = fs::canonicalize(candidate).unwrap_or_else(|_| candidate.to_path_buf());
+        for tf in &self.target_files {
+            let abs_tf = if tf.is_absolute() {
+                fs::canonicalize(tf).unwrap_or_else(|_| tf.clone())
+            } else {
+                fs::canonicalize(self.activity_path.join(tf)).unwrap_or_else(|_| self.activity_path.join(tf))
+            };
+            if abs_cand == abs_tf || candidate == tf {
+                return true;
+            }
+        }
+        let fname = candidate.file_name().and_then(|s| s.to_str()).unwrap_or("").to_ascii_lowercase();
+        let stem = candidate.file_stem().and_then(|s| s.to_str()).unwrap_or("").to_ascii_lowercase();
+        let rel = candidate
+            .strip_prefix(&self.activity_path)
+            .unwrap_or(candidate)
+            .to_string_lossy()
+            .replace('\\', "/")
+            .to_ascii_lowercase();
+        for pat in &self.filter_patterns {
+            let p_low = pat.trim().replace('\\', "/").to_ascii_lowercase();
+            if glob_matches(&p_low, &fname) || glob_matches(&p_low, &stem) || glob_matches(&p_low, &rel) {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn diag_matches_scope(&self, diag: &ValidationDiagnostic) -> bool {
+        if !self.has_scope() {
+            return true;
+        }
+        let p = Path::new(&diag.file_path);
+        if self.path_matches_scope(p) {
+            return true;
+        }
+        // Activity/admin level diagnostic: retain only if message references a scoped component
+        if diag.file_path == self.activity_path.to_string_lossy()
+            || diag.file_path.ends_with(".admin")
+        {
+            let msg_low = diag.message.to_ascii_lowercase();
+            for tf in &self.target_files {
+                let n = tf.file_name().and_then(|s| s.to_str()).unwrap_or("").to_ascii_lowercase();
+                if !n.is_empty() && msg_low.contains(&n) {
+                    return true;
+                }
+            }
+            for pat in &self.filter_patterns {
+                let needle = pat.trim_matches('*').to_ascii_lowercase();
+                if !needle.is_empty() && msg_low.contains(&needle) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     pub fn run(&mut self) -> &ValidationReport {
@@ -225,6 +321,22 @@ impl ActivityValidator {
         self.validate_layer2_structure();
         self.validate_layer3_cross_references();
         self.validate_layer4_scripts();
+
+        if self.has_scope() {
+            let scoped_diags: Vec<ValidationDiagnostic> = self
+                .report
+                .diagnostics
+                .iter()
+                .filter(|d| self.diag_matches_scope(d))
+                .cloned()
+                .collect();
+            self.report.diagnostics = scoped_diags;
+            let multiline = std::mem::take(&mut self.multiline_files);
+            self.multiline_files = multiline
+                .into_iter()
+                .filter(|p| self.path_matches_scope(p))
+                .collect();
+        }
 
         if self.fix {
             self.execute_safe_fixes();
@@ -471,33 +583,67 @@ impl ActivityValidator {
                 meta.description_reference = m.get(1).unwrap().as_str().to_string();
             }
 
+            let to_tbl_re = Regex::new(r"<toTable>([^<]+)</toTable>").unwrap();
+            for tc in to_tbl_re.captures_iter(&content) {
+                meta.controller_tables.insert(tc[1].trim().to_ascii_lowercase());
+            }
+            meta.embedded_script = extract_script(&content);
+
             // Form fields
             let ff_re = Regex::new(r"(?s)<FormField>(.*?)</FormField>").unwrap();
             let fname_re = Regex::new(r"<fieldName>([^<]+)</fieldName>").unwrap();
             let flabel_re = Regex::new(r"<fieldLabel>([^<]+)</fieldLabel>").unwrap();
+            let gid_re = Regex::new(r"<groupID>([^<]+)</groupID>").unwrap();
+            let row_re = Regex::new(r"<rowScreenPosition>([^<]+)</rowScreenPosition>").unwrap();
+            let col_re = Regex::new(r"<columnScreenPosition>([^<]+)</columnScreenPosition>").unwrap();
             for ff_cap in ff_re.captures_iter(&content) {
                 let ff_xml = ff_cap.get(1).unwrap().as_str();
-                if let Some(fn_cap) = fname_re.captures(ff_xml) {
-                    meta.form_fields.insert(fn_cap.get(1).unwrap().as_str().to_string());
+                let f_name = fname_re.captures(ff_xml).map(|c| c[1].trim().to_string()).unwrap_or_default();
+                if !f_name.is_empty() {
+                    meta.form_fields.insert(f_name.clone());
+                    meta.form_field_names.push(f_name.clone());
                 }
                 if let Some(fl_cap) = flabel_re.captures(ff_xml) {
                     meta.form_fields.insert(fl_cap.get(1).unwrap().as_str().to_string());
+                }
+                let group_id = gid_re.captures(ff_xml).map(|c| c[1].trim().to_string()).unwrap_or_default();
+                let row = row_re.captures(ff_xml).map(|c| c[1].trim().to_string()).unwrap_or_default();
+                let col = col_re.captures(ff_xml).map(|c| c[1].trim().to_string()).unwrap_or_default();
+                if !f_name.is_empty() {
+                    meta.form_field_positions.push(FormFieldPos {
+                        field_name: f_name,
+                        group_id,
+                        row,
+                        col,
+                    });
                 }
             }
 
             // Form commands
             let cmd_re = Regex::new(r"(?s)<FormCommand>(.*?)</FormCommand>").unwrap();
             let cname_re = Regex::new(r"<name>([^<]+)</name>").unwrap();
+            let ctype_re = Regex::new(r"<type>([^<]+)</type>").unwrap();
+            let catype_re = Regex::new(r"<activationType>([^<]+)</activationType>").unwrap();
+            let caname_re = Regex::new(r"<activationName>([^<]+)</activationName>").unwrap();
+            let csab_re = Regex::new(r"<showAsButton>([^<]+)</showAsButton>").unwrap();
             for cmd_cap in cmd_re.captures_iter(&content) {
                 let cmd_xml = cmd_cap.get(1).unwrap().as_str();
-                if let Some(cn_cap) = cname_re.captures(cmd_xml) {
-                    meta.commands.insert(cn_cap.get(1).unwrap().as_str().to_string());
+                let cname = cname_re.captures(cmd_xml).map(|c| c[1].trim().to_string()).unwrap_or_default();
+                if !cname.is_empty() {
+                    meta.commands.insert(cname.clone());
                 }
+                meta.form_commands_meta.push(FormCommandMeta {
+                    name: cname,
+                    cmd_type: ctype_re.captures(cmd_xml).map(|c| c[1].trim().to_string()).unwrap_or_default(),
+                    activation_type: catype_re.captures(cmd_xml).map(|c| c[1].trim().to_string()).unwrap_or_default(),
+                    activation_name: caname_re.captures(cmd_xml).map(|c| c[1].trim().to_string()).unwrap_or_default(),
+                    show_as_button: csab_re.captures(cmd_xml).map(|c| c[1].trim().to_string()).unwrap_or_default(),
+                });
             }
 
-            // Form groups
+            // Form groups (both LN 10.8 <groupID> and legacy <groupNumber>)
             let grp_re = Regex::new(r"(?s)<FormGroup>(.*?)</FormGroup>").unwrap();
-            let gnum_re = Regex::new(r"<groupNumber>([^<]+)</groupNumber>").unwrap();
+            let gnum_re = Regex::new(r"<(?:groupID|groupNumber)>([^<]+)</(?:groupID|groupNumber)>").unwrap();
             let pgrp_re = Regex::new(r"<parentGroup>([^<]+)</parentGroup>").unwrap();
             let cgrp_re = Regex::new(r"<firstChildGroup>([^<]+)</firstChildGroup>").unwrap();
             let ngrp_re = Regex::new(r"<nextGroup>([^<]+)</nextGroup>").unwrap();
@@ -790,7 +936,7 @@ impl ActivityValidator {
                         2,
                     );
                 }
-                if !ginfo.first_child_group.is_empty() && !sdata.groups.contains_key(&ginfo.first_child_group) {
+                if !ginfo.first_child_group.is_empty() && ginfo.first_child_group != "0" && !sdata.groups.contains_key(&ginfo.first_child_group) {
                     self.report.add(
                         &p_str, 1, 1,
                         ValidationSeverity::Error,
@@ -798,7 +944,7 @@ impl ActivityValidator {
                         2,
                     );
                 }
-                if !ginfo.next_group.is_empty() && !sdata.groups.contains_key(&ginfo.next_group) {
+                if !ginfo.next_group.is_empty() && ginfo.next_group != "0" && !sdata.groups.contains_key(&ginfo.next_group) {
                     self.report.add(
                         &p_str, 1, 1,
                         ValidationSeverity::Error,
@@ -806,13 +952,109 @@ impl ActivityValidator {
                         2,
                     );
                 }
-                if !ginfo.previous_group.is_empty() && !sdata.groups.contains_key(&ginfo.previous_group) {
+                if !ginfo.previous_group.is_empty() && ginfo.previous_group != "0" && !sdata.groups.contains_key(&ginfo.previous_group) {
                     self.report.add(
                         &p_str, 1, 1,
                         ValidationSeverity::Error,
                         &format!("FormGroup {} has non-existent previousGroup '{}'", gnum, ginfo.previous_group),
                         2,
                     );
+                }
+            }
+
+            // .ses UI Checks: showAsButton=false and overlapping (rowScreenPosition, columnScreenPosition)
+            for cmd in &sdata.form_commands_meta {
+                if cmd.show_as_button.eq_ignore_ascii_case("false")
+                    && (matches!(cmd.cmd_type.as_str(), "1" | "user" | "")
+                        || matches!(cmd.activation_type.as_str(), "5" | "function" | ""))
+                {
+                    self.report.add(
+                        &p_str,
+                        1,
+                        1,
+                        ValidationSeverity::Warning,
+                        &format!(
+                            "FormCommand '{}' has <showAsButton>false</showAsButton>; dialog/user command may be hidden from toolbar.",
+                            cmd.name
+                        ),
+                        2,
+                    );
+                }
+            }
+
+            let mut seen_pos: HashMap<(String, String, String), String> = HashMap::new();
+            for fp in &sdata.form_field_positions {
+                if !fp.row.is_empty() && fp.row != "0" && !fp.col.is_empty() && fp.col != "0" {
+                    let key = (fp.group_id.clone(), fp.row.clone(), fp.col.clone());
+                    if let Some(prev) = seen_pos.get(&key) {
+                        if prev != &fp.field_name {
+                            self.report.add(
+                                &p_str,
+                                1,
+                                1,
+                                ValidationSeverity::Warning,
+                                &format!(
+                                    "FormField '{}' and '{}' overlap at row={}, col={} in groupID={}.",
+                                    prev, fp.field_name, fp.row, fp.col, fp.group_id
+                                ),
+                                2,
+                            );
+                        }
+                    } else {
+                        seen_pos.insert(key, fp.field_name.clone());
+                    }
+                }
+            }
+
+            // Session Script-Form Parity (embedded <DR_Module><Source><expression>)
+            if let Some(ref script) = sdata.embedded_script {
+                if !script.trim().is_empty() {
+                    let script_low = script.to_ascii_lowercase();
+                    for fname in &sdata.form_field_names {
+                        let f_low = fname.to_ascii_lowercase();
+                        if f_low.is_empty() || f_low == "label.only" {
+                            continue;
+                        }
+                        let is_tbl_field = if let Some((t, _)) = f_low.split_once('.') {
+                            sdata.controller_tables.contains(t) || (!sdata.controller_table.is_empty() && t == sdata.controller_table.to_ascii_lowercase())
+                        } else {
+                            false
+                        };
+                        if !is_tbl_field {
+                            let re_ext = Regex::new(&format!(r"(?i)\bextern\b[^\n]*\b{}\b", regex::escape(&f_low))).unwrap();
+                            if !re_ext.is_match(&script_low) {
+                                self.report.add(
+                                    &p_str,
+                                    1,
+                                    1,
+                                    ValidationSeverity::Warning,
+                                    &format!(
+                                        "Session FormField '{}' is not bound to a controller table and has no matching 'extern' declaration in embedded UI script.",
+                                        fname
+                                    ),
+                                    3,
+                                );
+                            }
+                        }
+                    }
+                    for cmd in &sdata.form_commands_meta {
+                        if matches!(cmd.activation_type.as_str(), "5" | "function") && !cmd.activation_name.is_empty() {
+                            let re_fn = Regex::new(&format!(r"(?i)\bfunction\s+extern\b[^\n]*\b{}\s*\(", regex::escape(&cmd.activation_name))).unwrap();
+                            if !re_fn.is_match(script) {
+                                self.report.add(
+                                    &p_str,
+                                    1,
+                                    1,
+                                    ValidationSeverity::Warning,
+                                    &format!(
+                                        "FormCommand '{}' activationName '{}' has no matching 'function extern' handler in embedded UI script.",
+                                        cmd.name, cmd.activation_name
+                                    ),
+                                    3,
+                                );
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1312,4 +1554,27 @@ fn is_extension_component(path: &Path) -> bool {
         || p_str.ends_with(".eso")
         || p_str.ends_with(".eto")
         || p_str.ends_with(".ere")
+}
+
+fn glob_matches(pattern: &str, text: &str) -> bool {
+    let p: Vec<char> = pattern.chars().collect();
+    let t: Vec<char> = text.chars().collect();
+    let (m, n) = (p.len(), t.len());
+    let mut dp = vec![vec![false; n + 1]; m + 1];
+    dp[0][0] = true;
+    for i in 1..=m {
+        if p[i - 1] == '*' {
+            dp[i][0] = dp[i - 1][0];
+        }
+    }
+    for i in 1..=m {
+        for j in 1..=n {
+            if p[i - 1] == '*' {
+                dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+            } else if p[i - 1] == '?' || p[i - 1] == t[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+        }
+    }
+    dp[m][n]
 }

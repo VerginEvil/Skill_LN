@@ -40,7 +40,7 @@ Legacy granular tools supported across all MCP clients:
 | `ln_checkin_activity` | `activity_name`, `project_name`, `comment` | **Bulk SCM**: Checks in all components within an activity. |
 | `ln_create_component` | `type`, `code`, `description`, `activity`, `spec`, `dry_run` | **Generation**: Generates any of the 12 Single-XML TDE components (`table`..`businessobject`) and registers in `.admin`. |
 | `ln_clone_component` | `source_type`, `source_name`, `target_name`, `activity_name` | **Renaming**: Clones standard/custom component into renamed custom activity component. |
-| `ln_validate_activity` | `activity_path`, `strict_mode`, `auto_fix` | **Read-only / Safe Fix**: 4-layer activity validation (`.admin`, XML schema, cross-refs, 4GL). |
+| `ln_validate_activity` | `activity_path`, `strict_mode`, `auto_fix`, `filter`, `files` | **Read-only / Safe Fix**: 4-layer activity validation (`.admin`, XML schema, cross-refs, `.ses` UI/parity, 4GL; optionally scoped via `filter`/`files`). |
 | `ln_deploy_test` | `comp_type`, `comp_name`, `activity_name`, `mode` | **Cloud Testing**: Composite pipeline: Put -> Compile -> CRDD -> CreateTables -> VSC -> CheckIn. |
 | `ln_prepare_end_activity`| `activity`, `project`, `workspace`, `skip_vsc` | **ADR 0007 Human Gate**: Pre-commit verification gate (`ValidateDevelopmentActivity` + `VSC.executeVSC`) before handing delivery off to engineer. |
 | `ln_sync_activity` | `activity`, `project`, `workspace` | **VRC Sync**: Refreshes server-committed components (Read-Only + compact XML + `.admin` transition) preserving local Dirty/CheckedOut edits. |

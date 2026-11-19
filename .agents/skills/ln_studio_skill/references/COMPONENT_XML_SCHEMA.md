@@ -202,21 +202,22 @@ Root element is `<DR_Label>`. Language `2` is standard English:
 
 ## 4. Session Schema (`.ses` / `<DR_Controller>`)
 
-Root element is `<DR_Controller>`. Supports:
-- Single-occurrence / List / Details (`windowType`: `1` for Details, `2` for Multi-occurrence Overview)
-- MMT Controllers (`type`: `mmt_controller`, with `<ControllerSatelliteRelationship>`)
-- Form Commands (`<FormCommand>` declaring standard or custom user choices)
-- Form Groups (`<FormGroup>` building the visual group tree)
+Root element is bare `<DR_Controller>` (no `xmlns` attribute). Supports:
+- Single-occurrence / List / Details (`<windowType>` / `<subType>`)
+- MMT Controllers (`<ControllerSatelliteRelationship>`)
+- Form Commands (`<FormCommand>` with integer `<type>1</type>`, `<activationType>5</activationType>`, `<activationName>`, `<showAsButton>true</showAsButton>`)
+- Form Layout (`<Form><PhysicalFormLayout>` containing sibling `<FormField>` and `<FormGroup>` nodes linked by `<groupID>`, `<sequenceMode>`, `<nextField>`, `<rowScreenPosition>`, `<columnScreenPosition>`)
+
+*(Pretty-printed below for readability; serialize on disk as single-line XML.)*
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<DR_Controller xmlns="http://www.infor.com/businessline/application/dr" version="1.0">
+<DR_Controller>
   <description>Billing Batch MMT Controller</description>
   <versionID>B61O_a_ext</versionID>
   <type>session</type>
   <name>txcmg0110m100</name>
   <descriptionReference>txcmg0110m100</descriptionReference>
-  <windowType>2</windowType>
 
   <!-- Controller Table Relationship -->
   <ControllerTableRelationship>
@@ -237,50 +238,66 @@ Root element is `<DR_Controller>`. Supports:
     <position>1</position>
   </ControllerSatelliteRelationship>
 
-  <!-- Form Commands -->
+  <!-- Form Commands (LN 10.8 integer enums: type=1 user, activationType=5 function) -->
   <FormCommand>
     <name>exec.user.0</name>
-    <function>generate.billing</function>
     <descriptionReference>txcmg0110m100.cmd1</descriptionReference>
     <description>Generate Billing</description>
-    <commandType>1</commandType>
-    <position>10</position>
+    <type>1</type>
+    <position>1</position>
+    <sequence>10</sequence>
+    <activationType>5</activationType>
+    <activationName>generate.billing</activationName>
+    <showAsButton>true</showAsButton>
+    <showOnMenu>true</showOnMenu>
+    <category>5</category>
   </FormCommand>
 
-  <!-- Form Group Tree -->
+  <!-- Physical Form Layout (FormField & FormGroup are siblings) -->
   <Form>
-    <FormGroup>
-      <groupNumber>1</groupNumber>
-      <parentGroup>0</parentGroup>
-      <firstChildGroup>2</firstChildGroup>
-      <nextGroup>0</nextGroup>
-      <previousGroup>0</previousGroup>
-      <name>Main</name>
-    </FormGroup>
-    <FormGroup>
-      <groupNumber>2</groupNumber>
-      <parentGroup>1</parentGroup>
-      <firstChildGroup>0</firstChildGroup>
-      <nextGroup>0</nextGroup>
-      <previousGroup>0</previousGroup>
-      <name>HeaderGroup</name>
+    <PhysicalFormLayout>
       <FormField>
+        <groupID>2</groupID>
+        <sequenceMode>10</sequenceMode>
+        <nextField>20</nextField>
         <fieldName>txcmg011.btno</fieldName>
-        <fieldLabel>txtxcmg011.btno</fieldLabel>
-        <position>10</position>
+        <fieldLabel>cmg011.btno</fieldLabel>
+        <rowScreenPosition>1</rowScreenPosition>
+        <columnScreenPosition>44</columnScreenPosition>
+        <sequenceNumber>1</sequenceNumber>
       </FormField>
-    </FormGroup>
+      <FormGroup>
+        <groupID>1</groupID>
+        <parentGroup>0</parentGroup>
+        <firstChildGroup>2</firstChildGroup>
+        <nextGroup>0</nextGroup>
+        <previousGroup>0</previousGroup>
+        <groupHeader/>
+      </FormGroup>
+      <FormGroup>
+        <groupID>2</groupID>
+        <parentGroup>1</parentGroup>
+        <firstChildGroup>0</firstChildGroup>
+        <nextGroup>0</nextGroup>
+        <previousGroup>0</previousGroup>
+        <groupHeader/>
+      </FormGroup>
+    </PhysicalFormLayout>
+    <name>txcmg0110m100d</name>
   </Form>
 
   <!-- Embedded UI Script -->
   <DR_Module>
+    <type>library</type>
     <name>txcmg0110m100</name>
     <Source>
       <expression>| UI 4GL script content here...</expression>
-      <sourceType>4</sourceType>
+      <sourceType>1</sourceType>
     </Source>
   </DR_Module>
 
+  <windowType>2</windowType>
+  <subType>1</subType>
   <application>EXTce01107</application>
 </DR_Controller>
 ```

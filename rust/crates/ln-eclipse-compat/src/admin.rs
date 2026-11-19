@@ -694,7 +694,7 @@ impl<'a> JavaStreamParser<'a> {
             is_expired,
             is_dirty,
             is_vsc_happy,
-            path: normalize_admin_path(&path),
+            path,
         })
     }
 }

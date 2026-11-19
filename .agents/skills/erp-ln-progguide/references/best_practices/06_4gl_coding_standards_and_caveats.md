@@ -1116,6 +1116,18 @@ Interactive modal popups like `message("...")` halt headless automated backgroun
   - In DAL scripts and batch sessions (`type 4`), raw `message()` is strictly forbidden (`ERROR`).
   - In interactive UI scripts, temporary debugging `message()` calls must be cleaned up prior to production check-in (`WARNING`).
 
+### 8.6 Message-Code `@` Prefix Literal-Text Trap (`DAL007`)
+In `dal.set.error.message()`, prefixing a string with `@` instructs the bshell to display the remaining text literally instead of looking up a Data Dictionary message code (`ERROR`).
+- Pass message codes without `@`: `dal.set.error.message("txinr0001")`.
+- Reserve `@` strictly for literal human-readable strings (containing spaces).
+
+### 8.7 UTF-8 BOM File Mode (`STR002`) & Local Export Time (`DMN004`)
+- **UTF-8 BOM Mode (`STR002`, `ERROR`)**: When writing raw UTF-8 BOM bytes (`chr$(239) & chr$(187) & chr$(191)`), open the file in binary mode (`seq.open(path, "wb")`) rather than text mode (`"wt"`). Use porting-set built-ins `utf8.export()` / `utf8.import()` directly for TSS <-> UTF-8 conversion (no `<bic_utf8>` include header exists in Baan 4GL).
+- **Local Export Time (`DMN004`, `WARNING`)**: `utc.to.date()` converts UTC epochs in UTC rather than the user's local timezone shown in UI `%u002 %U002` grids; wrap with `utc.to.local()` (or use `num.to.date()`) before formatting user-facing exports.
+
+### 8.8 Direct Double Comparisons (`CAV004`)
+Comparing `double` variables or Data Dictionary `Double` columns (`tcqiv1`, etc.) directly with `=`, `<>`, or `!=` risks floating-point precision drift (`ERROR`). Always use `double.cmp(lhs, rhs, epsilon) = 0` or `<> 0`.
+
 ## 9. Summary: Quick Reference Checklist
 
 | Pillar | DO (Mandatory Standard) | DON'T (Strictly Forbidden) |

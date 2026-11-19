@@ -62,12 +62,16 @@ class ActivityValidator:
         fix: bool = False,
         online: bool = False,
         probe_labels_fn=None,
+        filter_patterns: Optional[List[str]] = None,
+        target_files: Optional[List[Union[Path, str]]] = None,
     ):
         self.activity_path = activity_path.resolve()
         self.strict = strict
         self.fix = fix
         self.online = online
         self.probe_labels_fn = probe_labels_fn
+        self.filter_patterns = [f.strip() for f in (filter_patterns or []) if f and f.strip()]
+        self.target_files = [Path(f) for f in (target_files or []) if str(f).strip()]
         self.report = ValidationReport(self.activity_path)
         self.script_checker = ScriptChecker()
 
@@ -107,11 +111,63 @@ class ActivityValidator:
         # Layer 4: 4GL scripts
         self._validate_layer4_scripts()
 
+        if self._has_scope():
+            self.report.diagnostics = [d for d in self.report.diagnostics if self._diag_matches_scope(d)]
+            self._multiline_files = [p for p in self._multiline_files if self._path_matches_scope(p)]
+
         # Safe --fix execution if requested
         if self.fix:
             self._execute_safe_fixes()
 
         return self.report
+
+    def _has_scope(self) -> bool:
+        return bool(self.filter_patterns or self.target_files)
+
+    def _path_matches_scope(self, candidate: Path) -> bool:
+        if not self._has_scope():
+            return True
+        import fnmatch
+        try:
+            abs_cand = candidate.resolve()
+        except OSError:
+            abs_cand = candidate
+        for tf in self.target_files:
+            tf_path = tf if tf.is_absolute() else (self.activity_path / tf)
+            try:
+                if abs_cand == tf_path.resolve():
+                    return True
+            except OSError:
+                if candidate == tf:
+                    return True
+        fname = candidate.name.lower()
+        stem = candidate.stem.lower()
+        try:
+            rel = candidate.resolve().relative_to(self.activity_path).as_posix().lower()
+        except Exception:
+            rel = candidate.as_posix().lower()
+        for pat in self.filter_patterns:
+            p_low = pat.replace("\\", "/").lower()
+            if fnmatch.fnmatch(fname, p_low) or fnmatch.fnmatch(stem, p_low) or fnmatch.fnmatch(rel, p_low):
+                return True
+        return False
+
+    def _diag_matches_scope(self, diag: ValidationDiagnostic) -> bool:
+        if not self._has_scope():
+            return True
+        p = Path(diag.file_path)
+        if self._path_matches_scope(p):
+            return True
+        if p == self.activity_path or str(p).endswith(".admin"):
+            msg_low = diag.message.lower()
+            for tf in self.target_files:
+                if tf.name.lower() in msg_low:
+                    return True
+            for pat in self.filter_patterns:
+                needle = pat.strip("*").lower()
+                if needle and needle in msg_low:
+                    return True
+        return False
 
     def _discover_packages(self) -> None:
         """Discover package directories inside activity."""
@@ -230,7 +286,17 @@ class ActivityValidator:
         return meta
 
     def _parse_session_metadata(self, path: Path) -> Dict[str, Any]:
-        meta: Dict[str, Any] = {"path": path, "form_fields": set(), "commands": set(), "groups": {}}
+        meta: Dict[str, Any] = {
+            "path": path,
+            "form_fields": set(),
+            "form_field_names": [],
+            "form_field_positions": [],
+            "commands": set(),
+            "form_commands_meta": [],
+            "controller_tables": set(),
+            "embedded_script": "",
+            "groups": {},
+        }
         try:
             tree = ET.parse(path)
             root = tree.getroot()
@@ -238,22 +304,40 @@ class ActivityValidator:
             meta["session_code"] = root.findtext(".//{*}name") or path.stem
             meta["descriptionReference"] = root.findtext(".//{*}descriptionReference") or ""
             meta["controller_table"] = root.findtext(".//{*}ControllerTableRelationship/{*}toTable") or root.findtext(".//ControllerTableRelationship/toTable") or ""
+            for tt in root.findall(".//{*}toTable"):
+                if tt.text and tt.text.strip():
+                    meta["controller_tables"].add(tt.text.strip().lower())
+            expr_el = root.find(".//{*}expression")
+            if expr_el is not None and expr_el.text:
+                meta["embedded_script"] = expr_el.text
 
             for ff in root.findall(".//{*}FormField"):
                 fn = ff.findtext("{*}fieldName") or ff.findtext("fieldName")
                 fl = ff.findtext("{*}fieldLabel") or ff.findtext("fieldLabel")
+                gid = (ff.findtext("{*}groupID") or ff.findtext("groupID") or "").strip()
+                row = (ff.findtext("{*}rowScreenPosition") or ff.findtext("rowScreenPosition") or "").strip()
+                col = (ff.findtext("{*}columnScreenPosition") or ff.findtext("columnScreenPosition") or "").strip()
                 if fn:
                     meta["form_fields"].add(fn)
+                    meta["form_field_names"].append(fn)
+                    meta["form_field_positions"].append({"field": fn, "group": gid, "row": row, "col": col})
                 if fl:
                     meta["form_fields"].add(fl)
 
             for cmd in root.findall(".//{*}FormCommand"):
-                cn = cmd.findtext("{*}name") or cmd.findtext("name")
+                cn = cmd.findtext("{*}name") or cmd.findtext("name") or ""
                 if cn:
                     meta["commands"].add(cn)
+                meta["form_commands_meta"].append({
+                    "name": cn,
+                    "type": (cmd.findtext("{*}type") or cmd.findtext("type") or "").strip(),
+                    "activationType": (cmd.findtext("{*}activationType") or cmd.findtext("activationType") or "").strip(),
+                    "activationName": (cmd.findtext("{*}activationName") or cmd.findtext("activationName") or "").strip(),
+                    "showAsButton": (cmd.findtext("{*}showAsButton") or cmd.findtext("showAsButton") or "").strip(),
+                })
 
             for grp in root.findall(".//{*}FormGroup"):
-                gn = grp.findtext("{*}groupNumber") or grp.findtext("groupNumber")
+                gn = grp.findtext("{*}groupID") or grp.findtext("groupID") or grp.findtext("{*}groupNumber") or grp.findtext("groupNumber")
                 if gn:
                     meta["groups"][gn] = {
                         "parentGroup": grp.findtext("{*}parentGroup") or grp.findtext("parentGroup") or "",
@@ -420,12 +504,63 @@ class ActivityValidator:
 
                 if parent and parent != "0" and parent not in groups:
                     self.report.add(str(path), 1, 1, "ERROR", f"FormGroup {gnum} has non-existent parentGroup '{parent}'", layer=2)
-                if child and child not in groups:
+                if child and child != "0" and child not in groups:
                     self.report.add(str(path), 1, 1, "ERROR", f"FormGroup {gnum} has non-existent firstChildGroup '{child}'", layer=2)
-                if nxt and nxt not in groups:
+                if nxt and nxt != "0" and nxt not in groups:
                     self.report.add(str(path), 1, 1, "ERROR", f"FormGroup {gnum} has non-existent nextGroup '{nxt}'", layer=2)
-                if prev and prev not in groups:
+                if prev and prev != "0" and prev not in groups:
                     self.report.add(str(path), 1, 1, "ERROR", f"FormGroup {gnum} has non-existent previousGroup '{prev}'", layer=2)
+
+            for cmd in sdata.get("form_commands_meta", []):
+                if cmd.get("showAsButton", "").lower() == "false" and (
+                    cmd.get("type", "") in ("1", "user", "") or cmd.get("activationType", "") in ("5", "function", "")
+                ):
+                    self.report.add(
+                        str(path), 1, 1, "WARNING",
+                        f"FormCommand '{cmd.get('name', '')}' has <showAsButton>false</showAsButton>; dialog/user command may be hidden from toolbar.",
+                        layer=2,
+                    )
+
+            seen_pos: Dict[Tuple[str, str, str], str] = {}
+            for fp in sdata.get("form_field_positions", []):
+                r, c, g, fn = fp.get("row", ""), fp.get("col", ""), fp.get("group", ""), fp.get("field", "")
+                if r and r != "0" and c and c != "0":
+                    key = (g, r, c)
+                    if key in seen_pos and seen_pos[key] != fn:
+                        self.report.add(
+                            str(path), 1, 1, "WARNING",
+                            f"FormField '{seen_pos[key]}' and '{fn}' overlap at row={r}, col={c} in groupID={g}.",
+                            layer=2,
+                        )
+                    else:
+                        seen_pos[key] = fn
+
+            script_txt = sdata.get("embedded_script", "")
+            if script_txt.strip():
+                ctrl_tables = set(sdata.get("controller_tables", set()))
+                if sdata.get("controller_table"):
+                    ctrl_tables.add(sdata["controller_table"].lower())
+                for fn in sdata.get("form_field_names", []):
+                    f_low = fn.lower()
+                    if not f_low or f_low == "label.only":
+                        continue
+                    is_tbl = "." in f_low and f_low.split(".", 1)[0] in ctrl_tables
+                    if not is_tbl:
+                        if not re.search(rf"\bextern\b[^\n]*\b{re.escape(f_low)}\b", script_txt, re.IGNORECASE):
+                            self.report.add(
+                                str(path), 1, 1, "WARNING",
+                                f"Session FormField '{fn}' is not bound to a controller table and has no matching 'extern' declaration in embedded UI script.",
+                                layer=3,
+                            )
+                for cmd in sdata.get("form_commands_meta", []):
+                    if cmd.get("activationType", "") in ("5", "function") and cmd.get("activationName", ""):
+                        act_name = cmd["activationName"]
+                        if not re.search(rf"\bfunction\s+extern\b[^\n]*\b{re.escape(act_name)}\s*\(", script_txt, re.IGNORECASE):
+                            self.report.add(
+                                str(path), 1, 1, "WARNING",
+                                f"FormCommand '{cmd.get('name', '')}' activationName '{act_name}' has no matching 'function extern' handler in embedded UI script.",
+                                layer=3,
+                            )
 
         # Report structure checks
         for code, rdata in self.reports.items():
@@ -722,6 +857,8 @@ def validate_activity(
     fix: bool = False,
     online: bool = False,
     probe_labels_fn=None,
+    filter_patterns: Optional[List[str]] = None,
+    target_files: Optional[List[Union[Path, str]]] = None,
 ) -> ValidationReport:
     """Entrypoint function to validate an activity."""
     validator = ActivityValidator(
@@ -730,6 +867,8 @@ def validate_activity(
         fix=fix,
         online=online,
         probe_labels_fn=probe_labels_fn,
+        filter_patterns=filter_patterns,
+        target_files=target_files,
     )
     return validator.run()
 
@@ -741,6 +880,8 @@ def main() -> None:
     parser.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     parser.add_argument("--fix", action="store_true", help="Perform safe non-destructive repairs (missing labels, admin sync)")
     parser.add_argument("--online", action="store_true", help="Probe server catalog via StudioComponent.GetBrowseList for unresolved labels")
+    parser.add_argument("--filter", dest="filters", action="append", default=[], help="Filename or path glob filter (e.g. txinr*)")
+    parser.add_argument("--files", nargs="+", default=[], help="Specific component file path(s) to report")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     args = parser.parse_args()
 
@@ -757,7 +898,14 @@ def main() -> None:
         print(f"Error: Activity path does not exist: {act_path}", file=sys.stderr)
         sys.exit(1)
 
-    validator = ActivityValidator(act_path, strict=args.strict, fix=args.fix, online=args.online)
+    validator = ActivityValidator(
+        act_path,
+        strict=args.strict,
+        fix=args.fix,
+        online=args.online,
+        filter_patterns=args.filters,
+        target_files=args.files,
+    )
     report = validator.run()
 
     if args.json:

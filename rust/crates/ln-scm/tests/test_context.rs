@@ -115,3 +115,20 @@ fn test_workspace_discover_fails_fast_when_ambiguous_and_loads_cloudenv_ionapi()
     let ctx = WorkspaceContext::discover_with_root(None, Some(&nested), Some(&ws_root)).unwrap();
     assert_eq!(ctx.env_name, "WS_TWO");
 }
+
+#[test]
+fn test_load_ionapi_from_user_home_cloudenv_prefs() {
+    let tmp = tempdir().unwrap();
+    let ln_studio_dir = tmp.path().join(".ln_studio");
+    std::fs::create_dir_all(&ln_studio_dir).unwrap();
+    std::fs::write(
+        ln_studio_dir.join("com.infor.erpln.jca.connectivity.cloudenv.prefs"),
+        "EnvironmentsCount=1\nEnvironmentName0=MY_TENANT\nTenantID0=T1\nClientID0=CI\nClientSecret0=CS\nGatewayURL0=https\\://gw.example.com\nAuthorizationCodeURL0=https\\://sso.example.com/auth\nRequestTokenURL0=https\\://sso.example.com/token\nRevokeTokenURL0=https\\://sso.example.com/revoke\nAppScope0=Infor-LN\n",
+    )
+    .unwrap();
+
+    let cfg = WorkspaceContext::load_ionapi_from_cloudenv_with_home("MY_TENANT", None, Some(tmp.path()))
+        .expect("Must find cloudenv.prefs in ~/.ln_studio");
+    assert_eq!(cfg.tenant_id, "T1");
+    assert_eq!(cfg.client_id, "CI");
+}

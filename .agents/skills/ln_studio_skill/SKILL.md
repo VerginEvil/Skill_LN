@@ -18,9 +18,9 @@ Headless automation engine for Infor LN Studio (Eclipse RCP 10.8 Build 0640, Act
 
 ## Workflows & Completion Gates
 
-1. **Auth & Inspection** -> `skill-ln login --status`, `explorer`, `get-component` (Read-Only / `--export-script`). *Done when*: token is valid and target artifacts exist in workspace or `.reference/`.
-2. **Generate / Edit / SCM** -> `component --spec schema.yaml` / `new-extension` / `checkout-component` -> edit. *Done when*: `Put`/`CheckIn` (auto-running `DR_Create -> CheckOut` for new objects) returns `SUCCESS`.
-3. **Validate & Test** -> `validate <act> --strict [--fix] [--online]` and `deploy-test`. *Done when*: Layer 1–4 validation reports **0 errors** (single-line XML, `.admin`, labels/cross-refs, 4GL syntax) and `deploy-test` (`compile-only` or `schema-crdd`) compiles cleanly.
+1. **Auth & Inspection** -> `skill-ln login --status`, `explorer`, `get-component` (Read-Only / `--export-script`), `import-dd-txt` (build `.ln_dd_cache.json` from `Table Definitions/*.txt` & `*-cdf.txt`). *Done when*: token is valid and target artifacts exist in workspace or `.reference/`.
+2. **Generate / Edit / Sync Loop** -> `component --spec schema.yaml` / `new-extension` / `checkout-component` -> for embedded `.ses`/`.lib` scripts, run the standard loop `extract` -> edit `.cln` -> `audit-4gl --mode general` -> `inject` (enforces Read-Only check) -> `sync-admin` (non-destructive merge + `.admin.bak`; `--prune` to remove missing entries). *Done when*: `Put`/`CheckIn` (auto-running `DR_Create -> CheckOut` for new objects) returns `SUCCESS`.
+3. **Validate & Test** -> `validate <act> [--filter <glob>] [--files <paths>] --strict [--fix] [--online]` and `deploy-test`. *Done when*: Layer 1–4 validation reports **0 errors** (single-line XML, `.admin`, labels/cross-refs, `.ses` layout/parity, 4GL syntax) and `deploy-test` (`compile-only` or `schema-crdd`) compiles cleanly.
 4. **Handoff & Post-Commit Sync** -> `prepare-end-activity --activity <a>` (runs `ValidateDevelopmentActivity` + `VSC.executeVSC`) -> user finishes `End Activity` in UI -> `sync-activity`. *Done when*: `prepare-end-activity` reports ready (or `sync-activity` refreshes committed VRCs with 0 errors).
 
 Run `skill-ln --help` for full subcommand options.

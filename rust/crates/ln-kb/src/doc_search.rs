@@ -6,9 +6,10 @@ use crate::types::{DocHit, DocSearchResult};
 
 pub const MAX_OUTPUT_CHARS: usize = 12000;
 
-pub fn find_progguide_references_dir_from(
+pub fn find_progguide_references_dir_strict(
     cwd: Option<&Path>,
     exe: Option<&Path>,
+    home_override: Option<&Path>,
 ) -> Option<PathBuf> {
     let rel_candidates = [
         ".agents/skills/erp-ln-progguide/references",
@@ -26,7 +27,53 @@ pub fn find_progguide_references_dir_from(
         }
     }
 
+    let resolved_home = home_override.map(PathBuf::from).or_else(|| {
+        std::env::var_os("USERPROFILE")
+            .or_else(|| std::env::var_os("HOME"))
+            .map(PathBuf::from)
+    });
+    if let Some(home) = resolved_home {
+        for rel in [
+            ".gemini/config/skills/erp-ln-progguide/references",
+            ".agents/skills/erp-ln-progguide/references",
+        ] {
+            let p = home.join(rel);
+            if p.exists() {
+                return p.canonicalize().ok().or(Some(p));
+            }
+        }
+    }
+
     None
+}
+
+pub fn find_progguide_references_dir_with_home(
+    cwd: Option<&Path>,
+    exe: Option<&Path>,
+    home_override: Option<&Path>,
+) -> Option<PathBuf> {
+    if let Some(found) = find_progguide_references_dir_strict(cwd, exe, home_override) {
+        return Some(found);
+    }
+
+    if home_override.is_none() {
+        let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+        if let Some(repo_root) = manifest_dir.parent().and_then(|p| p.parent()) {
+            let p = repo_root.join(".agents/skills/erp-ln-progguide/references");
+            if p.exists() {
+                return p.canonicalize().ok().or(Some(p));
+            }
+        }
+    }
+
+    None
+}
+
+pub fn find_progguide_references_dir_from(
+    cwd: Option<&Path>,
+    exe: Option<&Path>,
+) -> Option<PathBuf> {
+    find_progguide_references_dir_with_home(cwd, exe, None)
 }
 
 pub fn find_progguide_references_dir() -> Option<PathBuf> {
@@ -43,7 +90,7 @@ pub fn find_progguide_references_dir() -> Option<PathBuf> {
     )
 }
 
-/// Searches documentation markdown corpus, matching the scoring, ranking, and output of `search.py`.
+/// Searches documentation markdown corpus with multi-term AND matching and phrase-boost ranking.
 pub fn search_docs(
     query: &str,
     dir_scope: Option<&str>,
@@ -57,7 +104,12 @@ pub fn search_docs(
 
     let base_dir = match find_progguide_references_dir() {
         Some(d) => d,
-        None => return (Vec::new(), "[WARN] erp-ln-progguide references directory not found".to_string()),
+        None => {
+            return (
+                Vec::new(),
+                "[WARN] erp-ln-progguide references directory not found; set ERP_LN_PROGGUIDE_DIR or run `python scripts/run_checks.py --sync-skill`".to_string(),
+            )
+        }
     };
 
     let target_dir = match dir_scope.unwrap_or("all") {
@@ -65,8 +117,23 @@ pub fn search_docs(
         other => base_dir.join(other),
     };
 
-    let re_opt = Regex::new(&format!("(?i){}", q)).ok();
-    let terms: Vec<String> = q.split_whitespace().map(|s| s.to_lowercase()).collect();
+    let q_low = q.to_lowercase();
+    let raw_terms: Vec<String> = q_low.split_whitespace().map(|s| s.to_string()).collect();
+    let mut terms: Vec<String> = Vec::new();
+    for t in &raw_terms {
+        if t == "bic_utf8" {
+            terms.push("utf8".to_string());
+        } else {
+            terms.push(t.clone());
+        }
+    }
+    let has_regex_meta = raw_terms.len() == 1
+        && q.chars().any(|c| matches!(c, '*' | '?' | '[' | ']' | '(' | ')' | '|' | '^' | '$'));
+    let re_opt = if has_regex_meta {
+        Regex::new(&format!("(?i){}", q)).ok()
+    } else {
+        None
+    };
 
     let mut scored: Vec<DocSearchResult> = Vec::new();
     let mut files_to_scan = Vec::new();
@@ -93,7 +160,16 @@ pub fn search_docs(
 
         let reader = BufReader::new(file);
         let mut title = String::new();
-        let mut hits = Vec::new();
+        let mut term_seen = vec![false; terms.len()];
+        let rel_low = rel_path.to_lowercase();
+        for (idx, t) in terms.iter().enumerate() {
+            if rel_low.contains(t) {
+                term_seen[idx] = true;
+            }
+        }
+
+        let mut ranked_hits: Vec<(usize, DocHit)> = Vec::new();
+        let mut score: usize = 0;
 
         for (i, line_res) in reader.lines().enumerate() {
             let line = match line_res {
@@ -106,23 +182,57 @@ pub fn search_docs(
                 title = line.trim_start_matches('#').trim().to_string();
             }
 
-            let matches = if let Some(re) = &re_opt {
-                re.is_match(&line)
+            if let Some(re) = &re_opt {
+                if re.is_match(&line) {
+                    score += 2;
+                    ranked_hits.push((
+                        2,
+                        DocHit {
+                            line_number: line_num,
+                            snippet: line.trim().to_string(),
+                        },
+                    ));
+                    for s in &mut term_seen {
+                        *s = true;
+                    }
+                }
             } else {
                 let line_low = line.to_lowercase();
-                terms.iter().all(|t| line_low.contains(t))
-            };
-
-            if matches {
-                hits.push(DocHit {
-                    line_number: line_num,
-                    snippet: line.trim().to_string(),
-                });
+                let mut line_match_count = 0usize;
+                for (idx, t) in terms.iter().enumerate() {
+                    if line_low.contains(t) {
+                        term_seen[idx] = true;
+                        line_match_count += 1;
+                    }
+                }
+                if line_match_count > 0 {
+                    let is_phrase = line_low.contains(&q_low);
+                    let weight = if is_phrase {
+                        10
+                    } else if line_match_count == terms.len() {
+                        3
+                    } else {
+                        1
+                    };
+                    score += weight;
+                    ranked_hits.push((
+                        weight,
+                        DocHit {
+                            line_number: line_num,
+                            snippet: line.trim().to_string(),
+                        },
+                    ));
+                }
             }
         }
 
-        if !hits.is_empty() {
-            let score = hits.len();
+        if term_seen.iter().all(|&seen| seen) && !ranked_hits.is_empty() {
+            let title_low = title.to_lowercase();
+            if terms.iter().all(|t| title_low.contains(t) || rel_low.contains(t)) {
+                score += 5;
+            }
+            ranked_hits.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.line_number.cmp(&b.1.line_number)));
+            let hits: Vec<DocHit> = ranked_hits.into_iter().map(|(_, h)| h).collect();
             scored.push(DocSearchResult {
                 rel_path,
                 title,

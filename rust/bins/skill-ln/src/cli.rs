@@ -570,6 +570,10 @@ pub enum Commands {
         fix: bool,
         #[arg(long)]
         online: bool,
+        #[arg(long = "filter", value_delimiter = ',')]
+        filter: Vec<String>,
+        #[arg(long = "files", value_delimiter = ',')]
+        files: Vec<String>,
         #[arg(long)]
         json: bool,
     },
@@ -578,6 +582,8 @@ pub enum Commands {
     SyncAdmin {
         #[arg(long)]
         activity: String,
+        #[arg(long)]
+        prune: bool,
     },
 
     #[command(about = "Decode Eclipse binary problem markers (.markers)")]
@@ -638,15 +644,30 @@ pub enum Commands {
     McpStdio,
 
     // === Unified Native Rust Commands ===
-    #[command(name = "audit-4gl", about = "Audit 4GL file or directory with 25 rules")]
+    #[command(name = "audit-4gl", about = "Audit 4GL file or directory with static rules")]
     Audit4gl {
         path: String,
+        #[arg(long)]
+        mode: Option<String>,
+        #[arg(long)]
+        cloud: bool,
         #[arg(long)]
         rule: Option<String>,
         #[arg(long)]
         json: bool,
         #[arg(long)]
         dd_cache: Option<String>,
+        #[arg(long)]
+        dd_dir: Option<String>,
+    },
+
+    #[command(name = "import-dd-txt", about = "Import Infor LN Table Definition (*.txt / *-cdf.txt) dumps into .ln_dd_cache.json")]
+    ImportDdTxt {
+        dir: String,
+        #[arg(long)]
+        out: Option<String>,
+        #[arg(long)]
+        json: bool,
     },
 
     #[command(name = "fn-search", about = "Instant zero-copy search across 2,266 bshell functions")]

@@ -2,9 +2,10 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use rayon::prelude::*;
 use regex::Regex;
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use ln_kb::{
     lookup_function,
@@ -108,6 +109,7 @@ pub struct Auditor4GL {
     pub main_table: Option<String>,
     pub auto_fetch_dd: bool,
     pub dd_cache: Option<DataDictionaryCache>,
+    pub dd_dir: Option<PathBuf>,
     all_known_sections: Vec<String>,
 }
 
@@ -134,6 +136,7 @@ impl Auditor4GL {
             main_table: None,
             auto_fetch_dd: false,
             dd_cache: None,
+            dd_dir: None,
             all_known_sections: sections,
         }
     }
@@ -160,6 +163,11 @@ impl Auditor4GL {
 
     pub fn with_dd_cache(mut self, cache: DataDictionaryCache) -> Self {
         self.dd_cache = Some(cache);
+        self
+    }
+
+    pub fn with_dd_dir(mut self, dir: impl Into<PathBuf>) -> Self {
+        self.dd_dir = Some(dir.into());
         self
     }
 
@@ -282,13 +290,17 @@ impl Auditor4GL {
         if let Some(cache) = dd_cache {
             if let Some(meta) = cache.get_domain(&dmn_lower) {
                 if let Some(dt_val) = &meta.datatype {
-                    let dt = dt_val.to_string().to_lowercase();
-                    if dt.contains("string") || dt.contains("1") || dt.contains("2") || dt.contains("str") {
+                    let dt = dt_val
+                        .as_str()
+                        .map(|s| s.trim().to_lowercase())
+                        .unwrap_or_else(|| dt_val.to_string().trim_matches('"').to_lowercase());
+                    if dt.contains("string") || dt.contains("str") || dt == "multibyte" || dt == "text" || dt == "6" {
                         return true;
                     }
-                    if dt.contains("long") || dt.contains("double") || dt.contains("float")
-                        || dt.contains("date") || dt.contains("utc") || dt.contains("enum")
+                    if dt.contains("byte") || dt.contains("long") || dt.contains("double") || dt.contains("float")
+                        || dt.contains("numeric") || dt.contains("date") || dt.contains("utc") || dt.contains("enum")
                         || dt.contains("boolean")
+                        || matches!(dt.as_str(), "1" | "2" | "3" | "4" | "5" | "7" | "8" | "9" | "14")
                     {
                         return false;
                     }
@@ -347,28 +359,67 @@ impl Auditor4GL {
         best.map(|(s, _)| s.to_string())
     }
 
-    fn resolve_dd_cache<'a>(&'a self, file_path: &str, override_cache: Option<&'a DataDictionaryCache>) -> Option<&'a DataDictionaryCache> {
-        if override_cache.is_some() {
-            return override_cache;
-        }
-        if self.dd_cache.is_some() {
-            return self.dd_cache.as_ref();
-        }
+    fn resolve_dd_cache<'a>(
+        &'a self,
+        file_path: &str,
+        override_cache: Option<&'a DataDictionaryCache>,
+    ) -> Option<Cow<'a, DataDictionaryCache>> {
+        let mut loaded: Option<DataDictionaryCache> = None;
 
-        // Try searching upward from target path
-        if !file_path.is_empty() && file_path != "<stdin>" {
-            let mut cur = Path::new(file_path).parent();
+        if let Some(ov) = override_cache {
+            if self.dd_dir.is_none() {
+                return Some(Cow::Borrowed(ov));
+            }
+            loaded = Some(ov.clone());
+        } else if let Some(ref cfg) = self.dd_cache {
+            if self.dd_dir.is_none() {
+                return Some(Cow::Borrowed(cfg));
+            }
+            loaded = Some(cfg.clone());
+        } else if !file_path.is_empty() && file_path != "<stdin>" {
+            let abs = Path::new(file_path).canonicalize().unwrap_or_else(|_| PathBuf::from(file_path));
+            let mut cur = abs.parent();
+            let mut steps = 0usize;
             while let Some(dir) = cur {
                 let candidate = dir.join(".ln_dd_cache.json");
                 if candidate.exists() {
-                    // Cache exists on disk; cannot return borrow of local so rely on configured dd_cache
+                    let c = DataDictionaryCache::from_path(&candidate);
+                    if c.has_data() {
+                        loaded = Some(c);
+                    }
                     break;
                 }
                 cur = dir.parent();
+                steps += 1;
+                if steps >= 6 {
+                    break;
+                }
             }
         }
 
-        None
+        if loaded.is_none() {
+            if let Ok(cwd) = std::env::current_dir() {
+                let candidate = cwd.join(".ln_dd_cache.json");
+                if candidate.exists() {
+                    let c = DataDictionaryCache::from_path(&candidate);
+                    if c.has_data() {
+                        loaded = Some(c);
+                    }
+                }
+            }
+        }
+
+        if let Some(ref dd_dir) = self.dd_dir {
+            if dd_dir.exists() {
+                let mut c = loaded.take().unwrap_or_default();
+                let _ = c.ingest_dd_txt_dir(dd_dir);
+                if c.has_data() {
+                    loaded = Some(c);
+                }
+            }
+        }
+
+        loaded.map(Cow::Owned)
     }
 
     pub fn audit_content(
@@ -388,13 +439,17 @@ impl Auditor4GL {
             Extracted4gl::EmptyXml => return Vec::new(),
         };
 
-        let mode = match mode_override {
-            Some(m) if m != "auto" => m.to_string(),
-            _ => self.detect_archetype(file_path, content),
+        let explicit_mode = mode_override
+            .map(|m| m.trim().to_ascii_lowercase())
+            .filter(|m| !m.is_empty() && m != "auto");
+        let mode = match explicit_mode.as_deref() {
+            Some(m) => m.to_string(),
+            None => self.detect_archetype(file_path, content),
         };
 
         let effective_main_table = self.infer_main_table(file_path, content, &mode);
-        let active_dd = self.resolve_dd_cache(file_path, dd_cache_override);
+        let active_dd_cow = self.resolve_dd_cache(file_path, dd_cache_override);
+        let active_dd = active_dd_cow.as_deref();
 
         let mut diagnostics = Vec::new();
         let lines: Vec<&str> = content.lines().collect();
@@ -450,14 +505,20 @@ impl Auditor4GL {
         let content_lower = content.to_lowercase();
         let norm_path = path_lower.replace('\\', "/");
 
-        let is_extension = content_lower.contains("#context_on")
-            || content_lower.contains("#context_off")
-            || path_lower.ends_with(".cln")
-            || path_lower.contains("_ext.4gl")
+        let has_context_directives =
+            content_lower.contains("#context_on") || content_lower.contains("#context_off");
+        let has_ext_markers = path_lower.contains("_ext.4gl")
             || norm_path.contains("/est/")
             || norm_path.contains("/ess/")
             || path_lower.contains("table_extension")
-            || path_lower.contains("session_extension");
+            || path_lower.contains("session_extension")
+            || content_lower.contains("bic_tableext")
+            || content_lower.contains("bic_sessionext");
+        let explicit_non_ext = matches!(
+            explicit_mode.as_deref(),
+            Some("general" | "session" | "library" | "table" | "report")
+        );
+        let is_extension = has_context_directives || (!explicit_non_ext && has_ext_markers);
 
         let re_session_code = Regex::new(r"[a-z]{5}\d{3,4}[ms]\d{3}").unwrap();
         let re_m_code = Regex::new(r"m\d{3}").unwrap();
@@ -1400,8 +1461,11 @@ impl Auditor4GL {
                                     }
                                 }
                                 if let Some(ref dt) = fi.datatype {
-                                    let dt_str = dt.to_string().to_lowercase();
-                                    if dt_str.contains("date") || dt_str.contains("9") {
+                                    let dt_str = dt
+                                        .as_str()
+                                        .map(|s| s.trim().to_lowercase())
+                                        .unwrap_or_else(|| dt.to_string().trim_matches('"').to_lowercase());
+                                    if dt_str.contains("date") || dt_str == "9" {
                                         is_target_date = true;
                                     }
                                 }
@@ -1510,12 +1574,17 @@ impl Auditor4GL {
                             };
 
                             if let Some(f_meta) = cache.get_field(tbl_n, &fld_n) {
-                                let f_dt = f_meta.datatype.as_ref().map(|dt| dt.to_string().to_lowercase()).unwrap_or_default();
+                                let norm_dt = |dt: &serde_json::Value| -> String {
+                                    dt.as_str()
+                                        .map(|s| s.trim().to_lowercase())
+                                        .unwrap_or_else(|| dt.to_string().trim_matches('"').to_lowercase())
+                                };
+                                let f_dt = f_meta.datatype.as_ref().map(norm_dt).unwrap_or_default();
                                 let d_name = f_meta.domain.clone().unwrap_or_default().to_lowercase();
                                 let mut is_enum = f_dt.contains("enum") || f_dt == "7";
                                 if !is_enum && !d_name.is_empty() {
                                     if let Some(d_meta) = cache.get_domain(&d_name) {
-                                        let dm_dt = d_meta.datatype.as_ref().map(|dt| dt.to_string().to_lowercase()).unwrap_or_default();
+                                        let dm_dt = d_meta.datatype.as_ref().map(norm_dt).unwrap_or_default();
                                         if dm_dt.contains("enum") || dm_dt == "7" || d_meta.constants.is_some() {
                                             is_enum = true;
                                         }
@@ -1931,8 +2000,341 @@ impl Auditor4GL {
             }
         }
 
+        self.audit_runtime_traps_and_sql(
+            file_path,
+            &lines,
+            &cleaned_lines,
+            active_dd,
+            &mut diagnostics,
+        );
+
         // Filter by min_severity
         diagnostics.into_iter().filter(|d| d.severity >= self.min_severity).collect()
+    }
+
+    fn audit_runtime_traps_and_sql(
+        &self,
+        file_path: &str,
+        lines: &[&str],
+        cleaned_lines: &[String],
+        active_dd: Option<&DataDictionaryCache>,
+        diagnostics: &mut Vec<Diagnostic>,
+    ) {
+        let mut double_vars = HashSet::new();
+        let mut local_utc_vars = HashSet::new();
+        let re_dbl_decl = Regex::new(r"(?i)^\s*(?:static\s+|extern\s+)?double\s+([a-zA-Z0-9_.,\s]+)").unwrap();
+        let re_dbl_param = Regex::new(r"(?i)\bdouble\s+([a-zA-Z0-9_.]+)").unwrap();
+        let re_utc_local = Regex::new(r"(?i)^\s*([a-zA-Z0-9_.]+)\s*=\s*utc\.to\.local\s*\(").unwrap();
+
+        for cl in cleaned_lines {
+            if let Some(c) = re_dbl_decl.captures(cl) {
+                if !cl.to_ascii_lowercase().split("double").nth(1).unwrap_or("").contains('(') {
+                    for part in c[1].split(',') {
+                        let v = part.trim().split('(').next().unwrap_or("").trim().to_lowercase();
+                        if !v.is_empty() {
+                            double_vars.insert(v);
+                        }
+                    }
+                }
+            }
+            for c in re_dbl_param.captures_iter(cl) {
+                double_vars.insert(c[1].to_lowercase());
+            }
+            if let Some(c) = re_utc_local.captures(cl) {
+                local_utc_vars.insert(c[1].to_lowercase());
+            }
+        }
+
+        let full_code = cleaned_lines.join("\n").to_lowercase();
+        let re_chr239 = Regex::new(r"chr\$\s*\(\s*239\s*\)").unwrap();
+        let re_chr187 = Regex::new(r"chr\$\s*\(\s*187\s*\)").unwrap();
+        let re_chr191 = Regex::new(r"chr\$\s*\(\s*191\s*\)").unwrap();
+        let has_utf8_bom = re_chr239.is_match(&full_code) && (re_chr187.is_match(&full_code) || re_chr191.is_match(&full_code));
+        let has_export_ctx = ["sprintf$", "seq.puts", "seq.write", ".csv"]
+            .iter()
+            .any(|tok| full_code.contains(tok));
+
+        let re_dal_at_code = Regex::new(r#"(?i)dal\.set\.error\.message\s*\(\s*"@([^"\s]+)""#).unwrap();
+        let re_seq_open_wt = Regex::new(r#"(?i)seq\.open\s*\([^)]*,\s*"wt"\s*\)"#).unwrap();
+        let re_utc_to_date = Regex::new(r"(?i)\butc\.to\.date\s*\(\s*([^,)]+)").unwrap();
+        let re_cmp = Regex::new(r"\b([a-zA-Z0-9_.]+)\s*(==|<>|!=|=)\s*([a-zA-Z0-9_.]+)\b").unwrap();
+        let re_cmp_prefix = Regex::new(r"(?i)\b(?:if|elseif|while|until|return)\b|\(").unwrap();
+
+        let re_sel_start = Regex::new(r"^\s*select\b").unwrap();
+        let re_sel_prefix = Regex::new(r"(?i)^\s*select\s+(?:distinct\s+)?").unwrap();
+        let re_sel_item = Regex::new(r"(?i)^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$").unwrap();
+        let re_sql_end = Regex::new(r"(?i)^\s*(?:selectdo|selectempty|selecteos|endselect)\b").unwrap();
+        let re_sql_end_any = Regex::new(r"(?i)\b(?:selectdo|selectempty|selecteos|endselect)\b").unwrap();
+        let re_sql_tail = Regex::new(r"(?i)^\s*(?:order\s+by|group\s+by|as\s+set)\b").unwrap();
+        let re_sql_where = Regex::new(r"(?i)^\s*where\b").unwrap();
+        let re_sql_from = Regex::new(r"(?i)^\s*from\b").unwrap();
+        let re_index_pred = Regex::new(r"(?i)\b_index\d+\s*=\s*\{").unwrap();
+        let re_from_tbl = Regex::new(r"(?i)\bfrom\s+([a-z]{5}\d{3})(?:\s+([a-z][a-z0-9_]*))?").unwrap();
+        let re_where_col = Regex::new(r"(?i)\b([a-z][a-z0-9_]*)\.([a-z0-9_]+)\s*(?:=|in\b|inrange\b|between\b)").unwrap();
+
+        let mut in_sql = false;
+        let mut sql_paren_depth: isize = 0;
+        let mut sql_stage = "";
+        let mut sql_start_line: usize = 0;
+        let mut sql_select_parts: Vec<String> = Vec::new();
+        let mut sql_from_parts: Vec<String> = Vec::new();
+        let mut sql_where_lines: Vec<(usize, String)> = Vec::new();
+
+        let flush_sql = |start_line: usize,
+                         sel_parts: &[String],
+                         from_parts: &[String],
+                         where_lines: &[(usize, String)],
+                         diags: &mut Vec<Diagnostic>| {
+            if start_line == 0 {
+                return;
+            }
+            let sel_text = sel_parts.join(" ");
+            let sel_body = re_sel_prefix.replace(&sel_text, "");
+            let mut unbound = Vec::new();
+            for item in sel_body.split(',') {
+                let it = item.trim();
+                if re_sel_item.is_match(it) {
+                    unbound.push(it.to_string());
+                }
+            }
+            if !unbound.is_empty() {
+                let snip = lines.get(start_line - 1).copied().unwrap_or("");
+                diags.push(Diagnostic::new(
+                    file_path,
+                    start_line,
+                    1,
+                    Severity::Warning,
+                    "SQL010",
+                    format!(
+                        "Unbound SQL select column(s) ({}); bind into scalar ':l.*' host variables instead of mutating table buffers.",
+                        unbound.join(", ")
+                    ),
+                    snip,
+                ));
+            }
+
+            let mut has_index_pred = false;
+            for (w_lno, w_txt) in where_lines {
+                if re_index_pred.is_match(w_txt) {
+                    has_index_pred = true;
+                    let snip = lines.get(w_lno - 1).copied().unwrap_or("");
+                    diags.push(Diagnostic::new(
+                        file_path,
+                        *w_lno,
+                        1,
+                        Severity::Warning,
+                        "SQL009",
+                        "Legacy '_indexN = {...}' SQL predicate detected; prefer explicit leading column predicates for clarity and index stability.",
+                        snip,
+                    ));
+                }
+            }
+
+            if let Some(dd) = active_dd {
+                if !where_lines.is_empty() && !has_index_pred {
+                    let from_text = from_parts.join(" ");
+                    if let Some(c) = re_from_tbl.captures(&from_text) {
+                        let tbl_name = c[1].to_lowercase();
+                        let alias_cand = c.get(2).map(|m| m.as_str().to_lowercase());
+                        let alias_name = match alias_cand.as_deref() {
+                            Some(a) if !matches!(a, "for" | "where" | "order" | "group" | "as" | "selectdo" | "selectempty" | "selecteos" | "endselect") => a.to_string(),
+                            _ => tbl_name.clone(),
+                        };
+                        if let Some(tbl_meta) = dd.tables.get(&tbl_name) {
+                            let idx_lists: Vec<&Vec<String>> = tbl_meta
+                                .index_columns
+                                .values()
+                                .filter(|cols| !cols.is_empty())
+                                .collect();
+                            if !idx_lists.is_empty() {
+                                let where_full = where_lines.iter().map(|(_, s)| s.as_str()).collect::<Vec<_>>().join(" ");
+                                let mut constrained = HashSet::new();
+                                for mc in re_where_col.captures_iter(&where_full) {
+                                    let t = mc[1].to_lowercase();
+                                    if t == tbl_name || t == alias_name {
+                                        constrained.insert(mc[2].to_lowercase());
+                                    }
+                                }
+                                if !constrained.is_empty() && !idx_lists.iter().any(|cols| constrained.contains(&cols[0])) {
+                                    let first_w = where_lines[0].0;
+                                    let mut leaders: Vec<String> = idx_lists.iter().map(|cols| cols[0].clone()).collect();
+                                    leaders.sort();
+                                    leaders.dedup();
+                                    let snip = lines.get(first_w - 1).copied().unwrap_or("");
+                                    diags.push(Diagnostic::new(
+                                        file_path,
+                                        first_w,
+                                        1,
+                                        Severity::Warning,
+                                        "SQL011",
+                                        format!(
+                                            "SQL WHERE clause on '{}' does not constrain any leading index column ({}); verify index selectivity to prevent full table scans.",
+                                            tbl_name,
+                                            leaders.join(", ")
+                                        ),
+                                        snip,
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        for (idx, cl) in cleaned_lines.iter().enumerate() {
+            let line_no = idx + 1;
+            let raw_line = lines.get(idx).copied().unwrap_or("");
+            let raw_no_comment = raw_line.split('|').next().unwrap_or("");
+            let cl_stripped = cl.trim();
+            let cl_low = cl_stripped.to_lowercase();
+
+            if let Some(m) = re_dal_at_code.captures(raw_no_comment) {
+                if m[1].chars().any(|ch| ch.is_ascii_digit()) {
+                    diagnostics.push(Diagnostic::new(
+                        file_path,
+                        line_no,
+                        m.get(0).map_or(1, |x| x.start() + 1),
+                        Severity::Error,
+                        "DAL007",
+                        format!(
+                            "dal.set.error.message(\"@{}\") prints literal text '{}' instead of looking up message code; remove '@' prefix when passing a message code.",
+                            &m[1], &m[1]
+                        ),
+                        raw_line,
+                    ));
+                }
+            }
+
+            if has_utf8_bom && re_seq_open_wt.is_match(raw_no_comment) {
+                diagnostics.push(Diagnostic::new(
+                    file_path,
+                    line_no,
+                    1,
+                    Severity::Error,
+                    "STR002",
+                    "seq.open(..., \"wt\") combined with raw UTF-8 BOM bytes risks encoding/CR-LF corruption; use binary mode \"wb\" when writing explicit UTF-8 BOM.",
+                    raw_line,
+                ));
+            }
+
+            if has_export_ctx {
+                if let Some(m) = re_utc_to_date.captures(cl) {
+                    let arg0 = m[1].trim().to_lowercase();
+                    if !arg0.contains("utc.to.local") && !local_utc_vars.contains(&arg0) {
+                        diagnostics.push(Diagnostic::new(
+                            file_path,
+                            line_no,
+                            m.get(0).map_or(1, |x| x.start() + 1),
+                            Severity::Warning,
+                            "DMN004",
+                            "utc.to.date() returns UTC rather than user local time; wrap with utc.to.local() (or use num.to.date()) for user-facing file exports.",
+                            raw_line,
+                        ));
+                    }
+                }
+            }
+
+            if !in_sql {
+                if re_sel_start.is_match(&cl_low)
+                    && !cl_low.starts_with("selectdo")
+                    && !cl_low.starts_with("selectempty")
+                    && !cl_low.starts_with("selecteos")
+                {
+                    in_sql = true;
+                    sql_paren_depth = cl_low.matches('(').count() as isize - cl_low.matches(')').count() as isize;
+                    sql_stage = "select";
+                    sql_start_line = line_no;
+                    sql_select_parts = vec![cl_stripped.to_string()];
+                    sql_from_parts.clear();
+                    sql_where_lines.clear();
+                    if cl_low.contains(" from ") || cl_low.ends_with(" from") {
+                        sql_stage = "from";
+                        sql_from_parts.push(cl_stripped.to_string());
+                    }
+                    if cl_low.contains(" where ") || cl_low.ends_with(" where") {
+                        sql_stage = "where";
+                        sql_where_lines.push((line_no, cl_stripped.to_string()));
+                    }
+                    if re_sql_end_any.is_match(&cl_low) {
+                        flush_sql(sql_start_line, &sql_select_parts, &sql_from_parts, &sql_where_lines, diagnostics);
+                        in_sql = false;
+                        sql_start_line = 0;
+                    }
+                }
+
+                if !in_sql && !cl_low.contains("double.cmp") {
+                    for m in re_cmp.captures_iter(cl) {
+                        let lhs = m[1].to_lowercase();
+                        let op = &m[2];
+                        let rhs = m[3].to_lowercase();
+                        let start = m.get(0).map_or(0, |x| x.start());
+                        let prefix = &cl[..start];
+                        let is_cmp_op = matches!(op, "<>" | "!=" | "==")
+                            || (op == "=" && re_cmp_prefix.is_match(prefix));
+                        if !is_cmp_op {
+                            continue;
+                        }
+                        let is_dbl = |tok: &str| -> bool {
+                            if double_vars.contains(tok) {
+                                return true;
+                            }
+                            if let Some(dd) = active_dd {
+                                if let Some((t, f)) = tok.split_once('.') {
+                                    if let Some(fld) = dd.get_field(t, f) {
+                                        let dt = fld.datatype.as_ref().and_then(|v| v.as_str()).unwrap_or("").to_ascii_lowercase();
+                                        if dt == "2" || dt == "double" {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                            false
+                        };
+                        if is_dbl(&lhs) || is_dbl(&rhs) {
+                            diagnostics.push(Diagnostic::new(
+                                file_path,
+                                line_no,
+                                start + 1,
+                                Severity::Error,
+                                "CAV004",
+                                format!(
+                                    "Direct '{}' comparison on double value ('{} {} {}'); use 'double.cmp(..., epsilon) {} 0' to avoid floating-point precision errors.",
+                                    op, &m[1], op, &m[3], op
+                                ),
+                                raw_line,
+                            ));
+                        }
+                    }
+                }
+            } else {
+                sql_paren_depth += cl_low.matches('(').count() as isize - cl_low.matches(')').count() as isize;
+                if sql_paren_depth <= 0 && re_sql_end.is_match(&cl_low) {
+                    flush_sql(sql_start_line, &sql_select_parts, &sql_from_parts, &sql_where_lines, diagnostics);
+                    in_sql = false;
+                    sql_start_line = 0;
+                } else if sql_paren_depth <= 0 && re_sql_tail.is_match(&cl_low) {
+                    sql_stage = "tail";
+                } else if sql_paren_depth <= 0 && re_sql_where.is_match(&cl_low) {
+                    sql_stage = "where";
+                    sql_where_lines.push((line_no, cl_stripped.to_string()));
+                } else if sql_paren_depth <= 0 && re_sql_from.is_match(&cl_low) {
+                    sql_stage = "from";
+                    sql_from_parts.push(cl_stripped.to_string());
+                } else {
+                    match sql_stage {
+                        "select" => sql_select_parts.push(cl_stripped.to_string()),
+                        "from" => sql_from_parts.push(cl_stripped.to_string()),
+                        "where" => sql_where_lines.push((line_no, cl_stripped.to_string())),
+                        _ => {}
+                    }
+                }
+            }
+        }
+
+        if in_sql && sql_start_line > 0 {
+            flush_sql(sql_start_line, &sql_select_parts, &sql_from_parts, &sql_where_lines, diagnostics);
+        }
     }
 
     /// Parallel multi-threaded auditing across files or directories using `rayon`.

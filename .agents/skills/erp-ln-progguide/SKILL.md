@@ -42,8 +42,8 @@ Every generated or reviewed script must satisfy these 7 rules:
 7. **Table Extension Runtime Mode & Old-Value Safety**: Handle Runtime Layer negative modes (`-DAL_NEW`, `-DAL_UPDATE`) alongside `DAL_NEW`/`DAL_UPDATE` in `before.save.object`/`after.save.object`; read `get.long.arg(1)` before `table.super()`; capture pre-save DB values via an isolated alias in `before.save.object()` rather than `with.old.object.values.do()` in `after.save.object()` (`EXT004`/`DAL006`, [01_ext](references/best_practices/01_extension_hooks_cookbook.md)).
 
 ### 4. `Audit-Before-Deliver` (Static Verification Gate)
-Before delivering any 4GL, DAL 2, or Extension script, audit offline:
+Before delivering any 4GL, DAL 2, or Extension script, audit offline (pass `--dd-cache` or `--dd-dir "Table Definitions"` for schema/double/index checks, or pre-build cache via `skill-ln import-dd-txt`):
 ```bash
-skill-ln audit-4gl <target_script> [--mode dal2|uedll|general] [--cloud]
+skill-ln audit-4gl <target_script> [--mode auto|general|dal2|uedll] [--cloud] [--dd-dir <dir>]
 ```
-Done when `audit-4gl` exits with **0 errors** across syntax (`SYN`), DAL (`DAL001-DAL006`), Extension (`EXT001-EXT004`), datatype (`DMN`/`TBL`/`STR`), and Cloud (`CLD`) checks.
+Done when `audit-4gl` exits with **0 errors** across syntax (`SYN`), DAL (`DAL001-DAL007`), Extension (`EXT001-EXT004`), datatype/export (`DMN001-DMN004`/`TBL`/`STR001-STR002`), caveats (`CAV001-CAV004`), SQL (`SQL008-SQL011`), and Cloud (`CLD`) checks. (Standard UI `.cln` scripts without `#context_on` audit cleanly under `--mode general`.)

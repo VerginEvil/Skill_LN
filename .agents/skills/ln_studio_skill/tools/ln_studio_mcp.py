@@ -350,7 +350,9 @@ TOOLS_REGISTRY: List[Dict[str, Any]] = [
                 "strict": {"type": "boolean", "description": "Treat warnings as errors"},
                 "fix": {"type": "boolean", "description": "Perform safe non-destructive repairs (compact XML, missing labels, admin sync)"},
                 "auto_fix": {"type": "boolean", "description": "Alias for fix"},
-                "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"}
+                "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"},
+                "filter": {"type": "array", "items": {"type": "string"}, "description": "Optional filename/path glob filters (e.g. txinr*)"},
+                "files": {"type": "array", "items": {"type": "string"}, "description": "Optional explicit component file paths to report"}
             },
             "required": ["activity"]
         }
@@ -956,7 +958,9 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
             strict = bool(arguments.get("strict", False))
             fix = bool(arguments.get("fix", arguments.get("auto_fix", False)))
             online = bool(arguments.get("online", False))
-            report = validate_activity(act_dir, strict=strict, fix=fix, online=online)
+            filters = arguments.get("filter") or []
+            files = arguments.get("files") or []
+            report = validate_activity(act_dir, strict=strict, fix=fix, online=online, filter_patterns=filters, target_files=files)
             is_valid = len(report.errors) == 0
             summary = {
                 "files_scanned": report.files_scanned,

@@ -294,3 +294,60 @@ fn test_layer3_collects_child_description_references_and_checks_reference_labels
     let _ = validate_activity(&act, false, true);
     assert!(lbl_dir.join("txinr.fldfix.lbl").is_file(), "Expected --fix to create missing label from fieldLabel");
 }
+
+#[test]
+fn test_scoped_validate_filter_and_ses_ui_parity_warnings() {
+    let tmp = tempdir().unwrap();
+    let act = tmp.path().join("dev_act [EXTce01108]");
+    let ses_inr = act.join("tx").join("session").join("inr");
+    let ses_cmg = act.join("tx").join("session").join("cmg");
+    let lbl_dir = act.join("tx").join("label");
+    fs::create_dir_all(&ses_inr).unwrap();
+    fs::create_dir_all(&ses_cmg).unwrap();
+    fs::create_dir_all(&lbl_dir).unwrap();
+    fs::write(act.join(".project"), "<projectDescription/>").unwrap();
+    AdminFile::new().save_to_path(&act.join(".admin")).unwrap();
+
+    fs::write(
+        lbl_dir.join("txinr1110m000.lbl"),
+        generate_label_xml_with_context("txinr1110m000", "INR", "B61O_a_ext", "EXTce01108", None, None, 2),
+    ).unwrap();
+    fs::write(
+        lbl_dir.join("txinr.cmd.lbl"),
+        generate_label_xml_with_context("txinr.cmd", "Run", "B61O_a_ext", "EXTce01108", None, None, 10),
+    ).unwrap();
+    fs::write(
+        lbl_dir.join("txinr.f1.lbl"),
+        generate_label_xml_with_context("txinr.f1", "F1", "B61O_a_ext", "EXTce01108", None, None, 1),
+    ).unwrap();
+
+    // Unrelated broken legacy session
+    fs::write(
+        ses_cmg.join("txcmg9990m000.ses"),
+        r#"<?xml version="1.0" encoding="UTF-8" standalone="no"?><DR_Controller><name>txcmg9990m000</name><descriptionReference>txcmg.broken_missing</descriptionReference></DR_Controller>"#,
+    ).unwrap();
+
+    // Target session with showAsButton=false, overlapping row/col, and script-form parity mismatches
+    fs::write(
+        ses_inr.join("txinr1110m000.ses"),
+        r#"<?xml version="1.0" encoding="UTF-8" standalone="no"?><DR_Controller><name>txinr1110m000</name><descriptionReference>txinr1110m000</descriptionReference><FormCommand><name>exec.run</name><descriptionReference>txinr.cmd</descriptionReference><type>1</type><activationType>5</activationType><activationName>missing.cmd.fn</activationName><showAsButton>false</showAsButton></FormCommand><Form><PhysicalFormLayout><FormField><fieldName>form.unbound1</fieldName><fieldLabel>inr.f1</fieldLabel><groupID>2</groupID><rowScreenPosition>1</rowScreenPosition><columnScreenPosition>44</columnScreenPosition></FormField><FormField><fieldName>form.unbound2</fieldName><fieldLabel>inr.f1</fieldLabel><groupID>2</groupID><rowScreenPosition>1</rowScreenPosition><columnScreenPosition>44</columnScreenPosition></FormField></PhysicalFormLayout></Form><DR_Module><name>txinr1110m000</name><Source><expression>declaration:
+    extern domain tcitem form.unbound1
+functions:
+function extern void other.fn()
+{
+}
+</expression><sourceType>1</sourceType></Source></DR_Module></DR_Controller>"#,
+    ).unwrap();
+
+    let mut v = ln_model::validator::ActivityValidator::new(act.clone(), false, false);
+    v.set_scope(vec!["txinr*".to_string()], vec![]);
+    let report = v.run();
+
+    assert_eq!(report.errors().len(), 0, "Scoped validate must ignore txcmg9990m000 error: {:?}", report.errors());
+    let warns: Vec<String> = report.warnings().into_iter().map(|d| d.message.clone()).collect();
+    assert!(warns.iter().any(|m| m.contains("showAsButton")), "Expected showAsButton warning: {warns:?}");
+    assert!(warns.iter().any(|m| m.contains("overlap")), "Expected rowScreenPosition overlap warning: {warns:?}");
+    assert!(warns.iter().any(|m| m.contains("form.unbound2") && m.contains("extern")), "Expected missing extern warning for form.unbound2: {warns:?}");
+    assert!(!warns.iter().any(|m| m.contains("form.unbound1") && m.contains("extern")), "form.unbound1 IS extern and must not warn: {warns:?}");
+    assert!(warns.iter().any(|m| m.contains("missing.cmd.fn")), "Expected missing activationName warning: {warns:?}");
+}

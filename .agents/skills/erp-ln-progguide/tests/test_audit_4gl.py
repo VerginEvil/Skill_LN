@@ -1240,6 +1240,287 @@ function extern long get.extension.point.version()
         errors_and_warnings = [d for d in diags if d.severity in ("ERROR", "WARNING")]
         self.assertEqual(len(errors_and_warnings), 0, f"Expected 0 issues, got: {[str(d) for d in errors_and_warnings]}")
 
+    def test_cln_ui_session_not_misclassified_as_extension(self):
+        """Asserts custom Sessions/*.cln UI scripts without #context_on are not misclassified as Extension Modeler."""
+        ui_script = """
+|******************************************************************************
+|* txinr1110m000  0  VRC B61O a ext
+|******************************************************************************
+declaration:
+    table   ttxinr110
+#include <bic_dam>
+
+before.program:
+    clean.mess()
+
+functions:
+function extern void exec.process()
+{
+    message("Ready")
+}
+"""
+        for mode in (None, "general"):
+            diags = self.auditor.audit_content(ui_script, "Sessions/txinr1110m000.cln", mode=mode)
+            ext_diags = [d for d in diags if d.code.startswith("EXT")]
+            self.assertEqual(
+                len(ext_diags),
+                0,
+                f"Standard UI .cln should not emit EXT* under mode={mode}: {[str(d) for d in ext_diags]}",
+            )
+
+        # Explicit --mode general even on table-named .cln without #context_on must not force extension rules
+        diags_tbl_general = self.auditor.audit_content(ui_script, "whinh431.cln", mode="general")
+        self.assertEqual([d for d in diags_tbl_general if d.code.startswith("EXT")], [])
+
+        # True extension script with #context_on still triggers EXT003 when unwrapped
+        ext_script = """
+#context_on "declarations"
+#include <bic_tableext>
+#context_off
+function extern void unwrapped_helper()
+{
+}
+"""
+        diags_ext = self.auditor.audit_content(ext_script, "Extension/whinh431.cln", mode="general")
+        self.assertTrue(any(d.code == "EXT003" for d in diags_ext))
+
+    def test_dd_txt_and_cdf_importer_and_dd_dir_audit(self):
+        """Asserts Table Definitions *.txt and *-cdf.txt import cleanly, expand cmba indices, preserve enum constants, and power --dd-dir audits."""
+        tbl_txt = """----- หน้า 1 -----
+Date : 26-10-27 [ 16:48, Asi ] Table Definitions by Package / Table / VRC Page : 1
+Table : ci sli 220 Manual Sales Invoice Headers Update Reference Message:
+Field Name Description Domain Datatype Physic. Mand. Acti Refer. Reference
+1 sfcp Financial Company ( cisli.sfcp ) tcncmp Integer 2 Yes Yes tc emm 170 Mandatory
+2 msid Manual Sales ID ( cisli.msid ) tcorno String 9 Yes Yes Not applicab
+3 rate Rate ( cisli.rate ) tcratc Double 3 8 No Yes Not applicab
+4 srtp Source Type ( cisli.srtp ) tcsli.srtp Enumerate 1 Yes Yes Not applicab
+5 cmba Not applicab
+   sfcp Child Field
+   msid Child Field
+Index Description Index Parts Dupl Acti
+1 2 3 4 5 6 7 8 9 10
+1 Financial Company, Manual Sales ID cmba No Yes
+2 Rate, Source Type rate srtp Yes Yes
+"""
+        cdf_txt = """----- หน้า 1 -----
+Date : 26-11-13 [ 14:25 ] Customer Defined Fields Page : 1
+Table : cisli220 Manual Sales Invoice Headers
+Field Multi I.Hidden I.Hidden I.Hidden Data Type Domain List Initial value (name) Calc Acti Avai Origin
+bank [ 1 ] Bank Code No No No Yes String tc mcs.str20m No Yes Yes Manual
+"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            dd_dir = tmp / "Table Definitions"
+            dd_dir.mkdir()
+            (dd_dir / "cisli220.txt").write_text(tbl_txt, encoding="utf-8")
+            (dd_dir / "cisli220-cdf.txt").write_text(cdf_txt, encoding="utf-8")
+
+            # Seed existing cache with rich server enum metadata that must be preserved on merge
+            cache_file = tmp / ".ln_dd_cache.json"
+            cache_file.write_text(
+                json.dumps({
+                    "version": "1.0",
+                    "tables": {},
+                    "domains": {
+                        "tcsli.srtp": {
+                            "name": "tcsli.srtp",
+                            "datatype": "7",
+                            "enums": {"sales.order": {"position": "1"}},
+                        }
+                    },
+                }),
+                encoding="utf-8",
+            )
+
+            dd_cache = DataDictionaryCache(cache_path=cache_file)
+            summary = dd_cache.ingest_dd_txt_dir(dd_dir)
+            dd_cache.save()
+
+            self.assertGreaterEqual(summary["tables_imported"], 1)
+            self.assertTrue(dd_cache.has_table("cisli220"))
+            self.assertTrue(dd_cache.has_field("cisli220", "rate"))
+            self.assertTrue(dd_cache.has_field("cisli220", "cdf_bank"))
+            self.assertEqual(dd_cache.get_field("cisli220", "rate")["datatype"], "2")
+            self.assertEqual(dd_cache.get_field("cisli220", "cdf_bank")["domain"], "tcmcs.str20m")
+            self.assertEqual(dd_cache.tables["cisli220"]["indices"]["1"], ["sfcp", "msid"])
+            self.assertEqual(dd_cache.domains["tcsli.srtp"]["enums"]["sales.order"]["position"], "1")
+
+            # Test on-the-fly --dd-dir in CLI
+            script_path = tmp / "check_sli.cln"
+            script_path.write_text(
+                "declaration:\n    table tcisli220\nfunction void run_it() {\n    cisli220.bad_col = 1\n    cisli220.cdf_bank = \"OK\"\n}\n",
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "scripts" / "audit_4gl.py"),
+                    str(script_path),
+                    "--mode",
+                    "general",
+                    "--dd-dir",
+                    str(dd_dir),
+                    "--format",
+                    "json",
+                ],
+                capture_output=True,
+                text=True,
+            )
+            payload = json.loads(proc.stdout)
+            tbl002_msgs = [d["message"] for d in payload["diagnostics"] if d["code"] == "TBL002"]
+            self.assertTrue(any("bad_col" in m for m in tbl002_msgs), f"Expected bad_col TBL002, got: {tbl002_msgs}")
+            self.assertFalse(any("cdf_bank" in m for m in tbl002_msgs), f"cdf_bank must not trigger TBL002: {tbl002_msgs}")
+
+    def test_new_runtime_trap_and_sql_hygiene_rules(self):
+        """Asserts DAL007, STR002, CAV004, DMN004, and SQL009-SQL011 catch real traps without false positives."""
+        dd = DataDictionaryCache(
+            raw_data={
+                "tables": {
+                    "whinr110": {
+                        "name": "whinr110",
+                        "fields": {
+                            "item": {"name": "item", "domain": "tcitem", "datatype": "6"},
+                            "qstk": {"name": "qstk", "domain": "tcqiv1", "datatype": "2"},
+                            "trdt": {"name": "trdt", "domain": "tcdate", "datatype": "14"},
+                        },
+                        "indices": {"1": ["item", "trdt"]},
+                    },
+                    "cisli310": {
+                        "name": "cisli310",
+                        "fields": {
+                            "sfcp": {"name": "sfcp", "domain": "tcncmp", "datatype": "3"},
+                            "srcp": {"name": "srcp", "domain": "tcncmp", "datatype": "3"},
+                            "srtp": {"name": "srtp", "domain": "tcsli.srtp", "datatype": "7"},
+                            "orno": {"name": "orno", "domain": "tcorno", "datatype": "6"},
+                        },
+                        "indices": {
+                            "1": ["sfcp", "orno"],
+                            "2": ["srcp", "srtp", "orno"],
+                        },
+                    },
+                },
+                "domains": {
+                    "tcitem": {"name": "tcitem", "datatype": "6"},
+                    "tcqiv1": {"name": "tcqiv1", "datatype": "2"},
+                    "tcdate": {"name": "tcdate", "datatype": "14"},
+                    "tcncmp": {"name": "tcncmp", "datatype": "3"},
+                    "tcsli.srtp": {"name": "tcsli.srtp", "datatype": "7"},
+                    "tcorno": {"name": "tcorno", "datatype": "6"},
+                },
+            }
+        )
+
+        bad_script = """
+declaration:
+    table twhinr110
+    table tcisli310
+
+function extern long before.save.object(long mode)
+{
+    dal.set.error.message("@txinr0001")
+    return(DALHOOKERROR)
+}
+
+function void export_csv()
+{
+    long fp, y, m, d, hh, mm, ss
+    double l_tol
+    string line_buf(256)
+
+    fp = seq.open("out.csv", "wt")
+    seq.puts(chr$(239) & chr$(187) & chr$(191), fp)
+    utc.to.date(whinr110.trdt, y, m, d, hh, mm, ss)
+    line_buf = sprintf$("%04d-%02d-%02d", y, m, d)
+    seq.puts(line_buf, fp)
+
+    if whinr110.qstk <> 0 then
+    endif
+    if l_tol = 0 then
+    endif
+
+    select cisli310.orno
+    from cisli310
+    where cisli310.orno = "SO001"
+    selectdo
+    endselect
+
+    select whinr110.item
+    from whinr110
+    where whinr110._index1 = {"ITEM1"}
+    selectdo
+    endselect
+}
+"""
+        diags = self.auditor.audit_content(bad_script, "txinr1110m000.cln", mode="general", dd_cache=dd)
+        by_code = {d.code: d for d in diags}
+        self.assertIn("DAL007", by_code)
+        self.assertEqual(by_code["DAL007"].severity, "ERROR")
+        self.assertIn("STR002", by_code)
+        self.assertEqual(by_code["STR002"].severity, "ERROR")
+        self.assertIn("CAV004", by_code)
+        self.assertEqual(by_code["CAV004"].severity, "ERROR")
+        self.assertGreaterEqual(sum(1 for d in diags if d.code == "CAV004"), 2)
+        self.assertIn("DMN004", by_code)
+        self.assertEqual(by_code["DMN004"].severity, "WARNING")
+        self.assertIn("SQL009", by_code)
+        self.assertEqual(by_code["SQL009"].severity, "WARNING")
+        self.assertIn("SQL010", by_code)
+        self.assertEqual(by_code["SQL010"].severity, "WARNING")
+        self.assertIn("SQL011", by_code)
+        self.assertEqual(by_code["SQL011"].severity, "WARNING")
+
+        good_script = """
+declaration:
+    table twhinr110
+    table tcisli310
+
+function extern long before.save.object(long mode)
+{
+    dal.set.error.message("txinr0001")
+    dal.set.error.message("@Literal validation error")
+    return(DALHOOKERROR)
+}
+
+function void export_csv()
+{
+    long fp, local_utc, y, m, d, hh, mm, ss
+    double l_tol
+    domain tcorno l.orno
+    string line_buf(256)
+
+    fp = seq.open("out.csv", "wb")
+    seq.puts(chr$(239) & chr$(187) & chr$(191), fp)
+    local_utc = utc.to.local(whinr110.trdt)
+    utc.to.date(local_utc, y, m, d, hh, mm, ss)
+    line_buf = sprintf$("%04d-%02d-%02d", y, m, d)
+    seq.puts(line_buf, fp)
+
+    if double.cmp(whinr110.qstk, 0.0, 0.0001) <> 0 then
+    endif
+    if double.cmp(l_tol, 0.0, 0.0001) = 0 then
+    endif
+
+    select cisli310.orno:l.orno
+    from cisli310
+    where cisli310.srcp = 100
+    and cisli310.srtp = tcsli.srtp.sales
+    and cisli310.orno = "SO001"
+    selectdo
+    endselect
+}
+"""
+        clean_diags = self.auditor.audit_content(good_script, "txinr1110m000.cln", mode="general", dd_cache=dd)
+        for code in ("DAL007", "STR002", "CAV004", "DMN004", "SQL009", "SQL010", "SQL011"):
+            self.assertFalse(
+                any(d.code == code for d in clean_diags),
+                f"Unexpected {code} false positive on compliant script: {[str(d) for d in clean_diags if d.code == code]}",
+            )
+        self.assertTrue(self.auditor._is_string_domain("tcorno", dd))
+        self.assertFalse(self.auditor._is_string_domain("tcqiv1", dd))
+        enum_script = "declaration:\n    table tcisli310\nfunction void f() {\n    if cisli310.srtp <> 1 then\n    endif\n}\n"
+        enum_diags = self.auditor.audit_content(enum_script, "enum_test.cln", mode="general", dd_cache=dd)
+        self.assertTrue(any(d.code == "DMN003" and d.severity == "ERROR" for d in enum_diags))
+
 
 if __name__ == "__main__":
     unittest.main()

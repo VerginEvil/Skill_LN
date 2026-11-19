@@ -1134,7 +1134,7 @@ def cmd_sync_admin(args):
         sys.exit(1)
 
     act_path = Path(resolved["path"])
-    res = scan_and_sync_activity(act_path)
+    res = scan_and_sync_activity(act_path, prune=getattr(args, "prune", False))
     print(f"[SUCCESS] Synchronized .admin for '{act_path.name}':")
     print(f"  Disk Components: {res['total_disk_components']}")
     print(f"  Added:           {len(res['added'])}")
@@ -1211,6 +1211,8 @@ def cmd_validate(args):
         strict=args.strict,
         fix=args.fix,
         online=getattr(args, "online", False),
+        filter_patterns=getattr(args, "filters", None),
+        target_files=getattr(args, "files", None),
     )
     report = validator.run()
 
@@ -2151,11 +2153,14 @@ def main():
     sp_val.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     sp_val.add_argument("--fix", action="store_true", help="Perform safe non-destructive repairs (missing labels, admin sync)")
     sp_val.add_argument("--online", action="store_true", help="Probe server catalog via StudioComponent.GetBrowseList for unresolved labels")
+    sp_val.add_argument("--filter", dest="filters", action="append", default=[], help="Filename or path glob filter (e.g. txinr*)")
+    sp_val.add_argument("--files", nargs="+", default=[], help="Specific component file path(s) to report")
     sp_val.add_argument("--json", action="store_true", help="Output results in JSON format")
 
     # sync-admin
     sp_adm = subparsers.add_parser("sync-admin", help="Synchronize activity .admin SCM cache")
     sp_adm.add_argument("--activity", help="Target activity name")
+    sp_adm.add_argument("--prune", action="store_true", help="Delete .admin entries whose files no longer exist on disk")
 
     # diagnose
     sp_diag = subparsers.add_parser("diagnose", help="Read Eclipse problem markers (.markers)")

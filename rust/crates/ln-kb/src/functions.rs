@@ -34,16 +34,19 @@ pub fn search_functions(query: &str) -> Vec<&'static FunctionEntry> {
         return ALL_FUNCTIONS.iter().collect();
     }
 
-    // Attempt regex match if regex characters exist
-    if let Ok(re) = Regex::new(&format!("(?i){}", q)) {
-        let mut results = Vec::new();
-        for entry in ALL_FUNCTIONS.iter() {
-            if re.is_match(entry.name) || re.is_match(entry.syntax) || re.is_match(entry.description) {
-                results.push(entry);
+    let is_single_term = q.split_whitespace().count() == 1;
+    let has_regex_meta = q.chars().any(|c| matches!(c, '*' | '?' | '[' | ']' | '(' | ')' | '|' | '^' | '$'));
+    if is_single_term && has_regex_meta {
+        if let Ok(re) = Regex::new(&format!("(?i){}", q)) {
+            let mut results = Vec::new();
+            for entry in ALL_FUNCTIONS.iter() {
+                if re.is_match(entry.name) || re.is_match(entry.syntax) || re.is_match(entry.description) {
+                    results.push(entry);
+                }
             }
-        }
-        if !results.is_empty() {
-            return results;
+            if !results.is_empty() {
+                return results;
+            }
         }
     }
 

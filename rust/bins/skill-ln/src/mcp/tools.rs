@@ -302,7 +302,9 @@ pub fn list_registered_tools() -> Vec<Value> {
                     "strict": {"type": "boolean", "description": "Treat warnings as errors"},
                     "fix": {"type": "boolean", "description": "Perform safe non-destructive repairs (compact XML, missing labels, admin sync)"},
                     "auto_fix": {"type": "boolean", "description": "Alias for fix"},
-                    "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"}
+                    "online": {"type": "boolean", "description": "Probe server label catalog via StudioComponent.GetBrowseList"},
+                    "filter": {"type": "array", "items": {"type": "string"}, "description": "Optional filename/path glob filters (e.g. txinr*)"},
+                    "files": {"type": "array", "items": {"type": "string"}, "description": "Optional explicit component file paths to report"}
                 },
                 "required": ["activity"]
             }
@@ -643,18 +645,12 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
                 };
             }
 
-            let ws_owned = match arg_str(arguments, "workspace") {
-                Some(w) => w.to_string(),
-                None => match WorkspaceContext::discover(None, None) {
-                    Ok(ctx) => ctx.env_name,
-                    Err(e) => {
-                        if let Some(ip) = arg_str(arguments, "ionapi_file") {
-                            Path::new(ip).file_stem().and_then(|s| s.to_str()).unwrap_or("default").to_string()
-                        } else {
-                            return mcp_err(name, &e.to_string());
-                        }
-                    }
-                },
+            let ws_owned = match crate::commands::resolve_login_token_key(
+                arg_str(arguments, "workspace"),
+                arg_str(arguments, "ionapi_file"),
+            ) {
+                Ok(k) => k,
+                Err(e) => return mcp_err(name, &e.to_string()),
             };
             let ws = ws_owned.as_str();
             let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -1281,11 +1277,24 @@ pub async fn execute_tool(name: &str, arguments: &Value) -> Value {
                 .and_then(|v| v.as_bool())
                 .unwrap_or(false);
             let online = arguments.get("online").and_then(|v| v.as_bool()).unwrap_or(false);
+            let filters: Vec<String> = arguments
+                .get("filter")
+                .and_then(|v| v.as_array())
+                .map(|arr| arr.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+                .unwrap_or_default();
+            let files: Vec<PathBuf> = arguments
+                .get("files")
+                .and_then(|v| v.as_array())
+                .map(|arr| arr.iter().filter_map(|x| x.as_str().map(PathBuf::from)).collect())
+                .unwrap_or_default();
             let act_path = Path::new(act);
             if !act_path.exists() {
                 return mcp_err(name, &format!("Activity path does not exist: {act}"));
             }
             let mut validator = ln_model::validator::ActivityValidator::new(act_path.to_path_buf(), strict, fix);
+            if !filters.is_empty() || !files.is_empty() {
+                validator.set_scope(filters, files);
+            }
             if online {
                 if let Ok((_ctx, client)) = mcp_resolve_ctx_and_client(arguments).await {
                     let (act_ctx, act_cp) = ln_scm::activity::resolve_activity_context(act_path);

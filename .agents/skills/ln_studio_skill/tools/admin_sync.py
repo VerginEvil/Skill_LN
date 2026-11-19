@@ -395,18 +395,23 @@ def validate_activity_layout(activity_dir: Path) -> List[str]:
     return sorted(list(set(errors)))
 
 
-def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
+def scan_and_sync_activity(activity_path: Path, prune: bool = False) -> Dict[str, Any]:
     """
-    Scans activity folder on disk, compares against .admin entries across all
-    12 LN Studio component extensions, registers untracked files, and removes
-    obsolete entries only when they match managed extensions.
+    Scans activity folder on disk, fails fast on corrupt .admin, writes .admin.bak,
+    compares against .admin entries across all 12 LN Studio component extensions,
+    registers untracked files non-destructively, and prunes only when `prune=True`.
     """
     layout_errors = validate_activity_layout(activity_path)
     if layout_errors:
         err_msg = "; ".join(layout_errors)
         raise ValueError(f"Single-XML TDE layout violation in activity '{activity_path.name}': {err_msg}")
-    repair_admin_file(activity_path)
     admin_file = activity_path / ".admin"
+    if admin_file.exists():
+        # Fail fast if .admin cannot be deserialized before creating backup or repairing
+        list_admin_components(activity_path)
+        shutil.copyfile(admin_file, activity_path / ".admin.bak")
+    if not repair_admin_file(activity_path):
+        raise RuntimeError(f"Failed to repair/read .admin in '{activity_path}'")
     registered = {c["path"]: c for c in list_admin_components(activity_path)}
 
     # Scan files on disk across all 12 managed extensions (excluding standalone scripts)
@@ -424,13 +429,18 @@ def scan_and_sync_activity(activity_path: Path) -> Dict[str, Any]:
     to_remove = sorted([
         k for k in (set(registered.keys()) - disk_files)
         if Path(k).suffix.lower() in MANAGED_EXTENSIONS
-    ])
+    ]) if prune else []
 
     added = []
     removed = []
 
     for item in to_add:
-        add_component(activity_path, item)
+        disk_p = activity_path / item
+        is_ro = disk_p.exists() and not os.access(disk_p, os.W_OK)
+        if is_ro:
+            admin_after_get(activity_path, item)
+        else:
+            add_component(activity_path, item)
         added.append(item)
 
     for item in to_remove:
@@ -453,6 +463,7 @@ def main():
     parser.add_argument("--workspace", help="Filter by workspace name")
     parser.add_argument("--status", action="store_true", help="Display registered components in .admin")
     parser.add_argument("--scan-and-update", action="store_true", help="Scan disk files and synchronize .admin")
+    parser.add_argument("--prune", action="store_true", help="Remove .admin entries missing from disk during --scan-and-update")
     parser.add_argument("--repair", action="store_true", help="Repair .admin: remove :<activity>/ prefixes and prune standalone scripts")
     parser.add_argument("--add", help="Add specific relative path to .admin")
     parser.add_argument("--remove", help="Remove specific relative path from .admin")
@@ -502,7 +513,7 @@ def main():
 
     if args.scan_and_update:
         print(f"Scanning and updating .admin for '{act_path.name}'...")
-        res = scan_and_sync_activity(act_path)
+        res = scan_and_sync_activity(act_path, prune=args.prune)
         print(f"[SUCCESS] Scanned {res['total_disk_components']} components.")
         if res["added"]:
             print(f"  Added {len(res['added'])} component(s):")

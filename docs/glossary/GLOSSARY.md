@@ -158,4 +158,12 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 
 - **Expand–Contract Path Migration**: A zero-downtime migration sequence that first adds `.agents/skills/` path support alongside root fallbacks in Python/Rust tooling, moves the skill directories, and finally contracts obsolete root paths and duplicate global copies.
 
+### 4GL Auditor Parity, Local DD Text Importer & Safe Studio Sync (ADR 0024)
+- **Context-Driven `.cln` Classification**: Auditor detection rule that classifies `.cln` scripts as Extension Modeler only when `#context_on`/`#context_off` directives exist or (outside explicit non-extension modes) explicit extension path/include markers match, preventing false `EXT001`/`EXT003` errors on UI session `.cln` scripts.
+- **Data Dictionary Text Importer (`import-dd-txt` / `--dd-dir`)**: Local parser converting Infor LN `ttadv4420m000` Table Definition `.txt` dumps and `*-cdf.txt` CDF reports (mapping custom fields with the `cdf_` prefix) into `.ln_dd_cache.json` without overwriting richer server-derived metadata.
+- **Safe `.admin` Merge (`sync-admin`)**: Fail-fast `.admin` synchronization strategy that backs up `.admin` to `.admin.bak`, preserves existing SCM flags and `<activity_folder>/` `m_path` prefixes, registers newly discovered files non-destructively, and deletes missing entries only with `--prune`.
+- **Component-Scoped Validation (`--filter` / `--files`)**: Activity validation mode that loads the full activity `.admin` and label/table catalogs for cross-reference resolution while reporting Layer 1–4 diagnostics exclusively for matched target components.
+- **Session Script–Form Parity**: Static session validation check verifying that non-table `<FormField>` bindings and `<FormCommand>` `<activationName>` targets correspond to `extern` declarations/functions in the session's embedded `<DR_Module>` script.
+
+
 

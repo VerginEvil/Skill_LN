@@ -590,6 +590,27 @@ impl WorkspaceContext {
     }
 
     pub fn load_ionapi_from_cloudenv(env_name: &str, studio_override: Option<&Path>) -> Option<IonapiConfig> {
+        Self::load_ionapi_from_cloudenv_with_home(env_name, studio_override, None)
+    }
+
+    pub fn load_ionapi_from_cloudenv_with_home(
+        env_name: &str,
+        studio_override: Option<&Path>,
+        home_override: Option<&Path>,
+    ) -> Option<IonapiConfig> {
+        let mut prefs_candidates: Vec<PathBuf> = Vec::new();
+        let resolved_home = home_override.map(PathBuf::from).or_else(|| {
+            std::env::var_os("USERPROFILE")
+                .or_else(|| std::env::var_os("HOME"))
+                .map(PathBuf::from)
+        });
+        if let Some(home) = resolved_home {
+            prefs_candidates.push(
+                home.join(".ln_studio")
+                    .join("com.infor.erpln.jca.connectivity.cloudenv.prefs"),
+            );
+        }
+
         let mut studio_candidates: Vec<PathBuf> = Vec::new();
         if let Some(p) = studio_override {
             studio_candidates.push(p.to_path_buf());
@@ -600,12 +621,16 @@ impl WorkspaceContext {
         if let Ok(p) = std::env::var("LN_STUDIO_HOME") {
             studio_candidates.push(PathBuf::from(p));
         }
-
         for studio_dir in studio_candidates {
-            let prefs_path = studio_dir
-                .join("configuration")
-                .join(".settings")
-                .join("com.infor.erpln.jca.connectivity.cloudenv.prefs");
+            prefs_candidates.push(
+                studio_dir
+                    .join("configuration")
+                    .join(".settings")
+                    .join("com.infor.erpln.jca.connectivity.cloudenv.prefs"),
+            );
+        }
+
+        for prefs_path in prefs_candidates {
             if !prefs_path.is_file() {
                 continue;
             }

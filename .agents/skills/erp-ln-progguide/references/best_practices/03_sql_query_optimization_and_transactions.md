@@ -253,3 +253,12 @@ endselect
 3. **Always Match `db.retry.point()` with `commit.transaction()` / `abort.transaction()`**: An open transaction without a commit/abort will hold table locks until the bshell terminates.
 4. **Never Commit Inside DAL Hooks or Subroutines**: Transactions must be managed exclusively at outer orchestration boundaries (`choice.update.db`, batch loops, APIs). Commits inside hooks corrupt atomic units of work. See [Outer-Boundary Transaction Orchestration](06_4gl_coding_standards_and_caveats.md#72-outer-boundary-transaction-orchestration).
 5. **Immediate Rollback on Error**: Always call `abort.transaction()` upon encountering database runtime errors in `selecterror` to immediately release row locks. See [Scoped Row-Locking Windows and Rollbacks](06_4gl_coding_standards_and_caveats.md#76-scoped-row-locking-windows-and-rollbacks).
+
+---
+
+## 6. Static SQL Hygiene Rules (`SQL009`–`SQL011`)
+
+- **Prefer Explicit Column Predicates Over `_indexN = {...}` (`SQL009`, `WARNING`)**: Avoid legacy `_index1 = {...}` tuple syntax; write explicit equality predicates (`tbl.col1 = :l.col1 and tbl.col2 = :l.col2`) so query intent and index changes stay clear.
+- **Bind Selected Columns to `:l.*` Scalar Variables (`SQL010`, `WARNING`)**: Bind individual selected columns (`select cisli310.orno:l.orno`) into local host variables rather than mutating the table's global record buffer.
+- **Constrain Leading Index Columns (`SQL011`, `WARNING`)**: When Data Dictionary index metadata is available (via `.ln_dd_cache.json` or `--dd-dir`), ensure at least one index has its leading column constrained in `WHERE` (e.g., `cisli310.srcp` + `cisli310.srtp` on Index 2) to prevent full table scans.
+

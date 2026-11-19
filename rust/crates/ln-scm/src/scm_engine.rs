@@ -1437,9 +1437,13 @@ pub struct SyncAdminResult {
     pub removed: Vec<String>,
 }
 
-/// Scans activity folder, enforces Single-XML TDE layout, preserves existing `.admin` flags,
-/// registers untracked non-extension files with `after_create`, and prunes removed entries.
+/// Scans activity folder, enforces Single-XML TDE layout, preserves existing `.admin` flags and `m_path` prefixes,
+/// fails fast on corrupt `.admin`, writes `.admin.bak`, registers untracked files non-destructively, and prunes only when `prune` is true.
 pub fn sync_admin(activity_dir: &Path) -> Result<SyncAdminResult, ScmError> {
+    sync_admin_with_options(activity_dir, false)
+}
+
+pub fn sync_admin_with_options(activity_dir: &Path, prune: bool) -> Result<SyncAdminResult, ScmError> {
     let mut disk_files: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
 
     fn walk_sync(root: &Path, dir: &Path, disk_files: &mut std::collections::BTreeSet<String>) -> Result<(), ScmError> {
@@ -1496,27 +1500,58 @@ pub fn sync_admin(activity_dir: &Path) -> Result<SyncAdminResult, ScmError> {
 
     let admin_path = activity_dir.join(".admin");
     let mut admin = if admin_path.exists() {
-        AdminFile::load_from_path(&admin_path).unwrap_or_default()
+        let parsed = AdminFile::load_from_path(&admin_path).map_err(|e| {
+            ScmError::Other(format!(
+                "Refusing to overwrite corrupt .admin at '{}': {}",
+                admin_path.display(),
+                e
+            ))
+        })?;
+        let backup_path = activity_dir.join(".admin.bak");
+        let _ = fs::copy(&admin_path, &backup_path);
+        parsed
     } else {
         AdminFile::new()
     };
+
+    let act_prefix = admin.entries.iter().find_map(|(k, v)| {
+        let norm_k = ln_eclipse_compat::admin::normalize_admin_path(k);
+        if v.path.ends_with(&norm_k) && v.path.len() > norm_k.len() {
+            Some(v.path[..v.path.len() - norm_k.len()].to_string())
+        } else {
+            None
+        }
+    });
 
     let existing_keys: std::collections::HashSet<String> = admin.entries.keys().cloned().collect();
     let mut added = Vec::new();
     for rel in &disk_files {
         if !existing_keys.contains(rel) {
-            admin.after_create(rel);
+            let is_ro = fs::metadata(activity_dir.join(rel))
+                .map_or(false, |m| m.permissions().readonly());
+            if is_ro {
+                admin.after_get(rel);
+            } else {
+                admin.after_create(rel);
+            }
+            if let Some(ref prefix) = act_prefix {
+                if let Some(entry) = admin.get_mut(rel) {
+                    entry.path = format!("{prefix}{rel}");
+                }
+            }
             added.push(rel.clone());
         }
     }
 
     let mut removed = Vec::new();
-    for key in existing_keys {
-        if ln_eclipse_compat::admin::is_managed_extension(&key) && !disk_files.contains(&key) {
-            let fname = Path::new(&key).file_stem().and_then(|s| s.to_str()).unwrap_or("");
-            if !is_extension_component(fname) {
-                admin.remove(&key);
-                removed.push(key);
+    if prune {
+        for key in existing_keys {
+            if ln_eclipse_compat::admin::is_managed_extension(&key) && !disk_files.contains(&key) {
+                let fname = Path::new(&key).file_stem().and_then(|s| s.to_str()).unwrap_or("");
+                if !is_extension_component(fname) {
+                    admin.remove(&key);
+                    removed.push(key);
+                }
             }
         }
     }
