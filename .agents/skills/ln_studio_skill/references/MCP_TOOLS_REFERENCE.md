@@ -76,7 +76,7 @@ All MCP tool responses return a uniform dictionary structure:
   "result": {
     "component": "whwmd4100m000",
     "type": "session",
-    "activity": "dev_natt_1107-1 [EXTce01107]"
+    "activity": "dev_user_001 [EXT01]"
   },
   "message": "Component checked out successfully."
 }

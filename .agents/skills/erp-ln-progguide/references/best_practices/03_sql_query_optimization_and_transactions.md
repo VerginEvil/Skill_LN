@@ -36,7 +36,7 @@ endselect
 - **Host Variables**: 4GL local/global variables must be prefixed with a colon (`:variable`) inside SQL statements.
 - **Table Record Buffer**: Table columns (e.g. `tdsls400.orno`) are automatically bound to the session's active table buffer upon each `selectdo` cycle.
   > [!WARNING]
-  > **Buffer Overwrite Risk**: In UI sessions, executing `select table.*` in helper functions silently overwrites the active form record buffer! Always bind queried columns directly to local host variables (`table.field:l.var`) or use Table Aliases. See [Pillar 4: Table Record Buffer Protection](06_4gl_coding_standards_and_caveats.md#5-pillar-4-embedded-sql--table-record-buffer-protection).
+  > **Buffer Overwrite Risk**: In UI sessions, executing `select table.*` in helper functions silently overwrites the active form record buffer! Always bind queried columns directly to local host variables (`table.field:l.var`) or use Table Aliases. See [Pillar 4: Table Record Buffer Protection](06b_sql_buffer_protection.md#5-pillar-4-embedded-sql--table-record-buffer-protection).
 - **Column Projections**: Avoid `SELECT *` in performance-critical loops. Select only the columns required to reduce network bandwidth and memory overhead.
 
 ### 1.3 Prohibition of Array Subscripts in Host Variables (SQLState 42I03 / Error 302)
@@ -59,7 +59,7 @@ endselect
       ...
   endselect
   ```
-  See [Rule SQL008 in 4GL Coding Standards](06_4gl_coding_standards_and_caveats.md#57-no-array-subscripts-in-sql-host-variables-rule-sql008).
+  See [Rule SQL008 in 4GL Coding Standards](06b_sql_buffer_protection.md#57-no-array-subscripts-in-sql-host-variables-rule-sql008).
 
 ---
 
@@ -251,8 +251,8 @@ endselect
 1. **Acquire Locks in Hierarchical Order**: Always lock parent before child (e.g., `tdsls400` header before `tdsls401` lines).
 2. **Never Open a UI Session or User Dialog While Holding a Lock**: Holding records `for update` while waiting for user keyboard response will block other users and cause deadlocks.
 3. **Always Match `db.retry.point()` with `commit.transaction()` / `abort.transaction()`**: An open transaction without a commit/abort will hold table locks until the bshell terminates.
-4. **Never Commit Inside DAL Hooks or Subroutines**: Transactions must be managed exclusively at outer orchestration boundaries (`choice.update.db`, batch loops, APIs). Commits inside hooks corrupt atomic units of work. See [Outer-Boundary Transaction Orchestration](06_4gl_coding_standards_and_caveats.md#72-outer-boundary-transaction-orchestration).
-5. **Immediate Rollback on Error**: Always call `abort.transaction()` upon encountering database runtime errors in `selecterror` to immediately release row locks. See [Scoped Row-Locking Windows and Rollbacks](06_4gl_coding_standards_and_caveats.md#76-scoped-row-locking-windows-and-rollbacks).
+4. **Never Commit Inside DAL Hooks or Subroutines**: Transactions must be managed exclusively at outer orchestration boundaries (`choice.update.db`, batch loops, APIs). Commits inside hooks corrupt atomic units of work. See [Outer-Boundary Transaction Orchestration](06d_syntax_caveats_and_runtime_guards.md#72-outer-boundary-transaction-orchestration).
+5. **Immediate Rollback on Error**: Always call `abort.transaction()` upon encountering database runtime errors in `selecterror` to immediately release row locks. See [Scoped Row-Locking Windows and Rollbacks](06d_syntax_caveats_and_runtime_guards.md#76-scoped-row-locking-windows-and-rollbacks).
 
 ---
 

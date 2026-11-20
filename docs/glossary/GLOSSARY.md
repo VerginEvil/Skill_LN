@@ -165,5 +165,13 @@ Consistent vocabulary for developing, extending, and structuring Infor ERP LN de
 - **Component-Scoped Validation (`--filter` / `--files`)**: Activity validation mode that loads the full activity `.admin` and label/table catalogs for cross-reference resolution while reporting Layer 1–4 diagnostics exclusively for matched target components.
 - **Session Script–Form Parity**: Static session validation check verifying that non-table `<FormField>` bindings and `<FormCommand>` `<activationName>` targets correspond to `extern` declarations/functions in the session's embedded `<DR_Module>` script.
 
+### Skill Prompt Consolidation, Safety Tiers & Lint Hardening (ADR 0025)
+- **Single-Source Skill Authority**: Architectural rule eliminating rule–skill double-loading by keeping domain coding and Studio automation instructions exclusively inside `.agents/skills/*/SKILL.md` (retiring overlapping `model_decision` and duplicate `always_on` rules) while keeping `AGENTS.md` as the single always-on Home Repo steering file paired with the gitignored `repos.local.md` overlay.
+- **Context Pointer Budget (`<= 45` words)**: Always-on token discipline capping each skill's YAML frontmatter `description` at 45 words or fewer, using front-loaded leading words, one trigger per distinct branch, and a sharp non-overlapping boundary for Extension Modeler (`tx*`) tasks.
+- **Tiered Safety Gate (3-Tier + Hard-Block)**: Explicit operational safety model in `ln_studio_skill` classifying commands into Tier 1 (Read-Only/Local), Tier 2 (Dev/Test Mutating with pre-run target announcement), Tier 3 (High-Risk/Destructive/Production `PRD` requiring explicit user confirmation before execution: `schema-crdd`, `uncheckout-component`, `clean-activity`, `clean-components`, `move-components`, `sync-admin --prune`, or any `PRD` write), and Hard-Blocked (`end-activity`).
+- **Reference Hub-and-Pillar Split**: Progressive-disclosure refactoring pattern converting monolithic reference files (such as `06_4gl_coding_standards_and_caveats.md`) into a concise backward-compatible Router Hub backed by focused pillar sub-files (`~165–260` lines each) to prevent mid-session token spikes.
+- **Expanded Skill & Rule Lint Gate**: Upgraded mechanical check in `scripts/run_checks.py` enforcing line budgets across `SKILL.md` (`<= 80L`), `AGENTS.md` (`<= 60L`), and `.agents/rules/*.md` (`<= 60L`), YAML `description` word ceilings (`<= 45` words), cross-file relative link integrity, and top-level orphan detection in `references/`.
+
+
 
 

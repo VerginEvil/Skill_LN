@@ -1,44 +1,40 @@
 # Skill_LN — Home Repo Steering & Development Guidelines
 
-`Skill_LN` is the personal, Antigravity-first **Home Repo** (ADR 0022) for cross-repository Infor ERP LN development, shared coding standards, and the `skill-ln` / Python automation toolchain.
+`Skill_LN` is the personal, Antigravity-first **Home Repo** (ADR 0022 / ADR 0025) for cross-repository Infor ERP LN development, shared coding standards, and the `skill-ln` / Python automation toolchain.
 
-## Workspace `.agents/` Layout
+## Workspace `.agents/` Layout (Single-Source Skill Authority)
 
-- **Canonical Skills**: `.agents/skills/erp-ln-progguide/` (4GL Programmer's Guide & static auditor) and `.agents/skills/ln_studio_skill/` (Infor LN Studio automation, XML generators, SCM & MCP server).
-- **Modular Rules**: `.agents/rules/`
-  - `cross-repo-standards.md` (`always_on`): ADR/glossary discipline, `Audit-Before-Deliver` (`audit_4gl` / `skill-ln audit-4gl`), and credential hygiene.
-  - `repos.local.md` (`always_on`, gitignored): **Local Repo Pointer Overlay** with private customer repository paths, Git remotes, and workspace hints (see `.agents/rules/repos.example.md` for the tracked template).
-  - `infor-ln-coding.md` (`model_decision`): Baan 4GL, DAL 2, UI scripts, and Extension Modeler (`EXT001`–`EXT003`) rules.
-  - `ln-studio-workflow.md` (`model_decision`): LN Studio CLI/MCP workflows, `Single-XML TDE Layout`, and `Pre-Fetch-Auth-Gate`.
+- **Canonical Skills**: [erp-ln-progguide](.agents/skills/erp-ln-progguide/SKILL.md) (4GL/DAL/Extension coding guide, bshell APIs, `skill-ln audit-4gl`) and [ln_studio_skill](.agents/skills/ln_studio_skill/SKILL.md) (LN Studio CLI/MCP automation, TDE XML, SCM & Safety Tiers).
+- **Modular Rules (`.agents/rules/`)**: Reserved strictly for `repos.local.md` (`always_on`, gitignored **Local Repo Pointer Overlay**) and [repos.example.md](.agents/rules/repos.example.md) (tracked template).
+- **Global Slash-Command Sync Cache**: Antigravity `/` discovery reads real directories (not junctions) from `~/.gemini/config/skills/`. Sync after editing `.agents/skills/`:
+  ```powershell
+  python scripts/run_checks.py --sync-skill
+  ```
 
-## Global Slash-Command Sync Cache
+## Engineering & Tooling Guardrails
 
-Antigravity `/` slash-command discovery reads real directories (not Windows directory junctions) from `~/.gemini/config/skills/`. After editing anything under `.agents/skills/`, synchronize the **Global Slash-Command Sync Cache** via:
-
-```powershell
-python scripts/run_checks.py --sync-skill
-```
+- **Domain & ADR Discipline**: Use canonical terms from [GLOSSARY.md](docs/glossary/GLOSSARY.md) and consult [docs/adr/](docs/adr/) before altering shared architecture. Keep generic 4GL/LN rules in `Skill_LN`; child repos store only local schemas, ADRs, and specs.
+- **`Audit-Before-Deliver`**: Run `skill-ln audit-4gl <script> [--mode auto|general|dal2|uedll] [--cloud]` and resolve all errors before returning or committing any 4GL, DAL 2, or Extension script.
+- **Cross-Runtime Parity & Reuse**: When editing `.agents/skills/ln_studio_skill/tools/*.py` or `rust/`, keep Python and Rust CLI/MCP schemas in parity (`MCP_TOOLS_REFERENCE.md`) and reuse existing helpers (`ensure_label_context_variant`, `compact_tde_xml`, `map_tde_extension_to_type`).
+- **Public/Private & Secret Hygiene**: Never commit `.ionapi`, OAuth tokens (`.ln_studio_tokens.json`), customer names, workstation paths, or internal URLs into tracked files or `~/.gemini/config/skills/`.
 
 ## Testing & Verification (`Unified Checks Gateway`)
 
-Always use Python's built-in `unittest` runner (do NOT invoke `pytest` as it is not installed in the Windows Python environment):
+Use Python's built-in `unittest` runner (do NOT invoke `pytest`):
 
 ```powershell
-# Run unified checks (syntax compilation, Single-XML TDE Layout, Skill Markdown Lint Gate, Python & Rust tests, drift check)
+# Full gate (syntax, Single-XML layout, Skill & Rule lint, hygiene, parity, Python & Rust tests)
 python scripts/run_checks.py
 
-# Run checks and sync canonical skills to ~/.gemini/config/skills/
+# Full gate + sync canonical skills to ~/.gemini/config/skills/
 python scripts/run_checks.py --sync-skill
 
-# Run a single test file
+# Single Python test file or native Rust workspace tests
 python -m unittest discover -s .agents/skills/ln_studio_skill/tools/tests -p "test_mcp_tool_execution.py"
-
-# Run native Rust workspace tests (run inside rust/ to use rust/.cargo/config.toml)
 Push-Location rust; cargo test --workspace; Pop-Location
 ```
 
-## Agent Skills & Documentation
+## Issue Tracker & Domain Docs
 
-- **Issue Tracker**: Specs and local issues live under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
-- **Domain Docs**: Single-context layout (`docs/glossary/GLOSSARY.md`, architecture decision records under `docs/adr/`, plans under `docs/plans/`). See `docs/agents/domain.md`.
-- **Public/Private Boundary**: Never commit customer repository names, local workstation paths, internal GitLab URLs, or `.ionapi` / token credentials into tracked files; keep them strictly in gitignored overlays (`.agents/rules/repos.local.md`) or gitignored workspace dirs (`knowledge_docs/`, `.scratch/`).
+- **Issue Tracker**: Specs and local issues live under `.scratch/<feature>/` ([issue-tracker.md](docs/agents/issue-tracker.md)).
+- **Domain Docs**: Single-context layout (`docs/glossary/GLOSSARY.md`, `docs/adr/`, `docs/plans/`, [domain.md](docs/agents/domain.md)).

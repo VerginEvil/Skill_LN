@@ -5001,5 +5001,9 @@ references/best_practices/02_dal_architecture_and_business_logic.md	DAL Architec
 references/best_practices/03_sql_query_optimization_and_transactions.md	SQL Query Optimization & Transaction Management Guide
 references/best_practices/04_data_model_and_domain_design.md	Data Model & Domain Design Guide
 references/best_practices/05_session_and_mmt_patterns.md	Session & MMT Patterns Guide
-references/best_practices/06_4gl_coding_standards_and_caveats.md	Baan 4GL Coding Standards, Anti-Patterns & Runtime Caveats Guide
+references/best_practices/06_4gl_coding_standards_and_caveats.md	Baan 4GL Coding Standards, Anti-Patterns & Runtime Caveats (Router Hub)
+references/best_practices/06a_declarations_and_functions.md	Pillars 1–3: Domains, Scopes, DLL Linkage & Function Contracts
+references/best_practices/06b_sql_buffer_protection.md	Pillar 4: Embedded SQL & Table Record Buffer Protection
+references/best_practices/06c_arrays_and_dimensions.md	Pillar 5: Domain Arrays & Dimension Mechanics
+references/best_practices/06d_syntax_caveats_and_runtime_guards.md	Pillars 6–7: Syntax Caveats, Anti-Patterns & Runtime Guards (ADR 0017)
 references/STUDIO_SYNTAX_COMPLETION.md	Infor LN Studio Syntax & Code Completion Reference

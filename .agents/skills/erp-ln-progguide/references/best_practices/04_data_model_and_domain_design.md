@@ -32,7 +32,7 @@ flowchart LR
 1. **Maximize Reuse**: Never create duplicate domains for identical semantic entities. Reuse standard domains (e.g. `tcmcs.cmnf` for manufacturer, `tcccty` for country) to ensure cross-module compatibility.
 2. **Use List Domains for Fixed States**: Never use free-form string flags (`"Y"` / `"N"`, `"A"` / `"B"`). Always create a List Domain or use `tcyesno`.
 3. **Embed Domain Check Expressions**: Define range constraints (`VALUE >= 0.0`) directly on the domain to enforce database-wide sanity checks automatically.
-4. **Always Use Domain Variables in 4GL Scripts**: When manipulating database fields in 4GL scripts, always declare host variables using `domain <domain_name> <var>` instead of primitive types (`string`, `long`, `double`). Decoupling 4GL variables from Data Dictionary domains leads to silent data truncation upon dictionary changes. See [Pillar 1: Data Dictionary Domains vs. Primitive Types](06_4gl_coding_standards_and_caveats.md#21-data-dictionary-domains-vs-primitive-types).
+4. **Always Use Domain Variables in 4GL Scripts**: When manipulating database fields in 4GL scripts, always declare host variables using `domain <domain_name> <var>` instead of primitive types (`string`, `long`, `double`). Decoupling 4GL variables from Data Dictionary domains leads to silent data truncation upon dictionary changes. See [Pillar 1: Data Dictionary Domains vs. Primitive Types](06a_declarations_and_functions.md#21-data-dictionary-domains-vs-primitive-types).
 
 ---
 

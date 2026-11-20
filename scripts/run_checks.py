@@ -115,10 +115,130 @@ def _resolve_and_validate_path(
     return None
 
 
-def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) -> bool:
-    """Verifies YAML frontmatter, line limit (<= max_lines), and relative links in SKILL.md (ADR 0018)."""
+def _extract_frontmatter_info(
+    lines: List[str], label: str
+) -> Tuple[Optional[str], List[str]]:
+    """Validates YAML frontmatter and extracts the description string."""
+    errors: List[str] = []
+    if not lines or lines[0].strip() != "---":
+        return None, [f"{label} missing opening YAML frontmatter '---'."]
+
+    closing_idx = next(
+        (idx for idx in range(1, len(lines)) if lines[idx].strip() == "---"),
+        -1,
+    )
+    if closing_idx == -1:
+        return None, [f"{label} missing closing YAML frontmatter '---'."]
+
+    fm_lines = lines[1:closing_idx]
+    fm_text = "\n".join(fm_lines)
+    if not re.search(r"^name:\s*\S+", fm_text, re.MULTILINE):
+        errors.append(f"{label} frontmatter missing non-empty 'name'.")
+
+    desc_text: Optional[str] = None
+    for idx, line in enumerate(fm_lines):
+        m = re.match(r"^description:\s*(.*)$", line)
+        if not m:
+            continue
+        raw_val = m.group(1).strip()
+        if raw_val in ("|", ">", "|-", ">-"):
+            block: List[str] = []
+            for sub in fm_lines[idx + 1:]:
+                if sub and (sub[0].isspace()):
+                    block.append(sub.strip())
+                elif not sub.strip():
+                    continue
+                else:
+                    break
+            desc_text = " ".join(block).strip()
+        else:
+            if len(raw_val) >= 2 and raw_val[0] == raw_val[-1] and raw_val[0] in ('"', "'"):
+                raw_val = raw_val[1:-1].strip()
+            desc_text = raw_val
+        break
+
+    if not desc_text:
+        errors.append(f"{label} frontmatter missing non-empty 'description'.")
+    return desc_text, errors
+
+
+def _validate_markdown_links(
+    md_file: Path, display_label: str, link_re: re.Pattern
+) -> List[str]:
+    """Checks all relative markdown links inside a markdown file."""
+    try:
+        md_text = md_file.read_text(encoding="utf-8")
+    except OSError:
+        return []
+    errors: List[str] = []
+    for m in link_re.finditer(md_text):
+        raw = m.group(2).strip()
+        if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+            continue
+        broken = _resolve_and_validate_path(md_file, raw)
+        if broken:
+            errors.append(f"{display_label}: broken markdown link -> {broken}")
+    return errors
+
+
+def _find_orphaned_top_level_refs(
+    skill_file: Path, refs_dir: Path, link_re: re.Pattern, inline_code_re: re.Pattern
+) -> List[str]:
+    """Finds top-level references/*.md files unreachable from SKILL.md."""
+    if not refs_dir.is_dir():
+        return []
+    top_refs = {p.resolve(): p for p in sorted(refs_dir.glob("*.md"))}
+    if not top_refs:
+        return []
+
+    visited: set = set()
+    queue: List[Path] = [skill_file.resolve()]
+    while queue:
+        cur = queue.pop(0)
+        if cur in visited or not cur.is_file():
+            continue
+        visited.add(cur)
+        try:
+            text = cur.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        candidates = [m.group(2).strip() for m in link_re.finditer(text)]
+        if cur == skill_file.resolve():
+            no_fences = re.sub(r"```[\s\S]*?```", "", text)
+            for m in inline_code_re.finditer(no_fences):
+                for tok in m.group(1).split():
+                    t = tok.strip("()[]'\",;:")
+                    if t.startswith("references/"):
+                        candidates.append(t)
+        for raw in candidates:
+            if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+                continue
+            clean = raw.partition("#")[0].strip()
+            if not clean or any(c in clean for c in "<>|*?"):
+                continue
+            resolved = (cur.parent / clean).resolve()
+            if resolved in top_refs and resolved not in visited:
+                queue.append(resolved)
+
+    return [
+        f"ln_studio_skill/references/{p.name}: orphaned top-level reference (not linked from SKILL.md)"
+        for resolved, p in top_refs.items()
+        if resolved not in visited
+    ]
+
+
+def check_skill_markdown(
+    repo_root: Optional[Path] = None,
+    max_lines: int = 80,
+    max_desc_words: int = 45,
+    max_steering_lines: int = 60,
+) -> bool:
+    """Verifies frontmatter, word/line budgets, link integrity, and reference orphans (ADR 0018 & ADR 0025)."""
     root = repo_root or REPO_ROOT
-    print(f"\n=== [3/4] Checking Skill Markdown Lint Gate (ADR 0018, <= {max_lines} lines) ===")
+    print(
+        f"\n=== [3/4] Checking Skill & Rule Markdown Lint Gate "
+        f"(SKILL <= {max_lines}L, desc <= {max_desc_words}w, steering/rules <= {max_steering_lines}L) ==="
+    )
 
     skill_names = ["ln_studio_skill", "erp-ln-progguide"]
     errors: List[str] = []
@@ -142,50 +262,32 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
         lines = content.splitlines()
         line_count = len(lines)
 
-        # 1. Frontmatter check
-        if not lines or lines[0].strip() != "---":
-            errors.append(f"{sname}/SKILL.md missing opening YAML frontmatter '---'.")
-        else:
-            closing_idx = -1
-            for idx in range(1, len(lines)):
-                if lines[idx].strip() == "---":
-                    closing_idx = idx
-                    break
-            if closing_idx == -1:
-                errors.append(f"{sname}/SKILL.md missing closing YAML frontmatter '---'.")
-            else:
-                fm_text = "\n".join(lines[1:closing_idx])
-                has_name = bool(re.search(r"^name:\s*\S+", fm_text, re.MULTILINE))
-                has_desc = bool(re.search(r"^description:\s*\S+", fm_text, re.MULTILINE))
-                if not has_name:
-                    errors.append(f"{sname}/SKILL.md frontmatter missing non-empty 'name'.")
-                if not has_desc:
-                    errors.append(f"{sname}/SKILL.md frontmatter missing non-empty 'description'.")
+        desc_text, fm_errors = _extract_frontmatter_info(lines, f"{sname}/SKILL.md")
+        errors.extend(fm_errors)
+        if desc_text:
+            desc_words = len(desc_text.split())
+            if desc_words > max_desc_words:
+                errors.append(
+                    f"{sname}/SKILL.md: description is {desc_words} words, exceeds budget of {max_desc_words} words."
+                )
 
-        # 2. Line budget check
         if line_count > max_lines:
             errors.append(f"{sname}/SKILL.md: {line_count} lines exceeds maximum budget of {max_lines} lines.")
 
-        # 3. Relative path / link resolution (SKILL.md + ln_studio_skill/references/*.md)
         targets = [skill_file]
         if sname == "ln_studio_skill":
             refs_dir = skill_dir / "references"
             if refs_dir.is_dir():
                 targets.extend(sorted(refs_dir.glob("*.md")))
+            errors.extend(_find_orphaned_top_level_refs(skill_file, refs_dir, link_re, inline_code_re))
+        elif sname == "erp-ln-progguide":
+            bp_dir = skill_dir / "references" / "best_practices"
+            if bp_dir.is_dir():
+                targets.extend(sorted(bp_dir.glob("*.md")))
 
         for md_file in targets:
-            try:
-                md_text = md_file.read_text(encoding="utf-8")
-            except OSError:
-                continue
             rel_label = f"{sname}/{md_file.relative_to(skill_dir).as_posix()}"
-            for m in link_re.finditer(md_text):
-                raw = m.group(2).strip()
-                if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
-                    continue
-                broken = _resolve_and_validate_path(md_file, raw)
-                if broken:
-                    errors.append(f"{rel_label}: broken markdown link -> {broken}")
+            errors.extend(_validate_markdown_links(md_file, rel_label, link_re))
 
         content_no_fences = re.sub(r"```[\s\S]*?```", "", content)
         for m in inline_code_re.finditer(content_no_fences):
@@ -196,13 +298,40 @@ def check_skill_markdown(repo_root: Optional[Path] = None, max_lines: int = 80) 
                 if broken:
                     errors.append(f"{sname}/SKILL.md: broken inline path pointer -> {broken}")
 
+    # Steering & tracked rules line budgets + relative link validation (ADR 0025)
+    steering_targets: List[Tuple[Path, str]] = []
+    agents_md = root / "AGENTS.md"
+    if agents_md.is_file():
+        steering_targets.append((agents_md, "AGENTS.md"))
+    rules_dir = root / ".agents" / "rules"
+    if rules_dir.is_dir():
+        for rule_file in sorted(rules_dir.glob("*.md")):
+            if rule_file.name == "repos.local.md":
+                continue
+            steering_targets.append((rule_file, f".agents/rules/{rule_file.name}"))
+
+    for md_path, label in steering_targets:
+        try:
+            md_lines = md_path.read_text(encoding="utf-8").splitlines()
+        except OSError as e:
+            errors.append(f"{label} could not be read: {e}")
+            continue
+        if len(md_lines) > max_steering_lines:
+            errors.append(
+                f"{label}: {len(md_lines)} lines exceeds maximum budget of {max_steering_lines} lines."
+            )
+        errors.extend(_validate_markdown_links(md_path, label, link_re))
+
     if errors:
         for err in errors:
             print(f"  [ERROR] {err}")
         print(f"[FAIL] Skill markdown lint failed with {len(errors)} violation(s).")
         return False
 
-    print(f"[PASS] Skill markdown lint clean (ln_studio_skill, erp-ln-progguide <= {max_lines} lines).")
+    print(
+        f"[PASS] Skill & rule markdown lint clean "
+        f"(skills <= {max_lines}L / {max_desc_words}w, steering/rules <= {max_steering_lines}L)."
+    )
     return True
 
 
@@ -243,7 +372,7 @@ def check_hygiene(repo_root: Optional[Path] = None) -> bool:
         if rel_path in ("scripts/run_checks.py", ".agents/rules/repos.example.md"):
             return False
         if rel_path.endswith(".md") and (
-            rel_path in ("README.md",)
+            rel_path in ("README.md", "AGENTS.md")
             or rel_path.startswith((".agents/rules/", ".agents/skills/ln_studio_skill/", ".agents/skills/erp-ln-progguide/"))
             and "/references/guide/" not in rel_path
             and "/references/public_interfaces/" not in rel_path
@@ -492,6 +621,12 @@ def sync_global_skill(target_dir: Optional[Path] = None) -> bool:
             if s_item.is_file():
                 shutil.copy2(s_item, d_item)
             elif s_item.is_dir():
+                if d_item.is_dir():
+                    for existing in list(d_item.rglob("*")):
+                        if existing.is_file() and "__pycache__" not in existing.parts and not existing.name.endswith(".pyc") and ".git" not in existing.parts:
+                            rel_existing = existing.relative_to(d_item)
+                            if not (s_item / rel_existing).is_file():
+                                existing.unlink(missing_ok=True)
                 shutil.copytree(
                     s_item,
                     d_item,

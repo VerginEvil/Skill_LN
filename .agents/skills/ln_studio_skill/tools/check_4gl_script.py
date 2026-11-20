@@ -112,8 +112,8 @@ class Diagnostic:
 def load_syntax_catalog() -> Dict[str, Any]:
     """Load extracted LN Studio syntax catalog if available, or fall back to defaults."""
     candidates = [
-        Path(__file__).resolve().parent.parent / "references" / "studio_syntax_completion.json",
         Path(__file__).resolve().parent.parent.parent / "erp-ln-progguide" / "references" / "studio_syntax_completion.json",
+        Path(__file__).resolve().parent.parent / "references" / "studio_syntax_completion.json",
     ]
     for catalog_path in candidates:
         if catalog_path.exists():

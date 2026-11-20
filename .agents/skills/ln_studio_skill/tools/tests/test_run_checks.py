@@ -203,6 +203,94 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
 
             self.assertTrue(check_skill_markdown(repo_root=fake_root, max_lines=80))
 
+    def test_check_skill_markdown_description_word_budget_violation(self):
+        """Asserts check_skill_markdown fails when YAML description exceeds 45 words."""
+        from run_checks import check_skill_markdown
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            long_desc = " ".join(f"word{i}" for i in range(46))
+            self._create_mock_skill(
+                fake_root,
+                "ln_studio_skill",
+                f"---\nname: ln_studio_skill\ndescription: {long_desc}\n---\n# Title\n",
+            )
+            self._create_mock_skill(
+                fake_root,
+                "erp-ln-progguide",
+                "---\nname: erp-ln-progguide\ndescription: Valid.\n---\n# Title\n",
+            )
+            self.assertFalse(check_skill_markdown(repo_root=fake_root))
+
+    def test_check_skill_markdown_agents_and_rule_line_budget_violation(self):
+        """Asserts check_skill_markdown fails when AGENTS.md or tracked rules exceed 60 lines."""
+        from run_checks import check_skill_markdown
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            for sname in ("ln_studio_skill", "erp-ln-progguide"):
+                self._create_mock_skill(
+                    fake_root, sname, f"---\nname: {sname}\ndescription: Valid.\n---\n# Title\n"
+                )
+            (fake_root / "AGENTS.md").write_text("\n".join(f"Line {i}" for i in range(61)), encoding="utf-8")
+            self.assertFalse(check_skill_markdown(repo_root=fake_root))
+
+            (fake_root / "AGENTS.md").write_text("# Compliant AGENTS\n", encoding="utf-8")
+            rules_dir = fake_root / ".agents" / "rules"
+            rules_dir.mkdir(parents=True)
+            (rules_dir / "oversized.md").write_text("\n".join(f"Rule {i}" for i in range(61)), encoding="utf-8")
+            self.assertFalse(check_skill_markdown(repo_root=fake_root))
+
+    def test_check_skill_markdown_orphaned_top_level_reference(self):
+        """Asserts check_skill_markdown fails when a top-level ln_studio_skill/references/*.md is unlinked."""
+        from run_checks import check_skill_markdown
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            sdir = self._create_mock_skill(
+                fake_root,
+                "ln_studio_skill",
+                "---\nname: ln_studio_skill\ndescription: Valid.\n---\n# Title\n",
+            )
+            (sdir / "references").mkdir(parents=True)
+            (sdir / "references" / "ORPHAN.md").write_text("# Orphan\n", encoding="utf-8")
+            self._create_mock_skill(
+                fake_root,
+                "erp-ln-progguide",
+                "---\nname: erp-ln-progguide\ndescription: Valid.\n---\n# Title\n",
+            )
+            self.assertFalse(check_skill_markdown(repo_root=fake_root))
+
+    def test_check_skill_markdown_full_compliant_fixture_with_steering_and_local_overlay(self):
+        """Asserts compliant steering, rules, local overlay exemption, and linked references pass."""
+        from run_checks import check_skill_markdown
+        with tempfile.TemporaryDirectory() as td:
+            fake_root = Path(td)
+            s_studio = self._create_mock_skill(
+                fake_root,
+                "ln_studio_skill",
+                "---\nname: ln_studio_skill\ndescription: Valid studio pointer.\n---\nSee [Ref](references/REF.md).\n",
+            )
+            (s_studio / "references").mkdir(parents=True)
+            (s_studio / "references" / "REF.md").write_text("See [Other](OTHER.md).\n", encoding="utf-8")
+            (s_studio / "references" / "OTHER.md").write_text("# Other\n", encoding="utf-8")
+
+            s_prog = self._create_mock_skill(
+                fake_root,
+                "erp-ln-progguide",
+                "---\nname: erp-ln-progguide\ndescription: Valid progguide pointer.\n---\nSee [Hub](references/best_practices/06_hub.md).\n",
+            )
+            bp_dir = s_prog / "references" / "best_practices"
+            bp_dir.mkdir(parents=True)
+            (bp_dir / "06_hub.md").write_text("See [Pillar](06a_pillar.md).\n", encoding="utf-8")
+            (bp_dir / "06a_pillar.md").write_text("# Pillar\n", encoding="utf-8")
+
+            (fake_root / "AGENTS.md").write_text("See [Studio](.agents/skills/ln_studio_skill/SKILL.md).\n", encoding="utf-8")
+            rules_dir = fake_root / ".agents" / "rules"
+            rules_dir.mkdir(parents=True)
+            (rules_dir / "repos.example.md").write_text("# Example rule\n", encoding="utf-8")
+            # Gitignored repos.local.md is exempt from the 60-line tracked rule ceiling
+            (rules_dir / "repos.local.md").write_text("\n".join(f"Local {i}" for i in range(90)), encoding="utf-8")
+
+            self.assertTrue(check_skill_markdown(repo_root=fake_root))
+
     def test_package_release_dual_path_and_arcname(self):
         """Asserts package_release resolves .agents/skills/ while keeping top-level ZIP arcnames."""
         import zipfile

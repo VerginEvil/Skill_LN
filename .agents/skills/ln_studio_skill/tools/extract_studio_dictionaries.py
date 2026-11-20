@@ -369,7 +369,7 @@ def extract_and_save(studio_path: Optional[Path] = None,
     if not studio_path.exists():
         raise FileNotFoundError(f"LN Studio installation not found at: {studio_path}")
 
-    base_dir = Path(__file__).resolve().parent.parent
+    base_dir = Path(__file__).resolve().parent.parent.parent / "erp-ln-progguide"
     if not output_json:
         output_json = base_dir / "references" / "studio_syntax_completion.json"
     if not output_md:
