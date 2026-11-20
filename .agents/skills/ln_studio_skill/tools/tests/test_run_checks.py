@@ -48,7 +48,7 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
         self.assertIn("python scripts/run_checks.py", ci_text)
 
     def test_install_hook(self):
-        """Asserts --install-hook creates an executable pre-commit hook."""
+        """Asserts --install-hook creates an executable pre-commit hook using --pre-commit."""
         from run_checks import install_pre_commit_hook
         with tempfile.TemporaryDirectory() as td:
             fake_git = Path(td) / ".git"
@@ -56,39 +56,67 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
             hook_path = install_pre_commit_hook(git_dir=fake_git)
             self.assertTrue(hook_path.exists())
             hook_content = hook_path.read_text(encoding="utf-8")
-            self.assertIn("run_checks.py", hook_content)
+            self.assertIn("run_checks.py --pre-commit", hook_content)
+
+    def _create_sync_fixture(self, root: Path) -> None:
+        s_studio = self._create_mock_skill(root, "ln_studio_skill", "---\nname: ln_studio_skill\ndescription: s\n---\n")
+        (s_studio / "tools").mkdir(parents=True)
+        (s_studio / "tools" / "cli.py").write_text("print('ok')\n", encoding="utf-8")
+        (s_studio / "references").mkdir(parents=True)
+        (s_studio / "references" / "REF.md").write_text("# Ref\n", encoding="utf-8")
+
+        s_prog = self._create_mock_skill(root, "erp-ln-progguide", "---\nname: erp-ln-progguide\ndescription: p\n---\n")
+        (s_prog / "references").mkdir(parents=True)
+        (s_prog / "references" / "GUIDE.md").write_text("abcd", encoding="utf-8")
+        (s_prog / "scripts").mkdir(parents=True)
+        (s_prog / "scripts" / "audit.py").write_text("x = 1\n", encoding="utf-8")
 
     def test_sync_global_skill(self):
         """Asserts --sync-skill synchronizes repository skill to destination directory."""
         from run_checks import sync_global_skill
         with tempfile.TemporaryDirectory() as td:
-            target = Path(td) / "ln_studio_skill"
-            ok = sync_global_skill(target_dir=target)
+            fake_root = Path(td) / "repo"
+            self._create_sync_fixture(fake_root)
+            target = Path(td) / "dest" / "ln_studio_skill"
+            ok = sync_global_skill(target_dir=target, repo_root=fake_root)
             self.assertTrue(ok)
             self.assertTrue(target.exists())
             self.assertTrue((target / "SKILL.md").exists())
-            self.assertTrue((target / "tools").exists())
+            self.assertTrue((target / "tools" / "cli.py").exists())
 
     def test_dual_skill_sync_and_drift(self):
-        """Asserts dual-skill synchronization and drift detection for both skills."""
+        """Asserts dual-skill synchronization, stale cleanup, and drift detection for both skills."""
         from run_checks import sync_global_skill, check_skill_drift
         with tempfile.TemporaryDirectory() as td:
-            skills_root = Path(td)
-            ok = sync_global_skill(target_dir=skills_root)
+            fake_root = Path(td) / "repo"
+            self._create_sync_fixture(fake_root)
+            skills_root = Path(td) / "dest"
+            stale_file = skills_root / "ln_studio_skill" / "references" / "STALE.md"
+            stale_file.parent.mkdir(parents=True, exist_ok=True)
+            stale_file.write_text("old", encoding="utf-8")
+
+            ok = sync_global_skill(target_dir=skills_root, repo_root=fake_root)
             self.assertTrue(ok)
+            self.assertFalse(stale_file.exists())
             self.assertTrue((skills_root / "ln_studio_skill" / "SKILL.md").exists())
             self.assertTrue((skills_root / "erp-ln-progguide" / "SKILL.md").exists())
 
             # Drift check should be 0 immediately after sync
-            drifted = check_skill_drift(target_dir=skills_root)
+            drifted = check_skill_drift(target_dir=skills_root, repo_root=fake_root)
             self.assertEqual(len(drifted), 0, f"Expected 0 drifted files, got: {drifted}")
 
-            # Mutate a file in erp-ln-progguide
+            # Mutate a file in erp-ln-progguide (both different size and same-size content change)
             progguide_skill = skills_root / "erp-ln-progguide" / "SKILL.md"
             progguide_skill.write_text("drifted content", encoding="utf-8")
-            drifted_after = check_skill_drift(target_dir=skills_root)
-            self.assertGreaterEqual(len(drifted_after), 1)
-            self.assertTrue(any("erp-ln-progguide" in d for d in drifted_after))
+            progguide_guide = skills_root / "erp-ln-progguide" / "references" / "GUIDE.md"
+            progguide_guide.write_text("wxyz", encoding="utf-8")
+            import os
+            st = progguide_guide.stat()
+            os.utime(progguide_guide, ns=(st.st_atime_ns, st.st_mtime_ns + 1_000_000_000))
+
+            drifted_after = check_skill_drift(target_dir=skills_root, repo_root=fake_root)
+            self.assertIn("erp-ln-progguide/SKILL.md", drifted_after)
+            self.assertIn("erp-ln-progguide/references/GUIDE.md", drifted_after)
 
     def _create_mock_skill(self, root: Path, sname: str, content: str) -> Path:
         sdir = root / ".agents" / "skills" / sname
@@ -314,6 +342,40 @@ class TestUnifiedChecksAndCi(unittest.TestCase):
                 self.assertIn("erp-ln-progguide/SKILL.md", zf.namelist())
             with zipfile.ZipFile(z2) as zf:
                 self.assertIn("ln_studio_skill/SKILL.md", zf.namelist())
+
+    def test_pre_commit_cli_flag_and_staged_scope_detection(self):
+        """Asserts --pre-commit flag is supported and staged scopes select only affected test suites."""
+        from unittest.mock import patch
+        from run_checks import detect_staged_scopes
+
+        proc = subprocess.run(
+            [sys.executable, str(CHECKS_SCRIPT), "--help"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("--pre-commit", proc.stdout)
+
+        def _fake_git_output(stdout_text: str, rc: int = 0):
+            return subprocess.CompletedProcess(args=[], returncode=rc, stdout=stdout_text, stderr="")
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output("README.md\ndocs/adr/0025.md\n")):
+            self.assertEqual(detect_staged_scopes(), (False, False, False))
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output(".agents/skills/ln_studio_skill/tools/cli.py\n")):
+            self.assertEqual(detect_staged_scopes(), (False, True, False))
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output(".agents/skills/erp-ln-progguide/scripts/audit.py\n")):
+            self.assertEqual(detect_staged_scopes(), (True, False, False))
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output("rust/bins/skill-ln/src/main.rs\n")):
+            self.assertEqual(detect_staged_scopes(), (False, False, True))
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output("scripts/run_checks.py\n")):
+            self.assertEqual(detect_staged_scopes(), (True, True, False))
+
+        with patch("run_checks.subprocess.run", return_value=_fake_git_output("", rc=1)):
+            self.assertEqual(detect_staged_scopes(), (True, True, True))
 
 
 if __name__ == "__main__":

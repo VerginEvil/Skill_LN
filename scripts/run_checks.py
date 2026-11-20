@@ -457,12 +457,47 @@ def check_parity(repo_root: Optional[Path] = None) -> bool:
     return True
 
 
-def run_unit_tests() -> bool:
-    """Runs the full unittest suite across erp-ln-progguide and ln_studio_skill."""
+def detect_staged_scopes(repo_root: Optional[Path] = None) -> Tuple[bool, bool, bool]:
+    """Determines which test suites need to run based on git staged files."""
+    root = repo_root or REPO_ROOT
+    proc = subprocess.run(
+        ["git", "diff", "--cached", "--name-only"],
+        cwd=str(root),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        return True, True, True
+
+    staged = [line.strip().replace("\\", "/") for line in proc.stdout.splitlines() if line.strip()]
+    if not staged:
+        return False, False, False
+
+    touches_checks = any(p == "scripts/run_checks.py" for p in staged)
+    run_progguide = touches_checks or any(
+        p.startswith(".agents/skills/erp-ln-progguide/") and p.endswith(".py")
+        for p in staged
+    )
+    run_studio = touches_checks or any(
+        p.startswith(".agents/skills/ln_studio_skill/") and p.endswith(".py")
+        for p in staged
+    )
+    run_rust = any(p.startswith("rust/") for p in staged)
+    return run_progguide, run_studio, run_rust
+
+
+def run_unit_tests(
+    run_progguide: bool = True,
+    run_studio: bool = True,
+    run_rust: bool = True,
+) -> bool:
+    """Runs the unittest and Rust workspace test suites across erp-ln-progguide, ln_studio_skill, and rust/."""
     print("\n=== [4/4] Running Unit Test Suite ===")
 
     # Suite 1: erp-ln-progguide/tests (if exists)
-    if PROGGUIDE_TESTS_DIR.exists():
+    if not run_progguide:
+        print("--- [4a/4] Skipped erp-ln-progguide Test Suite (no staged Python changes) ---")
+    elif PROGGUIDE_TESTS_DIR.exists():
         print("--- [4a/4] Running erp-ln-progguide Test Suite ---")
         cmd_prog = [
             sys.executable,
@@ -482,27 +517,32 @@ def run_unit_tests() -> bool:
             return False
 
     # Suite 2: ln_studio_skill/tools/tests
-    print("\n--- [4b/4] Running ln_studio_skill Test Suite ---")
-    cmd_studio = [
-        sys.executable,
-        "-m",
-        "unittest",
-        "discover",
-        "-s",
-        str(TESTS_DIR),
-        "-p",
-        "test_*.py",
-    ]
-    env_studio = os.environ.copy()
-    env_studio["PYTHONPATH"] = str(TOOLS_DIR)
-    proc_studio = subprocess.run(cmd_studio, env=env_studio)
-    if proc_studio.returncode != 0:
-        print(f"[FAIL] ln_studio_skill test suite failed with exit code {proc_studio.returncode}.")
-        return False
+    if not run_studio:
+        print("\n--- [4b/4] Skipped ln_studio_skill Test Suite (no staged Python changes) ---")
+    else:
+        print("\n--- [4b/4] Running ln_studio_skill Test Suite ---")
+        cmd_studio = [
+            sys.executable,
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            str(TESTS_DIR),
+            "-p",
+            "test_*.py",
+        ]
+        env_studio = os.environ.copy()
+        env_studio["PYTHONPATH"] = str(TOOLS_DIR)
+        proc_studio = subprocess.run(cmd_studio, env=env_studio)
+        if proc_studio.returncode != 0:
+            print(f"[FAIL] ln_studio_skill test suite failed with exit code {proc_studio.returncode}.")
+            return False
 
     # Suite 3: Native Rust Workspace Tests (ADR 0021 & Ticket 15)
     rust_dir = REPO_ROOT / "rust"
-    if rust_dir.exists():
+    if not run_rust:
+        print("\n--- [4c/4] Skipped Native Rust Workspace Test Suite (no staged rust/ changes) ---")
+    elif rust_dir.exists():
         print("\n--- [4c/4] Running Native Rust Workspace Test Suite (cargo test --workspace) ---")
         cargo_bin = Path(os.environ.get("USERPROFILE", "")) / ".cargo" / "bin" / "cargo.exe"
         cargo_cmd = str(cargo_bin) if cargo_bin.exists() else "cargo"
@@ -567,21 +607,41 @@ def run_unit_tests() -> bool:
     return True
 
 
-def _get_target_pairs(target_dir: Optional[Path]) -> List[Tuple[str, Path, Path, bool]]:
+def _get_target_pairs(
+    target_dir: Optional[Path],
+    repo_root: Optional[Path] = None,
+) -> List[Tuple[str, Path, Path, bool]]:
     """Resolves (skill_name, src_dir, dest_dir, include_prefix) pairs for drift & sync."""
+    root = repo_root or REPO_ROOT
     dest_base = target_dir or (Path.home() / ".gemini" / "config" / "skills")
     if target_dir and target_dir.name in SKILL_CONFIGS:
-        return [(target_dir.name, resolve_skill_dir(REPO_ROOT, target_dir.name), target_dir, False)]
+        return [(target_dir.name, resolve_skill_dir(root, target_dir.name), target_dir, False)]
     return [
-        (sname, resolve_skill_dir(REPO_ROOT, sname), dest_base / sname, True)
+        (sname, resolve_skill_dir(root, sname), dest_base / sname, True)
         for sname in SKILL_CONFIGS
     ]
 
 
-def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
+def _files_differ(src: Path, dst: Path) -> bool:
+    """Fast file comparison using size + mtime_ns before falling back to byte comparison."""
+    if not dst.exists():
+        return True
+    s_stat = src.stat()
+    d_stat = dst.stat()
+    if s_stat.st_size != d_stat.st_size:
+        return True
+    if s_stat.st_mtime_ns == d_stat.st_mtime_ns:
+        return False
+    return src.read_bytes() != dst.read_bytes()
+
+
+def check_skill_drift(
+    target_dir: Optional[Path] = None,
+    repo_root: Optional[Path] = None,
+) -> List[str]:
     """Detects file drift between the repository skills and the global installed skills."""
     drifted: List[str] = []
-    for sname, src, dest, include_prefix in _get_target_pairs(target_dir):
+    for sname, src, dest, include_prefix in _get_target_pairs(target_dir, repo_root=repo_root):
         if not dest.exists() or not src.exists():
             continue
         items_to_check = SKILL_CONFIGS.get(sname, ["SKILL.md", "references"])
@@ -591,7 +651,7 @@ def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
                 continue
             if s_base.is_file():
                 d_file = dest / item
-                if not d_file.exists() or s_base.read_bytes() != d_file.read_bytes():
+                if _files_differ(s_base, d_file):
                     drifted.append(f"{sname}/{item}" if include_prefix else item)
             elif s_base.is_dir():
                 for src_file in s_base.rglob("*"):
@@ -599,15 +659,18 @@ def check_skill_drift(target_dir: Optional[Path] = None) -> List[str]:
                         continue
                     rel = src_file.relative_to(src).as_posix()
                     dest_file = dest / rel
-                    if not dest_file.exists() or src_file.read_bytes() != dest_file.read_bytes():
+                    if _files_differ(src_file, dest_file):
                         drifted.append(f"{sname}/{rel}" if include_prefix else rel)
     return drifted
 
 
-def sync_global_skill(target_dir: Optional[Path] = None) -> bool:
+def sync_global_skill(
+    target_dir: Optional[Path] = None,
+    repo_root: Optional[Path] = None,
+) -> bool:
     """Synchronizes verified repository skill files to global skills directory."""
     import shutil
-    for sname, src, dest, _ in _get_target_pairs(target_dir):
+    for sname, src, dest, _ in _get_target_pairs(target_dir, repo_root=repo_root):
         if not src.exists():
             print(f"[FAIL] Source skill directory not found: {src}")
             return False
@@ -639,7 +702,7 @@ def sync_global_skill(target_dir: Optional[Path] = None) -> bool:
 
 
 def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
-    """Installs .git/hooks/pre-commit pointing to scripts/run_checks.py."""
+    """Installs .git/hooks/pre-commit pointing to scripts/run_checks.py --pre-commit."""
     gdir = git_dir or (REPO_ROOT / ".git")
     hooks_dir = gdir / "hooks"
     hooks_dir.mkdir(parents=True, exist_ok=True)
@@ -648,7 +711,7 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
     script_content = (
         "#!/bin/sh\n"
         "# Skill_LN pre-commit guardrail (ADR 0014, ADR 0017 & ADR 0018)\n"
-        "python scripts/run_checks.py\n"
+        "python scripts/run_checks.py --pre-commit\n"
         "exit $?\n"
     )
     hook_file.write_text(script_content, encoding="utf-8")
@@ -666,6 +729,7 @@ def install_pre_commit_hook(git_dir: Optional[Path] = None) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Skill_LN Unified Checks Gateway (ADR 0014, ADR 0017 & ADR 0018)")
     parser.add_argument("--install-hook", action="store_true", help="Install .git/hooks/pre-commit")
+    parser.add_argument("--pre-commit", action="store_true", help="Fast pre-commit mode: always run static gates, run Python/Rust test suites only for staged scopes")
     parser.add_argument("--syntax-only", action="store_true", help="Run only syntax compilation")
     parser.add_argument("--layout-only", action="store_true", help="Run only layout validation")
     parser.add_argument("--skill-lint-only", action="store_true", help="Run only skill markdown lint gate (ADR 0018)")
@@ -702,7 +766,7 @@ def main() -> int:
     if args.skill_lint_only:
         return 0 if check_skill_markdown() else 1
 
-    # Full checks sequence
+    # Full checks sequence (or staged-scope filtered tests under --pre-commit)
     syntax_ok = check_syntax()
     layout_ok = check_layout()
     markdown_ok = check_skill_markdown()
@@ -710,7 +774,15 @@ def main() -> int:
     parity_ok = check_parity()
     tests_ok = True
     if not args.skip_tests:
-        tests_ok = run_unit_tests()
+        if args.pre_commit:
+            run_prog, run_stud, run_rust = detect_staged_scopes()
+            tests_ok = run_unit_tests(
+                run_progguide=run_prog,
+                run_studio=run_stud,
+                run_rust=run_rust,
+            )
+        else:
+            tests_ok = run_unit_tests()
 
     if syntax_ok and layout_ok and markdown_ok and hygiene_ok and parity_ok and tests_ok:
         if args.sync_skill:
